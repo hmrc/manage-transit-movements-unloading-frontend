@@ -14,73 +14,77 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigation
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.DoYouHaveAnythingElseToReportYesNoPage
+import pages.houseConsignment.index.items.AddItemYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.DoYouHaveAnythingElseToReportYesNoView
+import views.html.houseConsignment.index.items.AddItemYesNoView
 
 import scala.concurrent.Future
 
-class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private lazy val doYouHaveAnythingElseToReportYesNoRoute =
-    controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode).url
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("doYouHaveAnythingElseToReportYesNo")
-  private val mode         = NormalMode
+  private val form         = formProvider("houseConsignment.addItemYesNo", houseConsignmentIndex.display)
+
+  private val houseConsignmentMode = NormalMode
+
+  private lazy val addItemYesNoRoute =
+    controllers.houseConsignment.index.items.routes.AddItemYesNoController
+      .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation)
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
       )
 
-  "DoYouHaveAnythingElseToReportYesNo Controller" - {
+  "AddItemYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(GET, addItemYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[DoYouHaveAnythingElseToReportYesNoView]
+      val view = injector.instanceOf[AddItemYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, houseConsignmentMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddItemYesNoPage(houseConsignmentIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(GET, addItemYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[DoYouHaveAnythingElseToReportYesNoView]
+      val view = injector.instanceOf[AddItemYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, houseConsignmentMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -89,7 +93,7 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(POST, addItemYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -105,44 +109,44 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addItemYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[DoYouHaveAnythingElseToReportYesNoView]
+      val view = injector.instanceOf[AddItemYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, houseConsignmentMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(GET, addItemYesNoRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(POST, addItemYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

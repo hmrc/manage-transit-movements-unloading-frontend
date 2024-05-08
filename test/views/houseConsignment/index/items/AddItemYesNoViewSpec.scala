@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.documents
+package views.houseConsignment.index.items
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.documents.AddAdditionalInformationYesNoView
+import views.html.houseConsignment.index.items.AddItemYesNoView
 
-class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
+class AddItemYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddAdditionalInformationYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, documentIndex, NormalMode, NormalMode)(fakeRequest, messages)
+      .instanceOf[AddItemYesNoView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.documents.addAdditionalInformationYesNo"
+  override val prefix: String = "houseConsignment.addItemYesNo"
 
-  behave like pageWithTitle(documentIndex)
+  behave like pageWithTitle(houseConsignmentIndex.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(documentIndex)
+  behave like pageWithHeading(houseConsignmentIndex.display)
 
-  behave like pageWithContent("p", "This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.")
+  behave like pageWithContent("p", "This is to provide details of the goods, like their weight, packages and commodity codes.")
 
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(houseConsignmentIndex.display))
 
   behave like pageWithSubmitButton("Continue")
 }

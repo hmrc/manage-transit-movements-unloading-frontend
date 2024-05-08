@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.documents
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -63,10 +63,20 @@ class AddAnotherDocumentController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, viewModel)),
-          _ =>
-            Redirect(
-              controllers.routes.SessionExpiredController.onPageLoad() //TODO redirect to relevant pages
-            )
+          {
+            case true =>
+              Redirect(
+                controllers.houseConsignment.index.documents.routes.TypeController
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
+              )
+            case false =>
+              mode match {
+                case NormalMode =>
+                  Redirect(controllers.houseConsignment.index.routes.AddAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex))
+                case CheckMode =>
+                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              }
+          }
         )
   }
 }

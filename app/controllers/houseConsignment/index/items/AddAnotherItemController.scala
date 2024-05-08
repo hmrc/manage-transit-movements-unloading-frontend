@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode, NormalMode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -66,9 +66,12 @@ class AddAnotherItemController @Inject() (
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(
-                controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex)
-              ) //TODO: This will need to become dynamic in CTCP-5035
+              mode match {
+                case NormalMode =>
+                  Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
+                case CheckMode =>
+                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              }
           }
         )
   }

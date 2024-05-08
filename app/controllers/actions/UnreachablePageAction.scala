@@ -36,7 +36,7 @@ class UnreachablePageActionImpl @Inject() (implicit val executionContext: Execut
           """^.*/(change-)?house-consignments/.*$""".r
 
         val multiHouseConsignmentPattern =
-          """^.*/(change-)?house-consignment/(\d)+.*$""".r
+          """^.*/(change-)?house-consignment/(\d+).*$""".r
 
         val unreachableSectionsPattern: Regex =
           """^.*/(change-)?house-consignment/1/((change-)?(additional-reference(s)?|document(s)?|departure-means-of-transport))/.*$""".r

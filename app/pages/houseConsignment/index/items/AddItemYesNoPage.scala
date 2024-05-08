@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
-import models.UserAnswers
-import pages.sections.OtherQuestionsSection
+import models.{Index, UserAnswers}
+import pages.QuestionPage
+import pages.sections.{HouseConsignmentSection, ItemsSection}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object AddCommentsYesNoPage extends QuestionPage[Boolean] {
+case class AddItemYesNoPage(houseConsignmentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = OtherQuestionsSection.path \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
-  override def toString: String = "comments"
+  override def toString: String = "addItemYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
+      case Some(false) => userAnswers.remove(ItemsSection(houseConsignmentIndex))
       case _           => super.cleanup(value, userAnswers)
     }
+
 }

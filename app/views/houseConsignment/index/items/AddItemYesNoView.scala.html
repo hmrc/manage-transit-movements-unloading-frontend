@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import controllers.houseConsignment.index.documents.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
+@import controllers.houseConsignment.index.items.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -28,23 +28,23 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, documentIndex: Index, houseConsignmentMode: Mode, documentMode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, houseConsignmentMode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.documents.addAdditionalInformationYesNo.title"),
+    title = messages("houseConsignment.addItemYesNo.title", houseConsignmentIndex.display),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AddAdditionalInformationYesNoController.onSubmit(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddItemYesNoController.onSubmit(arrivalId, houseConsignmentIndex, houseConsignmentMode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("houseConsignment.index.documents.addAdditionalInformationYesNo.heading"),
+                heading = messages("houseConsignment.addItemYesNo.heading", houseConsignmentIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.index.documents.addAdditionalInformationYesNo.paragraph").toParagraph
+                additionalHtml = messages("houseConsignment.addItemYesNo.paragraph", houseConsignmentIndex.display).toParagraph
             )
         )
 

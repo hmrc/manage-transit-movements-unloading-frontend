@@ -17,6 +17,7 @@
 package viewModels
 
 import models.UserAnswers
+import pages.AddUnloadingCommentsYesNoPage
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -24,7 +25,7 @@ import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
-case class CheckYourAnswersViewModel(sections: Seq[Section])
+case class CheckYourAnswersViewModel(sections: Seq[Section], showDiscrepanciesLink: Boolean)
 
 object CheckYourAnswersViewModel {
 
@@ -47,10 +48,24 @@ object CheckYourAnswersViewModel {
 
       val commentsSection = StaticSection(
         sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
-        rows = Seq(helper.unloadingCommentsYesNo, helper.additionalComment).flatten
+        rows = Seq(
+          helper.unloadingCommentsYesNo,
+          helper.addCommentsYesNo,
+          helper.additionalComment,
+          helper.addReportYesNo,
+          helper.report
+        ).flatten
       )
 
-      new CheckYourAnswersViewModel(Seq(headerSection, commentsSection))
+      val discrepanciesPresent = userAnswers.get(AddUnloadingCommentsYesNoPage) match {
+        case Some(false) => false
+        case _           => true
+      }
+
+      new CheckYourAnswersViewModel(
+        Seq(headerSection, commentsSection),
+        discrepanciesPresent
+      )
     }
   }
 }

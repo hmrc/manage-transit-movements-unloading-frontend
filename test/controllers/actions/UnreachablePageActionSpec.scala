@@ -62,7 +62,7 @@ class UnreachablePageActionSpec extends SpecBase with BeforeAndAfterEach with Ge
     )
 
     val consignmentItemDepartureMeansOfTransportPages = Seq(
-      "/manage-transit-movements/unloading/$id/house-consignment/1/item/1/departure-means-of-transport/add-another",
+      s"/manage-transit-movements/unloading/$id/house-consignment/1/item/1/departure-means-of-transport/add-another",
       s"/manage-transit-movements/unloading/$id/house-consignment/1/item/1/departure-means-of-transport/1/country",
       s"/manage-transit-movements/unloading/$id/change-house-consignment/1/change-item/1/departure-means-of-transport/add-another",
       s"/manage-transit-movements/unloading/$id/change-house-consignment/1/change-item/1/change-departure-means-of-transport/1/country"

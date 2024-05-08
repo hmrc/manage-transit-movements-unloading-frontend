@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference._
-import models.{CheckMode, DynamicAddress, Index}
+import models.{CheckMode, DynamicAddress, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -291,8 +291,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val addOrRemoveLink = result.viewLinks.head
             addOrRemoveLink.id mustBe "add-remove-document"
             addOrRemoveLink.text mustBe "Add or remove document"
-            addOrRemoveLink.visuallyHidden must not be defined
-            addOrRemoveLink.href mustBe "#"
+            addOrRemoveLink.visuallyHidden mustBe defined
+            addOrRemoveLink.href mustBe
+              controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, NormalMode).url
 
             val doc1 = result.children.head
             doc1 mustBe a[AccordionSection]

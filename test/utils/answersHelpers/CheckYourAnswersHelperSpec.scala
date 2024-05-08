@@ -232,6 +232,64 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "addCommentsYesNo" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.addCommentsYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you want to add any comments?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.AddCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some(
+                        "if you want to add any comments"
+                      ),
+                      attributes = Map("id" -> "change-add-comments")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.addCommentsYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you want to add any comments?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.AddCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if you want to add any comments"),
+                      attributes = Map("id" -> "change-add-comments")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
     "additionalComment" - {
       "must return row" in {
 
@@ -243,7 +301,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
             result mustBe Some(
               SummaryListRow(
-                key = Key("Discrepancies".toText),
+                key = Key("Comments".toText),
                 value = Value(s"$comments".toText),
                 actions = Some(
                   Actions(
@@ -251,8 +309,97 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ActionItem(
                         content = "Change".toText,
                         href = routes.UnloadingCommentsController.onPageLoad(arrivalId, CheckMode).url,
-                        visuallyHiddenText = Some("discrepancies between the transit and declaration summary"),
+                        visuallyHiddenText = Some("comments"),
                         attributes = Map("id" -> "change-comment")
+                      )
+                    )
+                  )
+                )
+              )
+            )
+        }
+      }
+    }
+
+    "addReportYesNo" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.addReportYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you have anything else to report?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some(
+                        "if you have anything to report"
+                      ),
+                      attributes = Map("id" -> "change-add-report")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.addReportYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you have anything else to report?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if you have anything to report"),
+                      attributes = Map("id" -> "change-add-report")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    "report" - {
+      "must return row" in {
+
+        forAll(Gen.alphaNumStr) {
+          report =>
+            val answers = emptyUserAnswers.setValue(OtherThingsToReportPage, report)
+            val helper  = new CheckYourAnswersHelper(answers)
+            val result  = helper.report
+
+            result mustBe Some(
+              SummaryListRow(
+                key = Key("What do you want to report?".toText),
+                value = Value(s"$report".toText),
+                actions = Some(
+                  Actions(
+                    items = List(
+                      ActionItem(
+                        content = "Change".toText,
+                        href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
+                        visuallyHiddenText = Some("what you want to report"),
+                        attributes = Map("id" -> "change-report")
                       )
                     )
                   )

@@ -166,7 +166,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId))
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, NormalMode))
         }
 
         "to session expired controller when no existing answers found" in {
@@ -190,7 +190,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId))
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, NormalMode))
         }
       }
 
@@ -198,7 +198,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id))
+          .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, NormalMode))
       }
 
       "must go from do you have anything else to report page" - {

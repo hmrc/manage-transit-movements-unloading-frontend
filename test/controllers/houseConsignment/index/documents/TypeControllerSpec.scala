@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.DocumentType
 import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
-import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -54,7 +54,10 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
   private val mockDocumentTypesService: DocumentsService = mock[DocumentsService]
 
-  private def typeRoute(mode: Mode) = routes.TypeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, documentIndex).url
+  private val houseConsignmentMode = CheckMode
+
+  private def typeRoute(documentMode: Mode) =
+    routes.TypeController.onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -68,7 +71,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[HouseConsignmentDocumentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeDocumentNavigator),
+        bind[HouseConsignmentDocumentNavigatorProvider].toInstance(FakeHouseConsignmentNavigators.fakeDocumentNavigatorProvider),
         bind(classOf[DocumentsService]).toInstance(mockDocumentTypesService),
         bind(classOf[TypeViewModelProvider]).toInstance(mockViewModelProvider)
       )
@@ -76,9 +79,11 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   "Type Controller" - {
 
     "CheckMode" - {
+      val documentMode = CheckMode
+
       "when transport document type selected" - {
         val form =
-          formProvider(CheckMode, "houseConsignment.index.document.type", transportDocumentList, houseConsignmentIndex.display)
+          formProvider(documentMode, "houseConsignment.index.document.type", transportDocumentList, houseConsignmentIndex.display)
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
@@ -86,7 +91,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document1)
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(GET, typeRoute(CheckMode))
+          val request = FakeRequest(GET, typeRoute(documentMode))
 
           val result = route(app, request).value
 
@@ -97,7 +102,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, CheckMode, transportDocumentList.values, viewModel, houseConsignmentIndex, documentIndex)(
+            view(filledForm, mrn, arrivalId, houseConsignmentMode, documentMode, transportDocumentList.values, viewModel, houseConsignmentIndex, documentIndex)(
               request,
               messages,
               frontendAppConfig
@@ -112,7 +117,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document1)
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(POST, typeRoute(CheckMode))
+          val request = FakeRequest(POST, typeRoute(documentMode))
             .withFormUrlEncodedBody(("value", document1.value))
 
           val result = route(app, request).value
@@ -128,7 +133,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document1)
           setExistingUserAnswers(userAnswers)
 
-          val request   = FakeRequest(POST, typeRoute(CheckMode)).withFormUrlEncodedBody(("value", "invalid value"))
+          val request   = FakeRequest(POST, typeRoute(documentMode)).withFormUrlEncodedBody(("value", "invalid value"))
           val boundForm = form.bind(Map("value" -> "invalid value"))
 
           val result = route(app, request).value
@@ -138,18 +143,24 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual BAD_REQUEST
 
           contentAsString(result) mustEqual
-            view(boundForm, mrn, arrivalId, CheckMode, transportDocumentList.values, viewModel, houseConsignmentIndex, documentIndex)(
-              request,
-              messages,
-              frontendAppConfig
-            ).toString
+            view(
+              boundForm,
+              mrn,
+              arrivalId,
+              houseConsignmentMode,
+              documentMode,
+              transportDocumentList.values,
+              viewModel,
+              houseConsignmentIndex,
+              documentIndex
+            )(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to Session Expired for a GET if no existing data is found" in {
 
           setNoExistingUserAnswers()
 
-          val request = FakeRequest(GET, typeRoute(CheckMode))
+          val request = FakeRequest(GET, typeRoute(documentMode))
 
           val result = route(app, request).value
 
@@ -161,7 +172,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           setNoExistingUserAnswers()
 
-          val request = FakeRequest(POST, typeRoute(CheckMode))
+          val request = FakeRequest(POST, typeRoute(documentMode))
             .withFormUrlEncodedBody(("value", document1.code))
 
           val result = route(app, request).value
@@ -174,7 +185,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
       "when supporting document type selected" - {
         val form =
-          formProvider(CheckMode, "houseConsignment.index.document.type", supportingDocumentList, houseConsignmentIndex.display)
+          formProvider(documentMode, "houseConsignment.index.document.type", supportingDocumentList, houseConsignmentIndex.display)
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
@@ -182,7 +193,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(GET, typeRoute(CheckMode))
+          val request = FakeRequest(GET, typeRoute(documentMode))
 
           val result = route(app, request).value
 
@@ -193,11 +204,17 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, CheckMode, supportingDocumentList.values, viewModel, houseConsignmentIndex, documentIndex)(
-              request,
-              messages,
-              frontendAppConfig
-            ).toString
+            view(
+              filledForm,
+              mrn,
+              arrivalId,
+              houseConsignmentMode,
+              documentMode,
+              supportingDocumentList.values,
+              viewModel,
+              houseConsignmentIndex,
+              documentIndex
+            )(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -208,7 +225,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(POST, typeRoute(CheckMode))
+          val request = FakeRequest(POST, typeRoute(documentMode))
             .withFormUrlEncodedBody(("value", document4.value))
 
           val result = route(app, request).value
@@ -225,7 +242,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
-          val request   = FakeRequest(POST, typeRoute(CheckMode)).withFormUrlEncodedBody(("value", "invalid value"))
+          val request   = FakeRequest(POST, typeRoute(documentMode)).withFormUrlEncodedBody(("value", "invalid value"))
           val boundForm = form.bind(Map("value" -> "invalid value"))
 
           val result = route(app, request).value
@@ -235,18 +252,24 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual BAD_REQUEST
 
           contentAsString(result) mustEqual
-            view(boundForm, mrn, arrivalId, CheckMode, supportingDocumentList.values, viewModel, houseConsignmentIndex, documentIndex)(
-              request,
-              messages,
-              frontendAppConfig
-            ).toString
+            view(
+              boundForm,
+              mrn,
+              arrivalId,
+              houseConsignmentMode,
+              documentMode,
+              supportingDocumentList.values,
+              viewModel,
+              houseConsignmentIndex,
+              documentIndex
+            )(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to Session Expired for a GET if no existing data is found" in {
 
           setNoExistingUserAnswers()
 
-          val request = FakeRequest(GET, typeRoute(CheckMode))
+          val request = FakeRequest(GET, typeRoute(documentMode))
 
           val result = route(app, request).value
 
@@ -258,7 +281,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           setNoExistingUserAnswers()
 
-          val request = FakeRequest(POST, typeRoute(CheckMode))
+          val request = FakeRequest(POST, typeRoute(documentMode))
             .withFormUrlEncodedBody(("value", document1.code))
 
           val result = route(app, request).value
@@ -271,8 +294,10 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
     }
 
     "NormalMode" - {
+      val documentMode = NormalMode
+
       val form =
-        formProvider(NormalMode, "houseConsignment.index.document.type", documentsList, houseConsignmentIndex.display)
+        formProvider(documentMode, "houseConsignment.index.document.type", documentsList, houseConsignmentIndex.display)
 
       "must return OK and the correct view for a GET" in {
 
@@ -284,7 +309,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           .setValue(TypePage(houseConsignmentIndex, Index(3)), document4)
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(GET, typeRoute(NormalMode))
+        val request = FakeRequest(GET, typeRoute(documentMode))
 
         val result = route(app, request).value
 
@@ -295,11 +320,17 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, mrn, arrivalId, NormalMode, documentsList.values, viewModel, houseConsignmentIndex, documentIndex)(
-            request,
-            messages,
-            frontendAppConfig
-          ).toString
+          view(
+            filledForm,
+            mrn,
+            arrivalId,
+            houseConsignmentMode,
+            documentMode,
+            documentsList.values,
+            viewModel,
+            houseConsignmentIndex,
+            documentIndex
+          )(request, messages, frontendAppConfig).toString
       }
 
       "must filter out maxed document types that cannot be added any more" in {
@@ -320,7 +351,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         val nextIndex = Index(maxTransportLimit + supportDocsSize)
 
-        val request = FakeRequest(GET, routes.TypeController.onPageLoad(arrivalId, NormalMode, hcIndex, nextIndex).url)
+        val request = FakeRequest(GET, routes.TypeController.onPageLoad(arrivalId, houseConsignmentMode, documentMode, hcIndex, nextIndex).url)
 
         val result = route(app, request).value
 
@@ -332,10 +363,17 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         // view should have only support docs listed. new transport docs cannot be added since they reached the limit
         contentAsString(result) mustEqual
-          view(filledForm, mrn, arrivalId, NormalMode, supportingDocumentList.values, viewModel, hcIndex, nextIndex)(request,
-                                                                                                                     messages,
-                                                                                                                     frontendAppConfig
-          ).toString
+          view(
+            filledForm,
+            mrn,
+            arrivalId,
+            houseConsignmentMode,
+            documentMode,
+            supportingDocumentList.values,
+            viewModel,
+            hcIndex,
+            nextIndex
+          )(request, messages, frontendAppConfig).toString
       }
 
       "must redirect to the next page when valid data is submitted" in {
@@ -346,7 +384,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document1)
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, typeRoute(NormalMode))
+        val request = FakeRequest(POST, typeRoute(documentMode))
           .withFormUrlEncodedBody(("value", document1.value))
 
         val result = route(app, request).value
@@ -372,11 +410,17 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, arrivalId, NormalMode, transportDocumentList.values, viewModel, houseConsignmentIndex, documentIndex)(
-            request,
-            messages,
-            frontendAppConfig
-          ).toString
+          view(
+            boundForm,
+            mrn,
+            arrivalId,
+            houseConsignmentMode,
+            documentMode,
+            transportDocumentList.values,
+            viewModel,
+            houseConsignmentIndex,
+            documentIndex
+          )(request, messages, frontendAppConfig).toString
       }
 
       "must redirect to Session Expired for a GET if no existing data is found" in {

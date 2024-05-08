@@ -17,10 +17,9 @@
 package controllers.houseConsignment.index.additionalReference
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -44,12 +43,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
   private def form(viewModel: AddAnotherAdditionalReferenceViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
 
   private lazy val addAnotherAdditionalReferenceRoute =
-    controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
-      .onPageLoad(arrivalId, mode, houseConsignmentIndex)
-      .url
+    routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex).url
 
   private val mockViewModelProvider = mock[AddAnotherAdditionalReferenceViewModelProvider]
 
@@ -130,28 +127,55 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
-            .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
+            .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
             .url
         }
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex)))
-            .thenReturn(notMaxedOutViewModel)
+        "must redirect to next page" - {
+          "when adding house consignment" in {
+            val houseConsignmentMode = NormalMode
 
-          setExistingUserAnswers(emptyUserAnswers)
+            when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex)))
+              .thenReturn(notMaxedOutViewModel)
 
-          val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+            setExistingUserAnswers(emptyUserAnswers)
 
-          val result = route(app, request).value
+            val request =
+              FakeRequest(POST, routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex).url)
+                .withFormUrlEncodedBody(("value", "false"))
 
-          status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController
-            .onPageLoad(arrivalId, houseConsignmentIndex)
-            .url
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.houseConsignment.index.items.routes.AddItemYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+                .url
+          }
+
+          "when changing house consignment" in {
+            val houseConsignmentMode = CheckMode
+
+            when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex)))
+              .thenReturn(notMaxedOutViewModel)
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val request =
+              FakeRequest(POST, routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex).url)
+                .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController
+              .onPageLoad(arrivalId, houseConsignmentIndex)
+              .url
+          }
         }
       }
     }
@@ -170,9 +194,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController
-          .onPageLoad(arrivalId, houseConsignmentIndex)
-          .url
+        redirectLocation(result).value mustEqual
+          controllers.houseConsignment.index.items.routes.AddItemYesNoController
+            .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+            .url
       }
     }
 
@@ -209,7 +234,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -222,7 +247,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

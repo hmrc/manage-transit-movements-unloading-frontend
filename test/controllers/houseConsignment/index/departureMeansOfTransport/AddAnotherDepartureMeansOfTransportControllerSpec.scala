@@ -21,7 +21,7 @@ import controllers.houseConsignment.index.departureMeansOfTransport.{routes => d
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -44,10 +44,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
   private def form(viewModel: AddAnotherDepartureMeansOfTransportViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
 
   private lazy val addAnotherDepartureMeansOfTransportRoute =
-    departureMeansOfTransportRoutes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, houseConsignmentIndex, mode).url
+    departureMeansOfTransportRoutes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url
 
   private val mockViewModelProvider = mock[AddAnotherDepartureMeansOfTransportViewModelProvider]
 
@@ -125,26 +125,54 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual departureMeansOfTransportRoutes.IdentificationController
-            .onPageLoad(arrivalId, houseConsignmentIndex, notMaxedOutViewModel.nextIndex, mode, NormalMode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, notMaxedOutViewModel.nextIndex, houseConsignmentMode, NormalMode)
             .url
         }
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
+        "must redirect to next page" - {
+          "when house consignment mode is CheckMode" in {
+            lazy val addAnotherDepartureMeansOfTransportRoute = departureMeansOfTransportRoutes.AddAnotherDepartureMeansOfTransportController
+              .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
+              .url
 
-          setExistingUserAnswers(emptyUserAnswers)
+            when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+              .thenReturn(notMaxedOutViewModel)
 
-          val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+            setExistingUserAnswers(emptyUserAnswers)
 
-          val result = route(app, request).value
+            val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-          status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+          }
+
+          "when house consignment mode is NormalMode" in {
+            lazy val addAnotherDepartureMeansOfTransportRoute = departureMeansOfTransportRoutes.AddAnotherDepartureMeansOfTransportController
+              .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+              .url
+
+            when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+              .thenReturn(notMaxedOutViewModel)
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.houseConsignment.index.routes.AddDocumentsYesNoController.onPageLoad(arrivalId, NormalMode, houseConsignmentIndex).url
+          }
         }
       }
     }
@@ -163,7 +191,9 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+        redirectLocation(result).value mustEqual controllers.houseConsignment.index.routes.AddDocumentsYesNoController
+          .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
+          .url
       }
     }
 

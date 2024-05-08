@@ -37,7 +37,7 @@ class ReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
   def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[ReferenceNumberView]
-      .apply(form, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, documentIndex)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, mode, mode, viewModel, houseConsignmentIndex, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
