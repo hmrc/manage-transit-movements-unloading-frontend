@@ -18,6 +18,7 @@ package controllers.actions
 
 import com.google.inject.{Inject, Singleton}
 import config.PhaseConfig
+import logging.Logging
 import models.Phase
 import models.requests.DataRequest
 import play.api.mvc.Results.Redirect
@@ -27,7 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
-class UnreachablePageActionImpl @Inject() (implicit val executionContext: ExecutionContext, phaseConfig: PhaseConfig) extends UnreachablePageAction {
+class UnreachablePageActionImpl @Inject() (implicit val executionContext: ExecutionContext, phaseConfig: PhaseConfig)
+    extends UnreachablePageAction
+    with Logging {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     phaseConfig.phase match {
@@ -44,15 +47,20 @@ class UnreachablePageActionImpl @Inject() (implicit val executionContext: Execut
         val unreachableSectionsPattern: Regex =
           """^.*/(change-)?house-consignment/1/((change-)?(additional-reference(s)?|document(s)?|departure-means-of-transport))/.*$""".r
 
+        def redirect: Future[Option[Result]] = {
+          logger.warn(s"${request.uri} is not available during transition")
+          Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
+        }
+
         request.uri match {
           case addHouseConsignmentPattern(_) =>
-            Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
+            redirect
           case removeHouseConsignmentPattern(_, _) =>
-            Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
+            redirect
           case multiHouseConsignmentPattern(_, index) if index.toInt > 1 =>
-            Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
+            redirect
           case unreachableSectionsPattern(_, _, _, _, _, _) =>
-            Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
+            redirect
           case _ =>
             Future.successful(None)
         }
