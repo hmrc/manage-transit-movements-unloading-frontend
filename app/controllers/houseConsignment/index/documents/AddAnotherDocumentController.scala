@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.documents
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -67,9 +67,10 @@ class AddAnotherDocumentController @Inject() (
             case true =>
               Redirect(
                 controllers.houseConsignment.index.documents.routes.TypeController
-                  .onPageLoad(arrivalId, mode, houseConsignmentIndex, viewModel.nextIndex)
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
               )
             case false =>
+              // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page in add HC journey.
               Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         )

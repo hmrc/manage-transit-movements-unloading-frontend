@@ -43,10 +43,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel, houseIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, itemIndex.display, houseIndex.display)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
 
   private lazy val addAnotherDocumentRoute =
-    controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, mode).url
+    controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url
 
   private val mockViewModelProvider = mock[AddAnotherHouseConsignmentDocumentViewModelProvider]
 
@@ -87,10 +87,13 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(viewModel, houseConsignmentIndex, itemIndex), mrn, arrivalId, houseConsignmentIndex, notMaxedOutViewModel)(request,
-                                                                                                                               messages,
-                                                                                                                               frontendAppConfig
-          ).toString
+          view(
+            form(viewModel, houseConsignmentIndex, itemIndex),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            notMaxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -108,10 +111,13 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel, itemIndex, houseConsignmentIndex), mrn, arrivalId, houseConsignmentIndex, maxedOutViewModel)(request,
-                                                                                                                                    messages,
-                                                                                                                                    frontendAppConfig
-          ).toString
+          view(
+            form(maxedOutViewModel, itemIndex, houseConsignmentIndex),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            maxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -131,7 +137,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.documents.routes.TypeController
-            .onPageLoad(arrivalId, mode, houseConsignmentIndex, viewModel.nextIndex)
+            .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
             .url
         }
       }
