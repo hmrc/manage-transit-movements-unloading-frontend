@@ -35,19 +35,17 @@
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
-
     @formHelper(action = controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
+        @errorSummary(form.errors)
 
         @inputCharacterCount(
-          field = form("value"),
-          inputCharacterCountType = OrdinaryInputCharacterCount(
-              heading = messages("otherThingsToReport.heading"),
-              caption = Some(messages("site.caption", mrn.toString)),
-        ),
-          label = messages("otherThingsToReport.heading"),
-          maxLength = maxLength,
+            field = form("value"),
+            inputCharacterCountType = OrdinaryInputCharacterCount(
+                heading = messages("otherThingsToReport.heading"),
+                caption = Some(messages("site.caption", mrn.toString))
+            ),
+            maxLength = maxLength
         )
 
         @button(attributes = Map("id" -> "submit"))

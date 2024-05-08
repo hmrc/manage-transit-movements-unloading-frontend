@@ -19,23 +19,29 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.DescriptionFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.houseConsignment.index.items.DescriptionViewModel
+import viewModels.houseConsignment.index.items.DescriptionViewModel.DescriptionViewModelProvider
 import views.html.houseConsignment.index.items.DescriptionView
 
 import scala.concurrent.Future
 
-class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val viewModel = arbitrary[DescriptionViewModel].sample.value
 
   private lazy val formProvider = new DescriptionFormProvider()
-  private lazy val form         = formProvider("houseConsignment.item.description", itemIndex.display, houseConsignmentIndex.display)
+  private lazy val form         = formProvider(viewModel.requiredError)
 
   private val houseConsignmentMode = NormalMode
   private val itemMode             = NormalMode
@@ -45,12 +51,22 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
       .url
 
+  private val mockViewModelProvider = mock[DescriptionViewModelProvider]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
+        bind(classOf[DescriptionViewModelProvider]).toInstance(mockViewModelProvider)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   "ItemDescription Controller" - {
 
@@ -66,7 +82,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(form, mrn, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -85,7 +101,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -120,7 +136,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[DescriptionView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

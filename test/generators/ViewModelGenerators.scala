@@ -35,7 +35,10 @@ import viewModels.houseConsignment.index.departureTransportMeans.{
   HouseConsignmentCountryViewModel,
   IdentificationNumberViewModel => HCIdentificationNumberViewModel
 }
-import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
+import viewModels.houseConsignment.index.documents.{
+  ReferenceNumberViewModel,
+  AddAnotherHouseConsignmentDocumentViewModel => DocumentsAddAnotherHouseConsignmentDocumentViewModel
+}
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel => AdditionalReferenceTypeItemViewModel
@@ -45,14 +48,13 @@ import viewModels.houseConsignment.index.items.document.{
   ItemsAdditionalInformationViewModel,
   ItemsDocumentReferenceNumberViewModel
 }
-import viewModels.houseConsignment.index.documents.{AddAnotherHouseConsignmentDocumentViewModel => DocumentsAddAnotherHouseConsignmentDocumentViewModel}
 import viewModels.houseConsignment.index.items.packages.{
   AddAnotherPackageViewModel,
   NumberOfPackagesViewModel,
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
-import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcItemViewModel}
+import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, DescriptionViewModel, document => hcItemViewModel}
 import viewModels.houseConsignment.index.{documents => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
@@ -608,6 +610,15 @@ trait ViewModelGenerators {
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
     } yield AddAnotherHouseConsignmentViewModel(listItems, onSubmitCall, nextIndex)
+  }
+
+  implicit lazy val arbitraryItemDescriptionViewModel: Arbitrary[DescriptionViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- arbitrary[ArrivalId]
+    } yield DescriptionViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
 }
