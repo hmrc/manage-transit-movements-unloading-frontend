@@ -53,16 +53,15 @@
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend(houseConsignmentIndex),
-                    additionalHtml = viewModel.maxLimitLabelForType( houseConsignmentIndex).map { label =>
-                        Html(s"""<p class="govuk-body" data-testId="maxLimitForType">$label</p>""")
-                    }
+                    additionalHtml = viewModel.maxLimitLabelForType( houseConsignmentIndex) match {
+                            case None => Some(messages("houseConsignment.index.document.addAnotherDocument.paragraph").toParagraph)
+                            case Some(label) => Some(Html(s"""<p class="govuk-body" data-testId="maxLimitForType">$label</p>"""))
+                        }
                 )
             )
         } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel( houseConsignmentIndex)</p>
         }
-
-        <p class="govuk-body">@messages("houseConsignment.index.document.addAnotherDocument.paragraph")</p>
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
     }

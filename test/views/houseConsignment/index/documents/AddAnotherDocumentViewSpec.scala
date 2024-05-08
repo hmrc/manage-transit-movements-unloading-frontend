@@ -65,11 +65,6 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count, houseConsignmentIndex.display, itemIndex.display)(houseConsignmentIndex.display, itemIndex.display)
 
-  behave like pageWithContent(
-    "p",
-    "This adds a document to all items in this house consignment. To attach a document to a specific item, go to its house consignment cross-check screen."
-  )
-
   behave like pageWithSubmitButton("Continue")
 
 }
