@@ -29,7 +29,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
   private val lengthKey   = "houseConsignment.commodityCode.error.length"
   private val invalidKey  = "houseConsignment.commodityCode.error.invalid"
 
-  def form: Form[String] = new CommodityCodeFormProvider()(Index(0), Index(0))
+  def form: Form[String] = new CommodityCodeFormProvider()(requiredKey)
   private val fieldName  = "value"
 
   ".value" - {
@@ -50,7 +50,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString, Index(0).display.toString))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     "must not bind strings that do not match regex" in {

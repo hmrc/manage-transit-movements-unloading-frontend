@@ -18,33 +18,43 @@ package views.houseConsignment.index.items
 
 import base.SpecBase
 import forms.CommodityCodeFormProvider
-import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.houseConsignment.index.items.CommodityCodeViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.CommodityCodeView
 
 class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBase {
 
-  override def form: Form[String] = new CommodityCodeFormProvider()(index, index)
+  private val viewModel = arbitrary[CommodityCodeViewModel].sample.value
+
+  override def form: Form[String] = new CommodityCodeFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, isXI = true, NormalMode, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CommodityCodeView].apply(form, mrn, isXI = true, viewModel)(fakeRequest, messages)
 
-  override val prefix: String                         = "houseConsignment.commodityCode"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.commodityCode.NormalMode",
+      "houseConsignment.commodityCode.CheckMode"
+    )
+    .sample
+    .value
+
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   private val paragraph =
     "The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required."
 
-  behave like pageWithTitle(index.display.toString, index.display.toString)
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(index.display.toString, index.display.toString)
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithHint("This will be 6 characters long and include both letters and numbers, for example 0G23AB.")
 
@@ -59,7 +69,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBas
 
   "when isXI is false" - {
     val view = injector.instanceOf[CommodityCodeView]
-    val doc  = parseView(view.apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI = false, NormalMode, NormalMode)(fakeRequest, messages))
+    val doc  = parseView(view.apply(form, mrn, isXI = false, viewModel)(fakeRequest, messages))
     behave like pageWithoutContent(doc, "p", paragraph)
   }
 

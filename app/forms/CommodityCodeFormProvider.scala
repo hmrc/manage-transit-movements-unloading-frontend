@@ -17,7 +17,6 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Index
 import models.messages.UnloadingRemarksRequest
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
@@ -26,14 +25,16 @@ import javax.inject.Inject
 
 class CommodityCodeFormProvider @Inject() extends Mappings {
 
-  def apply(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
+  def apply(requiredError: String): Form[String] = {
+    val prefix = "houseConsignment.commodityCode"
     Form(
-      "value" -> text("houseConsignment.commodityCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
+      "value" -> text(requiredError)
         .verifying(
           StopOnFirstFail[String](
-            exactLength(UnloadingRemarksRequest.commodityCodeLength, "houseConsignment.commodityCode.error.length"),
-            regexp(alphaNumericRegex.r, "houseConsignment.commodityCode.error.invalid", Seq.empty)
+            exactLength(UnloadingRemarksRequest.commodityCodeLength, s"$prefix.error.length"),
+            regexp(alphaNumericRegex.r, s"$prefix.error.invalid", Seq.empty)
           )
         )
     )
+  }
 }

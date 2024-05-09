@@ -708,11 +708,14 @@ commodityCode.error.invalid = The commodity code must only include letters a to 
 commodityCode.error.length = The commodity code must be 6 characters long
 
 
-houseConsignment.commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
-houseConsignment.commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
+houseConsignment.commodityCode.CheckMode.title = What is the new commodity code for item {1} in house consignment {0}?
+houseConsignment.commodityCode.NormalMode.title = What is the commodity code for item {1} in house consignment {0}?
+houseConsignment.commodityCode.CheckMode.heading = What is the new commodity code for item {1} in house consignment {0}?
+houseConsignment.commodityCode.NormalMode.heading = What is the commodity code for item {1} in house consignment {0}?
 houseConsignment.commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
 houseConsignment.commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
-houseConsignment.commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
+houseConsignment.commodityCode.CheckMode.error.required = Enter the new commodity code of item {1} in house consignment {0}
+houseConsignment.commodityCode.NormalMode.error.required = Enter the commodity code of item {1} in house consignment {0}
 houseConsignment.commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
 houseConsignment.commodityCode.error.length = The commodity code must be 6 characters long
 

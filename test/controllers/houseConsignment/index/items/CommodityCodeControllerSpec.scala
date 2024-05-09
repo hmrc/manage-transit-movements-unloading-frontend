@@ -17,39 +17,53 @@
 package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.CommodityCodeFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.CommodityCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.houseConsignment.index.items.CommodityCodeViewModel
+import viewModels.houseConsignment.index.items.CommodityCodeViewModel.CommodityCodeViewModelProvider
 import views.html.houseConsignment.index.items.CommodityCodeView
 
 import scala.concurrent.Future
 
 class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val viewModel = arbitrary[CommodityCodeViewModel].sample.value
+
   private val formProvider = new CommodityCodeFormProvider()
-  private val form         = formProvider(index, index)
+  private val form         = formProvider(viewModel.requiredError)
 
   private val houseConsignmentMode = NormalMode
   private val itemMode             = NormalMode
 
   lazy val commodityCodeControllerRoute: String =
-    controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
+    routes.CommodityCodeController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
+
+  private val mockViewModelProvider = mock[CommodityCodeViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
+        bind(classOf[CommodityCodeViewModelProvider]).toInstance(mockViewModelProvider)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   "CommodityCodeController" - {
 
@@ -67,7 +81,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
+        view(form, mrn, isXI = false, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -87,7 +101,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
+        view(filledForm, mrn, isXI = false, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -122,7 +136,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val view = injector.instanceOf[CommodityCodeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
+        view(boundForm, mrn, isXI = false, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -136,7 +150,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -152,7 +166,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
   }
