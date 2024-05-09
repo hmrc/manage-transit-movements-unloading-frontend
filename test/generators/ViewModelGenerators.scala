@@ -54,7 +54,7 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
-import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, DescriptionViewModel, document => hcItemViewModel}
+import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, DescriptionViewModel, GrossWeightViewModel, document => hcItemViewModel}
 import viewModels.houseConsignment.index.{documents => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
@@ -621,4 +621,12 @@ trait ViewModelGenerators {
     } yield DescriptionViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
+  implicit lazy val arbitraryItemGrossWeightViewModel: Arbitrary[GrossWeightViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- arbitrary[ArrivalId]
+    } yield GrossWeightViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+  }
 }

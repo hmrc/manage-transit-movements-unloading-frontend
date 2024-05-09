@@ -186,15 +186,17 @@ departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = Y
 departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport
 departureMeansOfTransport.prefix = Departure means of transport {0}
 
-houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
-houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
+houseConsignment.item.grossWeight.CheckMode.title = What is the new gross weight of item {1} in house consignment {0}?
+houseConsignment.item.grossWeight.NormalMode.title = What is the gross weight of item {1} in house consignment {0}?
+houseConsignment.item.grossWeight.CheckMode.heading = What is the new gross weight of item {1} in house consignment {0}?
+houseConsignment.item.grossWeight.NormalMode.heading = What is the gross weight of item {1} in house consignment {0}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
 houseConsignment.item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
-houseConsignment.item.grossWeight.error.required = Enter the new gross weight of item {0}  in house consignment {1}
-houseConsignment.item.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-houseConsignment.item.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
-houseConsignment.item.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
-houseConsignment.item.grossWeight.change.hidden = the new total gross weight
+houseConsignment.item.grossWeight.CheckMode.error.required = Enter the new gross weight of item {1} in house consignment {0}
+houseConsignment.item.grossWeight.NormalMode.error.required = Enter the gross weight of item {1} in house consignment {0}
+houseConsignment.item.grossWeight.error.invalidValue = The gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+houseConsignment.item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 
 netWeight.title = What is the new net weight of item {0} in house consignment {1}?
 netWeight.heading = What is the new net weight of item {0} in house consignment {1}?

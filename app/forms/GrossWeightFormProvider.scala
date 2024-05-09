@@ -35,4 +35,16 @@ class GrossWeightFormProvider @Inject() extends Mappings {
         args = args.map(_.toString)
       )
     )
+
+  def apply(prefix: String, requiredError: String, decimalPlaceCount: Int, characterCount: Int): Form[BigDecimal] =
+    Form(
+      "value" -> bigDecimal(
+        decimalPlaceCount,
+        characterCount,
+        requiredError,
+        s"$prefix.error.invalidCharacters",
+        s"$prefix.error.invalidFormat",
+        s"$prefix.error.invalidValue"
+      )
+    )
 }
