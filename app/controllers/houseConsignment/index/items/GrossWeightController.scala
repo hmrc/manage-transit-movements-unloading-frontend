@@ -18,7 +18,7 @@ package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
-import forms.GrossWeightFormProvider
+import forms.WeightFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
@@ -40,7 +40,7 @@ class GrossWeightController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   navigatorProvider: HouseConsignmentItemNavigatorProvider,
-  formProvider: GrossWeightFormProvider,
+  formProvider: WeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView,
   viewModelProvider: GrossWeightViewModelProvider

@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+class WeightFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int, args: Any*): Form[BigDecimal] =
     Form(

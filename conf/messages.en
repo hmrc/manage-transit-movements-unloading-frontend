@@ -198,16 +198,17 @@ houseConsignment.item.grossWeight.error.invalidValue = The gross weight must be 
 houseConsignment.item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 
-netWeight.title = What is the new net weight of item {0} in house consignment {1}?
-netWeight.heading = What is the new net weight of item {0} in house consignment {1}?
-netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in house consignment {1}?
+netWeight.CheckMode.title = What is the new net weight of item {1} in house consignment {0}?
+netWeight.NormalMode.title = What is the net weight of item {1} in house consignment {0}?
+netWeight.CheckMode.heading = What is the new net weight of item {1} in house consignment {0}?
+netWeight.NormalMode.heading = What is the net weight of item {1} in house consignment {0}?
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
-netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
-netWeight.error.length = The new net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
-netWeight.error.decimal = The new net weight must only include 6 decimal places or less
-netWeight.change.hidden = the new net weight
+netWeight.CheckMode.error.required = Enter the new net weight of item {1} in house consignment {0}
+netWeight.NormalMode.error.required = Enter the net weight of item {1} in house consignment {0}
+netWeight.error.invalidValue = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
+netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
 
 transportEquipment.index.seal.identificationNumber.NormalMode.title = What is the seal identification number?
 transportEquipment.index.seal.identificationNumber.CheckMode.title = What is the new seal identification number?

@@ -16,6 +16,7 @@
 
 @import models.{ArrivalId, MovementReferenceNumber}
 @import viewModels.components.InputTextViewModel._
+@import viewModels.houseConsignment.index.items.NetWeightViewModel
 @import views.html.components.{Button, ErrorSummary, InputText}
 @import views.utils.ViewUtils.StringImplicits
 @import controllers.houseConsignment.index.items.routes
@@ -29,21 +30,21 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, viewModel: NetWeightViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("netWeight.title", itemIndex.display, houseConsignmentIndex.display),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.NetWeightController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages("netWeight.heading", itemIndex.display, houseConsignmentIndex.display),
+                heading = viewModel.heading,
                 additionalHtml = messages("netWeight.paragraph").toParagraph,
                 caption = Some(messages("site.caption", mrn.toString))
             ),

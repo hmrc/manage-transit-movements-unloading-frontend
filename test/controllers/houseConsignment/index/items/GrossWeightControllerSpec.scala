@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GrossWeightFormProvider
+import forms.WeightFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
@@ -41,7 +41,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val decimalPlace   = notTooBigPositiveNumbers.sample.value
   private val characterCount = notTooBigPositiveNumbers.sample.value
-  private val formProvider   = new GrossWeightFormProvider()
+  private val formProvider   = new WeightFormProvider()
   private val form           = formProvider("houseConsignment.item.grossWeight", viewModel.requiredError, decimalPlace, characterCount)
 
   private val houseConsignmentMode = NormalMode

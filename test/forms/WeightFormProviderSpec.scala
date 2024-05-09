@@ -16,21 +16,22 @@
 
 package forms
 
+import forms.Constants._
 import forms.behaviours.BigDecimalFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours {
+class WeightFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val requiredKey       = "netWeight.error.required"
-  private val invalidCharacters = "netWeight.error.characters"
-  private val decimalPoint      = "netWeight.error.decimal"
-  private val maxLength         = "netWeight.error.length"
+  private val prefix            = Gen.alphaNumStr.sample.value
+  private val requiredKey       = s"$prefix.error.required"
+  private val invalidCharacters = s"$prefix.error.invalidCharacters"
+  private val invalidFormat     = s"$prefix.error.invalidFormat"
+  private val invalidValue      = s"$prefix.error.invalidValue"
 
   val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
-  private val form      = new NetWeightFormProvider()(houseConsignmentIndex, itemIndex)
-  private val args      = Seq(s"${itemIndex.display}", s"${houseConsignmentIndex.display}")
+  private val form      = new WeightFormProvider()(prefix, grossWeightDecimalPlaces, grossWeightIntegerLength)
   private val fieldName = "value"
 
   ".value" - {
@@ -45,15 +46,14 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours {
       form,
       fieldName,
       invalidCharactersError = FormError(fieldName, invalidCharacters),
-      invalidFormatError = FormError(fieldName, decimalPoint),
-      invalidValueError = FormError(fieldName, maxLength)
+      invalidFormatError = FormError(fieldName, invalidFormat),
+      invalidValueError = FormError(fieldName, invalidValue)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, args)
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }

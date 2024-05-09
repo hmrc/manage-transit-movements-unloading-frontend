@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.items
 
-import forms.GrossWeightFormProvider
+import forms.WeightFormProvider
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -35,7 +35,7 @@ class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] with Gener
   private val characterCount: Int = positiveInts.sample.value
 
   override def form: Form[BigDecimal] =
-    app.injector.instanceOf[GrossWeightFormProvider].apply(prefix, viewModel.requiredError, decimalPlace, characterCount)
+    app.injector.instanceOf[WeightFormProvider].apply(prefix, viewModel.requiredError, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[GrossWeightView].apply(form, mrn, viewModel)(fakeRequest, messages)
