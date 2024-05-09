@@ -111,7 +111,7 @@ class SubmissionService @Inject() (
       }
       conform <- stateOfSeals match {
         case Some(Number0) => Number0: Reads[Flag]
-        case _             => AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
+        case _             => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
       }
     } yield UnloadingRemarkType(
       conform = conform,

@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.MessageMetaData
 import org.mockito.ArgumentMatchers.any
@@ -87,6 +88,19 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must redirect to AddCommentsYesNo page" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, unloadingFindingsRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
     }
 
   }

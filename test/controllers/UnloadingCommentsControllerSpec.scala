@@ -39,7 +39,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  private lazy val changesToReportRoute = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
+  private lazy val unloadingCommentsRoute = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -48,14 +48,14 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
         bind[Navigation].toInstance(fakeNavigation)
       )
 
-  "ChangesToReport Controller" - {
+  "UnloadingComments Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, changesToReportRoute)
+      val request = FakeRequest(GET, unloadingCommentsRoute)
 
       val result = route(app, request).value
 
@@ -63,7 +63,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, mrn, arrivalId, unloadingRemarkLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(form, mrn, arrivalId, unloadingCommentsLength, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -72,7 +72,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
       val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "answer")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, changesToReportRoute)
+      val request = FakeRequest(GET, unloadingCommentsRoute)
 
       val result = route(app, request).value
 
@@ -82,7 +82,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, unloadingRemarkLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, unloadingCommentsLength, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -92,7 +92,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, changesToReportRoute)
+      val request = FakeRequest(POST, unloadingCommentsRoute)
         .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
@@ -106,7 +106,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, changesToReportRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, unloadingCommentsRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
@@ -115,7 +115,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, unloadingRemarkLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, unloadingCommentsLength, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -123,7 +123,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, changesToReportRoute)
+      val request = FakeRequest(GET, unloadingCommentsRoute)
 
       val result = route(app, request).value
 
@@ -137,7 +137,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, changesToReportRoute)
+      val request = FakeRequest(POST, unloadingCommentsRoute)
         .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value

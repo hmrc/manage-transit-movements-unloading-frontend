@@ -29,9 +29,9 @@ class UnloadingCommentsViewSpec extends CharacterCountViewBehaviours {
   override def form: Form[String] = new UnloadingCommentsFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingCommentsView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[UnloadingCommentsView].apply(form, mrn, arrivalId, unloadingCommentsLength, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "changesToReport"
+  override val prefix: String = "unloadingComments"
 
   behave like pageWithTitle()
 
@@ -41,9 +41,9 @@ class UnloadingCommentsViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(unloadingRemarkLength)
+  behave like pageWithCharacterCount(unloadingCommentsLength)
 
-  behave like pageWithHint(s"You can enter up to $unloadingRemarkLength characters")
+  behave like pageWithHint(s"You can enter up to $unloadingCommentsLength characters")
 
   behave like pageWithSubmitButton("Continue")
 }

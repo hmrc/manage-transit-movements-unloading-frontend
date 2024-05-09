@@ -130,7 +130,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       "when there are seal numbers in the IE043 message" - {
         "when seals can be read and no seals broken" - {
-          "and AddUnloadingCommentsYesNo is true" in {
+          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
@@ -138,7 +138,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, true)
                   .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(AddUnloadingCommentsYesNoPage, true)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
                 val reads  = service.unloadingRemarkReads
@@ -154,7 +154,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             }
           }
 
-          "and AddUnloadingCommentsYesNo is false" in {
+          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
@@ -162,7 +162,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, true)
                   .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(AddUnloadingCommentsYesNoPage, false)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
                 val reads  = service.unloadingRemarkReads
@@ -249,11 +249,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         }
 
         "when there are no seal numbers in the IE043 message" - {
-          "and AddUnloadingCommentsYesNo is false" in {
+          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
             val userAnswers = emptyUserAnswers
               .setValue(UnloadingTypePage, UnloadingType.Partially)
               .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-              .setValue(AddUnloadingCommentsYesNoPage, false)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
             val reads  = service.unloadingRemarkReads
             val result = userAnswers.data.as[UnloadingRemarkType](reads)
@@ -267,11 +267,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
           }
 
-          "and AddUnloadingCommentsYesNo is true" in {
+          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
             val userAnswers = emptyUserAnswers
               .setValue(UnloadingTypePage, UnloadingType.Partially)
               .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-              .setValue(AddUnloadingCommentsYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
             val reads  = service.unloadingRemarkReads
             val result = userAnswers.data.as[UnloadingRemarkType](reads)

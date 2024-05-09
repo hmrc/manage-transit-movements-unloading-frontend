@@ -53,7 +53,7 @@ class UnloadingCommentsController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, unloadingCommentsLength, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -62,7 +62,7 @@ class UnloadingCommentsController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingCommentsLength, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingCommentsPage, value))

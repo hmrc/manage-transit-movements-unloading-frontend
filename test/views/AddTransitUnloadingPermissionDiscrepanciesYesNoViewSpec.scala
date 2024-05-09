@@ -20,14 +20,14 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
-class AddUnloadingCommentsYesNoViewSpec extends YesNoViewBehaviours {
+class AddTransitUnloadingPermissionDiscrepanciesYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddUnloadingCommentsYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddTransitUnloadingPermissionDiscrepanciesYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "addUnloadingCommentsYesNo"
+  override val prefix: String = "addTransitUnloadingPermissionDiscrepanciesYesNo"
 
   behave like pageWithTitle()
 

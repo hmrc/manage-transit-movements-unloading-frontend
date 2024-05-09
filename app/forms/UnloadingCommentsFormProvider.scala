@@ -27,10 +27,10 @@ class UnloadingCommentsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("changesToReport.error.required")
+      "value" -> text("unloadingComments.error.required")
         .verifying(
-          forms.StopOnFirstFail[String](maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"),
-                                        regexp(stringFieldRegexComma, "changesToReport.error.invalid")
+          forms.StopOnFirstFail[String](maxLength(RemarksNonConform.unloadingCommentsLength, "unloadingComments.error.length"),
+                                        regexp(stringFieldRegexComma, "unloadingComments.error.invalid")
           )
         )
     )
