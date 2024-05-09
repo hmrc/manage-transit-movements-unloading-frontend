@@ -46,7 +46,7 @@ case class AddAnotherDepartureMeansOfTransportViewModel(
   override def maxLimitLabel(implicit messages: Messages): String =
     messages(s"$prefix.maxLimit.label", count, houseConsignmentIndex.display)
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDepartureMeansOfTransport
+  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDepartureMeansOfTransportHouseConsignment
 
 }
 

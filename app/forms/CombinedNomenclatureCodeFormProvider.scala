@@ -17,7 +17,6 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Index
 import models.messages.UnloadingRemarksRequest
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
@@ -26,14 +25,16 @@ import javax.inject.Inject
 
 class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
 
-  def apply(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
+  def apply(requiredError: String): Form[String] = {
+    val prefix = "houseConsignment.combinedNomenclatureCode"
     Form(
-      "value" -> text("houseConsignment.combinedNomenclatureCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
+      "value" -> text(requiredError)
         .verifying(
           StopOnFirstFail[String](
-            exactLength(UnloadingRemarksRequest.combinedNomenclatureCodeLength, "houseConsignment.combinedNomenclatureCode.error.length"),
-            regexp(alphaNumericRegex.r, "houseConsignment.combinedNomenclatureCode.error.invalid", Seq.empty)
+            exactLength(UnloadingRemarksRequest.combinedNomenclatureCodeLength, s"$prefix.error.length"),
+            regexp(alphaNumericRegex.r, s"$prefix.error.invalid", Seq.empty)
           )
         )
     )
+  }
 }

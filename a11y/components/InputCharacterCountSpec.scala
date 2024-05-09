@@ -32,7 +32,6 @@ class InputCharacterCountSpec extends A11ySpecBase {
     val component = app.injector.instanceOf[InputCharacterCount]
 
     val title          = nonEmptyString.sample.value
-    val label          = nonEmptyString.sample.value
     val maxLength      = positiveInts.sample.value
     val caption        = Gen.option(nonEmptyString).sample.value
     val hint           = Gen.option(nonEmptyString).sample.value
@@ -44,14 +43,14 @@ class InputCharacterCountSpec extends A11ySpecBase {
 
       "ordinary input character count" in {
         val content = template.apply(title) {
-          component.apply(form("value"), label, maxLength, caption, hint, rows, OrdinaryInputCharacterCount(title, caption))
+          component.apply(form("value"), maxLength, caption, hint, rows, OrdinaryInputCharacterCount(title, caption))
         }
         content.toString() must passAccessibilityChecks
       }
 
       "input character count with additional html" in {
         val content = template.apply(title) {
-          component.apply(form("value"), label, maxLength, caption, hint, rows, InputCharacterCountWithAdditionalHtml(title, caption, additionalHtml))
+          component.apply(form("value"), maxLength, caption, hint, rows, InputCharacterCountWithAdditionalHtml(title, caption, additionalHtml))
         }
         content.toString() must passAccessibilityChecks
       }

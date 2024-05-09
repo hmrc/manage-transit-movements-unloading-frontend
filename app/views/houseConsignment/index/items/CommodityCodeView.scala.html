@@ -16,6 +16,7 @@
 
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel
+@import viewModels.houseConsignment.index.items.CommodityCodeViewModel
 @import views.html.components.{Button, ErrorSummary, InputText}
 @import controllers.houseConsignment.index.items.routes
 
@@ -27,21 +28,21 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, isXI:Boolean, houseConsignmentMode: Mode, itemMode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, isXI: Boolean, viewModel: CommodityCodeViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.commodityCode.title", itemIndex.display, houseConsignmentIndex.display),
+    title = viewModel.title,
     showBackLink = true,
 ) {
 
-    @formHelper(action = routes.CommodityCodeController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = InputTextViewModel(
-                heading = messages("houseConsignment.commodityCode.heading", itemIndex.display, houseConsignmentIndex.display),
+                heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = if (isXI) Some(messages("houseConsignment.commodityCode.xi.paragraph").toParagraph) else None,
             ),

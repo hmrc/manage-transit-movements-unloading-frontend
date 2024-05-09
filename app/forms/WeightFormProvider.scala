@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+class WeightFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int, args: Any*): Form[BigDecimal] =
     Form(
@@ -33,6 +33,18 @@ class GrossWeightFormProvider @Inject() extends Mappings {
         s"$prefix.error.invalidFormat",
         s"$prefix.error.invalidValue",
         args = args.map(_.toString)
+      )
+    )
+
+  def apply(prefix: String, requiredError: String, decimalPlaceCount: Int, characterCount: Int): Form[BigDecimal] =
+    Form(
+      "value" -> bigDecimal(
+        decimalPlaceCount,
+        characterCount,
+        requiredError,
+        s"$prefix.error.invalidCharacters",
+        s"$prefix.error.invalidFormat",
+        s"$prefix.error.invalidValue"
       )
     )
 }

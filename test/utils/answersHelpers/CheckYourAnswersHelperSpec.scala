@@ -179,9 +179,9 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       "must return row" - {
         "when answered Yes" in {
 
-          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+          val answers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
           val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.unloadingCommentsYesNo
+          val result  = helper.addDiscrepanciesYesNo
 
           result mustBe Some(
             SummaryListRow(
@@ -192,11 +192,11 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   items = List(
                     ActionItem(
                       content = "Change".toText,
-                      href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some(
                         "if there were any discrepancies between the transit and unloading permission"
                       ),
-                      attributes = Map("id" -> "change-add-unloading-comments")
+                      attributes = Map("id" -> "change-add-discrepancies")
                     )
                   )
                 )
@@ -206,9 +206,9 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
         "when answered No" in {
 
-          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+          val answers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
           val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.unloadingCommentsYesNo
+          val result  = helper.addDiscrepanciesYesNo
 
           result mustBe Some(
             SummaryListRow(
@@ -219,9 +219,9 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   items = List(
                     ActionItem(
                       content = "Change".toText,
-                      href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some("if there were any discrepancies between the transit and unloading permission"),
-                      attributes = Map("id" -> "change-add-unloading-comments")
+                      attributes = Map("id" -> "change-add-discrepancies")
                     )
                   )
                 )

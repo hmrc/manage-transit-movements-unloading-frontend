@@ -186,26 +186,29 @@ departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = Y
 departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport
 departureMeansOfTransport.prefix = Departure means of transport {0}
 
-houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
-houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
+houseConsignment.item.grossWeight.CheckMode.title = What is the new gross weight of item {1} in house consignment {0}?
+houseConsignment.item.grossWeight.NormalMode.title = What is the gross weight of item {1} in house consignment {0}?
+houseConsignment.item.grossWeight.CheckMode.heading = What is the new gross weight of item {1} in house consignment {0}?
+houseConsignment.item.grossWeight.NormalMode.heading = What is the gross weight of item {1} in house consignment {0}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
 houseConsignment.item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
-houseConsignment.item.grossWeight.error.required = Enter the new gross weight of item {0}  in house consignment {1}
-houseConsignment.item.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-houseConsignment.item.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
-houseConsignment.item.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
-houseConsignment.item.grossWeight.change.hidden = the new total gross weight
+houseConsignment.item.grossWeight.CheckMode.error.required = Enter the new gross weight of item {1} in house consignment {0}
+houseConsignment.item.grossWeight.NormalMode.error.required = Enter the gross weight of item {1} in house consignment {0}
+houseConsignment.item.grossWeight.error.invalidValue = The gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+houseConsignment.item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 
-netWeight.title = What is the new net weight of item {0} in house consignment {1}?
-netWeight.heading = What is the new net weight of item {0} in house consignment {1}?
-netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in house consignment {1}?
+netWeight.CheckMode.title = What is the new net weight of item {1} in house consignment {0}?
+netWeight.NormalMode.title = What is the net weight of item {1} in house consignment {0}?
+netWeight.CheckMode.heading = What is the new net weight of item {1} in house consignment {0}?
+netWeight.NormalMode.heading = What is the net weight of item {1} in house consignment {0}?
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
-netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
-netWeight.error.length = The new net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
-netWeight.error.decimal = The new net weight must only include 6 decimal places or less
-netWeight.change.hidden = the new net weight
+netWeight.CheckMode.error.required = Enter the new net weight of item {1} in house consignment {0}
+netWeight.NormalMode.error.required = Enter the net weight of item {1} in house consignment {0}
+netWeight.error.invalidValue = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
+netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
 
 transportEquipment.index.seal.identificationNumber.NormalMode.title = What is the seal identification number?
 transportEquipment.index.seal.identificationNumber.CheckMode.title = What is the new seal identification number?
@@ -322,10 +325,10 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and unloading permission?
-addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and unloading permission?
-addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
+addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepancies between the transit and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
+addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
 
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
@@ -337,12 +340,12 @@ doYouHaveAnythingElseToReportYesNo.heading = Do you have anything else to report
 doYouHaveAnythingElseToReportYesNo.paragraph = This can be anything else you want to tell us about the transit movement.
 doYouHaveAnythingElseToReportYesNo.error.required = Select yes if you have anything to report
 
-changesToReport.title = Describe the discrepancies between the transit and the declaration summary
-changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
-changesToReport.checkYourAnswersLabel = What comments do you want to add?
-changesToReport.error.required = Describe the discrepancies between the transit and the declaration summary
-changesToReport.error.length = Your description must be 512 characters or less
-changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+unloadingComments.title = Enter your comments
+unloadingComments.heading = Enter your comments
+unloadingComments.checkYourAnswersLabel = What comments do you want to add?
+unloadingComments.error.required = Enter your comments
+unloadingComments.error.length = Your comments must be 512 characters or less
+unloadingComments.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 otherThingsToReport.title = What do you want to report?
 otherThingsToReport.heading = What do you want to report?
@@ -641,8 +644,8 @@ checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
 checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and unloading permission?
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit and unloading permission?
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
 checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
 checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
 checkYourAnswers.rowHeadings.additionalComments = Comments
@@ -675,11 +678,14 @@ cannotSendUnloadingRemarks.linkText = View the status of this notification
 
 
 
-houseConsignment.item.description.title = Enter the new description of item {0} in house consignment {1}
-houseConsignment.item.description.heading = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.CheckMode.title = Enter the new description of item {1} in house consignment {0}
+houseConsignment.item.description.NormalMode.title = Enter a description of item {1} in house consignment {0}
+houseConsignment.item.description.CheckMode.heading = Enter the new description of item {1} in house consignment {0}
+houseConsignment.item.description.NormalMode.heading = Enter a description of item {1} in house consignment {0}
 houseConsignment.item.description.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
 houseConsignment.item.description.error.length = The description must be 512 characters or less
-houseConsignment.item.description.error.required = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.CheckMode.error.required = Enter the new description of item {1} in house consignment {0}
+houseConsignment.item.description.NormalMode.error.required = Enter a description of item {1} in house consignment {0}
 houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 houseConsignment.index.item.packageType.NormalMode.title = What type of package are you using for the item?
@@ -702,11 +708,14 @@ commodityCode.error.invalid = The commodity code must only include letters a to 
 commodityCode.error.length = The commodity code must be 6 characters long
 
 
-houseConsignment.commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
-houseConsignment.commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
+houseConsignment.commodityCode.CheckMode.title = What is the new commodity code for item {1} in house consignment {0}?
+houseConsignment.commodityCode.NormalMode.title = What is the commodity code for item {1} in house consignment {0}?
+houseConsignment.commodityCode.CheckMode.heading = What is the new commodity code for item {1} in house consignment {0}?
+houseConsignment.commodityCode.NormalMode.heading = What is the commodity code for item {1} in house consignment {0}?
 houseConsignment.commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
 houseConsignment.commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
-houseConsignment.commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
+houseConsignment.commodityCode.CheckMode.error.required = Enter the new commodity code of item {1} in house consignment {0}
+houseConsignment.commodityCode.NormalMode.error.required = Enter the commodity code of item {1} in house consignment {0}
 houseConsignment.commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
 houseConsignment.commodityCode.error.length = The commodity code must be 6 characters long
 
@@ -722,19 +731,25 @@ houseConsignment.removeCombinedNomenclatureCodeYesNo.title = Are you sure you wa
 houseConsignment.removeCombinedNomenclatureCodeYesNo.heading = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
 houseConsignment.removeCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to remove the combined nomenclature code from item {0} in house consignment {1}
 
-houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {1} in house consignment {0}?
-houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {1} in house consignment {0}?
+houseConsignment.combinedNomenclatureCode.CheckMode.title = What is the new combined nomenclature code for item {1} in house consignment {0}?
+houseConsignment.combinedNomenclatureCode.NormalMode.title = What is the combined nomenclature code for item {1} in house consignment {0}?
+houseConsignment.combinedNomenclatureCode.CheckMode.heading = What is the new combined nomenclature code for item {1} in house consignment {0}?
+houseConsignment.combinedNomenclatureCode.NormalMode.heading = What is the combined nomenclature code for item {1} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.xi.paragraph = The combination of your combined nomenclature code and commodity code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
 houseConsignment.combinedNomenclatureCode.hint = This will be 2 characters long and include both letters and numbers.
-houseConsignment.combinedNomenclatureCode.error.required = Enter the new combined nomenclature code for item {0} in house consignment {1}
+houseConsignment.combinedNomenclatureCode.CheckMode.error.required = Enter the new combined nomenclature code for item {1} in house consignment {0}
+houseConsignment.combinedNomenclatureCode.NormalMode.error.required = Enter the combined nomenclature code for item {1} in house consignment {0}
 houseConsignment.combinedNomenclatureCode.error.invalid = The combined nomenclature code must only include letters a to z and numbers 0 to 9
 houseConsignment.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters long
 
 
-houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}?
-houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}?
+houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.title = What is the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.title = What is the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.heading = What is the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.heading = What is the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
 houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
-houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.required = Enter the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
 houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
@@ -851,6 +866,8 @@ houseConsignment.index.document.addAnotherDocument.maxLimit.label = You cannot a
 houseConsignment.index.document.addAnotherDocument.error.required = Select yes if you want to add another document to all items in house consignment {0}
 houseConsignment.index.document.addAnotherDocument.label = Do you want to add another document to all items in house consignment {0}?
 houseConsignment.index.document.addAnotherDocument.maxLimitForType.label = You cannot add any more documents to all items in this house consignment. You can still add and attach documents to individual items from their house consignment cross-check screens.
+houseConsignment.index.document.addAnotherDocument.paragraph = This adds a document to all items in this house consignment. To attach a document to a specific item, go to its house consignment cross-check screen.
+
 
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?

@@ -24,13 +24,13 @@ import play.api.data.{Field, FormError}
 
 class DescriptionFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix      = Gen.alphaNumStr.sample.value
+  private val prefix      = "houseConsignment.item.description"
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
 
   private val fieldName = "value"
-  private val form      = new DescriptionFormProvider()(prefix)
+  private val form      = new DescriptionFormProvider()(requiredKey)
 
   val overLength: Gen[String] = stringsLongerThan(maxItemDescriptionLength)
 

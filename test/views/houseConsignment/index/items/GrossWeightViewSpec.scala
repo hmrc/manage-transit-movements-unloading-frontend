@@ -16,36 +16,47 @@
 
 package views.houseConsignment.index.items
 
-import forms.GrossWeightFormProvider
-import models.NormalMode
-import org.scalacheck.Arbitrary
+import forms.WeightFormProvider
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
+import viewModels.houseConsignment.index.items.GrossWeightViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.GrossWeightView
 
-class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
+class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] with Generators {
+
+  private val viewModel = arbitrary[GrossWeightViewModel].sample.value
 
   private val decimalPlace: Int   = positiveInts.sample.value
   private val characterCount: Int = positiveInts.sample.value
 
-  override def form: Form[BigDecimal] = app.injector.instanceOf[GrossWeightFormProvider].apply(prefix, decimalPlace, characterCount)
+  override def form: Form[BigDecimal] =
+    app.injector.instanceOf[WeightFormProvider].apply(prefix, viewModel.requiredError, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, index, NormalMode, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightView].apply(form, mrn, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.item.grossWeight"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.item.grossWeight.NormalMode",
+      "houseConsignment.item.grossWeight.CheckMode"
+    )
+    .sample
+    .value
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
-  behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
 

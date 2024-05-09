@@ -23,26 +23,26 @@ import navigation.Navigation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
-import pages.AddUnloadingCommentsYesNoPage
+import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.transformers.IE043Transformer
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
 import java.time.Instant
 import scala.concurrent.Future
 
-class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("addUnloadingCommentsYesNo")
+  private val form         = formProvider("addTransitUnloadingPermissionDiscrepanciesYesNo")
   private val mode         = NormalMode
 
-  private lazy val addUnloadingCommentsYesNoRoute =
-    controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode).url
+  private lazy val addTransitUnloadingPermissionDiscrepanciesYesNoRoute =
+    controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode).url
 
   private val mockTransformer = mock[IE043Transformer]
 
@@ -59,17 +59,17 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
     reset(mockTransformer)
   }
 
-  "AddUnloadingCommentsYesNo Controller" - {
+  "AddTransitUnloadingPermissionDiscrepanciesYesNoPage Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(GET, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[AddTransitUnloadingPermissionDiscrepanciesYesNoView]
 
       status(result) mustEqual OK
 
@@ -79,16 +79,16 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(GET, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[AddTransitUnloadingPermissionDiscrepanciesYesNoView]
 
       status(result) mustEqual OK
 
@@ -102,7 +102,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -156,7 +156,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
            |  },
            |  "otherQuestions" : {
            |    "foo" : "bar",
-           |    "addUnloadingCommentsYesNo" : false
+           |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : false
            |  }
            |}
            |""".stripMargin)
@@ -175,7 +175,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
         .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(app, request).value
@@ -197,14 +197,14 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, addUnloadingCommentsYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[AddTransitUnloadingPermissionDiscrepanciesYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
@@ -214,7 +214,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(GET, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
 
       val result = route(app, request).value
 
@@ -227,7 +227,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

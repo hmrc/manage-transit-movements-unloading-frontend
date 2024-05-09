@@ -17,7 +17,6 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.Index
 import models.messages.UnloadingRemarksRequest.combinedNomenclatureCodeLength
 import org.scalacheck.Gen
 import play.api.data.{Field, Form, FormError}
@@ -29,7 +28,7 @@ class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
   private val lengthKey   = "houseConsignment.combinedNomenclatureCode.error.length"
   private val invalidKey  = "houseConsignment.combinedNomenclatureCode.error.invalid"
 
-  def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(Index(0), Index(0))
+  def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(requiredKey)
   private val fieldName  = "value"
 
   ".value" - {
@@ -50,7 +49,7 @@ class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString, Index(0).display.toString))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     "must not bind strings that do not match regex" in {

@@ -26,7 +26,7 @@ case object DoYouHaveAnythingElseToReportYesNoPage extends QuestionPage[Boolean]
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
-  override def toString: String = "doYouHaveAnythingElseToReport"
+  override def toString: String = "doYouHaveAnythingElseToReportYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {

@@ -17,7 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GrossWeightFormProvider
+import forms.WeightFormProvider
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import navigation.Navigation
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
   private val decimalPlace   = notTooBigPositiveNumbers.sample.value
   private val characterCount = notTooBigPositiveNumbers.sample.value
-  private val formProvider   = new GrossWeightFormProvider()
+  private val formProvider   = new WeightFormProvider()
   private val form           = formProvider("grossWeight", decimalPlace, characterCount)
   private val mode           = NormalMode
   private val checkMode      = CheckMode

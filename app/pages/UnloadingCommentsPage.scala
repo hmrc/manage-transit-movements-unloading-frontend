@@ -23,5 +23,5 @@ case object UnloadingCommentsPage extends QuestionPage[String] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
-  override def toString: String = "unloadingRemark"
+  override def toString: String = "unloadingComments"
 }

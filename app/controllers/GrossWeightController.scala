@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
-import forms.GrossWeightFormProvider
+import forms.WeightFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigation
 import pages.GrossWeightPage
@@ -36,7 +36,7 @@ class GrossWeightController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigation,
   actions: Actions,
-  formProvider: GrossWeightFormProvider,
+  formProvider: WeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView
 )(implicit ec: ExecutionContext)

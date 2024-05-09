@@ -26,7 +26,7 @@ import views.html.houseConsignment.index.departureMeansOfTransport.AddAnotherDep
 
 class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBehaviours {
 
-  override def maxNumber: Int = frontendAppConfig.maxDepartureMeansOfTransport
+  override def maxNumber: Int = frontendAppConfig.maxDepartureMeansOfTransportHouseConsignment
 
   private def formProvider(viewModel: AddAnotherDepartureMeansOfTransportViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)

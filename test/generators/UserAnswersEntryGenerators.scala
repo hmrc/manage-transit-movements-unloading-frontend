@@ -26,7 +26,7 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
 
-  implicit lazy val arbitraryChangesToReportEntry: Arbitrary[(UnloadingCommentsPage.type, JsValue)] =
+  implicit lazy val arbitraryUnloadingCommentsEntry: Arbitrary[(UnloadingCommentsPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[UnloadingCommentsPage.type]
