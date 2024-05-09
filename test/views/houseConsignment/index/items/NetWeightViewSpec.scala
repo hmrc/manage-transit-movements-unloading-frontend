@@ -16,33 +16,46 @@
 
 package views.houseConsignment.index.items
 
-import forms.NetWeightFormProvider
-import models.NormalMode
-import org.scalacheck.Arbitrary
+import forms.WeightFormProvider
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
+import viewModels.houseConsignment.index.items.NetWeightViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  override def form: Form[BigDecimal] = new NetWeightFormProvider()(index, hcIndex)
+  private val viewModel = arbitrary[NetWeightViewModel].sample.value
+
+  private val decimalPlace: Int   = positiveInts.sample.value
+  private val characterCount: Int = positiveInts.sample.value
+
+  override def form: Form[BigDecimal] =
+    app.injector.instanceOf[WeightFormProvider].apply(prefix, viewModel.requiredError, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, index, NormalMode, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NetWeightView].apply(form, mrn, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "netWeight"
+  override val prefix: String = Gen
+    .oneOf(
+      "netWeight.NormalMode",
+      "netWeight.CheckMode"
+    )
+    .sample
+    .value
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
-  behave like pageWithTitle(index.display.toString, hcIndex.display.toString)
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(index.display.toString, hcIndex.display.toString)
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithContent("p", "This is the weight of the item’s goods, excluding all packaging.")
 

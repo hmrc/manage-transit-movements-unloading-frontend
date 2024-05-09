@@ -18,30 +18,41 @@ package views.houseConsignment.index.items
 
 import forms.Constants.maxItemDescriptionLength
 import forms.DescriptionFormProvider
-import models.NormalMode
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.houseConsignment.index.items.DescriptionViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.houseConsignment.index.items.DescriptionView
 
-class DescriptionViewSpec extends CharacterCountViewBehaviours {
+class DescriptionViewSpec extends CharacterCountViewBehaviours with Generators {
+
+  private val viewModel = arbitrary[DescriptionViewModel].sample.value
 
   private val formProvider = new DescriptionFormProvider()
 
-  override def form: Form[String] = formProvider(prefix, itemIndex.display, houseConsignmentIndex.display)
+  override def form: Form[String] = formProvider(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[DescriptionView].apply(form, mrn, arrivalId, NormalMode, NormalMode, houseConsignmentIndex, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[DescriptionView].apply(form, mrn, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.item.description"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.item.description.NormalMode",
+      "houseConsignment.item.description.CheckMode"
+    )
+    .sample
+    .value
 
-  behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithContent("p", "This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.")
 

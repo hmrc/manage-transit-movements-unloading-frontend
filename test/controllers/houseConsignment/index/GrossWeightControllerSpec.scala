@@ -18,7 +18,7 @@ package controllers.houseConsignment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.GrossWeightFormProvider
+import forms.WeightFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.houseConsignment.index.HouseConsignmentNavigator
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
   private val decimalPlace   = notTooBigPositiveNumbers.sample.value
   private val characterCount = notTooBigPositiveNumbers.sample.value
-  private val formProvider   = new GrossWeightFormProvider()
+  private val formProvider   = new WeightFormProvider()
   private val form           = formProvider("houseConsignment.index.grossWeight", decimalPlace, characterCount, houseConsignmentIndex.display)
   private val mode           = NormalMode
   private val validAnswer    = BigDecimal(123.45)

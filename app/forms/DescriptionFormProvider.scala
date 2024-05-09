@@ -25,9 +25,10 @@ import javax.inject.Inject
 
 class DescriptionFormProvider @Inject() () extends Mappings {
 
-  def apply(prefix: String, args: Any*): Form[String] =
+  def apply(requiredError: String): Form[String] = {
+    val prefix = "houseConsignment.item.description"
     Form(
-      "value" -> text(s"$prefix.error.required", args = args.map(_.toString))
+      "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
@@ -35,4 +36,5 @@ class DescriptionFormProvider @Inject() () extends Mappings {
           )
         )
     )
+  }
 }

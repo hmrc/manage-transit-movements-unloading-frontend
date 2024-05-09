@@ -17,6 +17,7 @@
 @import controllers.houseConsignment.index.items.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputCharacterCountViewModel._
+@import viewModels.houseConsignment.index.items.DescriptionViewModel
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 @import forms.Constants.maxItemDescriptionLength
 
@@ -28,25 +29,24 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, viewModel: DescriptionViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.item.description.title", itemIndex.display, houseConsignmentIndex.display),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.DescriptionController.onSubmit(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputCharacterCount(
             field = form("value"),
             inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
-                heading = messages("houseConsignment.item.description.heading", itemIndex.display, houseConsignmentIndex.display),
+                heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("houseConsignment.item.description.paragraph").toParagraph
             ),
-            label = messages("houseConsignment.item.description.heading", itemIndex.display, houseConsignmentIndex.display),
             maxLength = maxItemDescriptionLength
         )
 

@@ -18,33 +18,43 @@ package views.houseConsignment.index.items
 
 import base.SpecBase
 import forms.CombinedNomenclatureCodeFormProvider
-import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.houseConsignment.index.items.CombinedNomenclatureCodeViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.CombinedNomenclatureCodeView
 
 class CombinedNomenclatureCodeViewSpec extends InputTextViewBehaviours[String] with SpecBase {
 
-  override def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(index, index)
+  private val viewModel = arbitrary[CombinedNomenclatureCodeViewModel].sample.value
+
+  override def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CombinedNomenclatureCodeView].apply(form, mrn, arrivalId, index, index, isXI = true, NormalMode, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CombinedNomenclatureCodeView].apply(form, mrn, isXI = true, viewModel)(fakeRequest, messages)
 
-  override val prefix: String                         = "houseConsignment.combinedNomenclatureCode"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.combinedNomenclatureCode.NormalMode",
+      "houseConsignment.combinedNomenclatureCode.CheckMode"
+    )
+    .sample
+    .value
+
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   private val paragraph =
     "The combination of your combined nomenclature code and commodity code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required."
 
-  behave like pageWithTitle(index.display.toString, index.display.toString)
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(index.display.toString, index.display.toString)
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithHint("This will be 2 characters long and include both letters and numbers.")
 
@@ -59,7 +69,7 @@ class CombinedNomenclatureCodeViewSpec extends InputTextViewBehaviours[String] w
 
   "when isXI is false" - {
     val view = injector.instanceOf[CombinedNomenclatureCodeView]
-    val doc  = parseView(view.apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI = false, NormalMode, NormalMode)(fakeRequest, messages))
+    val doc  = parseView(view.apply(form, mrn, isXI = false, viewModel)(fakeRequest, messages))
     behave like pageWithoutContent(doc, "p", paragraph)
   }
 

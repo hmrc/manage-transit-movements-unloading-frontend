@@ -17,6 +17,7 @@
 @import controllers.houseConsignment.index.items.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
+@import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel
 @import viewModels.InputSize
 @import views.html.components.{Button, ErrorSummary, InputText}
 
@@ -28,21 +29,21 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, viewModel: CustomsUnionAndStatisticsCodeViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.item.customsUnionAndStatisticsCode.title", itemIndex.display, houseConsignmentIndex.display),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.CustomsUnionAndStatisticsCodeController.onSubmit(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("houseConsignment.item.customsUnionAndStatisticsCode.heading", itemIndex.display, houseConsignmentIndex.display),
+                heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             hint = Some(messages("houseConsignment.item.customsUnionAndStatisticsCode.hint")),
