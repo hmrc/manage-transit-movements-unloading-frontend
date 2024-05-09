@@ -17,7 +17,6 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.Index
 import models.messages.UnloadingRemarksRequest.commodityCodeLength
 import org.scalacheck.Gen
 import play.api.data.{Field, Form, FormError}

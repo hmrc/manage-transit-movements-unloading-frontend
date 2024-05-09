@@ -56,6 +56,7 @@ import viewModels.houseConsignment.index.items.packages.{
 }
 import viewModels.houseConsignment.index.items.{
   AddAnotherItemViewModel,
+  CombinedNomenclatureCodeViewModel,
   CommodityCodeViewModel,
   CustomsUnionAndStatisticsCodeViewModel,
   DescriptionViewModel,
@@ -663,5 +664,14 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       arrivalId     <- arbitrary[ArrivalId]
     } yield CommodityCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryItemCombinedNomenclatureCodeViewModel: Arbitrary[CombinedNomenclatureCodeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- arbitrary[ArrivalId]
+    } yield CombinedNomenclatureCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 }

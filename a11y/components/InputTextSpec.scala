@@ -17,7 +17,7 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.CUSCodeFormProvider
+import forms.OtherThingsToReportFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -31,15 +31,14 @@ class InputTextSpec extends A11ySpecBase {
     val template  = app.injector.instanceOf[MainTemplate]
     val component = app.injector.instanceOf[InputText]
 
-    val messageKeyPrefix = Gen.alphaNumStr.sample.value
-    val title            = nonEmptyString.sample.value
-    val label            = nonEmptyString.sample.value
-    val inputClass       = Gen.option(Gen.alphaNumStr).sample.value
-    val hint             = Gen.option(nonEmptyString).sample.value
-    val prefix           = Gen.option(Gen.alphaNumStr).sample.value
-    val suffix           = Gen.option(Gen.alphaNumStr).sample.value
-    val inputMode        = Gen.option(Gen.alphaNumStr).sample.value
-    val caption          = Gen.option(nonEmptyString).sample.value
+    val title      = nonEmptyString.sample.value
+    val label      = nonEmptyString.sample.value
+    val inputClass = Gen.option(Gen.alphaNumStr).sample.value
+    val hint       = Gen.option(nonEmptyString).sample.value
+    val prefix     = Gen.option(Gen.alphaNumStr).sample.value
+    val suffix     = Gen.option(Gen.alphaNumStr).sample.value
+    val inputMode  = Gen.option(Gen.alphaNumStr).sample.value
+    val caption    = Gen.option(nonEmptyString).sample.value
     val (inputType, autocomplete) = Gen
       .oneOf(
         ("tel", Gen.option(Gen.const("tel")).sample.value),
@@ -49,7 +48,7 @@ class InputTextSpec extends A11ySpecBase {
       .value
     val pattern        = Gen.oneOf(None, Some("[0-9]*")).sample.value
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new CUSCodeFormProvider()(messageKeyPrefix)
+    val form           = new OtherThingsToReportFormProvider()()
 
     "pass accessibility checks" when {
 
