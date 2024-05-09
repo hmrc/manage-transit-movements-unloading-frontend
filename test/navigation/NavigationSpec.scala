@@ -258,20 +258,33 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
-      "must go from can seals be read page to check your answers" in {
+      "must go from can seals be read page to are any seals broken page" - {
         val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
 
         navigator
           .nextPage(CanSealsBeReadPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode))
       }
 
-      "must go from are any seals broken page to check your answers" in {
-        val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
+      "must go from are any seals broken page" - {
+        "to add transit unloading permission discrepancies yes/no page when state of seals = 1" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
 
-        navigator
-          .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
+        }
+
+        "to unloading findings page when state of seals = 0" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AreAnySealsBrokenPage, true)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+        }
       }
 
       "must go from add transit unloading permission discrepancies yes/no page to unloading findings page when true" in {

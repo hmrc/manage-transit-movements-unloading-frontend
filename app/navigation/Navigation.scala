@@ -18,7 +18,7 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
+import models.{ArrivalId, CheckMode, Mode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
@@ -35,13 +35,8 @@ class Navigation extends Navigator {
         } else {
           Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
         }
-    case CanSealsBeReadPage => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
-    case AreAnySealsBrokenPage =>
-      ua =>
-        (ua.get(CanSealsBeReadPage), ua.get(AreAnySealsBrokenPage)) match {
-          case (Some(true), Some(false)) => Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
-          case _                         => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-        }
+    case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
+    case AreAnySealsBrokenPage => ua => stateOfSealsNavigation(ua.id, ua, NormalMode)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
         ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
@@ -71,8 +66,8 @@ class Navigation extends Navigator {
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case UnloadingTypePage     => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
     case DateGoodsUnloadedPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case CanSealsBeReadPage    => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case AreAnySealsBrokenPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case CanSealsBeReadPage    => ua => Some(controllers.routes.AreAnySealsBrokenController.onPageLoad(ua.id, CheckMode))
+    case AreAnySealsBrokenPage => ua => stateOfSealsNavigation(ua.id, ua, CheckMode)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
         ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
@@ -97,4 +92,10 @@ class Navigation extends Navigator {
     case _                       => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
 
   }
+
+  private def stateOfSealsNavigation(arrivalId: ArrivalId, ua: UserAnswers, mode: Mode): Option[Call] =
+    (ua.get(CanSealsBeReadPage), ua.get(AreAnySealsBrokenPage)) match {
+      case (Some(true), Some(false)) => Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
+      case _                         => Some(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+    }
 }
