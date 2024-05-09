@@ -18,16 +18,16 @@ package forms
 
 import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
-import play.api.data.Form
 import models.RichString
+import play.api.data.Form
 
 import javax.inject.Inject
 
 class CUSCodeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, args: Any*): Form[String] =
+  def apply(prefix: String, requiredError: String): Form[String] =
     Form(
-      "value" -> adaptedText(s"$prefix.error.required", args = args.map(_.toString))(_.removeSpaces())
+      "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             exactLength(exactCUSCodeLength, s"$prefix.error.length")
