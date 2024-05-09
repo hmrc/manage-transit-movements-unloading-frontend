@@ -16,7 +16,7 @@
 
 package pages
 
-import models.UserAnswers
+import models.{StateOfSeals, UserAnswers}
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
@@ -29,8 +29,8 @@ case object AreAnySealsBrokenPage extends QuestionPage[Boolean] {
   override def toString: String = "areAnySealsBroken"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    (value, userAnswers.get(CanSealsBeReadPage)) match {
-      case (Some(false), Some(true)) => super.cleanup(value, userAnswers)
-      case _                         => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
+    StateOfSeals(userAnswers).value match {
+      case Some(true) => super.cleanup(value, userAnswers)
+      case _          => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
     }
 }

@@ -18,7 +18,7 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{ArrivalId, CheckMode, Mode, NormalMode, RichCC043CType, UserAnswers}
+import models.{ArrivalId, CheckMode, Mode, NormalMode, RichCC043CType, StateOfSeals, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
@@ -94,8 +94,8 @@ class Navigation extends Navigator {
   }
 
   private def stateOfSealsNavigation(arrivalId: ArrivalId, ua: UserAnswers, mode: Mode): Option[Call] =
-    (ua.get(CanSealsBeReadPage), ua.get(AreAnySealsBrokenPage)) match {
-      case (Some(true), Some(false)) => Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
-      case _                         => Some(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+    StateOfSeals(ua).value match {
+      case Some(true) => Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
+      case _          => Some(routes.UnloadingFindingsController.onPageLoad(arrivalId))
     }
 }
