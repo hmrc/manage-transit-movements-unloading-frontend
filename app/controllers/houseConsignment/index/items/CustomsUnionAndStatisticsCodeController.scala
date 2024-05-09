@@ -28,6 +28,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel
+import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel.CustomsUnionAndStatisticsCodeViewModelProvider
 import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
 
 import javax.inject.Inject
@@ -41,42 +43,47 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
   service: ReferenceDataService,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: CustomsUnionAndStatisticsCodeView
+  view: CustomsUnionAndStatisticsCodeView,
+  viewModelProvider: CustomsUnionAndStatisticsCodeViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
-    formProvider("houseConsignment.item.customsUnionAndStatisticsCode", itemIndex.display, houseConsignmentIndex.display)
+  private val prefix = "houseConsignment.item.customsUnionAndStatisticsCode"
+
+  private def form(viewModel: CustomsUnionAndStatisticsCodeViewModel): Form[String] =
+    formProvider(prefix, viewModel.requiredError)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
+        val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
         val preparedForm = request.userAnswers.get(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex)) match {
-          case None        => form(houseConsignmentIndex, itemIndex)
-          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
         }
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+        Ok(view(preparedForm, request.userAnswers.mrn, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        form(houseConsignmentIndex, itemIndex)
+        val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+        form(viewModel)
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))
               ),
             value =>
               service.doesCUSCodeExist(value).flatMap {
                 case true => redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
                 case false =>
                   val formWithErrors =
-                    form(houseConsignmentIndex, itemIndex).withError(FormError("value", "houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists"))
+                    form(viewModel).withError(FormError("value", s"$prefix.error.not.exists"))
                   Future.successful(
-                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+                    BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))
                   )
               }
           )

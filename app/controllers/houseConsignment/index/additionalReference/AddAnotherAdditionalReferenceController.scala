@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.additionalReference
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode, NormalMode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -67,9 +67,12 @@ class AddAnotherAdditionalReferenceController @Inject() (
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
               )
             case false =>
-              // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page
-              // in add HC journey.
-              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              mode match {
+                case NormalMode =>
+                  Redirect(controllers.houseConsignment.index.items.routes.AddItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+                case CheckMode =>
+                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              }
           }
         )
   }

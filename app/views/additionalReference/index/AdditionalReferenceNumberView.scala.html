@@ -36,21 +36,20 @@
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
-
     @formHelper(action = routes.AdditionalReferenceNumberController.onSubmit(arrivalId, additionalReferenceIndex, mode), Symbol("autoComplete") -> "off") {
 
-    @inputCharacterCount(
-        field = form("value"),
-        inputCharacterCountType = InputCharacterCountViewModel(
-            heading = viewModel.heading,
-            caption = Some(messages("site.caption", mrn.toString)),
-            additionalHtml = None
-        ),
-        label = viewModel.heading,
-        maxLength = maxAdditionalReferenceNumLength,
-        rows = 2
-    )
+        @errorSummary(form.errors)
+
+        @inputCharacterCount(
+            field = form("value"),
+            inputCharacterCountType = InputCharacterCountViewModel(
+                heading = viewModel.heading,
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = None
+            ),
+            maxLength = maxAdditionalReferenceNumLength,
+            rows = 2
+        )
 
         @button(attributes = Map("id" -> "submit"))
     }

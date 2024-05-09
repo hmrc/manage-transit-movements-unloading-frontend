@@ -35,19 +35,17 @@
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
-
     @formHelper(action = controllers.routes.UnloadingCommentsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
+        @errorSummary(form.errors)
 
         @inputCharacterCount(
-          field = form("value"),
-          inputCharacterCountType = OrdinaryInputCharacterCount(
-              heading = messages("unloadingComments.heading"),
-              caption = Some(messages("site.caption", mrn.toString)),
-        ),
-          label = messages("unloadingComments.heading"),
-          maxLength = maxLength,
+            field = form("value"),
+            inputCharacterCountType = OrdinaryInputCharacterCount(
+                heading = messages("unloadingComments.heading"),
+                caption = Some(messages("site.caption", mrn.toString))
+            ),
+            maxLength = maxLength
         )
 
         @button(attributes = Map("id" -> "submit"))

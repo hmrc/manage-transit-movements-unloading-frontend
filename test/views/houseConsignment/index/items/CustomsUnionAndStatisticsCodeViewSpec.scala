@@ -17,34 +17,43 @@
 package views.houseConsignment.index.items
 
 import forms.CUSCodeFormProvider
-import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import viewModels.InputSize
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.InputSize
+import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
 
 class CustomsUnionAndStatisticsCodeViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "houseConsignment.item.customsUnionAndStatisticsCode"
+  private val viewModel = arbitrary[CustomsUnionAndStatisticsCodeViewModel].sample.value
 
-  override def form: Form[String] = new CUSCodeFormProvider()(prefix, itemIndex.display, houseConsignmentIndex.display)
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.item.customsUnionAndStatisticsCode.NormalMode",
+      "houseConsignment.item.customsUnionAndStatisticsCode.CheckMode"
+    )
+    .sample
+    .value
+
+  override def form: Form[String] = new CUSCodeFormProvider()(prefix, viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[CustomsUnionAndStatisticsCodeView]
-      .apply(form, mrn, arrivalId, NormalMode, NormalMode, houseConsignmentIndex, itemIndex)(fakeRequest, messages)
+      .apply(form, mrn, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithHint("This will be 9 characters long and include both letters and numbers.")
 

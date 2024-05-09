@@ -62,8 +62,8 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
   }
 
   private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDepartureMeansOfTransport - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDepartureMeansOfTransport)(listItem)
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDepartureMeansOfTransportHouseConsignment - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDepartureMeansOfTransportHouseConsignment)(listItem)
 
   private val viewModel = arbitrary[AddAnotherDepartureMeansOfTransportViewModel].sample.value
 

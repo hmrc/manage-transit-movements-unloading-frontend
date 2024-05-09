@@ -28,7 +28,7 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
   val invalidKey     = s"$prefix.error.invalidCharacters"
   val lengthKey      = s"$prefix.error.length"
 
-  val form = new CUSCodeFormProvider()(prefix)
+  val form = new CUSCodeFormProvider()(prefix, requiredKey)
 
   ".value" - {
 

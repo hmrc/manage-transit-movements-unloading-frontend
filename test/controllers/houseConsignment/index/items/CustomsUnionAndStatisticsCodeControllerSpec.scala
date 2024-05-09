@@ -17,26 +17,31 @@
 package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.CUSCodeFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
+import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel
+import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel.CustomsUnionAndStatisticsCodeViewModelProvider
 import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
 
 import scala.concurrent.Future
 
-class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val viewModel = arbitrary[CustomsUnionAndStatisticsCodeViewModel].sample.value
 
   private val formProvider = new CUSCodeFormProvider()
-  private val form         = formProvider("houseConsignment.item.customsUnionAndStatisticsCode", itemIndex.display, houseConsignmentIndex.display)
+  private val form         = formProvider("houseConsignment.item.customsUnionAndStatisticsCode", viewModel.requiredError)
 
   private val houseConsignmentMode = NormalMode
   private val itemMode             = NormalMode
@@ -44,17 +49,27 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
   private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private lazy val customsUnionAndStatisticsCodeRoute =
-    controllers.houseConsignment.index.items.routes.CustomsUnionAndStatisticsCodeController
+    routes.CustomsUnionAndStatisticsCodeController
       .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
       .url
+
+  private val mockViewModelProvider = mock[CustomsUnionAndStatisticsCodeViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService),
+        bind(classOf[CustomsUnionAndStatisticsCodeViewModelProvider]).toInstance(mockViewModelProvider)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   "CustomsUnionAndStatisticsCode Controller" - {
 
@@ -71,7 +86,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(form, mrn, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -90,7 +105,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -126,7 +141,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -139,7 +154,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -153,7 +168,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }
