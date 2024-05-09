@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class UnloadingCommentsPageSpec extends PageBehaviours {
 
-  "ChangesToReportPage" - {
+  "UnloadingCommentsPage" - {
 
     beRetrievable[String](UnloadingCommentsPage)
 

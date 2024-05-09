@@ -18,6 +18,6 @@ package models.messages
 
 object RemarksNonConform {
 
-  val unloadingRemarkLength  = 512
-  val resultsOfControlLength = 9
+  val unloadingCommentsLength = 512
+  val resultsOfControlLength  = 9
 }

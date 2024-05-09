@@ -16,12 +16,24 @@
 
 package pages
 
+import models.UserAnswers
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
-case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
+import scala.util.Try
+
+case object AddTransitUnloadingPermissionDiscrepanciesYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
-  override def toString: String = "addUnloadingCommentsYesNo"
+  override def toString: String = "addTransitUnloadingPermissionDiscrepanciesYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(AddCommentsYesNoPage)
+          .flatMap(_.remove(UnloadingCommentsPage))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }
