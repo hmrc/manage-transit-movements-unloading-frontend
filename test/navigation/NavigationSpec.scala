@@ -225,7 +225,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       }
 
-      "must go from a page that doesn't exist in the route map to session expired" in {
+      "must go from a page that doesn't exist in the route map to technical difficulties" in {
 
         case object UnknownPage extends Page
 
@@ -233,7 +233,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           answers =>
             navigator
               .nextPage(UnknownPage, mode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
+              .mustBe(routes.ErrorController.technicalDifficulties())
         }
       }
     }
@@ -258,32 +258,85 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
-      "must go from can seals be read page to are any seals broken page" - {
-        val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
+      "must go from can seals be read page" - {
+        "when state of seals is 1" - {
+          "and discrepancies yes/no page is answered" - {
+            "to check your answers page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(CanSealsBeReadPage, true)
+                .setValue(AreAnySealsBrokenPage, false)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-        navigator
-          .nextPage(CanSealsBeReadPage, mode, userAnswers)
-          .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode))
+              navigator
+                .nextPage(CanSealsBeReadPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
+          }
+
+          "and discrepancies yes/no page is unanswered" - {
+            "to discrepancies yes/no page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(CanSealsBeReadPage, true)
+                .setValue(AreAnySealsBrokenPage, false)
+
+              navigator
+                .nextPage(CanSealsBeReadPage, mode, userAnswers)
+                .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
+            }
+          }
+        }
+
+        "when state of seals is 0" - {
+          "must go to check your answers page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(CanSealsBeReadPage, false)
+              .setValue(AreAnySealsBrokenPage, false)
+
+            navigator
+              .nextPage(CanSealsBeReadPage, mode, userAnswers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          }
+        }
       }
 
       "must go from are any seals broken page" - {
-        "to add transit unloading permission discrepancies yes/no page when state of seals = 1" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(CanSealsBeReadPage, true)
-            .setValue(AreAnySealsBrokenPage, false)
+        "when state of seals is 1" - {
+          "and discrepancies yes/no page is answered" - {
+            "to check your answers page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(CanSealsBeReadPage, true)
+                .setValue(AreAnySealsBrokenPage, false)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-          navigator
-            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
+              navigator
+                .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
+          }
+
+          "and discrepancies yes/no page is unanswered" - {
+            "to discrepancies yes/no page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(CanSealsBeReadPage, true)
+                .setValue(AreAnySealsBrokenPage, false)
+
+              navigator
+                .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+                .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
+            }
+          }
         }
 
-        "to unloading findings page when state of seals = 0" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AreAnySealsBrokenPage, true)
+        "when state of seals is 0" - {
+          "must go to check your answers page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(CanSealsBeReadPage, false)
+              .setValue(AreAnySealsBrokenPage, false)
 
-          navigator
-            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+            navigator
+              .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          }
         }
       }
 

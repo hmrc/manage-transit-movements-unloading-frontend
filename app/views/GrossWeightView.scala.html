@@ -34,9 +34,9 @@
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @formHelper(action = controllers.routes.GrossWeightController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
-        @formHelper(action = controllers.routes.GrossWeightController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),

@@ -16,12 +16,21 @@
 
 package pages
 
+import models.{StateOfSeals, UserAnswers}
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object CanSealsBeReadPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "canSealsBeRead"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    StateOfSeals(userAnswers).value match {
+      case Some(true) => super.cleanup(value, userAnswers)
+      case _          => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
+    }
 }
