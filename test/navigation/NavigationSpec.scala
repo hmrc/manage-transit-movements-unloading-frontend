@@ -294,7 +294,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(CanSealsBeReadPage, mode, userAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
           }
         }
       }
@@ -335,7 +335,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
           }
         }
       }

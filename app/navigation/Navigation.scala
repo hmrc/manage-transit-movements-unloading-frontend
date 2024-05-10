@@ -64,7 +64,7 @@ class Navigation extends Navigator {
             Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, CheckMode))
         }
       case _ =>
-        Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     }
 
   private def addCommentsNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
