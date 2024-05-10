@@ -45,7 +45,7 @@ class UnloadingFindingsController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       Redirect(
         controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)
       )
