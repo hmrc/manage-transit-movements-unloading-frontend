@@ -44,15 +44,15 @@ class GrossWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(houseConsignmentIndex: Index) =
-    formProvider("houseConsignment.index.grossWeight", grossWeightDecimalPlaces, grossWeightIntegerLength, houseConsignmentIndex.display)
+  private def form(houseConsignmentIndex: Index, mode: Mode) =
+    formProvider(s"houseConsignment.index.grossWeight.$mode", grossWeightDecimalPlaces, grossWeightIntegerLength, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(GrossWeightPage(houseConsignmentIndex)) match {
-          case None        => form(houseConsignmentIndex)
-          case Some(value) => form(houseConsignmentIndex).fill(value)
+          case None        => form(houseConsignmentIndex, mode)
+          case Some(value) => form(houseConsignmentIndex, mode).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
@@ -63,7 +63,7 @@ class GrossWeightController @Inject() (
       .requireData(arrivalId)
       .async {
         implicit request =>
-          form(houseConsignmentIndex)
+          form(houseConsignmentIndex, mode)
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))),
