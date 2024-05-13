@@ -27,5 +27,29 @@ class AreAnySealsBrokenPageSpec extends PageBehaviours {
     beSettable[Boolean](AreAnySealsBrokenPage)
 
     beRemovable[Boolean](AreAnySealsBrokenPage)
+
+    "cleanup" - {
+      "must remove answer to AddTransitUnloadingPermissionDiscrepanciesYesNoPage when state of seals = 0" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(CanSealsBeReadPage, true)
+          .setValue(AreAnySealsBrokenPage, false)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+        val result = userAnswers.setValue(AreAnySealsBrokenPage, true)
+
+        result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) must not be defined
+      }
+
+      "must keep answer to AddTransitUnloadingPermissionDiscrepanciesYesNoPage when state of seals = 1" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(CanSealsBeReadPage, true)
+          .setValue(AreAnySealsBrokenPage, true)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+        val result = userAnswers.setValue(AreAnySealsBrokenPage, false)
+
+        result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) must be(defined)
+      }
+    }
   }
 }

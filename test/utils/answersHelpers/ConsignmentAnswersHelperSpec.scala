@@ -191,7 +191,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           result.value.value mustBe "999.99"
           val action = result.actions.value.items.head
           action.content.value mustBe "Change"
-          action.href mustBe controllers.routes.GrossWeightController.onPageLoad(arrivalId, CheckMode).url
+          action.href mustBe controllers.routes.GrossWeightController.onPageLoad(arrivalId).url
           action.visuallyHiddenText.value mustBe "gross weight"
           action.id mustBe "change-gross-mass"
         }

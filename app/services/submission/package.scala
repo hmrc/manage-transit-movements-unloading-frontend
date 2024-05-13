@@ -57,6 +57,9 @@ package object submission {
   implicit def boolToFlag(x: Boolean): Flag =
     if (x) Number1 else Number0
 
+  implicit def optionalBoolToOptionalFlag(x: Option[Boolean]): Option[Flag] =
+    x.map(boolToFlag)
+
   implicit def unloadingTypeToFlag(x: UnloadingType): Flag =
     x match {
       case UnloadingType.Fully     => Number1

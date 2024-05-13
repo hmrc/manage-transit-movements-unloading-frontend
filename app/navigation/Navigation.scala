@@ -18,7 +18,7 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, RichCC043CType, StateOfSeals, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
@@ -26,75 +26,83 @@ import play.api.mvc.Call
 class Navigation extends Navigator {
 
   override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-
-    case UnloadingTypePage => ua => Some(routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode))
-    case DateGoodsUnloadedPage =>
-      ua =>
-        if (ua.ie043Data.sealsExist) {
-          Some(routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
-        } else {
-          Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
-        }
-    case CanSealsBeReadPage => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
-    case AreAnySealsBrokenPage =>
-      ua =>
-        (ua.get(CanSealsBeReadPage), ua.get(AreAnySealsBrokenPage)) match {
-          case (Some(true), Some(false)) => Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
-          case _                         => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-        }
-    case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
-      ua =>
-        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
-          case true  => routes.UnloadingFindingsController.onPageLoad(ua.id)
-          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
-        }
-    case AddCommentsYesNoPage =>
-      ua =>
-        ua.get(AddCommentsYesNoPage) map {
-          case true  => routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
-        }
-    case UnloadingCommentsPage =>
-      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
-    case DoYouHaveAnythingElseToReportYesNoPage =>
-      ua =>
-        ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
-          case true  => routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode)
-          case false => routes.CheckYourAnswersController.onPageLoad(ua.id)
-        }
-    case OtherThingsToReportPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case _ =>
-      _ => Some(routes.SessionExpiredController.onPageLoad())
-
+    case UnloadingTypePage                                   => ua => Some(routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode))
+    case DateGoodsUnloadedPage                               => ua => dateGoodsUnloadedNavigation(ua)
+    case CanSealsBeReadPage                                  => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
+    case AreAnySealsBrokenPage                               => ua => stateOfSealsNormalNavigation(ua)
+    case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, NormalMode)
+    case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, NormalMode)
+    case UnloadingCommentsPage                               => ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
+    case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
+    case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case UnloadingTypePage     => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case DateGoodsUnloadedPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case CanSealsBeReadPage    => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case AreAnySealsBrokenPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
-      ua =>
-        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
-          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-        }
-    case AddCommentsYesNoPage =>
-      ua =>
-        ua.get(AddCommentsYesNoPage) map {
-          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-        }
-    case UnloadingCommentsPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case DoYouHaveAnythingElseToReportYesNoPage =>
-      ua =>
-        ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
-          case true  => controllers.routes.OtherThingsToReportController.onPageLoad(ua.id, CheckMode)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-        }
-    case OtherThingsToReportPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case GrossWeightPage         => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case _                       => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
-
+    case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsCheckNavigation(ua)
+    case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, CheckMode)
+    case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, CheckMode)
+    case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
+    case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
+
+  private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
+    StateOfSeals(ua).value match {
+      case Some(true) =>
+        Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+      case _ =>
+        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    }
+
+  private def stateOfSealsCheckNavigation(ua: UserAnswers): Option[Call] =
+    StateOfSeals(ua).value match {
+      case Some(true) =>
+        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
+          case Some(_) =>
+            Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+          case None =>
+            Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, CheckMode))
+        }
+      case _ =>
+        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    }
+
+  private def addCommentsNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    ua.get(AddCommentsYesNoPage) map {
+      case true =>
+        routes.UnloadingCommentsController.onPageLoad(ua.id, mode)
+      case false =>
+        mode match {
+          case NormalMode =>
+            routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, mode)
+          case CheckMode =>
+            routes.CheckYourAnswersController.onPageLoad(ua.id)
+        }
+    }
+
+  private def anythingElseToReportNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
+      case true  => routes.OtherThingsToReportController.onPageLoad(ua.id, mode)
+      case false => routes.CheckYourAnswersController.onPageLoad(ua.id)
+    }
+
+  private def anyDiscrepanciesNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
+      case true =>
+        routes.UnloadingFindingsController.onPageLoad(ua.id)
+      case false =>
+        mode match {
+          case NormalMode =>
+            routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, mode)
+          case CheckMode =>
+            routes.CheckYourAnswersController.onPageLoad(ua.id)
+        }
+    }
+
+  private def dateGoodsUnloadedNavigation(ua: UserAnswers): Option[Call] =
+    if (ua.ie043Data.sealsExist) {
+      Some(routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
+    } else {
+      Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+    }
 }

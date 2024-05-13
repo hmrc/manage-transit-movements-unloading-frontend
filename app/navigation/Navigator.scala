@@ -44,14 +44,14 @@ trait Navigator extends Logging {
         normalRoutes.lift(page) match {
           case None =>
             logger.error(s"route for $page is missing in NormalMode")
-            ??? //TODO: Change with a better default
+            controllers.routes.ErrorController.technicalDifficulties()
           case Some(call) => handleCall(userAnswers, call)
         }
       case CheckMode =>
         checkRoutes.lift(page) match {
           case None =>
             logger.error(s"route for $page is missing in CheckMode")
-            ??? //TODO: Change with a better default
+            controllers.routes.ErrorController.technicalDifficulties()
           case Some(call) => handleCall(userAnswers, call)
         }
     }
