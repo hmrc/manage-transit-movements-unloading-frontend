@@ -3,7 +3,6 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
 
 $govuk-include-default-font-face: false;
 @import "lib/govuk-frontend/dist/govuk/all";
-@import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 
 @import "partials/declaration_summary";
