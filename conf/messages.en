@@ -1150,14 +1150,20 @@ houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to 
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
 
-houseConsignment.index.grossWeight.title = What is the new gross weight of house consignment {0}?
-houseConsignment.index.grossWeight.heading = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.NormalMode.title = What is the gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.CheckMode.title = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.NormalMode.heading = What is the gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.CheckMode.heading = What is the new gross weight of house consignment {0}?
 houseConsignment.index.grossWeight.paragraph = This is the combined weight of the house consignment’s goods and packaging.
 houseConsignment.index.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
-houseConsignment.index.grossWeight.error.required = Enter the new gross weight of house consignment {0}
-houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
-houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+houseConsignment.index.grossWeight.NormalMode.error.required = Enter the gross weight of house consignment {0}
+houseConsignment.index.grossWeight.CheckMode.error.required = Enter the new gross weight of house consignment {0}
+houseConsignment.index.grossWeight.NormalMode.error.invalidValue = The gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+houseConsignment.index.grossWeight.CheckMode.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+houseConsignment.index.grossWeight.NormalMode.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.index.grossWeight.CheckMode.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.index.grossWeight.NormalMode.error.invalidFormat = The gross weight must only include 6 decimal places or less
+houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?

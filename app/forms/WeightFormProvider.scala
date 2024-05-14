@@ -17,6 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
+import models.Mode
 import play.api.data.Form
 
 import javax.inject.Inject
