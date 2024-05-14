@@ -2,6 +2,7 @@ $govuk-assets-path: "/manage-transit-movements/unloading/assets/lib/govuk-fronte
 $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend/hmrc/assets/";
 
 $govuk-include-default-font-face: false;
+@import "lib/govuk-frontend/dist/govuk/all";
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 
