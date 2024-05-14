@@ -19,6 +19,7 @@ package views.behaviours
 import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import play.twirl.api.TwirlHelperImports._
@@ -64,8 +65,8 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   }
 
   "must render service name link in header" in {
-    val link = getElementByClass(doc, "hmrc-header__service-name--linked")
-    assertElementContainsText(link, "Manage your transit movements")
+    val links: Elements = getElementsByClass(doc, "govuk-header__link")
+    val link = links.toList.filter(_.text().contains("Manage your transit movements")).head
     assertElementContainsHref(link, "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do")
   }
 
@@ -93,7 +94,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
     assertElementContainsText(link, "Is this page not working properly? (opens in new tab)")
     getElementHref(link) must include(
-      "http://localhost:9250/contact/report-technical-problem?newTab=true&service=CTCTraders&referrerUrl="
+      "http://localhost:9250/contact/report-technical-problem?newTab=true&service=CTCTraders"
     )
   }
 
