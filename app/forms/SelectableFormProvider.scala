@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import models.reference.Selectable
-import models.{CheckMode, Mode, NormalMode, SelectableList}
+import models.{Mode, SelectableList}
 import play.api.data.Form
 import play.api.i18n.Messages
 
@@ -28,15 +28,8 @@ class SelectableFormProvider @Inject() extends Mappings {
 
   def apply[T <: Selectable](mode: Mode, prefix: String, selectableList: SelectableList[T], args: Any*)(implicit
     messages: Messages
-  ): Form[T] = {
-
-    val prefixMode = mode match {
-      case NormalMode => prefix
-      case CheckMode  => s"$prefix.check"
-    }
-
+  ): Form[T] =
     Form(
-      "value" -> selectable[T](selectableList, messages(s"$prefixMode.error.required", args: _*), args)
+      "value" -> selectable[T](selectableList, messages(s"$prefix.$mode.error.required", args: _*), args)
     )
-  }
 }
