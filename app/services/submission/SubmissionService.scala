@@ -66,12 +66,15 @@ class SubmissionService @Inject() (
           ),
           UnloadingRemark = unloadingRemark,
           Consignment = consignment,
-          attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+          attributes = attributes
         )
       }
 
     userAnswers.data.as[CC044CType]
   }
+
+  def attributes: Map[String, DataRecord[_]] =
+    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
