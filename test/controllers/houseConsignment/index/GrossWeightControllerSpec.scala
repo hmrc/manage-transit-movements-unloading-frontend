@@ -37,8 +37,8 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val decimalPlace   = notTooBigPositiveNumbers.sample.value
   private val characterCount = notTooBigPositiveNumbers.sample.value
   private val formProvider   = new WeightFormProvider()
-  private val form           = formProvider("houseConsignment.index.grossWeight", decimalPlace, characterCount, houseConsignmentIndex.display)
   private val mode           = NormalMode
+  private val form           = formProvider(s"houseConsignment.index.grossWeight.$mode", decimalPlace, characterCount, houseConsignmentIndex.display)
   private val validAnswer    = BigDecimal(123.45)
 
   private lazy val grossWeightAmountRoute =

@@ -81,8 +81,6 @@ POST       /:arrivalId/add-comments                                             
 GET        /:arrivalId/change-add-comments                                                                           controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-add-comments                                                                           controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/gross-weight                                                                                  controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/gross-weight                                                                                  controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-gross-weight                                                                           controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-gross-weight                                                                           controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 

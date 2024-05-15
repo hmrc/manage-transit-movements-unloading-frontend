@@ -20,7 +20,7 @@ import config.PhaseConfig
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
-import models.{CheckMode, Link, NormalMode, Phase, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Link, NormalMode, Phase, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
@@ -148,10 +148,10 @@ class ConsignmentAnswersHelper(
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
-    call = Some(controllers.routes.GrossWeightController.onPageLoad(userAnswers.id, CheckMode))
+    call = Some(controllers.routes.GrossWeightController.onPageLoad(userAnswers.id))
   )
 
   def inlandModeOfTransportRow: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](

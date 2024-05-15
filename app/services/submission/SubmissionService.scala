@@ -18,7 +18,7 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
-import models.{ArrivalId, DocType, EoriNumber, Index, UnloadingType, UserAnswers}
+import models.{ArrivalId, DocType, EoriNumber, Index, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -66,12 +66,15 @@ class SubmissionService @Inject() (
           ),
           UnloadingRemark = unloadingRemark,
           Consignment = consignment,
-          attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+          attributes = attributes
         )
       }
 
     userAnswers.data.as[CC044CType]
   }
+
+  def attributes: Map[String, DataRecord[_]] =
+    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
@@ -101,17 +104,11 @@ class SubmissionService @Inject() (
     for {
       unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
       unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
-      canSealsBeRead      <- CanSealsBeReadPage.path.readNullable[Boolean]
-      areAnySealsBroken   <- AreAnySealsBrokenPage.path.readNullable[Boolean]
       unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
-      stateOfSeals = (canSealsBeRead, areAnySealsBroken) match {
-        case (Some(true), Some(false)) => Some(Number1)
-        case (Some(_), Some(_))        => Some(Number0)
-        case _                         => None
-      }
+      stateOfSeals        <- __.read[StateOfSeals].map(_.value)
       conform <- stateOfSeals match {
-        case Some(Number0) => Number0: Reads[Flag]
-        case _             => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
+        case Some(false) => false: Reads[Boolean]
+        case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
       }
     } yield UnloadingRemarkType(
       conform = conform,
