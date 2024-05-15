@@ -188,7 +188,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val result = helper.grossMassRow.value
 
           result.key.value mustBe "Gross weight"
-          result.value.value mustBe "999.99"
+          result.value.value mustBe "999.99kg"
           val action = result.actions.value.items.head
           action.content.value mustBe "Change"
           action.href mustBe controllers.routes.GrossWeightController.onPageLoad(arrivalId).url

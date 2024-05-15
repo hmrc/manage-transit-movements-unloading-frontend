@@ -135,7 +135,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
     call = Some(controllers.routes.GrossWeightController.onPageLoad(userAnswers.id))

@@ -43,7 +43,7 @@ class HouseConsignmentAnswersHelper(
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage(houseConsignmentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
     call = Some(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode))
