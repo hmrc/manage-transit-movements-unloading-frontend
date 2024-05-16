@@ -44,7 +44,7 @@ class EnumerableFormProviderSpec extends OptionFieldBehaviours {
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = s"$prefix.error.required"
+    val requiredKey = s"$prefix.NormalMode.error.required"
 
     behave like optionsField[FakeEnum](
       form,

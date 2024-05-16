@@ -149,7 +149,7 @@ departureMeansOfTransport.country.CheckMode.heading = What country is the new de
 departureMeansOfTransport.country.checkYourAnswersLabel = What country is the new departure means of transport registered to?
 departureMeansOfTransport.country.NormalMode.error.required = Select the country the vehicle is registered to
 departureMeansOfTransport.country.CheckMode.error.required = Select the country the new departure means of transport is registered to
-departureMeansOfTransport.country.placeHolder = Select a country
+departureMeansOfTransport.country.placeholder = Select a country
 departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
 
 departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
@@ -157,8 +157,8 @@ departureMeansOfTransport.identification.CheckMode.title = Which identification 
 departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
 departureMeansOfTransport.identification.CheckMode.heading = Which identification do you want to use for the new departure means of transport?
 departureMeansOfTransport.identification.title = Which identification do you want to use for the new departure means of transport?
-departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the departure means of transport
-departureMeansOfTransport.identification.error.required = Select which identification you want to use for the new departure means of transport
+departureMeansOfTransport.identification.CheckMode.error.required = Select which identification you want to use for the departure means of transport
+departureMeansOfTransport.identification.NormalMode.error.required = Select which identification you want to use for the new departure means of transport
 departureMeansOfTransport.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 departureMeansOfTransport.addIdentificationYesNo.title = Do you want to add the type of identification for the departure means of transport?
@@ -694,9 +694,9 @@ houseConsignment.index.item.packageType.NormalMode.heading = What type of packag
 houseConsignment.index.item.packageType.CheckMode.heading = What is the new package type for item {0} in house consignment {1}?
 houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
 houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
-houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.NormalMode.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.CheckMode.error.required = Enter the new package type for item {0} in house consignment {1}
 houseConsignment.index.item.packageType.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
-houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
 houseConsignment.index.item.packageType.placeholder = Select a package type
 
 commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
@@ -769,8 +769,8 @@ transport.equipment.selectItems.title = Which item does this transport equipment
 transport.equipment.selectItems.heading = Which item does this transport equipment apply to?
 transport.equipment.selectItems.paragraph = You can only select from the items added when making the declaration.
 transport.equipment.selectItems.label = Search your {0} items.
-transport.equipment.selectItems.error.required = Select which item this transport equipment applies to
-transport.equipment.selectItems.check.error.required = Select which item this transport equipment applies to
+transport.equipment.selectItems.NormalMode.error.required = Select which item this transport equipment applies to
+transport.equipment.selectItems.CheckMode.error.required = Select which item this transport equipment applies to
 transport.equipment.selectItems.placeholder = Select an item
 
 transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
@@ -891,8 +891,8 @@ houseConsignment.index.items.additionalReference.additionalReferenceType.NormalM
 houseConsignment.index.items.additionalReference.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.title = What is the new additional reference type for item {1} in house consignment {0}?
 houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.heading = What is the new additional reference type for item {1} in house consignment {0}?
-houseConsignment.index.items.additionalReference.additionalReferenceType.error.required = Select the type of additional reference
-houseConsignment.index.items.additionalReference.additionalReferenceType.check.error.required = Select the new additional reference type for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.additionalReferenceType.NormalMode.error.required = Select the type of additional reference
+houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.error.required = Select the new additional reference type for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 houseConsignment.index.items.additionalReference.additionalReferenceType.placeholder = Select an additional reference
 
@@ -921,8 +921,8 @@ additionalReference.index.additionalReferenceType.NormalMode.title = What type o
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
 additionalReference.index.additionalReferenceType.CheckMode.heading = What is the new additional reference type?
-additionalReference.index.additionalReferenceType.error.required = Select the type of additional reference
-additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
+additionalReference.index.additionalReferenceType.NormalMode.error.required = Select the type of additional reference
+additionalReference.index.additionalReferenceType.CheckMode.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
 
@@ -946,8 +946,8 @@ document.type.NormalMode.heading = What type of document do you want to add?
 document.type.CheckMode.heading = What is the new document type?
 document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
-document.type.error.required = Select the type of document you want to add
-document.type.check.error.required = Select the new document type
+document.type.NormalMode.error.required = Select the type of document you want to add
+document.type.CheckMode.error.required = Select the new document type
 document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
 houseConsignment.addRemove = Add or remove house consignment
@@ -960,8 +960,8 @@ houseConsignment.index.items.document.type.NormalMode.heading = What type of doc
 houseConsignment.index.items.document.type.CheckMode.heading = What is the new document type for item {1} in house consignment {0}?
 houseConsignment.index.items.document.type.hint = Enter the document name or code.
 houseConsignment.index.items.document.type.placeholder = Select a document type
-houseConsignment.index.items.document.type.error.required = Select the type of document you want to add
-houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
+houseConsignment.index.items.document.type.NormalMode.error.required = Select the type of document you want to add
+houseConsignment.index.items.document.type.CheckMode.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
 houseConsignment.index.document.type.NormalMode.title = What type of document do you want to add?
@@ -970,8 +970,8 @@ houseConsignment.index.document.type.NormalMode.heading = What type of document 
 houseConsignment.index.document.type.CheckMode.heading = What is the new document type for house consignment {0}?
 houseConsignment.index.document.type.hint = Enter the document name or code.
 houseConsignment.index.document.type.placeholder = Select a document type
-houseConsignment.index.document.type.error.required = Select the type of document you want to add
-houseConsignment.index.document.type.check.error.required = Select the new document type for house consignment {0}
+houseConsignment.index.document.type.NormalMode.error.required = Select the type of document you want to add
+houseConsignment.index.document.type.CheckMode.error.required = Select the new document type for house consignment {0}
 houseConsignment.index.document.type.maxLimitForType.label = You cannot add any more documents of this type. To add another, you need to remove one first
 
 houseConsignment.item.addDocumentYesNo.title = Do you want to add a document for the item?
@@ -1183,8 +1183,8 @@ houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.ti
 houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.title = What is the new additional reference type in house consignment {0}?
 houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.heading = What is the new additional reference type in house consignment {0}?
-houseConsignment.index.additionalReference.additionalReferenceType.error.required = Select the type of additional reference
-houseConsignment.index.additionalReference.additionalReferenceType.check.error.required = Select the type of additional reference in house consignment {0}
+houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.error.required = Select the type of additional reference
+houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.error.required = Select the type of additional reference in house consignment {0}
 houseConsignment.index.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 houseConsignment.index.additionalReference.additionalReferenceType.placeholder = Select an additional reference
 
@@ -1217,8 +1217,8 @@ houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What 
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.heading = What country is the new vehicle registered to in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.nationality.hintText = Enter the country or code, like Austria or AT.
-houseConsignment.index.departureMeansOfTransport.country.error.required = Select the country the vehicle is registered to
-houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}
+houseConsignment.index.departureMeansOfTransport.country.NormalMode.error.required = Select the country the vehicle is registered to
+houseConsignment.index.departureMeansOfTransport.country.CheckMode.error.required = Select the country the new vehicle is registered to in house consignment {0}
 
 houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport for house consignment {1}
 houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.title = You have added 1 departure means of transport for house consignment {1}
@@ -1268,8 +1268,8 @@ houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title 
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.heading = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.title = Which identification do you want to use for the new departure means of transport?
-houseConsignment.index.departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the new departure means of transport in house consignment {0}
-houseConsignment.index.departureMeansOfTransport.identification.error.required = Select which identification you want to use for the departure means of transport
+houseConsignment.index.departureMeansOfTransport.identification.NormalMode.error.required = Select which identification you want to use for the departure means of transport
+houseConsignment.index.departureMeansOfTransport.identification.CheckMode.error.required = Select which identification you want to use for the new departure means of transport in house consignment {0}
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
