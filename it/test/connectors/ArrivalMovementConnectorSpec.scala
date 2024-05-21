@@ -98,7 +98,7 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
             .willReturn(ok(xml.toString()))
         )
 
-        val result = connector.getUnloadingPermissionXml(arrivalId, messageId).futureValue
+        val result = connector.getMessage(arrivalId, messageId).futureValue
 
         result mustBe xml
       }

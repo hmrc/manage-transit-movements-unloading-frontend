@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generated._
 import generators.Generators
-import models.P5.ArrivalMessageType.{ArrivalNotification, RejectionFromOfficeOfDestination, UnloadingPermission}
+import models.P5.ArrivalMessageType._
 import models.P5._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -45,29 +45,9 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
   private val unloadingPermission2 = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path2/url")
   private val unloadingPermission3 = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingPermission, "path3/url")
   private val arrivalNotification  = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path4/url")
+  private val unloadingRemarks1    = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingRemarks, "path5/url")
 
   "UnloadingPermissionMessageService" - {
-
-    "getUnloadingPermissionMessage" - {
-
-      "must return latest unloading permission" in {
-
-        val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
-
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-
-        service.getUnloadingPermissionMessage(arrivalId).futureValue mustBe Some(unloadingPermission1)
-      }
-
-      "must return none when there is no unloading permission" in {
-
-        val messageMetaData = Messages(List(arrivalNotification))
-
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-
-        service.getUnloadingPermissionMessage(arrivalId).futureValue mustBe None
-      }
-    }
 
     "getMessageHead" - {
 
@@ -86,7 +66,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
       }
     }
 
-    "getUnloadingPermissionXml" - {
+    "getIE043" - {
 
       "must return latest unloading permission message" in {
 
@@ -372,9 +352,9 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           </ncts:CC043C>
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-        when(mockConnector.getUnloadingPermissionXml(arrivalId, unloadingPermission1.id)).thenReturn(Future.successful(message))
+        when(mockConnector.getMessage(arrivalId, unloadingPermission1.id)).thenReturn(Future.successful(message))
 
-        service.getUnloadingPermissionXml(arrivalId).futureValue.value mustBe a[CC043CType]
+        service.getIE043(arrivalId).futureValue.value mustBe a[CC043CType]
       }
 
       "must return none when there is no unloading permission message" in {
@@ -383,7 +363,112 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-        service.getUnloadingPermissionXml(arrivalId).futureValue mustBe None
+        service.getIE043(arrivalId).futureValue mustBe None
+      }
+    }
+
+    "getIE044" - {
+
+      "must return latest unloading remarks message" in {
+
+        val messageMetaData = Messages(List(unloadingRemarks1))
+
+        val message: Node =
+          <ncts:CC044C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+            <messageSender>token</messageSender>
+            <messageRecipient>NTA.GB</messageRecipient>
+            <preparationDateAndTime>2007-10-26T07:36:28</preparationDateAndTime>
+            <messageIdentification>6Onxa3En</messageIdentification>
+            <messageType>CC044C</messageType>
+            <TransitOperation>
+              <MRN>38VYQTYFU3T0KUTUM3</MRN>
+            </TransitOperation>
+            <CustomsOfficeOfDestinationActual>
+              <referenceNumber>GB000060</referenceNumber>
+            </CustomsOfficeOfDestinationActual>
+            <TraderAtDestination>
+              <identificationNumber>G35dSwQ</identificationNumber>
+            </TraderAtDestination>
+            <UnloadingRemark>
+              <conform>0</conform>
+              <unloadingCompletion>1</unloadingCompletion>
+              <unloadingDate>2018-11-01</unloadingDate>
+            </UnloadingRemark>
+            <Consignment>
+              <grossMass>1000</grossMass>
+              <TransportEquipment>
+                <sequenceNumber>1</sequenceNumber>
+                <Seal>
+                  <sequenceNumber>1</sequenceNumber>
+                  <identifier>id1</identifier>
+                </Seal>
+                <GoodsReference>
+                  <sequenceNumber>1</sequenceNumber>
+                  <declarationGoodsItemNumber>100</declarationGoodsItemNumber>
+                </GoodsReference>
+              </TransportEquipment>
+              <DepartureTransportMeans>
+                <sequenceNumber>1</sequenceNumber>
+              </DepartureTransportMeans>
+              <SupportingDocument>
+                <sequenceNumber>1</sequenceNumber>
+              </SupportingDocument>
+              <TransportDocument>
+                <sequenceNumber>1</sequenceNumber>
+              </TransportDocument>
+              <AdditionalReference>
+                <sequenceNumber>1</sequenceNumber>
+              </AdditionalReference>
+              <HouseConsignment>
+                <sequenceNumber>1</sequenceNumber>
+                <grossMass>3000</grossMass>
+                <DepartureTransportMeans>
+                  <sequenceNumber>1</sequenceNumber>
+                </DepartureTransportMeans>
+                <SupportingDocument>
+                  <sequenceNumber>1</sequenceNumber>
+                </SupportingDocument>
+                <TransportDocument>
+                  <sequenceNumber>1</sequenceNumber>
+                </TransportDocument>
+                <AdditionalReference>
+                  <sequenceNumber>1</sequenceNumber>
+                </AdditionalReference>
+                <ConsignmentItem>
+                  <goodsItemNumber>1</goodsItemNumber>
+                  <declarationGoodsItemNumber>100</declarationGoodsItemNumber>
+                  <Packaging>
+                    <sequenceNumber>1</sequenceNumber>
+                  </Packaging>
+                  <SupportingDocument>
+                    <sequenceNumber>1</sequenceNumber>
+                  </SupportingDocument>
+                  <TransportDocument>
+                    <sequenceNumber>1</sequenceNumber>
+                    <type>ABCD</type>
+                    <referenceNumber>A1</referenceNumber>
+                  </TransportDocument>
+                  <AdditionalReference>
+                    <sequenceNumber>1</sequenceNumber>
+                  </AdditionalReference>
+                </ConsignmentItem>
+              </HouseConsignment>
+            </Consignment>
+          </ncts:CC044C>
+
+        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+        when(mockConnector.getMessage(arrivalId, unloadingRemarks1.id)).thenReturn(Future.successful(message))
+
+        service.getIE044(arrivalId).futureValue.value mustBe a[CC044CType]
+      }
+
+      "must return none when there is no unloading remarks message" in {
+
+        val messageMetaData = Messages(List(arrivalNotification))
+
+        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+        service.getIE044(arrivalId).futureValue mustBe None
       }
     }
   }

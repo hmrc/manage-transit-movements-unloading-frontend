@@ -18,10 +18,11 @@ package services.P5
 
 import cats.data.OptionT
 import connectors.ArrivalMovementConnector
-import generated.CC043CType
+import generated._
 import models.ArrivalId
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.MessageMetaData
+import models.P5.ArrivalMessageType._
+import models.P5.{ArrivalMessageType, MessageMetaData}
+import scalaxb.XMLFormat
 import scalaxb.`package`.fromXML
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,33 +31,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: ArrivalMovementConnector) {
 
-  def getUnloadingPermissionMessage(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
+  private def getMessageMetaData(
+    arrivalId: ArrivalId
+  )(
+    f: MessageMetaData => Boolean
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
     arrivalMovementConnector
       .getMessageMetaData(arrivalId)
       .map(
         _.messages
-          .filter(_.messageType == UnloadingPermission)
+          .filter(f)
           .sortBy(_.received)
           .reverse
           .headOption
       )
+
+  private def getMessageMetaData(
+    arrivalId: ArrivalId,
+    messageType: ArrivalMessageType
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
+    getMessageMetaData(arrivalId) {
+      _.messageType == messageType
+    }
 
   def getMessageHead(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
-    arrivalMovementConnector
-      .getMessageMetaData(arrivalId)
-      .map(
-        _.messages
-          .sortBy(_.received)
-          .reverse
-          .headOption
-      )
+    getMessageMetaData(arrivalId) {
+      _ => true
+    }
 
-  def getUnloadingPermissionXml(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC043CType]] =
+  def getIE043(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC043CType]] =
+    getMessage[CC043CType](arrivalId, UnloadingPermission)
+
+  def getIE044(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC044CType]] =
+    getMessage[CC044CType](arrivalId, UnloadingRemarks)
+
+  private def getMessage[T](
+    arrivalId: ArrivalId,
+    messageType: ArrivalMessageType
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier, format: XMLFormat[T]): Future[Option[T]] =
     (
       for {
-        unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
-        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermissionXml(arrivalId, unloadingPermissionMessage.id))
-      } yield fromXML[CC043CType](unloadingPermission)
+        messageMetaData <- OptionT(getMessageMetaData(arrivalId, messageType))
+        message         <- OptionT.liftF(arrivalMovementConnector.getMessage(arrivalId, messageMetaData.id).map(fromXML[T](_)))
+      } yield message
     ).value
-
 }

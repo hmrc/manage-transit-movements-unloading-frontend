@@ -47,10 +47,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     reset(mockUnloadingPermissionMessageService)
 
     when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-      .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
-
-    when(mockUnloadingPermissionMessageService.getUnloadingPermissionMessage(any())(any(), any()))
-      .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), ArrivalMessageType.UnloadingPermission, "foo/bar"))))
+      .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, "foo/bar"))))
 
     when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
   }
