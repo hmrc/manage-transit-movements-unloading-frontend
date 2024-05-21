@@ -17,6 +17,7 @@
 package controllers
 
 import cats.data.OptionT
+import controllers.actions.IdentifierAction
 import logging.Logging
 import models.{ArrivalId, UnloadingRemarksSentViewModel}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,6 +33,7 @@ import scala.concurrent.ExecutionContext
 
 class UnloadingRemarksSentController @Inject() (
   override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
   referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   sessionRepository: SessionRepository,
@@ -42,7 +44,7 @@ class UnloadingRemarksSentController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = Action.async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
       (
         for {
