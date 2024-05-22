@@ -19,13 +19,13 @@
 @import config.FrontendAppConfig
 
 @this(
-        mainTemplate: MainTemplate,
-        heading: Heading,
-        config: FrontendAppConfig,
-        govukPanel: GovukPanel
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    config: FrontendAppConfig,
+    govukPanel: GovukPanel
 )
 
-@(mrn: MovementReferenceNumber, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: String, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("unloadingRemarksSent.title"),
@@ -34,13 +34,10 @@
     @govukPanel(Panel(
         title = Text(messages("unloadingRemarksSent.heading")),
         content = Text(messages("unloadingRemarksSent.panel.body", mrn))
-    )
-    )
+    ))
+
     <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
     <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
-    <p class="govuk-body">@{
-        viewModel.fetch
-    }</p>
+    <p class="govuk-body">@{viewModel.fetch}</p>
     <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
-
 }

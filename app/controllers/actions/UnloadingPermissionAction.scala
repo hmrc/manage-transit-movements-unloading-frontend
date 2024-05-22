@@ -43,7 +43,7 @@ class UnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessage
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    OptionT(unloadingPermissionMessageService.getUnloadingPermissionXml(arrivalId))
+    OptionT(unloadingPermissionMessageService.getIE043(arrivalId))
       .map {
         unloadingPermission =>
           UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission)

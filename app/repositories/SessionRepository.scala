@@ -63,7 +63,7 @@ class SessionRepository @Inject() (
       .map(_.wasAcknowledged())
   }
 
-  def remove(id: ArrivalId): Future[Unit] = {
+  def remove(id: ArrivalId): Future[Boolean] = {
     val filter = Filters.eq("_id", id.value)
 
     collection

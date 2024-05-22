@@ -17,12 +17,13 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.CustomsOfficeOfDestinationActualType03
+import generated.{CC044CType, CustomsOfficeOfDestinationActualType03}
 import generators.Generators
 import models.UnloadingRemarksSentViewModel
 import models.reference.CustomsOffice
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -34,7 +35,7 @@ import scala.concurrent.Future
 
 class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+  private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -46,32 +47,59 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
       .guiceApplicationBuilder()
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
 
-  private val customsOfficeId = "CODE-001"
-
-  private val customsOffice = CustomsOffice(customsOfficeId, "", "GB", None)
-
   "UnloadingRemarksSent Controller" - {
     "return OK and the correct view" in {
+      forAll(arbitrary[CC044CType], nonEmptyString, arbitrary[CustomsOffice]) {
+        (cc044cType, customsOfficeId, customsOffice) =>
+          beforeEach()
 
-      checkArrivalStatus()
+          val transitOperation = cc044cType.TransitOperation.copy(MRN = mrn.value)
+          val ie044 = cc044cType.copy(
+            TransitOperation = transitOperation,
+            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId)
+          )
 
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+          when(mockUnloadingPermissionMessageService.getIE044(any())(any(), any()))
+            .thenReturn(Future.successful(Some(ie044)))
 
-      val ie043Data = basicIe043.copy(CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId))
-      setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = ie043Data))
+          when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any()))
+            .thenReturn(Future.successful(customsOffice))
 
-      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(customsOffice, "CODE-001")
+          when(mockSessionRepository.remove(any()))
+            .thenReturn(Future.successful(true))
 
-      val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
+          val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)
 
-      val result = route(app, request).value
+          val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
 
-      val view = app.injector.instanceOf[UnloadingRemarksSentView]
+          val result = route(app, request).value
 
-      status(result) mustBe OK
+          val view = app.injector.instanceOf[UnloadingRemarksSentView]
 
-      contentAsString(result) mustEqual view(mrn, unloadingRemarksSentViewModel)(request, messages).toString
+          status(result) mustBe OK
+
+          contentAsString(result) mustEqual view(mrn.toString, unloadingRemarksSentViewModel)(request, messages).toString
+
+          verify(mockUnloadingPermissionMessageService).getIE044(eqTo(arrivalId))(any(), any())
+          verify(mockReferenceDataService).getCustomsOfficeByCode(eqTo(customsOfficeId))(any(), any())
+          verify(mockSessionRepository).remove(eqTo(arrivalId))
+      }
     }
 
+    "must redirect to tech difficulties" - {
+      "when IE044 not found" in {
+        when(mockUnloadingPermissionMessageService.getIE044(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.ErrorController.technicalDifficulties().url
+      }
+    }
   }
 }

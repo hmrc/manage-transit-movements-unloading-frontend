@@ -38,7 +38,7 @@ class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpC
       .execute[Messages]
   }
 
-  def getUnloadingPermissionXml(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {
+  def getMessage(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId/body"
     http
       .get(url)

@@ -19,7 +19,10 @@ package models
 import play.api.libs.json._
 import play.api.mvc.{JavascriptLiteral, PathBindable}
 
-final case class ArrivalId(value: String)
+final case class ArrivalId(value: String) {
+
+  override def toString: String = value
+}
 
 object ArrivalId {
 

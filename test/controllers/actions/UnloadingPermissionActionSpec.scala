@@ -48,7 +48,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
   "UnloadingPermissionAction" - {
     "must return 200 when an unloading permission is available" in {
 
-      when(mockService.getUnloadingPermissionXml(any())(any(), any())).thenReturn(Future.successful(Some(basicIe043)))
+      when(mockService.getIE043(any())(any(), any())).thenReturn(Future.successful(Some(basicIe043)))
 
       val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
 
@@ -61,7 +61,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
 
     "must return 303 and redirect to technical difficulties when no unloading permission is available" in {
 
-      when(mockService.getUnloadingPermissionXml(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockService.getIE043(any())(any(), any())).thenReturn(Future.successful(None))
 
       val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
 
