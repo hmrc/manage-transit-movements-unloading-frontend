@@ -749,11 +749,11 @@ houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.heading = What is
 houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and can include letters, numbers and a hyphen. For example, 1234567-1.
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
 houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.required = Enter the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.format = Enter a valid Customs Union and Statistics (CUS) code
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.format = Enter the Customs Union and Statistics (CUS) code
 houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z, numbers 0 to 9 and a hyphen
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
-houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
-houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
+houseConsignment.item.customsUnionAndStatisticsCode.error.characters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
+houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Union and Statistics (CUS) code
 
 houseConsignment.index.item.packageShippingMark.CheckMode.title = What is the new shipping mark for item {0} in house consignment {1}?
 houseConsignment.index.item.packageShippingMark.NormalMode.title = What is the shipping mark?

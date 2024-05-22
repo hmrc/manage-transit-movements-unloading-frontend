@@ -31,8 +31,8 @@ class CUSCodeFormProvider @Inject() extends Mappings {
       "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            exactLength(exactCUSCodeLength, s"$prefix.error.length"),
-            regexp(alphaNumericWithHyphenRegex, s"$prefix.error.characters")
+            regexp(alphaNumericWithHyphenRegex, s"$prefix.error.characters"),
+            exactLength(exactCUSCodeLength, s"$prefix.error.length")
           )
         )
     )
