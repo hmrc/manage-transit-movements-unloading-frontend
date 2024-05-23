@@ -39,7 +39,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   behave like pageWithHeading(args = "1")
 
-  behave like pageWithContent("p", "Compare the transit that arrived with the following information to identify any discrepancies.")
+  behave like pageWithContent("p", "Change the declaration details below to match the transit that arrived.")
 
   behave like pageWithChildSections()
 
