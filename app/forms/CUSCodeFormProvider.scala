@@ -19,6 +19,7 @@ package forms
 import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
 import models.RichString
+import models.messages.UnloadingRemarksRequest.alphaNumericWithHyphenRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -30,6 +31,7 @@ class CUSCodeFormProvider @Inject() extends Mappings {
       "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
+            regexp(alphaNumericWithHyphenRegex, s"$prefix.error.characters"),
             exactLength(exactCUSCodeLength, s"$prefix.error.length")
           )
         )
