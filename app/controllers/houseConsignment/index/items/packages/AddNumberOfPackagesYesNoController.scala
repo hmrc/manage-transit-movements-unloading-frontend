@@ -55,7 +55,7 @@ class AddNumberOfPackagesYesNoController @Inject() (
     packageIndex: Index
   ): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
+      .requireData(arrivalId)
       .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
         implicit request =>
           val preparedForm = request.userAnswers.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
@@ -89,7 +89,7 @@ class AddNumberOfPackagesYesNoController @Inject() (
     packageIndex: Index
   ): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
+      .requireData(arrivalId)
       .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
       .async {
         implicit request =>

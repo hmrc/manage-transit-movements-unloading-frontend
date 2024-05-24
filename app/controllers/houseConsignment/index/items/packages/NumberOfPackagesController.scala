@@ -55,7 +55,7 @@ class NumberOfPackagesController @Inject() (
     itemMode: Mode,
     packageMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, packageMode)
         val form      = formProvider(prefix)
@@ -89,7 +89,7 @@ class NumberOfPackagesController @Inject() (
     itemMode: Mode,
     packageMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, packageMode)
         val form      = formProvider(prefix, args = viewModel.args)

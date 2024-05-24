@@ -55,7 +55,7 @@ class AddDocumentYesNoController @Inject() (
   }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

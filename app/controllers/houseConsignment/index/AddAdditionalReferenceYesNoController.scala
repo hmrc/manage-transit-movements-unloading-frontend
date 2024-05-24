@@ -45,7 +45,7 @@ class AddAdditionalReferenceYesNoController @Inject() (
   private val prefix = "houseConsignment.index.additionalReference.addAdditionalReferenceYesNo"
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
 
       implicit request =>
         val form = formProvider(prefix, houseConsignmentIndex)
@@ -59,7 +59,7 @@ class AddAdditionalReferenceYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val form = formProvider(prefix, houseConsignmentIndex)
         form

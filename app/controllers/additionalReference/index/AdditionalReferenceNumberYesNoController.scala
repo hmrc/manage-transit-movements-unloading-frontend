@@ -44,7 +44,7 @@ class AdditionalReferenceNumberYesNoController @Inject() (
 
   private val form = formProvider("additionalReference.index.additionalReferenceNumberYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
 
     implicit request =>
       val preparedForm = request.userAnswers.get(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex)) match {
@@ -55,7 +55,7 @@ class AdditionalReferenceNumberYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, additionalReferenceIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

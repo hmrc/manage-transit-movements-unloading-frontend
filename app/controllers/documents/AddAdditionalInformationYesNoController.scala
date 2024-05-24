@@ -44,7 +44,7 @@ class AddAdditionalInformationYesNoController @Inject() (
 
   private val form = formProvider("document.addAdditionalInformationYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddAdditionalInformationYesNoPage(documentIndex)) match {
         case None        => form
@@ -54,7 +54,7 @@ class AddAdditionalInformationYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, documentIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

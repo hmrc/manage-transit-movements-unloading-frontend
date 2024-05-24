@@ -47,7 +47,7 @@ class IdentificationNumberController @Inject() (
   val prefix = "departureMeansOfTransport.identificationNumber"
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = identificationNumberViewModelProvider.apply(mode)
         val form      = formProvider(prefix, mode)
@@ -61,7 +61,7 @@ class IdentificationNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = identificationNumberViewModelProvider.apply(mode)
         val form      = formProvider(prefix, mode)

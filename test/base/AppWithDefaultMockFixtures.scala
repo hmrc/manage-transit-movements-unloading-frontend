@@ -16,6 +16,7 @@
 
 package base
 
+import config.{PostTransitionModule, TransitionModule}
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
@@ -166,7 +167,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       }
   }
 
-  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+  private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
@@ -176,4 +177,17 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
       )
+
+  protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+
+  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+      .disable[PostTransitionModule]
+      .bindings(new TransitionModule)
+
+  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+      .disable[TransitionModule]
+      .bindings(new PostTransitionModule)
 }

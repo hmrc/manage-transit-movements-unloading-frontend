@@ -45,13 +45,13 @@ class RemoveConsignmentItemYesNoController @Inject() (
     formProvider("houseConsignment.removeConsignmentItemYesNo", itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()

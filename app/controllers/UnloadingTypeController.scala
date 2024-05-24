@@ -46,7 +46,7 @@ class UnloadingTypeController @Inject() (
   private def form(mode: Mode) = formProvider[UnloadingType](mode, "unloadingType")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm: Form[UnloadingType] = request.userAnswers.get(UnloadingTypePage) match {
           case None        => form(mode)
@@ -57,7 +57,7 @@ class UnloadingTypeController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form(mode)
           .bindFromRequest()

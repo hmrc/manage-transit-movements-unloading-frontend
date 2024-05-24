@@ -16,6 +16,7 @@
 
 package viewModels
 
+import config.PhaseConfig
 import models.UserAnswers
 import play.api.i18n.Messages
 import utils.answersHelpers.ConsignmentAnswersHelper
@@ -27,9 +28,7 @@ case class UnloadingFindingsViewModel(sections: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = new UnloadingFindingsViewModelProvider()(userAnswers)
-
-  class UnloadingFindingsViewModelProvider @Inject() () {
+  class UnloadingFindingsViewModelProvider @Inject() (implicit phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
       val helper = new ConsignmentAnswersHelper(userAnswers)
