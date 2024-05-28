@@ -38,7 +38,7 @@
 @select = @{
     Select(
         hint = hint.map(x => Hint(content = Text(x))),
-        items = SelectItem(value = None, text = placeholder) +: selectItems,
+        items = SelectItem(value = Some(""), text = placeholder) +: selectItems,
         errorMessage = field.error.map { e =>
             ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
         }
