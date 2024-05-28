@@ -38,7 +38,7 @@ class CannotSendUnloadingRemarksController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
-    .requireData(arrivalId)
+    .requireDataOnly(arrivalId)
     .async {
       implicit request =>
         val customsOfficeId = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
