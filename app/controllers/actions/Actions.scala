@@ -43,6 +43,11 @@ class Actions @Inject() (
       dataRequiredAction andThen
       unreachablePageAction
 
+  def requireDataOnly(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
+    identifierAction andThen
+      dataRetrievalAction(arrivalId) andThen
+      dataRequiredAction
+
   def requireIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
     requireData(arrivalId) andThen
       indexRequiredAction(section, addAnother)
