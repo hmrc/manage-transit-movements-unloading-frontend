@@ -23,7 +23,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.{JsPath, Reads}
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import queries.Gettable
 
@@ -56,7 +56,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
 
     "getFirst" - {
 
-      def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] =
+      def request(userAnswers: UserAnswers): DataRequest[AnyContent] =
         DataRequest(fakeRequest, eoriNumber, userAnswers)
 
       "when required data not present in user answers" - {
@@ -96,7 +96,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
 
     "getSecond" - {
 
-      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] =
+      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContent] =
         new SpecificDataRequestProvider1[String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, arg1)
 
       "when required data not present in user answers" - {

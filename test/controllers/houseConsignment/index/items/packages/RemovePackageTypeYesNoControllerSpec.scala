@@ -87,9 +87,11 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
     }
 
     "when yes submitted" - {
-      "must redirect to addAnotherPackageType page and remove package type at specified index" ignore {
+      "must redirect to addAnotherPackageType page and remove package type at specified index" in {
         forAll(arbitrary[BigInt]) {
           quantity =>
+            beforeEach()
+
             val userAnswers = emptyUserAnswers
               .setValue(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), quantity)
               .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
@@ -117,10 +119,12 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
     }
 
     "when no submitted" - {
-      "must redirect to addAnotherPackageType page and not remove package type at specified index" ignore {
+      "must redirect to addAnotherPackageType page and not remove package type at specified index" in {
 
         forAll(arbitrary[BigInt]) {
           quantity =>
+            beforeEach()
+
             val userAnswers = emptyUserAnswers
               .setValue(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), quantity)
               .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
