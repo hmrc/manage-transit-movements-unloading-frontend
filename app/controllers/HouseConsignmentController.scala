@@ -38,7 +38,7 @@ class HouseConsignmentController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
 

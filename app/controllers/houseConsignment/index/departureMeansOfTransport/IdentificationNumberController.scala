@@ -54,7 +54,7 @@ class IdentificationNumberController @Inject() (
     houseConsignmentMode: Mode,
     transportMeansMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = identificationNumberViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
         val form      = formProvider(prefix, transportMeansMode, houseConsignmentIndex.display)
@@ -84,7 +84,7 @@ class IdentificationNumberController @Inject() (
     houseConsignmentMode: Mode,
     transportMeansMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = identificationNumberViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
         val form      = formProvider(prefix, transportMeansMode, houseConsignmentIndex.display)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package config
 
-import forms.mappings.Mappings
-import models.reference.Selectable
-import models.{Mode, SelectableList}
-import play.api.data.Form
-import play.api.i18n.Messages
+import models.Phase
+import models.Phase.{PostTransition, Transition}
 
-import javax.inject.Inject
+trait PhaseConfig {
+  val phase: Phase
+}
 
-class SelectableFormProvider @Inject() extends Mappings {
+class TransitionConfig() extends PhaseConfig {
+  override val phase: Phase = Transition
+}
 
-  def apply[T <: Selectable](mode: Mode, prefix: String, selectableList: SelectableList[T], args: Any*)(implicit
-    messages: Messages
-  ): Form[T] =
-    Form(
-      "value" -> selectable[T](selectableList, messages(s"$prefix.$mode.error.required", args: _*), args)
-    )
+class PostTransitionConfig() extends PhaseConfig {
+  override val phase: Phase = PostTransition
 }

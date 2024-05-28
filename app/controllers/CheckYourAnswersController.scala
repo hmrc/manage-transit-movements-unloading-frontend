@@ -46,7 +46,7 @@ class CheckYourAnswersController @Inject() (
     with Logging {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
 
@@ -54,7 +54,7 @@ class CheckYourAnswersController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         submissionService.submit(request.userAnswers, arrivalId).map {
           response =>

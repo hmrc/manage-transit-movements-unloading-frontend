@@ -53,7 +53,7 @@ class AddPackageShippingMarkYesNoController @Inject() (
     itemMode: Mode,
     packageMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
@@ -72,7 +72,7 @@ class AddPackageShippingMarkYesNoController @Inject() (
     itemMode: Mode,
     packageMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

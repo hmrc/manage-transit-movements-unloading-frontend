@@ -55,7 +55,7 @@ class CustomsUnionAndStatisticsCodeViewSpec extends InputTextViewBehaviours[Stri
 
   behave like pageWithHeading(viewModel.heading)
 
-  behave like pageWithHint("This will be 9 characters long and include both letters and numbers.")
+  behave like pageWithHint("This will be 9 characters long and can include letters, numbers and a hyphen. For example, 1234567-1.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

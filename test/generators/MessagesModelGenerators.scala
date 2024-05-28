@@ -50,6 +50,26 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryCC044CType: Arbitrary[CC044CType] =
+    Arbitrary {
+      for {
+        messageSequence1                 <- arbitrary[MESSAGESequence]
+        transitOperation                 <- arbitrary[TransitOperationType15]
+        customsOfficeOfDestinationActual <- arbitrary[CustomsOfficeOfDestinationActualType03]
+        traderAtDestination              <- arbitrary[TraderAtDestinationType02]
+        unloadingRemark                  <- arbitrary[UnloadingRemarkType]
+        consignment                      <- Gen.option(arbitrary[ConsignmentType06])
+      } yield CC044CType(
+        messageSequence1 = messageSequence1,
+        TransitOperation = transitOperation,
+        CustomsOfficeOfDestinationActual = customsOfficeOfDestinationActual,
+        TraderAtDestination = traderAtDestination,
+        UnloadingRemark = unloadingRemark,
+        Consignment = consignment,
+        attributes = Map.empty
+      )
+    }
+
   implicit lazy val arbitraryMESSAGESequence: Arbitrary[MESSAGESequence] =
     Arbitrary {
       for {
@@ -84,6 +104,17 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryTransitOperationType15: Arbitrary[TransitOperationType15] =
+    Arbitrary {
+      for {
+        mrn                 <- Gen.alphaNumStr
+        otherThingsToReport <- Gen.option(Gen.alphaNumStr)
+      } yield TransitOperationType15(
+        MRN = mrn,
+        otherThingsToReport = otherThingsToReport
+      )
+    }
+
   implicit lazy val arbitraryCustomsOfficeOfDestinationActualType03: Arbitrary[CustomsOfficeOfDestinationActualType03] =
     Arbitrary {
       for {
@@ -105,6 +136,15 @@ trait MessagesModelGenerators {
         TIRHolderIdentificationNumber = tirHolderIdentificationNumber,
         name = name,
         Address = address
+      )
+    }
+
+  implicit lazy val arbitraryTraderAtDestinationType02: Arbitrary[TraderAtDestinationType02] =
+    Arbitrary {
+      for {
+        identificationNumber <- Gen.alphaNumStr
+      } yield TraderAtDestinationType02(
+        identificationNumber = identificationNumber
       )
     }
 
@@ -152,6 +192,21 @@ trait MessagesModelGenerators {
         AdditionalReference = Nil,
         AdditionalInformation = Nil,
         Incident = incidents,
+        HouseConsignment = Nil
+      )
+    }
+
+  implicit lazy val arbitraryConsignmentType06: Arbitrary[ConsignmentType06] =
+    Arbitrary {
+      for {
+        grossMass <- Gen.option(positiveBigDecimals)
+      } yield ConsignmentType06(
+        grossMass = grossMass,
+        TransportEquipment = Nil,
+        DepartureTransportMeans = Nil,
+        SupportingDocument = Nil,
+        TransportDocument = Nil,
+        AdditionalReference = Nil,
         HouseConsignment = Nil
       )
     }
@@ -614,5 +669,22 @@ trait MessagesModelGenerators {
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
       Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
+    }
+
+  implicit lazy val arbitraryUnloadingRemarkType: Arbitrary[UnloadingRemarkType] =
+    Arbitrary {
+      for {
+        conform             <- arbitrary[Flag]
+        unloadingCompletion <- arbitrary[Flag]
+        unloadingDate       <- arbitrary[XMLGregorianCalendar]
+        stateOfSeals        <- Gen.option(arbitrary[Flag])
+        unloadingRemark     <- Gen.option(nonEmptyString)
+      } yield UnloadingRemarkType(
+        conform = conform,
+        unloadingCompletion = unloadingCompletion,
+        unloadingDate = unloadingDate,
+        stateOfSeals = stateOfSeals,
+        unloadingRemark = unloadingRemark
+      )
     }
 }

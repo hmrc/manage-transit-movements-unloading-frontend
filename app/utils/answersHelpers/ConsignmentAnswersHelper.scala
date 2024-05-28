@@ -16,10 +16,11 @@
 
 package utils.answersHelpers
 
+import config.PhaseConfig
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
-import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Link, NormalMode, Phase, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
@@ -37,7 +38,10 @@ import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
-class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+class ConsignmentAnswersHelper(
+  userAnswers: UserAnswers
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
+    extends AnswersHelper(userAnswers) {
 
   private val documentAddRemoveLink: Link = Link(
     id = s"add-remove-documents",
@@ -64,11 +68,20 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       text = messages("departureTransportMeans.addRemove")
     )
 
-  private val houseConsignmentAddRemoveLink: Link = Link(
-    id = s"add-remove-house-consignment",
-    href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
-    text = messages("houseConsignment.addRemove")
-  )
+  private val houseConsignmentAddRemoveLink: Option[Link] = {
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        None
+      case Phase.PostTransition =>
+        Some(
+          Link(
+            id = s"add-remove-house-consignment",
+            href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
+            text = messages("houseConsignment.addRemove")
+          )
+        )
+    }
+  }
 
   def headerSection: Section = StaticSection(
     rows = Seq(
@@ -135,7 +148,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
     call = Some(controllers.routes.GrossWeightController.onPageLoad(userAnswers.id))
@@ -384,7 +397,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
-            rows = Seq(helper.preGrossMassRow, helper.consignorIdentification(Some("pre")), helper.consignorName(Some("pre"))).flatten,
+            rows = Seq(
+              helper.grossMassRowOnConsignmentPage,
+              helper.consignorIdentificationOnConsignmentPage,
+              helper.consignorNameOnConsignmentPage
+            ).flatten,
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
@@ -401,7 +418,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
           children = children,
-          viewLinks = Seq(houseConsignmentAddRemoveLink),
+          viewLinks = houseConsignmentAddRemoveLink.toList,
           id = Some("houseConsignments")
         )
     }

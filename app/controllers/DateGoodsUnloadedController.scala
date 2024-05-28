@@ -43,7 +43,7 @@ class DateGoodsUnloadedController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
-    .getStatus(arrivalId) {
+    .requireData(arrivalId) {
       implicit request =>
         val form = formProvider(request.userAnswers.ie043Data.preparationDateAndTime)
 
@@ -56,7 +56,7 @@ class DateGoodsUnloadedController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
-    .getStatus(arrivalId)
+    .requireData(arrivalId)
     .async {
       implicit request =>
         formProvider(request.userAnswers.ie043Data.preparationDateAndTime)

@@ -16,7 +16,8 @@
 
 package viewModels
 
-import models.{Index, UserAnswers}
+import config.PhaseConfig
+import models.{Index, Phase, UserAnswers}
 import play.api.i18n.Messages
 import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
@@ -28,12 +29,7 @@ case class HouseConsignmentViewModel(section: Section)
 
 object HouseConsignmentViewModel {
 
-  def apply(
-    userAnswers: UserAnswers,
-    houseConsignmentIndex: Index
-  )(implicit messages: Messages): HouseConsignmentViewModel = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
-
-  class HouseConsignmentViewModelProvider @Inject() {
+  class HouseConsignmentViewModelProvider @Inject() (implicit phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
@@ -44,15 +40,23 @@ object HouseConsignmentViewModel {
         helper.safetyAndSecurityDetails
       ).flatten
 
-      val children: Seq[Section] = Seq(
-        helper.houseConsignmentConsignorSection,
-        helper.houseConsignmentConsigneeSection,
-        helper.departureTransportMeansSection,
-        helper.documentSection,
-        helper.additionalReferencesSection,
-        helper.additionalInformationSection,
-        helper.itemSection
-      )
+      val children: Seq[Section] = phaseConfig.phase match {
+        case Phase.Transition =>
+          Seq(
+            helper.itemSection
+          )
+        case Phase.PostTransition =>
+          Seq(
+            helper.houseConsignmentConsignorSection,
+            helper.houseConsignmentConsigneeSection,
+            helper.departureTransportMeansSection,
+            helper.documentSection,
+            helper.additionalReferencesSection,
+            helper.additionalInformationSection,
+            helper.itemSection
+          )
+      }
+
       val houseConsignmentSection: Section =
         StaticSection(rows = rows, children = children)
 

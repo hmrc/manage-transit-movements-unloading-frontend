@@ -16,11 +16,14 @@
 
 package controllers
 
-import controllers.actions._
+import cats.data.OptionT
+import controllers.actions.IdentifierAction
+import logging.Logging
 import models.{ArrivalId, UnloadingRemarksSentViewModel}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.P5.UnloadingPermissionMessageService
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.UnloadingRemarksSentView
@@ -30,27 +33,29 @@ import scala.concurrent.ExecutionContext
 
 class UnloadingRemarksSentController @Inject() (
   override val messagesApi: MessagesApi,
-  actions: Actions,
+  identify: IdentifierAction,
   referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   sessionRepository: SessionRepository,
+  messageService: UnloadingPermissionMessageService,
   view: UnloadingRemarksSentView
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
-    .requireData(arrivalId)
-    .async {
-      implicit request =>
-        val customsOfficeId = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
-        referenceDataService
-          .getCustomsOfficeByCode(customsOfficeId)
-          .map {
-            customsOffice =>
-              sessionRepository.remove(arrivalId)
-              Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
-          }
-    }
-
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
+    implicit request =>
+      (
+        for {
+          ie044 <- OptionT(messageService.getIE044(arrivalId))
+          customsOfficeId = ie044.CustomsOfficeOfDestinationActual.referenceNumber
+          customsOffice <- OptionT.liftF(referenceDataService.getCustomsOfficeByCode(customsOfficeId))
+          _             <- OptionT.liftF(sessionRepository.remove(arrivalId))
+        } yield Ok(view(ie044.TransitOperation.MRN, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
+      ).getOrElse {
+        logger.warn(s"No IE044 message found for arrival ID $arrivalId")
+        Redirect(controllers.routes.ErrorController.technicalDifficulties())
+      }
+  }
 }

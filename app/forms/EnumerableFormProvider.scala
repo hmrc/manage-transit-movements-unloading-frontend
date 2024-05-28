@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.{CheckMode, Enumerable, Mode, NormalMode, Radioable}
+import models.{Enumerable, Mode, Radioable}
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -29,14 +29,8 @@ class EnumerableFormProvider @Inject() extends Mappings {
       case seq: Seq[_] => seq
       case other       => Seq(other)
     }
-    val prefixMode = mode match {
-      case NormalMode => prefix
-      case CheckMode  => s"$prefix.check"
-
-    }
-
     Form(
-      "value" -> enumerable[T](s"$prefixMode.error.required", args = flattenedArgs)
+      "value" -> enumerable[T](s"$prefix.$mode.error.required", args = flattenedArgs)
     )
   }
 

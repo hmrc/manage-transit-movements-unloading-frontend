@@ -34,7 +34,7 @@ class UnloadingGuidanceController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         Ok(view(request.userAnswers.mrn, arrivalId, messageId))
     }

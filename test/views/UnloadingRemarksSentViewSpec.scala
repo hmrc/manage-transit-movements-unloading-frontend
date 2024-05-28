@@ -17,7 +17,7 @@
 package views
 
 import base.SpecBase
-import models.{MovementReferenceNumber, UnloadingRemarksSentViewModel}
+import models.UnloadingRemarksSentViewModel
 import models.reference.CustomsOffice
 import play.twirl.api.HtmlFormat
 import views.behaviours.PanelViewBehaviours
@@ -35,7 +35,7 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
   override def view: HtmlFormat.Appendable =
     injector
       .instanceOf[UnloadingRemarksSentView]
-      .apply(mrn: MovementReferenceNumber, viewModel = UnloadingRemarksSentViewModel(officeOfDestination, "GB000060"))(fakeRequest, messages)
+      .apply(mrn.value, viewModel = UnloadingRemarksSentViewModel(officeOfDestination, "GB000060"))(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -62,7 +62,7 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
   )
 
   "Customs office with a name and no telephone" - {
-    val view = injector.instanceOf[UnloadingRemarksSentView].apply(mrn, UnloadingRemarksSentViewModel(noTelephone, "GB000060"))(fakeRequest, messages)
+    val view = injector.instanceOf[UnloadingRemarksSentView].apply(mrn.value, UnloadingRemarksSentViewModel(noTelephone, "GB000060"))(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -75,7 +75,7 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
   }
 
   "Customs office with no name and a telephone" - {
-    val view = injector.instanceOf[UnloadingRemarksSentView].apply(mrn, UnloadingRemarksSentViewModel(noName, "GB000060"))(fakeRequest, messages)
+    val view = injector.instanceOf[UnloadingRemarksSentView].apply(mrn.value, UnloadingRemarksSentViewModel(noName, "GB000060"))(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -88,7 +88,8 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
   }
 
   "Customs office with no name and no telephone" - {
-    val view = injector.instanceOf[UnloadingRemarksSentView].apply(mrn, UnloadingRemarksSentViewModel(noNameNoTelephone, "GB000060"))(fakeRequest, messages)
+    val view =
+      injector.instanceOf[UnloadingRemarksSentView].apply(mrn.value, UnloadingRemarksSentViewModel(noNameNoTelephone, "GB000060"))(fakeRequest, messages)
 
     val doc = parseView(view)
 

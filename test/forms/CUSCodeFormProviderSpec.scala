@@ -18,6 +18,7 @@ package forms
 
 import forms.Constants.exactCUSCodeLength
 import forms.behaviours.StringFieldBehaviours
+import models.messages.UnloadingRemarksRequest.alphaNumericWithHyphenRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -25,7 +26,7 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
-  val invalidKey     = s"$prefix.error.invalidCharacters"
+  val invalidKey     = s"$prefix.error.characters"
   val lengthKey      = s"$prefix.error.length"
 
   val form = new CUSCodeFormProvider()(prefix, requiredKey)
@@ -51,6 +52,13 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericWithHyphenRegex.regex)),
+      exactCUSCodeLength
     )
   }
 }

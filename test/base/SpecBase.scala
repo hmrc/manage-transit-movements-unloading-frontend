@@ -16,7 +16,7 @@
 
 package base
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -54,8 +54,6 @@ trait SpecBase
   val arrivalId: ArrivalId = ArrivalId("AB123")
   val messageId: String    = "12344565gf"
 
-  val configKey = "config"
-
   def injector: Injector = app.injector
 
   val mrn: MovementReferenceNumber = MovementReferenceNumber("19GB1234567890123")
@@ -86,6 +84,7 @@ trait SpecBase
   implicit val hc: HeaderCarrier  = HeaderCarrier()
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit def phaseConfig: PhaseConfig             = injector.instanceOf[PhaseConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 
