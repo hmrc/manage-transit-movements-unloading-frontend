@@ -89,7 +89,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(SealSection(equipmentIndex, sealIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.getRemoved(SealSection(equipmentIndex, sealIndex)) mustBe true
       }
 
       "when no is submitted" in {

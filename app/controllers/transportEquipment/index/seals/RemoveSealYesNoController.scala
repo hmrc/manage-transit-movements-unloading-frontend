@@ -77,7 +77,7 @@ class RemoveSealYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(SealSection(equipmentIndex, sealIndex)))
+                    Future.fromTry(request.userAnswers.removeSeal(SealSection(equipmentIndex, sealIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

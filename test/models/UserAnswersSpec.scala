@@ -457,6 +457,84 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
               |""".stripMargin)
         }
       }
+
+      "removeSeal" - {
+        "must remove everything except sequence number and seal identifier" in {
+          val data = Json
+            .parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : [
+                |        {
+                |          "sequenceNumber" : "1",
+                |          "identifier" : "1"
+                |        }
+                |      ]
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = data)
+          val result      = userAnswers.removeSeal(FakeSection).get
+          result.data mustBe Json.parse("""
+              |{
+              |  "some" : {
+              |    "example" : {
+              |      "path" : [
+              |        {
+              |          "sequenceNumber" : "1",
+              |          "identifier" : "1",
+              |          "removed" : true
+              |        }
+              |      ]
+              |    }
+              |  }
+              |}
+              |""".stripMargin)
+        }
+      }
+
+      "removeGoodsReference" - {
+        "must remove everything except sequence number and declaration goods item number" in {
+          val data = Json
+            .parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : [
+                |        {
+                |          "sequenceNumber" : "1",
+                |          "declarationGoodsItemNumber" : 1
+                |        }
+                |      ]
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = data)
+          val result      = userAnswers.removeGoodsReference(FakeSection).get
+          result.data mustBe Json.parse("""
+              |{
+              |  "some" : {
+              |    "example" : {
+              |      "path" : [
+              |        {
+              |          "sequenceNumber" : "1",
+              |          "declarationGoodsItemNumber" : 1,
+              |          "removed" : true
+              |        }
+              |      ]
+              |    }
+              |  }
+              |}
+              |""".stripMargin)
+        }
+      }
     }
   }
 }
