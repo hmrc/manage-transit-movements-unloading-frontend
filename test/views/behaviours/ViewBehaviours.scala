@@ -19,7 +19,6 @@ package views.behaviours
 import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
@@ -88,7 +87,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       .find(_.text() == "Accessibility statement")
       .get
 
-    getElementHref(link) mustBe s"http://localhost:12346/accessibility-statement/manage-transit-movements?referrerUrl=$path"
+    getElementHref(link) mustBe s"http://localhost:12346/accessibility-statement/manage-transit-movements-p5?referrerUrl=$path"
   }
 
   "must not render language toggle" in {
