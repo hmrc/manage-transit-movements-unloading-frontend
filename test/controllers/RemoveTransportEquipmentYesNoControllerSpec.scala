@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Gen
 import pages.ContainerIdentificationNumberPage
-import pages.sections.TransportMeansSection
+import pages.sections.TransportEquipmentSection
 import pages.transportEquipment.index.AddContainerIdentificationNumberYesNoPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -76,36 +76,8 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
       }
     }
     "when yes submitted" - {
-      "must redirect to add another TransportEquipment and remove departureTransportMeans at specified index" ignore {
+      "must redirect to add another TransportEquipment and remove departureTransportMeans at specified index" in {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-        val userAnswers = emptyUserAnswers
-          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
-          .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
-          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(POST, removeTransportEquipmentMeansRoute)
-          .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController
-          .onPageLoad(arrivalId, mode)
-          .url
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(TransportMeansSection(transportMeansIndex)) mustNot be(defined)
-      }
-    }
-
-    "when no submitted" - {
-      "must redirect to add another TransportEquipment and not remove TransportEquipment at specified index" ignore {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
         val userAnswers = emptyUserAnswers
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
           .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
@@ -126,7 +98,35 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(TransportMeansSection(transportMeansIndex)) must be(defined)
+        userAnswersCaptor.getValue.get(TransportEquipmentSection(transportMeansIndex)) mustNot be(defined)
+      }
+    }
+
+    "when no submitted" - {
+      "must redirect to add another TransportEquipment and not remove TransportEquipment at specified index" in {
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+        val userAnswers = emptyUserAnswers
+          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
+          .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
+
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(POST, removeTransportEquipmentMeansRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController
+          .onPageLoad(arrivalId, mode)
+          .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.get(TransportEquipmentSection(transportMeansIndex)) must be(defined)
       }
     }
 
