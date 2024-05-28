@@ -52,7 +52,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     case AddDocumentYesNoPage(houseConsignmentIndex, itemIndex) =>
       ua => addDocumentYesNoNav(ua, houseConsignmentIndex, itemIndex, NormalMode)
     case CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex) =>
-      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
+      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode))
     case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCombinedNomenclatureCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
   }
@@ -149,7 +149,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case true =>
         routes.CommodityCodeController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
-        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
     }
 
   def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
