@@ -121,7 +121,7 @@ class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
     behave like pageWithContent(
       doc,
       "p",
-      "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+      "You cannot add any more transport documents to this item. You can, however, still add a supporting document."
     )
   }
 
@@ -131,7 +131,7 @@ class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
     behave like pageWithContent(
       doc,
       "p",
-      "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+      "You cannot add any more supporting documents to this item. You can, however, still add a transport document."
     )
   }
 }
