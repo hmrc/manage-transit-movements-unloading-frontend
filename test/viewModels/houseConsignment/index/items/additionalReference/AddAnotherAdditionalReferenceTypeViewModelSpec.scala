@@ -18,10 +18,12 @@ package viewModels.houseConsignment.index.items.additionalReference
 
 import base.SpecBase
 import generators.Generators
-import models.{Index, Mode}
+import models.reference.AdditionalReferenceType
+import models.{Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberPage
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 
 class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -79,5 +81,23 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
             s"You cannot add any more additional references for item 1 in house consignment 1. To add another, you need to remove one first."
       }
     }
+
+    "when there is one additional reference and it displays code and description with additional reference number at HouseConsignment Item Level" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(0)), AdditionalReferenceType("code", "description"))
+        .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, Index(0)), "additionalReferenceNumber")
+      val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, NormalMode, NormalMode, houseConsignmentIndex, itemIndex)
+      result.listItems.length mustBe 1
+      result.listItems.head.name mustBe "code - description - additionalReferenceNumber"
+    }
+
+    "when there is one additional reference and it displays code and description without additional reference number at HouseConsignment Item Level" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(0)), AdditionalReferenceType("code", "description"))
+      val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, NormalMode, NormalMode, houseConsignmentIndex, itemIndex)
+      result.listItems.length mustBe 1
+      result.listItems.head.name mustBe "code - description"
+    }
+
   }
 }
