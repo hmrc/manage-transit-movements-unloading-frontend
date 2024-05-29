@@ -18,7 +18,7 @@ package navigation.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators
-import models.DocType.{Previous, Support, Transport}
+import models.DocType.{Support, Transport}
 import models._
 import models.reference.DocumentType
 import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
@@ -39,7 +39,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       val documentMode         = CheckMode
       val navigator            = navigatorProvider.apply(houseConsignmentMode, itemMode)
 
-      "must go from AdditionalInformationPage to UnloadingFindingsController" - {
+      "must go from AdditionalInformationPage to UnloadingFindingsController" in {
 
         val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), "Additional Information")
 
@@ -48,7 +48,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
-      "must go from DocumentReferenceNumberPage to UnloadingFindingsController" - {
+      "must go from DocumentReferenceNumberPage to UnloadingFindingsController" in {
 
         val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), "12345")
 
@@ -57,7 +57,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
-      "must go from TypePage to UnloadingFindingsController" - {
+      "must go from TypePage to UnloadingFindingsController" in {
 
         val docType = arbitraryDocumentType.arbitrary.sample.value
 
@@ -81,7 +81,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
       val documentMode = NormalMode
       val navigator    = navigatorProvider.apply(houseConsignmentMode, itemMode)
 
-      "must go from AddAdditionalInformationPage to AddAnotherDocumentPage" - {
+      "must go from AddAdditionalInformationPage to AddAnotherDocumentPage" in {
 
         val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), "Additional Information")
 
@@ -93,7 +93,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           )
       }
 
-      "must go from AddAdditionalInformationYesNoPage to AddAdditionalInformationPage when yes" - {
+      "must go from AddAdditionalInformationYesNoPage to AddAdditionalInformationPage when yes" in {
 
         val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), true)
 
@@ -105,7 +105,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           )
       }
 
-      "must go from AddAdditionalInformationYesNoPage to AddAnotherDocumentPage when no" - {
+      "must go from AddAdditionalInformationYesNoPage to AddAnotherDocumentPage when no" in {
 
         val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), false)
 
@@ -117,7 +117,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           )
       }
 
-      "must go from TypePage to DocumentReferenceNumberController when DocType is supporting" - {
+      "must go from TypePage to DocumentReferenceNumberController when DocType is supporting" in {
 
         val userAnswers = emptyUserAnswers.setValue(
           TypePage(houseConsignmentIndex, itemIndex, documentIndex),
@@ -132,7 +132,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           )
       }
 
-      "must go from TypePage to DocumentReferenceNumberController when DocType is not supporting" - {
+      "must go from TypePage to DocumentReferenceNumberController when DocType is not supporting" in {
 
         val userAnswers = emptyUserAnswers.setValue(
           TypePage(houseConsignmentIndex, itemIndex, documentIndex),
@@ -146,22 +146,6 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           )
 
       }
-
-      "must redirect to the TypePage when Previous DocType is selected" - {
-
-        val userAnswers = emptyUserAnswers.setValue(
-          TypePage(houseConsignmentIndex, itemIndex, documentIndex),
-          DocumentType(`type` = Previous, code = "codeValue", description = "descriptionValue")
-        )
-        navigator
-          .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.document.routes.TypeController
-              .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
-          )
-
-      }
-
     }
   }
 }

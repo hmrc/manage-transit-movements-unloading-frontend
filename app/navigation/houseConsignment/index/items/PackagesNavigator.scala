@@ -17,7 +17,7 @@
 package navigation.houseConsignment.index.items
 
 import controllers.houseConsignment.index.items.packages.routes
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items.packages._
@@ -41,7 +41,7 @@ class PackagesNavigator(houseConsignmentMode: Mode, itemMode: Mode) extends Navi
         )
 
     case AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
-      ua => addNumberOfPackagesYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex)
+      ua => addNumberOfPackagesYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
 
     case NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex) =>
       ua =>
@@ -58,41 +58,66 @@ class PackagesNavigator(houseConsignmentMode: Mode, itemMode: Mode) extends Navi
         )
 
     case AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
-      ua => addPackageShippingMarkYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex)
+      ua => addPackageShippingMarkYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
 
     case PackageShippingMarkPage(houseConsignmentIndex, itemIndex, _) =>
       ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
+    case PackageTypePage(houseConsignmentIndex, _, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+
+    case AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
+      ua => addNumberOfPackagesYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
+
+    case NumberOfPackagesPage(houseConsignmentIndex, _, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+
+    case AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
+      ua => addPackageShippingMarkYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
+
+    case PackageShippingMarkPage(houseConsignmentIndex, _, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
 
   private def addNumberOfPackagesYesNoNavigation(
     ua: UserAnswers,
     houseConsignmentIndex: Index,
     itemIndex: Index,
-    packageIndex: Index
+    packageIndex: Index,
+    packageMode: Mode
   ): Option[Call] =
     ua.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
       case true =>
-        routes.NumberOfPackagesController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
+        routes.NumberOfPackagesController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
       case false =>
-        routes.AddPackageShippingMarkYesNoController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
+        packageMode match {
+          case NormalMode =>
+            routes.AddPackageShippingMarkYesNoController
+              .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 
   private def addPackageShippingMarkYesNoNavigation(
     ua: UserAnswers,
     houseConsignmentIndex: Index,
     itemIndex: Index,
-    packageIndex: Index
+    packageIndex: Index,
+    packageMode: Mode
   ): Option[Call] =
     ua.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
       case true =>
-        routes.PackageShippingMarkController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
+        routes.PackageShippingMarkController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
       case false =>
-        routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        packageMode match {
+          case NormalMode =>
+            routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 }
 
