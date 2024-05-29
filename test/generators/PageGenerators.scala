@@ -29,9 +29,6 @@ trait PageGenerators {
   implicit lazy val arbitraryTotalNumberOfPackagesPage: Arbitrary[NumberOfPackagesPage.type] =
     Arbitrary(NumberOfPackagesPage)
 
-  implicit lazy val arbitraryConfirmRemoveCommentsPage: Arbitrary[ConfirmRemoveCommentsPage.type] =
-    Arbitrary(ConfirmRemoveCommentsPage)
-
   implicit lazy val arbitraryUnloadingCommentsPage: Arbitrary[UnloadingCommentsPage.type] =
     Arbitrary(UnloadingCommentsPage)
 
