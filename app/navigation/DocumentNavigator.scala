@@ -17,9 +17,10 @@
 package navigation
 
 import com.google.inject.Singleton
+import controllers.documents.routes
 import models.DocType.{Previous, Support, Transport}
-import models.reference.DocumentType
 import models._
+import models.reference.DocumentType
 import pages._
 import pages.documents._
 import play.api.mvc.Call
@@ -28,10 +29,10 @@ import play.api.mvc.Call
 class DocumentNavigator extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case TypePage(documentIndex)                          => ua => Some(controllers.documents.routes.DocumentReferenceNumberController.onPageLoad(ua.id, NormalMode, documentIndex))
-    case DocumentReferenceNumberPage(documentIndex)       => ua => documentReferenceNumberRoute(ua, ua.id, NormalMode, documentIndex)
-    case AddAdditionalInformationYesNoPage(documentIndex) => ua => addAdditionalInformationYesNoRoute(ua, ua.id, NormalMode, documentIndex)
-    case AdditionalInformationPage(_)                     => ua => Some(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, NormalMode))
+    case TypePage(documentIndex)                          => ua => Some(routes.DocumentReferenceNumberController.onPageLoad(ua.id, NormalMode, documentIndex))
+    case DocumentReferenceNumberPage(documentIndex)       => ua => documentReferenceNumberRoute(ua, NormalMode, documentIndex)
+    case AddAdditionalInformationYesNoPage(documentIndex) => ua => addAdditionalInformationYesNoRoute(ua, NormalMode, documentIndex)
+    case AdditionalInformationPage(_)                     => ua => Some(routes.AddAnotherDocumentController.onPageLoad(ua.id, NormalMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -40,19 +41,22 @@ class DocumentNavigator extends Navigator {
     case TypePage(_)                    => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
   }
 
-  def documentReferenceNumberRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Option[Call] =
+  private def documentReferenceNumberRoute(ua: UserAnswers, mode: Mode, documentIndex: Index): Option[Call] =
     ua.get(TypePage(documentIndex)).map {
       case DocumentType(Support, _, _) =>
-        controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex)
-      case DocumentType(Transport, _, _) => controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, mode)
-      case DocumentType(Previous, _, _) =>
-        logger.error(s"Previous document unexpectedly selected for consignment level document type")
-        controllers.documents.routes.TypeController.onPageLoad(arrivalId, mode, documentIndex)
+        routes.AddAdditionalInformationYesNoController.onPageLoad(ua.id, mode, documentIndex)
+      case DocumentType(Transport, _, _) => routes.AddAnotherDocumentController.onPageLoad(ua.id, mode)
+      case DocumentType(Previous, _, _)  => fallback(ua, mode, documentIndex)
     }
 
-  def addAdditionalInformationYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Option[Call] =
+  private def addAdditionalInformationYesNoRoute(ua: UserAnswers, mode: Mode, documentIndex: Index): Option[Call] =
     ua.get(AddAdditionalInformationYesNoPage(documentIndex)).map {
-      case true  => controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, mode, documentIndex)
-      case false => controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, mode)
+      case true  => routes.AdditionalInformationController.onPageLoad(ua.id, mode, documentIndex)
+      case false => routes.AddAnotherDocumentController.onPageLoad(ua.id, mode)
     }
+
+  private def fallback(ua: UserAnswers, houseConsignmentMode: Mode, documentIndex: Index): Call = {
+    logger.warn("Previous document unexpectedly selected for consignment level document type")
+    routes.TypeController.onPageLoad(ua.id, houseConsignmentMode, documentIndex)
+  }
 }

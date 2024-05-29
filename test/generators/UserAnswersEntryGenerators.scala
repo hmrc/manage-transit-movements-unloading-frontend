@@ -90,12 +90,4 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryConfirmRemoveCommentsEntry: Arbitrary[(ConfirmRemoveCommentsPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[ConfirmRemoveCommentsPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
 }

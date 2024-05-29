@@ -69,9 +69,15 @@ class HouseConsignmentDocumentNavigator(houseConsignmentMode: Mode) extends Navi
           routes.AddAdditionalInformationYesNoController.onPageLoad(ua.id, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
         case DocType.Transport =>
           routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
-        case _ => Call("GET", "#") //TODO: Update document navigation
+        case _ =>
+          fallback(ua, houseConsignmentIndex, documentIndex, documentMode)
       }
     }
+
+  private def fallback(ua: UserAnswers, houseConsignmentIndex: Index, documentIndex: Index, documentMode: Mode): Call = {
+    logger.warn(s"Previous document unexpectedly selected for house consignment level document type")
+    routes.TypeController.onPageLoad(ua.id, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
+  }
 }
 
 object HouseConsignmentDocumentNavigator {
