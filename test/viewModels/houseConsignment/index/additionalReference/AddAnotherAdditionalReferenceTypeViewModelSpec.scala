@@ -19,16 +19,11 @@ package viewModels.houseConsignment.index.additionalReference
 import base.SpecBase
 import generators.Generators
 import models.reference.AdditionalReferenceType
-import models.removable.AdditionalReference
 import models.{Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.additionalReference.AdditionalReferenceNumberPage
-import pages.houseConsignment.index.additionalReference.HouseConsignmentAdditionalReferenceTypePage
-import pages.houseConsignment.index.additionalReference.HouseConsignmentAdditionalReferenceNumberPage
-import pages.sections.additionalReference.AdditionalReferenceSection
+import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
-import pages.additionalReference.AdditionalReferenceTypePage
 
 class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
