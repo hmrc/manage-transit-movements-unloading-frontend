@@ -52,7 +52,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     case AddDocumentYesNoPage(houseConsignmentIndex, itemIndex) =>
       ua => addDocumentYesNoNav(ua, houseConsignmentIndex, itemIndex, NormalMode)
     case CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex) =>
-      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode))
+      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
     case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCombinedNomenclatureCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
   }
@@ -176,7 +176,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case true =>
         routes.CommodityCodeController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
-        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
   private def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
@@ -184,7 +184,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case true =>
         routes.CombinedNomenclatureCodeController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-      case false => routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+      case false => routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
   private def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
