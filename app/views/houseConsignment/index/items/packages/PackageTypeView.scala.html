@@ -48,7 +48,7 @@
             selectType = SelectWithAdditionalHtml(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.index.item.packageType.paragraph").toParagraph
+                additionalHtml = if (packageMode != NormalMode) messages("houseConsignment.index.item.packageType.paragraph").toParagraph else "".toParagraph
             ),
             hint = Some(messages("houseConsignment.index.item.packageType.hint")),
             selectItems = packageTypes.toSelectItems(form.value),
