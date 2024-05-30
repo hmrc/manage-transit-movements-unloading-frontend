@@ -31,7 +31,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   private val section: Section = arbitrary[StaticSection].sample.value
 
-  override def sections: Seq[Section] = Seq(section)
+  override lazy val sections: Seq[Section] = Seq(section)
 
   val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(section)
 

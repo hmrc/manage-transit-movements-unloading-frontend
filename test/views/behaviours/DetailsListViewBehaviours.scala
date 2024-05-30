@@ -27,7 +27,7 @@ import scala.jdk.CollectionConverters._
 
 trait DetailsListViewBehaviours extends ViewBehaviours with Generators {
 
-  def sections: Seq[Section] = arbitrary[List[AccordionSection]].sample.value
+  lazy val sections: Seq[Section] = arbitrary[List[AccordionSection]].sample.value
 
   // scalastyle:off method.length
 
