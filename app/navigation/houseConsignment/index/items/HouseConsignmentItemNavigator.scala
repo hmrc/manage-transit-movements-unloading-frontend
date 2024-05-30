@@ -52,7 +52,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     case AddDocumentYesNoPage(houseConsignmentIndex, itemIndex) =>
       ua => addDocumentYesNoNav(ua, houseConsignmentIndex, itemIndex, NormalMode)
     case CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex) =>
-      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode))
+      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
     case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCombinedNomenclatureCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
   }
@@ -60,15 +60,19 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex) =>
+      ua => addGrossWeightYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, CheckMode)
+    case GrossWeightPage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex) =>
+      ua => addNetWeightYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, CheckMode)
+    case NetWeightPage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case PackageTypePage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case PackageShippingMarkPage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case NumberOfPackagesPage(houseConsignmentIndex, _, _) =>
-      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case GrossWeightPage(houseConsignmentIndex, _) =>
-      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case NetWeightPage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case CombinedNomenclatureCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
@@ -78,9 +82,13 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) =>
       ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex, CheckMode)
+    case AddDocumentYesNoPage(houseConsignmentIndex, itemIndex) =>
+      ua => addDocumentYesNoNav(ua, houseConsignmentIndex, itemIndex, CheckMode)
+    case AddPackagesYesNoPage(houseConsignmentIndex, itemIndex) =>
+      ua => addPackagesYesNoRoute(ua, houseConsignmentIndex, itemIndex, CheckMode)
   }
 
-  def addGrossWeightYesNoRoute(
+  private def addGrossWeightYesNoRoute(
     ua: UserAnswers,
     arrivalId: ArrivalId,
     houseConsignmentIndex: Index,
@@ -88,11 +96,18 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     itemMode: Mode
   ): Option[Call] =
     ua.get(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex)).map {
-      case true  => routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-      case false => routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      case true =>
+        routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      case false =>
+        itemMode match {
+          case NormalMode =>
+            routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 
-  def addNetWeightYesNoRoute(
+  private def addNetWeightYesNoRoute(
     ua: UserAnswers,
     arrivalId: ArrivalId,
     houseConsignmentIndex: Index,
@@ -100,12 +115,18 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     itemMode: Mode
   ): Option[Call] =
     ua.get(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex)).map {
-      case true => routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      case true =>
+        routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
-        routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        itemMode match {
+          case NormalMode =>
+            routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 
-  def addCustomsUnionAndStatisticsCodeYesNoRoute(
+  private def addCustomsUnionAndStatisticsCodeYesNoRoute(
     ua: UserAnswers,
     arrivalId: ArrivalId,
     houseConsignmentIndex: Index,
@@ -141,33 +162,43 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case true =>
         controllers.houseConsignment.index.items.packages.routes.PackageTypeController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), houseConsignmentMode, itemMode, NormalMode)
-      case false => routes.AddAnotherItemController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+      case false =>
+        itemMode match {
+          case NormalMode =>
+            routes.AddAnotherItemController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 
-  def addCommodityCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
+  private def addCommodityCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
         routes.CommodityCodeController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
-        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
-  def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
+  private def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
         routes.CombinedNomenclatureCodeController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-      case false => routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+      case false => routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
-  def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
+  private def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
         controllers.houseConsignment.index.items.document.routes.TypeController
           .onPageLoad(ua.id, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
       case false =>
-        routes.AddAdditionalReferenceYesNoController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        itemMode match {
+          case NormalMode =>
+            routes.AddAdditionalReferenceYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 }
 
