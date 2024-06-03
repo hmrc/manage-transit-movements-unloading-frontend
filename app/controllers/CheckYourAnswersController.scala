@@ -33,16 +33,16 @@ import views.html.CheckYourAnswersView
 import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject() (
-                                             override val messagesApi: MessagesApi,
-                                             actions: Actions,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: CheckYourAnswersView,
-                                             viewModelProvider: CheckYourAnswersViewModelProvider,
-                                             submissionService: SubmissionService,
-                                             auditService: AuditService,
-                                             metricsService: MetricsService
-                                           )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController
+  override val messagesApi: MessagesApi,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckYourAnswersView,
+  viewModelProvider: CheckYourAnswersViewModelProvider,
+  submissionService: SubmissionService,
+  auditService: AuditService,
+  metricsService: MetricsService
+)(implicit val executionContext: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport
     with Logging {
 

@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 
 import javax.inject.Inject
 
-class MetricsService @Inject()(metrics: Metrics) {
+class MetricsService @Inject() (metrics: Metrics) {
   self: BaseController =>
 
   private lazy val registry: MetricRegistry = metrics.defaultRegistry
