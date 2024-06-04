@@ -44,6 +44,9 @@ trait PageTransformer {
     setValue(section, SequenceNumber, sequenceNumber) andThen
       setValue(section, Removed, false)
 
+  def setSequenceNumber(section: Section[JsObject], sequenceNumber: String)(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+    setSequenceNumber(section, BigInt(sequenceNumber))
+
   private def setValue[A](section: Section[JsObject], key: String, value: A)(implicit writes: Writes[A]): UserAnswers => Future[UserAnswers] = userAnswers =>
     Future.fromTry(userAnswers.set(section.path \ key, value))
 }

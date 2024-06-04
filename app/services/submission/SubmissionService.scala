@@ -79,11 +79,17 @@ class SubmissionService @Inject() (
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
-      messageRecipient = s"NTA.${officeOfDestination.take(2)}",
-      preparationDateAndTime = dateTimeService.currentDateTime,
-      messageIdentification = messageIdentificationService.randomIdentifier,
-      messageType = CC044C,
-      correlationIdentifier = None
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = s"NTA.${officeOfDestination.take(2)}",
+        preparationDateAndTime = dateTimeService.currentDateTime,
+        messageIdentification = messageIdentificationService.randomIdentifier
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC044C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
     )
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
@@ -193,7 +199,7 @@ class SubmissionService @Inject() (
         }
       }
 
-    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber)
+    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber.toString())
     lazy val seals              = transportEquipment.getList(_.Seal)
     lazy val goodsReferences    = transportEquipment.getList(_.GoodsReference)
 
@@ -379,7 +385,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.departureTransportMeans._
     import pages.sections.houseConsignment.index.documents._
 
-    lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber)
+    lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber.toString())
     lazy val departureTransportMeans = houseConsignment.getList(_.DepartureTransportMeans)
     lazy val supportingDocuments     = houseConsignment.getList(_.SupportingDocument)
     lazy val transportDocuments      = houseConsignment.getList(_.TransportDocument)
@@ -582,7 +588,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.items.additionalReference._
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
-    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
+    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber.toString())
     lazy val commodity            = consignmentItem.map(_.Commodity)
     lazy val packaging            = consignmentItem.getList(_.Packaging)
     lazy val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
@@ -644,7 +650,7 @@ class SubmissionService @Inject() (
     import pages.houseConsignment.index.items._
 
     lazy val commodityCode = ie043.flatMap(_.CommodityCode)
-    lazy val goodsMeasure  = ie043.map(_.GoodsMeasure)
+    lazy val goodsMeasure  = ie043.flatMap(_.GoodsMeasure)
 
     def commodityCodeReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType03]] =
       for {

@@ -44,7 +44,7 @@ case class SupportingTypePage(documentIndex: Index) extends BaseTypePage[Support
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.typeValue)
 }
@@ -54,7 +54,7 @@ case class TransportTypePage(documentIndex: Index) extends BaseTypePage[Transpor
   override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.typeValue)
 }
