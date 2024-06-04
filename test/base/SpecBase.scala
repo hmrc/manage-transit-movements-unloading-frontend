@@ -103,6 +103,9 @@ trait SpecBase
     def getSequenceNumber(section: Section[JsObject]): String =
       getValue[JsNumber](section, SequenceNumber).value.toBigInt.toString()
 
+    def getRemoved(section: Section[JsObject]): Boolean =
+      getValue[JsBoolean](section, Removed).value
+
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get
 

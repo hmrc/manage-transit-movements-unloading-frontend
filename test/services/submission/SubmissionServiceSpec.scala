@@ -394,6 +394,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   SealType04(
                     sequenceNumber = "2",
                     identifier = "originalTransportEquipment1SealIdentifier2"
+                  ),
+                  SealType04(
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment1SealIdentifier3"
                   )
                 ),
                 GoodsReference = Seq(
@@ -404,6 +408,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   GoodsReferenceType02(
                     sequenceNumber = "2",
                     declarationGoodsItemNumber = 2
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 3
                   )
                 )
               ),
@@ -419,16 +427,24 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   SealType04(
                     sequenceNumber = "2",
                     identifier = "originalTransportEquipment2SealIdentifier2"
+                  ),
+                  SealType04(
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment2SealIdentifier3"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType02(
                     sequenceNumber = "1",
-                    declarationGoodsItemNumber = 3
+                    declarationGoodsItemNumber = 4
                   ),
                   GoodsReferenceType02(
                     sequenceNumber = "2",
-                    declarationGoodsItemNumber = 4
+                    declarationGoodsItemNumber = 5
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 6
                   )
                 )
               )
@@ -448,8 +464,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setSequenceNumber(SealSection(Index(0), Index(1)), 2)
               .setNotRemoved(SealSection(Index(0), Index(1)))
               .setValue(SealIdentificationNumberPage(Index(0), Index(1)), "newTransportEquipment1SealIdentifier2")
-              /// Transport equipment 1 - Seal 3 - Added
-              .setValue(SealIdentificationNumberPage(Index(0), Index(2)), "newTransportEquipment1SealIdentifier3")
+              /// Transport equipment 1 - Seal 3 - Removed
+              .setSequenceNumber(SealSection(Index(0), Index(2)), 3)
+              .setRemoved(SealSection(Index(0), Index(2)))
+              .setValue(SealIdentificationNumberPage(Index(0), Index(2)), "originalTransportEquipment1SealIdentifier3")
+              /// Transport equipment 1 - Seal 4 - Added
+              .setValue(SealIdentificationNumberPage(Index(0), Index(3)), "newTransportEquipment1SealIdentifier4")
               /// Transport equipment 1 - Goods reference 1 - Unchanged
               .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
@@ -457,9 +477,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               /// Transport equipment 1 - Goods reference 2 - Changed
               .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
               .setNotRemoved(ItemSection(Index(0), Index(1)))
-              .setValue(ItemPage(Index(0), Index(1)), BigInt(5))
-              /// Transport equipment 1 - Goods reference 3 - Added
-              .setValue(ItemPage(Index(0), Index(2)), BigInt(6))
+              .setValue(ItemPage(Index(0), Index(1)), BigInt(7))
+              /// Transport equipment 1 - Goods reference 3 - Removed
+              .setSequenceNumber(ItemSection(Index(0), Index(2)), 3)
+              .setRemoved(ItemSection(Index(0), Index(2)))
+              .setValue(ItemPage(Index(0), Index(2)), BigInt(3))
+              /// Transport equipment 1 - Goods reference 4 - Added
+              .setValue(ItemPage(Index(0), Index(3)), BigInt(8))
 
               // Transport equipment 2 - Changed
               .setSequenceNumber(TransportEquipmentSection(Index(1)), 2)
@@ -473,18 +497,26 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setSequenceNumber(SealSection(Index(1), Index(1)), 2)
               .setNotRemoved(SealSection(Index(1), Index(1)))
               .setValue(SealIdentificationNumberPage(Index(1), Index(1)), "originalTransportEquipment2SealIdentifier2")
-              /// Transport equipment 2 - Seal 3 - Added
-              .setValue(SealIdentificationNumberPage(Index(1), Index(2)), "newTransportEquipment2SealIdentifier3")
+              /// Transport equipment 2 - Seal 3 - Removed
+              .setSequenceNumber(SealSection(Index(1), Index(2)), 3)
+              .setRemoved(SealSection(Index(1), Index(2)))
+              .setValue(SealIdentificationNumberPage(Index(1), Index(2)), "originalTransportEquipment2SealIdentifier3")
+              /// Transport equipment 2 - Seal 4 - Added
+              .setValue(SealIdentificationNumberPage(Index(1), Index(3)), "newTransportEquipment2SealIdentifier4")
               /// Transport equipment 2 - Goods reference 1 - Unchanged
               .setSequenceNumber(ItemSection(Index(1), Index(0)), 1)
               .setNotRemoved(ItemSection(Index(1), Index(0)))
-              .setValue(ItemPage(Index(1), Index(0)), BigInt(3))
+              .setValue(ItemPage(Index(1), Index(0)), BigInt(4))
               /// Transport equipment 2 - Goods reference 2 - Changed
               .setSequenceNumber(ItemSection(Index(1), Index(1)), 2)
               .setNotRemoved(ItemSection(Index(1), Index(1)))
-              .setValue(ItemPage(Index(1), Index(1)), BigInt(7))
-              /// Transport equipment 2 - Goods reference 3 - Added
-              .setValue(ItemPage(Index(1), Index(2)), BigInt(8))
+              .setValue(ItemPage(Index(1), Index(1)), BigInt(9))
+              /// Transport equipment 2 - Goods reference 3 - Removed
+              .setSequenceNumber(ItemSection(Index(1), Index(2)), 3)
+              .setRemoved(ItemSection(Index(1), Index(2)))
+              .setValue(ItemPage(Index(1), Index(2)), BigInt(6))
+              /// Transport equipment 2 - Goods reference 4 - Added
+              .setValue(ItemPage(Index(1), Index(3)), BigInt(10))
 
               // Transport equipment 3 - Removed
               .setSequenceNumber(TransportEquipmentSection(Index(2)), 3)
@@ -504,7 +536,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               TransportEquipmentType03(
                 sequenceNumber = "1",
                 containerIdentificationNumber = None,
-                numberOfSeals = Some(2),
+                numberOfSeals = Some(3),
                 Seal = Seq(
                   SealType02(
                     sequenceNumber = "2",
@@ -512,32 +544,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   ),
                   SealType02(
                     sequenceNumber = "3",
-                    identifier = "newTransportEquipment1SealIdentifier3"
-                  )
-                ),
-                GoodsReference = Seq(
-                  GoodsReferenceType01(
-                    sequenceNumber = "2",
-                    declarationGoodsItemNumber = 5
-                  ),
-                  GoodsReferenceType01(
-                    sequenceNumber = "3",
-                    declarationGoodsItemNumber = 6
-                  )
-                )
-              ),
-              TransportEquipmentType03(
-                sequenceNumber = "2",
-                containerIdentificationNumber = Some("newTransportEquipment2ContainerIdentificationNumber"),
-                numberOfSeals = Some(2),
-                Seal = Seq(
-                  SealType02(
-                    sequenceNumber = "1",
-                    identifier = "newTransportEquipment2SealIdentifier1"
+                    identifier = "originalTransportEquipment1SealIdentifier3"
                   ),
                   SealType02(
-                    sequenceNumber = "3",
-                    identifier = "newTransportEquipment2SealIdentifier3"
+                    sequenceNumber = "4",
+                    identifier = "newTransportEquipment1SealIdentifier4"
                   )
                 ),
                 GoodsReference = Seq(
@@ -547,7 +558,44 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   ),
                   GoodsReferenceType01(
                     sequenceNumber = "3",
+                    declarationGoodsItemNumber = 3
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = "4",
                     declarationGoodsItemNumber = 8
+                  )
+                )
+              ),
+              TransportEquipmentType03(
+                sequenceNumber = "2",
+                containerIdentificationNumber = Some("newTransportEquipment2ContainerIdentificationNumber"),
+                numberOfSeals = Some(3),
+                Seal = Seq(
+                  SealType02(
+                    sequenceNumber = "1",
+                    identifier = "newTransportEquipment2SealIdentifier1"
+                  ),
+                  SealType02(
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment2SealIdentifier3"
+                  ),
+                  SealType02(
+                    sequenceNumber = "4",
+                    identifier = "newTransportEquipment2SealIdentifier4"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType01(
+                    sequenceNumber = "2",
+                    declarationGoodsItemNumber = 9
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 6
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = "4",
+                    declarationGoodsItemNumber = 10
                   )
                 )
               ),
