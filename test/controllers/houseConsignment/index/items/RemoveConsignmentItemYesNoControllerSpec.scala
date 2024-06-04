@@ -25,10 +25,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import pages.sections.ItemSection
-import play.api.libs.json.{__, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.transformers.SequenceNumber
 import views.html.houseConsignment.index.items.RemoveConsignmentItemYesNoView
 
 import scala.concurrent.Future
@@ -64,7 +63,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
       "must redirect to cross check page and remove consignment item at specified index" in {
         val userAnswers = emptyUserAnswers
           .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
-          .setValue(ItemSection(houseConsignmentIndex, itemIndex), __ \ SequenceNumber, 1)
+          .setSequenceNumber(ItemSection(houseConsignmentIndex, itemIndex), 1)
           .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
           .setNotRemoved(ItemSection(houseConsignmentIndex, itemIndex))
 
@@ -98,7 +97,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
-          .setValue(ItemSection(houseConsignmentIndex, itemIndex), __ \ SequenceNumber, 1)
+          .setSequenceNumber(ItemSection(houseConsignmentIndex, itemIndex), 1)
           .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
           .setNotRemoved(ItemSection(houseConsignmentIndex, itemIndex))
 

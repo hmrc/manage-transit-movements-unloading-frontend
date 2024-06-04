@@ -17,92 +17,91 @@
 package utils.answersHelpers.consignment
 
 import base.AppWithDefaultMockFixtures
-import generated.{GoodsReferenceType01, SealType04, TransportEquipmentType07}
-import models.UserAnswers
-import org.mockito.Mockito.when
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import generated._
+import org.scalacheck.Arbitrary.arbitrary
 import utils.answersHelpers.AnswersHelperSpecBase
 import utils.answersHelpers.consignment.incident.IncidentTransportEquipmentAnswersHelper
 
 class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase with AppWithDefaultMockFixtures {
-
-  val mockUserAnswers: UserAnswers                         = mock[UserAnswers]
-  val mockTransportEquipmentType: TransportEquipmentType07 = mock[TransportEquipmentType07]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[TransportEquipmentType07].toInstance(mockTransportEquipmentType))
 
   "IncidentTransportEquipmentAnswersHelper" - {
 
     "containerIdentificationNumber" - {
 
       "must return None when containerIdentificationNumber undefined" in {
+        forAll(arbitrary[TransportEquipmentType07].map(_.copy(containerIdentificationNumber = None))) {
+          transportEquipment =>
+            val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
-        val helper =
-          new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers,
-                                                      TransportEquipmentType07(1, None, None, Seq(SealType04(1, "1")), Seq(GoodsReferenceType01(1, 123)))
-          )
-        helper.containerIdentificationNumber mustBe None
+            val result = helper.containerIdentificationNumber
+
+            result mustBe None
+        }
       }
 
       "return a SummaryListRow for containerIdentificationNumber" in {
-        val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
-        when(mockTransportEquipmentType.containerIdentificationNumber).thenReturn(Some("Container123"))
+        val containerIdentificationNumber = "Container123"
 
-        val result: Option[SummaryListRow] = helper.containerIdentificationNumber
+        forAll(arbitrary[TransportEquipmentType07].map(_.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))) {
+          transportEquipment =>
+            val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
-        result.isDefined mustBe true
-        result.get.value.content.value mustBe "Container123"
-        result.get.actions must not be defined
+            val result = helper.containerIdentificationNumber
 
+            result.isDefined mustBe true
+            result.get.value.content.value mustBe containerIdentificationNumber
+            result.get.actions must not be defined
+        }
       }
     }
 
     "transportEquipmentSeals" - {
       "must generate row for each seal" in {
+        val seals = Seq(SealType04("1", "Seal1"), SealType04("2", "Seal2"))
 
-        val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
-        when(mockTransportEquipmentType.Seal).thenReturn(Seq(SealType04(1, "Seal1"), SealType04(2, "Seal2")))
+        forAll(arbitrary[TransportEquipmentType07].map(_.copy(Seal = seals))) {
+          transportEquipment =>
+            val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
-        val result = helper.transportEquipmentSeals
+            val result = helper.transportEquipmentSeals
 
-        result.sectionTitle.value mustBe "Seals"
+            result.sectionTitle.value mustBe "Seals"
 
-        result.rows.size mustBe 2
+            result.rows.size mustBe 2
 
-        result.rows.head.key.value mustBe "Seal 1"
-        result.rows.head.value.value mustBe "Seal1"
-        result.rows.head.actions must not be defined
+            result.rows.head.key.value mustBe "Seal 1"
+            result.rows.head.value.value mustBe "Seal1"
+            result.rows.head.actions must not be defined
 
-        result.rows(1).key.value mustBe "Seal 2"
-        result.rows(1).value.value mustBe "Seal2"
-        result.rows(1).actions must not be defined
+            result.rows(1).key.value mustBe "Seal 2"
+            result.rows(1).value.value mustBe "Seal2"
+            result.rows(1).actions must not be defined
+        }
       }
     }
 
     "itemNumber" - {
       "must generate row for item" in {
+        val goodsReferences = Seq(GoodsReferenceType01("1", 123), GoodsReferenceType01("2", 234))
 
-        val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
-        when(mockTransportEquipmentType.GoodsReference).thenReturn(Seq(GoodsReferenceType01(1, 123), GoodsReferenceType01(2, 234)))
+        forAll(arbitrary[TransportEquipmentType07].map(_.copy(GoodsReference = goodsReferences))) {
+          transportEquipment =>
+            val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
-        val result = helper.itemNumbers
+            val result = helper.itemNumbers
 
-        result.sectionTitle.value mustBe "Goods item numbers"
+            result.sectionTitle.value mustBe "Goods item numbers"
 
-        result.rows.size mustBe 2
+            result.rows.size mustBe 2
 
-        result.rows.head.key.value mustBe "Goods item number 1"
-        result.rows.head.value.value mustBe "123"
-        result.rows.head.actions must not be defined
+            result.rows.head.key.value mustBe "Goods item number 1"
+            result.rows.head.value.value mustBe "123"
+            result.rows.head.actions must not be defined
 
-        result.rows(1).key.value mustBe "Goods item number 2"
-        result.rows(1).value.value mustBe "234"
-        result.rows(1).actions must not be defined
+            result.rows(1).key.value mustBe "Goods item number 2"
+            result.rows(1).value.value mustBe "234"
+            result.rows(1).actions must not be defined
+        }
       }
     }
   }
