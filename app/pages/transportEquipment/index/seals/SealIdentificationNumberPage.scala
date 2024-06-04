@@ -31,7 +31,7 @@ case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index)
   override def valueInIE043(transportEquipment: Seq[SealType04], sequenceNumber: Option[BigInt]): Option[String] =
     transportEquipment
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.identifier)
 }

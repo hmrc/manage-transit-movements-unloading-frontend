@@ -23,7 +23,7 @@ import models.ArrivalId
 import models.AuditType.UnloadingRemarks
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.submission.{AuditService, SubmissionService}
+import services.submission.{AuditService, MetricsService, SubmissionService}
 import uk.gov.hmrc.http.HttpReads.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckYourAnswersViewModel
@@ -39,7 +39,8 @@ class CheckYourAnswersController @Inject() (
   view: CheckYourAnswersView,
   viewModelProvider: CheckYourAnswersViewModelProvider,
   submissionService: SubmissionService,
-  auditService: AuditService
+  auditService: AuditService,
+  metricsService: MetricsService
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -58,9 +59,11 @@ class CheckYourAnswersController @Inject() (
       implicit request =>
         submissionService.submit(request.userAnswers, arrivalId).map {
           response =>
+            val auditType = UnloadingRemarks
+            metricsService.increment(auditType.name, response)
             response.status match {
               case x if is2xx(x) =>
-                auditService.audit(UnloadingRemarks, request.userAnswers)
+                auditService.audit(auditType, request.userAnswers)
                 Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
               case x =>
                 logger.error(s"Error submitting IE044: $x")

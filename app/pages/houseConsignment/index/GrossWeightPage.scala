@@ -31,7 +31,7 @@ case class GrossWeightPage(houseConsignmentIndex: Index) extends DiscrepancyQues
   override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.grossMass)
 }

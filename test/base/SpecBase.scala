@@ -100,8 +100,8 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: Section[JsObject]): BigInt =
-      getValue[JsNumber](section, SequenceNumber).value.toBigInt
+    def getSequenceNumber(section: Section[JsObject]): String =
+      getValue[JsNumber](section, SequenceNumber).value.toBigInt.toString()
 
     def getRemoved(section: Section[JsObject]): Boolean =
       getValue[JsBoolean](section, Removed).value
