@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.Index
 import models.reference.GoodsReference
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
+import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
 
 class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -101,10 +102,11 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           )
         }
 
-        "and multiple have been applied to the transport equipment" in {
+        "and multiple have been applied to the transport equipment with a removal" in {
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
             .setValue(ItemPage(Index(0), Index(1)), BigInt(2))
+            .setRemoved(ItemSection(Index(0), Index(1)))
             .setValue(ItemPage(Index(0), Index(2)), BigInt(3))
             .setValue(ItemPage(Index(0), Index(3)), BigInt(4))
             .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
@@ -118,7 +120,9 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), None)
 
-          result mustBe Nil
+          result mustBe Seq(
+            GoodsReference(BigInt(2), "description 2")
+          )
         }
       }
 
@@ -166,10 +170,11 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           )
         }
 
-        "and multiple have been applied to the transport equipment" in {
+        "and multiple have been applied to the transport equipment with a removal" in {
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
             .setValue(ItemPage(Index(0), Index(1)), BigInt(2))
+            .setRemoved(ItemSection(Index(0), Index(1)))
             .setValue(ItemPage(Index(0), Index(2)), BigInt(3))
             .setValue(ItemPage(Index(0), Index(3)), BigInt(4))
             .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
@@ -184,7 +189,8 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
 
           result mustBe Seq(
-            GoodsReference(BigInt(1), "description 1")
+            GoodsReference(BigInt(1), "description 1"),
+            GoodsReference(BigInt(2), "description 2")
           )
         }
       }
