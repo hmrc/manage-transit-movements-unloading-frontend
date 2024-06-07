@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.Index
 import models.reference.GoodsReference
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
+import pages.sections.ItemsSection
 import pages.transportEquipment.index.ItemPage
 import play.api.libs.json.Json
 
@@ -292,10 +293,13 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           // Item 5 - Added in IE044
           .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(4)), BigInt(5))
           .setValue(ItemDescriptionPage(Index(0), Index(4)), "item5Description")
-          // Item 6 - Semi-added in IE044 (needs removing)
+          // Item 6 - Semi-added then removed in IE044
           .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(5)), BigInt(6))
+          .setRemoved(ItemSection(Index(0), Index(5)))
 
         val result = service.removeEmptyItems(userAnswers, Index(0))
+
+        result.getValue(ItemsSection(Index(0))).value.length mustBe 3
 
         result.get(ItemSection(Index(0), Index(0))) mustBe defined
         result.get(DeclarationGoodsItemNumberPage(Index(0), Index(0))).value mustBe BigInt(1)

@@ -50,27 +50,30 @@ class AddAnotherItemController @Inject() (
   private def form(viewModel: AddAnotherItemViewModel, houseConsignmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
-      Ok(view(form(viewModel, houseConsignmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
+      val userAnswers = goodsReferenceService.removeEmptyItems(request.userAnswers, houseConsignmentIndex)
+      sessionRepository.set(userAnswers).map {
+        _ =>
+          val viewModel = viewModelProvider(userAnswers, arrivalId, houseConsignmentIndex, mode)
+          Ok(view(form(viewModel, houseConsignmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
+      }
   }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val userAnswers = goodsReferenceService.removeEmptyItems(request.userAnswers, houseConsignmentIndex)
-      val viewModel   = viewModelProvider(userAnswers, arrivalId, houseConsignmentIndex, mode)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
       form(viewModel, houseConsignmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, userAnswers.mrn, arrivalId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
           {
             case true =>
               val itemIndex                      = viewModel.nextIndex
-              val nextDeclarationGoodsItemNumber = goodsReferenceService.getNextDeclarationGoodsItemNumber(userAnswers)
+              val nextDeclarationGoodsItemNumber = goodsReferenceService.getNextDeclarationGoodsItemNumber(request.userAnswers)
               for {
                 updatedAnswers <- Future.fromTry {
-                  userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
+                  request.userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
                 }
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(
@@ -78,14 +81,13 @@ class AddAnotherItemController @Inject() (
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, itemIndex)
               )
             case false =>
-              sessionRepository.set(userAnswers).map {
-                _ =>
-                  mode match {
-                    case NormalMode =>
-                      Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
-                    case CheckMode =>
-                      Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-                  }
+              Future.successful {
+                mode match {
+                  case NormalMode =>
+                    Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
+                  case CheckMode =>
+                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                }
               }
           }
         )

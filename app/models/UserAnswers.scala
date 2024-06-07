@@ -23,7 +23,7 @@ import pages.sections.Section
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import utils.transformers.{Removed, SequenceNumber}
+import utils.transformers.{DeclarationGoodsItemNumber, Removed, SequenceNumber}
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
@@ -85,7 +85,7 @@ final case class UserAnswers(
     removeExceptPaths(section, __ \ SequenceNumber)
 
   def removeItem(section: Section[JsObject]): Try[UserAnswers] =
-    removeExceptPaths(section, __ \ SequenceNumber, __ \ "declarationGoodsItemNumber")
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ DeclarationGoodsItemNumber)
 
   def removeDocument(section: Section[JsObject]): Try[UserAnswers] =
     removeExceptPaths(section, __ \ SequenceNumber, __ \ "type" \ "type")
@@ -94,7 +94,7 @@ final case class UserAnswers(
     removeExceptPaths(section, __ \ SequenceNumber, __ \ "identifier")
 
   def removeGoodsReference(section: Section[JsObject]): Try[UserAnswers] =
-    removeExceptPaths(section, __ \ SequenceNumber, __ \ "declarationGoodsItemNumber")
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ DeclarationGoodsItemNumber)
 
   private def removeExceptPaths[A](section: QuestionPage[A], paths: JsPath*): Try[UserAnswers] =
     for {
