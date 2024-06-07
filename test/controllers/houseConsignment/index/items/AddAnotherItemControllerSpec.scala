@@ -19,16 +19,19 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GoodsReferenceService
 import viewModels.ListItem
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
@@ -48,14 +51,20 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val mockViewModelProvider = mock[AddAnotherItemViewModelProvider]
 
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AddAnotherItemViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[AddAnotherItemViewModelProvider]).toInstance(mockViewModelProvider),
+        bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
+    reset(mockGoodsReferenceService)
   }
 
   private val listItem          = arbitrary[ListItem].sample.value
@@ -108,9 +117,15 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to add description page at next index" in {
+        "must redirect to add description page at next index and set declaration goods item number" in {
+          val nextIndex                      = Index(0)
+          val nextDeclarationGoodsItemNumber = positiveBigInts.sample.value
+
           when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
+            .thenReturn(notMaxedOutViewModel.copy(nextIndex = nextIndex))
+
+          when(mockGoodsReferenceService.getNextDeclarationGoodsItemNumber(any()))
+            .thenReturn(nextDeclarationGoodsItemNumber)
 
           setExistingUserAnswers(emptyUserAnswers)
 
@@ -122,8 +137,12 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.DescriptionController
-            .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
+            .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.get(DeclarationGoodsItemNumberPage(houseConsignmentIndex, nextIndex)).value mustBe nextDeclarationGoodsItemNumber
         }
       }
 
