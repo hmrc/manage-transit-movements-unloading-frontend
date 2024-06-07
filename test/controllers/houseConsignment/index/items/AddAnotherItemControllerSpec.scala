@@ -145,6 +145,8 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
             .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, nextIndex)
             .url
 
+          verify(mockViewModelProvider).apply(eqTo(answersAfterCleanup), eqTo(arrivalId), eqTo(houseConsignmentIndex), eqTo(houseConsignmentMode))(any())
+
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
           val expectedAnswers = answersAfterCleanup.setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, nextIndex), nextDeclarationGoodsItemNumber)
@@ -159,10 +161,16 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           "when adding house consignment" in {
             val houseConsignmentMode = NormalMode
 
+            val initialAnswers      = emptyUserAnswers
+            val answersAfterCleanup = emptyUserAnswers
+
             when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
               .thenReturn(notMaxedOutViewModel)
 
-            setExistingUserAnswers(emptyUserAnswers)
+            when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+              .thenReturn(answersAfterCleanup)
+
+            setExistingUserAnswers(initialAnswers)
 
             val request = FakeRequest(POST, routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url)
               .withFormUrlEncodedBody(("value", "false"))
@@ -173,15 +181,23 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, houseConsignmentMode).url
+
+            verify(mockViewModelProvider).apply(eqTo(answersAfterCleanup), eqTo(arrivalId), eqTo(houseConsignmentIndex), eqTo(houseConsignmentMode))(any())
           }
 
           "when changing house consignment" in {
             val houseConsignmentMode = CheckMode
 
+            val initialAnswers      = emptyUserAnswers
+            val answersAfterCleanup = emptyUserAnswers
+
             when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
               .thenReturn(notMaxedOutViewModel)
 
-            setExistingUserAnswers(emptyUserAnswers)
+            when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+              .thenReturn(answersAfterCleanup)
+
+            setExistingUserAnswers(initialAnswers)
 
             val request = FakeRequest(POST, routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url)
               .withFormUrlEncodedBody(("value", "false"))
@@ -192,6 +208,10 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            verify(mockViewModelProvider).apply(eqTo(answersAfterCleanup), eqTo(arrivalId), eqTo(houseConsignmentIndex), eqTo(houseConsignmentMode))(any())
+
+            verify(mockSessionRepository).set(eqTo(answersAfterCleanup))
           }
         }
       }
@@ -218,10 +238,16 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
+        val initialAnswers      = emptyUserAnswers
+        val answersAfterCleanup = emptyUserAnswers
+
         when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers)
+        when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+          .thenReturn(answersAfterCleanup)
+
+        setExistingUserAnswers(initialAnswers)
 
         val request = FakeRequest(POST, addAnotherItemRoute)
           .withFormUrlEncodedBody(("value", ""))
