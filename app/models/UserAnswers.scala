@@ -114,8 +114,9 @@ final case class UserAnswers(
           ).getOrElse(acc)
       }
       userAnswers <- objWithPathsRetained.fields match {
-        case Nil    => remove(section)
-        case values => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
+        case Nil                                                  => remove(section)
+        case values if !values.map(_._1).contains(SequenceNumber) => remove(section)
+        case values                                               => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
       }
     } yield userAnswers
 }
