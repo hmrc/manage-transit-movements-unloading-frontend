@@ -1937,6 +1937,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               // Consignment item 4 - Added
               .setValue(ItemDescriptionPage(Index(0), Index(3)), "newDescriptionOfGoods4")
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(3)), BigInt(4))
+              // Consignment item 4 - Semi-added (user clicks Yes to add another item then clicks Back before adding a description)
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(4)), BigInt(5))
 
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads).value.ConsignmentItem
