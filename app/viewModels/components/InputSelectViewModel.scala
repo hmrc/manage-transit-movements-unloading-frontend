@@ -37,4 +37,13 @@ object InputSelectViewModel {
   case class AddressCountrySelect(
     label: String
   ) extends InputSelectViewModel
+
+  def apply(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Option[Html]
+  ): InputSelectViewModel = additionalHtml match {
+    case Some(value) => SelectWithAdditionalHtml(heading, caption, value)
+    case None        => OrdinarySelect(heading, caption)
+  }
 }

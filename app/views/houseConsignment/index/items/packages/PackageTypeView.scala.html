@@ -20,7 +20,7 @@
 @import models.reference.Selectable
 @import models.reference.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import viewModels.components.InputSelectViewModel._
+@import viewModels.components.InputSelectViewModel
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 @import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel
 
@@ -45,10 +45,10 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = SelectWithAdditionalHtml(
+            selectType = InputSelectViewModel(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.index.item.packageType.paragraph").toParagraph
+                additionalHtml = if (packageMode != NormalMode) Some(messages("houseConsignment.index.item.packageType.paragraph").toParagraph) else None
             ),
             hint = Some(messages("houseConsignment.index.item.packageType.hint")),
             selectItems = packageTypes.toSelectItems(form.value),
