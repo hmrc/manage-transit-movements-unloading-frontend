@@ -21,7 +21,6 @@ import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
 import pages.sections.{HouseConsignmentsSection, ItemSection, ItemsSection}
 import pages.transportEquipment.index.ItemPage
-import play.api.libs.json.JsBoolean
 import utils.transformers.{DeclarationGoodsItemNumber, Removed}
 
 import javax.inject.Inject
@@ -93,11 +92,9 @@ class GoodsReferenceService @Inject() {
           (acc.get(ItemSection(hcIndex, itemIndex)) match {
             case Some(obj) =>
               obj.fields match {
-                case Nil                                                                  => acc.remove(ItemSection(hcIndex, itemIndex))
-                case (DeclarationGoodsItemNumber, _) :: Nil                               => acc.remove(ItemSection(hcIndex, itemIndex))
-                case (DeclarationGoodsItemNumber, _) :: (Removed, JsBoolean(true)) :: Nil => acc.remove(ItemSection(hcIndex, itemIndex))
-                case (Removed, JsBoolean(true)) :: (DeclarationGoodsItemNumber, _) :: Nil => acc.remove(ItemSection(hcIndex, itemIndex))
-                case _                                                                    => Try(acc)
+                case Nil                                    => acc.remove(ItemSection(hcIndex, itemIndex))
+                case (DeclarationGoodsItemNumber, _) :: Nil => acc.remove(ItemSection(hcIndex, itemIndex))
+                case _                                      => Try(acc)
               }
             case None => Try(acc)
           }).getOrElse(acc)

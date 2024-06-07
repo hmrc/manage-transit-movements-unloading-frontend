@@ -293,9 +293,6 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           // Item 5 - Added in IE044
           .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(4)), BigInt(5))
           .setValue(ItemDescriptionPage(Index(0), Index(4)), "item5Description")
-          // Item 6 - Semi-added then removed in IE044
-          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(5)), BigInt(6))
-          .setRemoved(ItemSection(Index(0), Index(5)))
 
         val result = service.removeEmptyItems(userAnswers, Index(0))
 

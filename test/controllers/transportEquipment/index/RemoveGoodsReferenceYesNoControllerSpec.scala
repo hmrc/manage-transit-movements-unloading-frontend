@@ -82,7 +82,10 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
     "must redirect to the next page" - {
       "when yes is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
+        val userAnswers = emptyUserAnswers
+          .setSequenceNumber(ItemSection(equipmentIndex, itemIndex), BigInt(1))
+          .setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
+
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeItemYesNoRoute)
