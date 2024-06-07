@@ -1881,6 +1881,140 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         }
       }
     }
+
+    "must create consignment items" - {
+      import pages.houseConsignment.index.items._
+      import pages.sections.ItemSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val consignmentItems = Seq(
+              ConsignmentItemType04(
+                goodsItemNumber = "1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods1"
+                )
+              ),
+              ConsignmentItemType04(
+                goodsItemNumber = "2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods2"
+                )
+              ),
+              ConsignmentItemType04(
+                goodsItemNumber = "3",
+                declarationGoodsItemNumber = 3,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods3"
+                )
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber.toString,
+              ConsignmentItem = consignmentItems
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Consignment item 1 - Changed description of goods
+              .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              .setValue(ItemDescriptionPage(Index(0), Index(0)), "newDescriptionOfGoods1")
+              // Consignment item 2 - Removed
+              .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
+              .setRemoved(ItemSection(Index(0), Index(1)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+              // Consignment item 3 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(2)), 3)
+              .setNotRemoved(ItemSection(Index(0), Index(2)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(2)), BigInt(3))
+              .setValue(ItemDescriptionPage(Index(0), Index(2)), "originalDescriptionOfGoods3")
+              // Consignment item 4 - Added
+              .setValue(ItemDescriptionPage(Index(0), Index(3)), "newDescriptionOfGoods4")
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(3)), BigInt(4))
+              // Consignment item 4 - Semi-added (user clicks Yes to add another item then clicks Back before adding a description)
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(4)), BigInt(5))
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.ConsignmentItem
+
+            result mustBe Seq(
+              ConsignmentItemType05(
+                goodsItemNumber = "1",
+                declarationGoodsItemNumber = 1,
+                Commodity = Some(
+                  CommodityType03(
+                    descriptionOfGoods = Some("newDescriptionOfGoods1")
+                  )
+                )
+              ),
+              ConsignmentItemType05(
+                goodsItemNumber = "2",
+                declarationGoodsItemNumber = 2
+              ),
+              ConsignmentItemType05(
+                goodsItemNumber = "4",
+                declarationGoodsItemNumber = 4,
+                Commodity = Some(
+                  CommodityType03(
+                    descriptionOfGoods = Some("newDescriptionOfGoods4")
+                  )
+                )
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val consignmentItems = Seq(
+              ConsignmentItemType04(
+                goodsItemNumber = "1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods1"
+                )
+              ),
+              ConsignmentItemType04(
+                goodsItemNumber = "2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods2"
+                )
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber.toString,
+              ConsignmentItem = consignmentItems
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Consignment item 1 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              .setValue(ItemDescriptionPage(Index(0), Index(0)), "originalDescriptionOfGoods1")
+              // Consignment item 2 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
+              .setNotRemoved(ItemSection(Index(0), Index(1)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+              .setValue(ItemDescriptionPage(Index(0), Index(1)), "originalDescriptionOfGoods2")
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
   }
 
   "consignmentItemReads" - {
