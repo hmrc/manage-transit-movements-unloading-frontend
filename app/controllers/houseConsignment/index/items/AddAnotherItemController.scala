@@ -67,9 +67,10 @@ class AddAnotherItemController @Inject() (
             case true =>
               val itemIndex                      = viewModel.nextIndex
               val nextDeclarationGoodsItemNumber = goodsReferenceService.getNextDeclarationGoodsItemNumber(request.userAnswers)
+              val answers                        = goodsReferenceService.removeEmptyItems(request.userAnswers, houseConsignmentIndex)
               for {
                 updatedAnswers <- Future.fromTry {
-                  request.userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
+                  answers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
                 }
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(

@@ -20,8 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.Index
 import models.reference.GoodsReference
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
-import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
+import play.api.libs.json.Json
 
 class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
@@ -58,6 +58,8 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
   }
 
   "getGoodsReferences" - {
+    import pages.sections.transport.equipment.ItemSection
+
     "must get goods references that have not already been applied to the transport equipment" - {
       "when there is no current index" - {
         "and none have been applied to the transport equipment" in {
@@ -230,6 +232,79 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
         val result = service.getNextDeclarationGoodsItemNumber(userAnswers)
 
         result mustBe BigInt(6)
+      }
+    }
+  }
+
+  "removeEmptyItems" - {
+    import pages.sections.ItemSection
+
+    "when there is an item with nothing in it" - {
+      "must remove it" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(ItemSection(Index(0), Index(0)), Json.obj())
+
+        val result = service.removeEmptyItems(userAnswers, Index(0))
+
+        result.get(ItemSection(Index(0), Index(0))) must not be defined
+        result.get(ItemSection(Index(1), Index(0))) must not be defined
+      }
+    }
+
+    "when there is an item with just a declaration goods item number" - {
+      "must remove it" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+
+        val result = service.removeEmptyItems(userAnswers, Index(0))
+
+        result.get(ItemSection(Index(0), Index(0))) must not be defined
+      }
+    }
+
+    "when there is an item with a goods item number and a declaration goods item number" - {
+      "must not remove it" in {
+        val userAnswers = emptyUserAnswers
+          .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+
+        val result = service.removeEmptyItems(userAnswers, Index(0))
+
+        result.get(ItemSection(Index(0), Index(0))) mustBe defined
+        result.get(DeclarationGoodsItemNumberPage(Index(0), Index(0))) mustBe defined
+      }
+    }
+
+    "when there are empty and non-empty items" - {
+      "must remove the empty items" in {
+        val userAnswers = emptyUserAnswers
+          // Item 1 - Imported from IE043
+          .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+          .setNotRemoved(ItemSection(Index(0), Index(0)))
+          // Item 2 - Semi-added in IE044 (needs removing)
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+          // Item 3 - Semi-added in IE044 (needs removing)
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(2)), BigInt(3))
+          // Item 4 - Added in IE044
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(3)), BigInt(4))
+          .setValue(ItemDescriptionPage(Index(0), Index(3)), "item4Description")
+          // Item 5 - Added in IE044
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(4)), BigInt(5))
+          .setValue(ItemDescriptionPage(Index(0), Index(4)), "item5Description")
+          // Item 6 - Semi-added in IE044 (needs removing)
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(5)), BigInt(6))
+
+        val result = service.removeEmptyItems(userAnswers, Index(0))
+
+        result.get(ItemSection(Index(0), Index(0))) mustBe defined
+        result.get(DeclarationGoodsItemNumberPage(Index(0), Index(0))).value mustBe BigInt(1)
+
+        result.get(ItemSection(Index(0), Index(1))) mustBe defined
+        result.get(DeclarationGoodsItemNumberPage(Index(0), Index(1))).value mustBe BigInt(4)
+
+        result.get(ItemSection(Index(0), Index(2))) mustBe defined
+        result.get(DeclarationGoodsItemNumberPage(Index(0), Index(2))).value mustBe BigInt(5)
       }
     }
   }
