@@ -743,12 +743,12 @@ houseConsignment.combinedNomenclatureCode.error.invalid = The combined nomenclat
 houseConsignment.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters long
 
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.title = What is the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.title = What is the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.title = What is the Customs Union and Statistics (CUS) code?
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.heading = What is the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.heading = What is the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.heading = What is the Customs Union and Statistics (CUS) code?
 houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and can include letters, numbers and a hyphen. For example, 1234567-1.
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.required = Enter the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.required = Enter the Customs Union and Statistics (CUS) code
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 houseConsignment.item.customsUnionAndStatisticsCode.error.characters = The Customs Union and Statistics (CUS) code must only include letters a to z, numbers 0 to 9 and a hyphen
 houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Union and Statistics (CUS) code
