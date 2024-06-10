@@ -32,9 +32,9 @@ class CustomsUnionAndStatisticsCodeViewModelSpec extends SpecBase with ScalaChec
       val viewModelProvider = new CustomsUnionAndStatisticsCodeViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, NormalMode, Index(0), Index(1))
 
-      result.title mustBe "What is the Customs Union and Statistics (CUS) code for item 2 in house consignment 1?"
-      result.heading mustBe "What is the Customs Union and Statistics (CUS) code for item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the Customs Union and Statistics (CUS) code for item 2 in house consignment 1"
+      result.title mustBe "What is the Customs Union and Statistics (CUS) code?"
+      result.heading mustBe "What is the Customs Union and Statistics (CUS) code?"
+      result.requiredError mustBe "Enter the Customs Union and Statistics (CUS) code"
     }
 
     "when Check mode" in {

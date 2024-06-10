@@ -24,11 +24,17 @@ trait TestMessageData {
   val basicIe043: CC043CType = CC043CType(
     messageSequence1 = MESSAGESequence(
       messageSender = "",
-      messageRecipient = "",
-      preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
-      messageIdentification = "",
-      messageType = CC043C,
-      correlationIdentifier = None
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "",
+        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+        messageIdentification = ""
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC043C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
     ),
     TransitOperation = TransitOperationType14(
       MRN = "MRN",

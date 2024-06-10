@@ -19,22 +19,39 @@ package services
 import models.reference.GoodsReference
 import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
+import pages.sections.{HouseConsignmentsSection, ItemsSection}
 import pages.transportEquipment.index.ItemPage
+import utils.transformers.Removed
 
 import javax.inject.Inject
 
 class GoodsReferenceService @Inject() {
 
   def getGoodsReferences(userAnswers: UserAnswers, equipmentIndex: Index, goodsReferenceIndex: Option[Index]): Seq[GoodsReference] = {
-    import pages.sections.transport.equipment.{ItemsSection => GoodsReferencesSection}
+    import pages.sections.transport.equipment.{ItemSection => GoodsReferenceSection, ItemsSection => GoodsReferencesSection}
 
-    val availableDeclarationGoodsItemNumbers = (for {
-      goodsReferenceIndex <- (0 until userAnswers.get(GoodsReferencesSection(equipmentIndex)).length).map(Index(_)).filterNot(goodsReferenceIndex.contains)
-    } yield userAnswers.get(ItemPage(equipmentIndex, goodsReferenceIndex))).flatten
+    val unavailableDeclarationGoodsItemNumbers = {
+      val numberOfGoodsReferences = userAnswers.get(GoodsReferencesSection(equipmentIndex)).length
+      (0 until numberOfGoodsReferences).map(Index(_)).foldLeft(Seq.empty[BigInt]) {
+        case (acc, index) =>
+          if (goodsReferenceIndex.contains(index)) {
+            acc
+          } else {
+            userAnswers.get[Boolean](GoodsReferenceSection(equipmentIndex, index).path \ Removed) match {
+              case Some(true) => acc
+              case _ =>
+                userAnswers.get(ItemPage(equipmentIndex, index)) match {
+                  case Some(value) => acc :+ value
+                  case None        => acc
+                }
+            }
+          }
+      }
+    }
 
     getGoodsReferences(userAnswers).filterNot {
       goodsReference =>
-        availableDeclarationGoodsItemNumbers.contains(goodsReference.declarationGoodsItemNumber)
+        unavailableDeclarationGoodsItemNumbers.contains(goodsReference.declarationGoodsItemNumber)
     }
   }
 
@@ -54,5 +71,15 @@ class GoodsReferenceService @Inject() {
       declarationGoodsItemNumber <- userAnswers.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex))
       description                <- userAnswers.get(ItemDescriptionPage(hcIndex, itemIndex))
     } yield GoodsReference(declarationGoodsItemNumber, description)
+  }
+
+  def getNextDeclarationGoodsItemNumber(userAnswers: UserAnswers): BigInt = {
+    val declarationGoodsItemNumbers = for {
+      hcIndex                    <- (0 until userAnswers.get(HouseConsignmentsSection).length).map(Index(_))
+      itemIndex                  <- (0 until userAnswers.get(ItemsSection(hcIndex)).length).map(Index(_))
+      declarationGoodsItemNumber <- userAnswers.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex))
+    } yield declarationGoodsItemNumber
+
+    declarationGoodsItemNumbers.maxOption.getOrElse(BigInt(0)) + 1
   }
 }

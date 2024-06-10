@@ -17,6 +17,7 @@
 package viewModels.houseConsignment.index.items
 
 import config.FrontendAppConfig
+import controllers.houseConsignment.index.items.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import pages.sections.ItemsSection
@@ -60,29 +61,27 @@ object AddAnotherItemViewModel {
 
       val listItems = items.mapWithIndex {
         case (_, itemIndex) =>
-          def itemNumber(increment: Int) = messages("houseConsignment.index.itemPrefix", increment)
+          def itemNumber(increment: Int): String = messages("houseConsignment.index.itemPrefix", increment)
 
-          val name = userAnswers.get(ItemDescriptionPage(houseConsignmentIndex, itemIndex)) flatMap {
-            description =>
-              Some(s"${itemNumber(itemIndex.display)} - $description")
-          } getOrElse {
-            itemNumber(itemIndex.display)
-          }
+          val name = userAnswers
+            .get(ItemDescriptionPage(houseConsignmentIndex, itemIndex))
+            .map {
+              description => s"${itemNumber(itemIndex.display)} - $description"
+            }
+            .getOrElse {
+              itemNumber(itemIndex.display)
+            }
 
           ListItem(
             name = name,
             changeUrl = None,
-            removeUrl = Some(
-              controllers.houseConsignment.index.items.routes.RemoveConsignmentItemYesNoController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
-                .url
-            )
+            removeUrl = Some(routes.RemoveConsignmentItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url)
           )
       }
 
       new AddAnotherItemViewModel(
         listItems,
-        onSubmitCall = controllers.houseConsignment.index.items.routes.AddAnotherItemController.onSubmit(arrivalId, houseConsignmentIndex, mode),
+        onSubmitCall = routes.AddAnotherItemController.onSubmit(arrivalId, houseConsignmentIndex, mode),
         houseConsignmentIndex,
         nextIndex = items.nextIndex
       )

@@ -94,7 +94,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(ItemSection(equipmentIndex, itemIndex)))
+                    Future.fromTry(request.userAnswers.removeGoodsReference(ItemSection(equipmentIndex, itemIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

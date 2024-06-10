@@ -32,7 +32,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
           val ie043Document = SupportingDocumentType02(
-            sequenceNumber = sequenceNumber,
+            sequenceNumber = sequenceNumber.toString(),
             typeValue = typeValue,
             referenceNumber = referenceNumber,
             complementOfInformation = complementOfInformation
@@ -59,7 +59,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, description) =>
           val ie043Document = TransportDocumentType02(
-            sequenceNumber = sequenceNumber,
+            sequenceNumber = sequenceNumber.toString(),
             typeValue = typeValue,
             referenceNumber = referenceNumber
           )
@@ -84,7 +84,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
           val ie043Document = PreviousDocumentType06(
-            sequenceNumber = sequenceNumber,
+            sequenceNumber = sequenceNumber.toString(),
             typeValue = typeValue,
             referenceNumber = referenceNumber,
             complementOfInformation = complementOfInformation
@@ -111,10 +111,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(arbitrary[BigInt]), Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, goodsItemNumber, complementOfInformation, description) =>
           val ie043Document = PreviousDocumentType04(
-            sequenceNumber = sequenceNumber,
+            sequenceNumber = sequenceNumber.toString(),
             typeValue = typeValue,
             referenceNumber = referenceNumber,
-            goodsItemNumber = goodsItemNumber,
+            goodsItemNumber = goodsItemNumber.map(_.toString()),
             complementOfInformation = complementOfInformation
           )
 

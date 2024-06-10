@@ -32,7 +32,7 @@ case class VehicleIdentificationNumberPage(houseConsignmentIndex: Index, transpo
   override def valueInIE043(ie043: Seq[DepartureTransportMeansType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.identificationNumber)
 }

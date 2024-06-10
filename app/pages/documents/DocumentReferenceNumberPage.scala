@@ -43,7 +43,7 @@ case class SupportingDocumentReferenceNumberPage(documentIndex: Index) extends B
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.referenceNumber)
 }
@@ -53,7 +53,7 @@ case class TransportDocumentReferenceNumberPage(documentIndex: Index) extends Ba
   override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.referenceNumber)
 }

@@ -17,14 +17,21 @@
 package views
 
 import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import viewModels.HouseConsignmentViewModel
+import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 import views.behaviours.DetailsListViewBehaviours
 import views.html.HouseConsignmentView
 
 class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators {
 
   override val prefix: String = "houseConsignment"
+
+  private val section: Section = arbitrary[StaticSection].sample.value
+
+  override lazy val sections: Seq[Section] = Seq(section)
 
   val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(section)
 
