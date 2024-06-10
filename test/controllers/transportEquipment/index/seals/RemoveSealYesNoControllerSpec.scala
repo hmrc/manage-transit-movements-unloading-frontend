@@ -70,7 +70,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers
-          .setValue(SealSection(equipmentIndex, sealIndex), Json.obj())
+          .setSequenceNumber(SealSection(equipmentIndex, sealIndex), BigInt(1))
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
 
         setExistingUserAnswers(userAnswers)

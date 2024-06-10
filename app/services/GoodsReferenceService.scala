@@ -19,11 +19,12 @@ package services
 import models.reference.GoodsReference
 import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
-import pages.sections.{HouseConsignmentsSection, ItemsSection}
+import pages.sections.{HouseConsignmentsSection, ItemSection, ItemsSection}
 import pages.transportEquipment.index.ItemPage
-import utils.transformers.Removed
+import utils.transformers.{DeclarationGoodsItemNumber, Removed}
 
 import javax.inject.Inject
+import scala.util.Try
 
 class GoodsReferenceService @Inject() {
 
@@ -82,4 +83,20 @@ class GoodsReferenceService @Inject() {
 
     declarationGoodsItemNumbers.maxOption.getOrElse(BigInt(0)) + 1
   }
+
+  def removeEmptyItems(userAnswers: UserAnswers, hcIndex: Index): UserAnswers =
+    (0 until userAnswers.get(ItemsSection(hcIndex)).length)
+      .map(Index(_))
+      .foldRight(userAnswers) {
+        case (itemIndex, acc) =>
+          (acc.get(ItemSection(hcIndex, itemIndex)) match {
+            case Some(obj) =>
+              obj.fields match {
+                case Nil                                    => acc.remove(ItemSection(hcIndex, itemIndex))
+                case (DeclarationGoodsItemNumber, _) :: Nil => acc.remove(ItemSection(hcIndex, itemIndex))
+                case _                                      => Try(acc)
+              }
+            case None => Try(acc)
+          }).getOrElse(acc)
+      }
 }

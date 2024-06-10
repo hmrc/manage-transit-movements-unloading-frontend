@@ -58,32 +58,34 @@ class AddAnotherItemController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
+      val userAnswers = goodsReferenceService.removeEmptyItems(request.userAnswers, houseConsignmentIndex)
+      val viewModel   = viewModelProvider(userAnswers, arrivalId, houseConsignmentIndex, mode)
       form(viewModel, houseConsignmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, userAnswers.mrn, arrivalId, viewModel))),
           {
             case true =>
               val itemIndex                      = viewModel.nextIndex
-              val nextDeclarationGoodsItemNumber = goodsReferenceService.getNextDeclarationGoodsItemNumber(request.userAnswers)
+              val nextDeclarationGoodsItemNumber = goodsReferenceService.getNextDeclarationGoodsItemNumber(userAnswers)
               for {
                 updatedAnswers <- Future.fromTry {
-                  request.userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
+                  userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
                 }
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(
                 controllers.houseConsignment.index.items.routes.DescriptionController
-                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, itemIndex)
               )
             case false =>
-              Future.successful {
-                mode match {
-                  case NormalMode =>
-                    Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
-                  case CheckMode =>
-                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-                }
+              sessionRepository.set(userAnswers).map {
+                _ =>
+                  mode match {
+                    case NormalMode =>
+                      Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
+                    case CheckMode =>
+                      Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                  }
               }
           }
         )

@@ -82,6 +82,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         val userAnswers = emptyUserAnswers
+          .setSequenceNumber(DocumentSection(documentIndex), BigInt(1))
           .setValue(TypePage(documentIndex), DocumentType(Support, "code", "desc"))
           .setValue(DocumentReferenceNumberPage(documentIndex), "1234")
 
@@ -100,6 +101,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.get(DocumentSection(documentIndex)).value mustBe Json.parse("""
             |{
+            |  "sequenceNumber" : 1,
             |  "type" : {
             |    "type" : "Supporting"
             |  },

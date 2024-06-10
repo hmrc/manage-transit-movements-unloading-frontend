@@ -20,10 +20,11 @@ import models.Index
 import pages.QuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
+import utils.transformers.DeclarationGoodsItemNumber
 
 case class DeclarationGoodsItemNumberPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[BigInt] {
 
   override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
 
-  override def toString: String = "declarationGoodsItemNumber"
+  override def toString: String = DeclarationGoodsItemNumber
 }
