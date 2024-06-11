@@ -18,7 +18,7 @@ package views.houseConsignment.index.items.packages
 
 import forms.SelectableFormProvider
 import models.reference.PackageType
-import models.{NormalMode, SelectableList}
+import models.{CheckMode, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -49,6 +49,8 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
     .sample
     .value
 
+  private val paragraph = "This means the packaging used to store and protect the item during transit."
+
   behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
@@ -61,4 +63,21 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   behave like pageWithSubmitButton("Continue")
 
+  "when package in NormalMode" - {
+    val doc =
+      parseView(applyView(form))
+    behave like pageWithoutContent(doc, "p", paragraph)
+  }
+
+  "when package in CheckMode" - {
+    val view = injector.instanceOf[PackageTypeView]
+    val doc =
+      parseView(
+        view
+          .apply(viewModel, form, mrn, arrivalId, values, CheckMode, CheckMode, CheckMode, houseConsignmentIndex, itemIndex, packageIndex)(fakeRequest,
+                                                                                                                                           messages
+          )
+      )
+    behave like pageWithContent(doc, "p", paragraph)
+  }
 }
