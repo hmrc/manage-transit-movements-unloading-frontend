@@ -35,6 +35,7 @@ class Navigation extends Navigator {
     case UnloadingCommentsPage                               => ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua, NormalMode)
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -104,5 +105,11 @@ class Navigation extends Navigator {
       Some(routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
     } else {
       Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+    }
+
+  private def newAuthNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    ua.get(NewAuthYesNoPage).map {
+      case true  => controllers.routes.OtherThingsToReportController.onPageLoad(ua.id, mode)
+      case false => controllers.routes.UnloadingTypeController.onPageLoad(ua.id, mode)
     }
 }

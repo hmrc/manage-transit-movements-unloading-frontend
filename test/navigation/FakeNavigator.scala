@@ -101,7 +101,3 @@ class FakeHouseConsignmentDepartureTransportMeansNavigator(desiredRoute: Call, h
     extends DepartureTransportMeansNavigator(houseConsignmentMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
-
-class FakeNewAuthNavigator(desiredRoute: Call) extends NewAuthNavigator {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
-}

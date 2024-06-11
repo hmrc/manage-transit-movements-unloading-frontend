@@ -236,6 +236,22 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .mustBe(routes.ErrorController.technicalDifficulties())
         }
       }
+
+      "must go from NewAuthYesNo page to OtherThingsToReport page if the answer is true" in {
+        val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
+
+        navigator
+          .nextPage(NewAuthYesNoPage, NormalMode, userAnswers)
+          .mustBe(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode))
+      }
+
+      "must go from NewAuthYesNo page to UnloadingType page if the answer is false" in {
+        val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+
+        navigator
+          .nextPage(NewAuthYesNoPage, NormalMode, userAnswers)
+          .mustBe(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
+      }
     }
 
     "in Check mode" - {
