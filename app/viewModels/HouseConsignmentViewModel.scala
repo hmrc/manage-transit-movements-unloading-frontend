@@ -35,9 +35,9 @@ object HouseConsignmentViewModel {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
 
       val rows = Seq(
-        helper.grossMassRow,
         helper.countryOfDestination,
-        helper.safetyAndSecurityDetails
+        helper.safetyAndSecurityDetails,
+        helper.grossMassRow
       ).flatten
 
       val children: Seq[Section] = phaseConfig.phase match {

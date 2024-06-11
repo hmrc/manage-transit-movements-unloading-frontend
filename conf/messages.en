@@ -418,9 +418,9 @@ cannotSendUnloadingRemarks.message =  If you still need to send these unloading 
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
 
-unloadingFindings.title = Cross-check the transit with this declaration summary
-unloadingFindings.heading = Cross-check the transit with this declaration summary
-unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
+unloadingFindings.title = Enter the discrepancies between the transit and unloading permission
+unloadingFindings.heading = Enter the discrepancies between the transit and unloading permission
+unloadingFindings.paragraph = Change the declaration details below to match the transit that arrived.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
@@ -615,9 +615,9 @@ unloadingFindings.dangerousGoods.unNumbers = UN numbers
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
-houseConsignment.title = Cross-check the transit with house consignment {0}
-houseConsignment.heading = Cross-check the transit with house consignment {0}
-houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
+houseConsignment.title = House consignment {0}
+houseConsignment.heading = House consignment {0}
+houseConsignment.paragraph = Change the declaration details below to match the transit that arrived.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 houseConsignment.securityIndicator = Safety and security details
 
