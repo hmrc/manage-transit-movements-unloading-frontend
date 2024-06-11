@@ -101,6 +101,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
     val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator =
       new FakeAdditionalReferenceNavigator(onwardRoute)
+
+    val fakeNewAuthNavigator: NewAuthNavigator = new FakeNewAuthNavigator(onwardRoute)
   }
 
   object FakeHouseConsignmentNavigators {

@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigation
+import navigation.NewAuthNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.NewAuthYesNoPage
@@ -44,7 +44,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation)
+        bind[NewAuthNavigator].toInstance(FakeConsignmentNavigators.fakeNewAuthNavigator)
       )
 
   "NewAuthYesNo Controller" - {

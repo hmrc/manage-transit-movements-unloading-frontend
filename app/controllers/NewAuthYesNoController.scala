@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Mode}
-import navigation.Navigation
+import navigation.NewAuthNavigator
 import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NewAuthYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigation,
+  navigator: NewAuthNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
