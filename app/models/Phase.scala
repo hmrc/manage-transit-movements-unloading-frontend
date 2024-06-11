@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-case object ConfirmRemoveCommentsPage extends Page
+sealed trait Phase
+
+object Phase {
+
+  case object Transition extends Phase
+  case object PostTransition extends Phase
+}

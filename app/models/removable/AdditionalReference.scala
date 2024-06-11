@@ -29,8 +29,8 @@ case class AdditionalReference(`type`: AdditionalReferenceType, referenceNumber:
   }
 
   def forAddAnotherDisplay: String = referenceNumber match {
-    case Some(value) => s"${`type`.documentType} - $value"
-    case None        => `type`.documentType
+    case Some(value) => s"${`type`} - $value"
+    case None        => `type`.toString
   }
 }
 

@@ -49,7 +49,7 @@ class AddItemYesNoController @Inject() (
     formProvider("houseConsignment.addItemYesNo", houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddItemYesNoPage(houseConsignmentIndex)) match {
           case None        => form(houseConsignmentIndex)
@@ -60,7 +60,7 @@ class AddItemYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form(houseConsignmentIndex)
           .bindFromRequest()

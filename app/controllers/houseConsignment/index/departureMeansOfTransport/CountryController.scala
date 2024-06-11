@@ -55,7 +55,7 @@ class CountryController @Inject() (
     houseConsignmentMode: Mode,
     transportMeansMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         referenceDataService
           .getCountries()
@@ -93,7 +93,7 @@ class CountryController @Inject() (
     houseConsignmentMode: Mode,
     transportMeansMode: Mode
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         referenceDataService
           .getCountries()

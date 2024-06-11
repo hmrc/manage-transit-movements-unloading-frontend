@@ -57,7 +57,7 @@ class RemovePackageTypeYesNoController @Inject() (
     itemMode: Mode
   ): Action[AnyContent] =
     actions
-      .getStatus(arrivalId) {
+      .requireData(arrivalId) {
         implicit request =>
           Ok(
             view(
@@ -83,7 +83,7 @@ class RemovePackageTypeYesNoController @Inject() (
     itemMode: Mode
   ): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
+      .requireData(arrivalId)
       .async {
         implicit request =>
           form(houseConsignmentIndex, itemIndex)

@@ -5,8 +5,8 @@ POST       /:arrivalId/change-additional-reference/:additionalReferenceIndex/typ
 
 GET        /:arrivalId/additional-reference/:referenceIndex/number                        controllers.additionalReference.index.AdditionalReferenceNumberController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/additional-reference/:referenceIndex/number                        controllers.additionalReference.index.AdditionalReferenceNumberController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/change-additional-reference/:referenceIndex/change-number                 controllers.additionalReference.index.AdditionalReferenceNumberController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/change-additional-reference/:referenceIndex/change-number                 controllers.additionalReference.index.AdditionalReferenceNumberController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
+GET        /:arrivalId/change-additional-reference/:referenceIndex/number                 controllers.additionalReference.index.AdditionalReferenceNumberController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/change-additional-reference/:referenceIndex/number                 controllers.additionalReference.index.AdditionalReferenceNumberController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/additional-reference/:referenceIndex/number/add                    controllers.additionalReference.index.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/additional-reference/:referenceIndex/number/add                    controllers.additionalReference.index.AdditionalReferenceNumberYesNoController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)

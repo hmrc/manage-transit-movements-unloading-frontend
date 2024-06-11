@@ -16,7 +16,7 @@
 
 package base
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +30,7 @@ import pages.sections.Section
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json._
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -53,8 +53,6 @@ trait SpecBase
 
   val arrivalId: ArrivalId = ArrivalId("AB123")
   val messageId: String    = "12344565gf"
-
-  val configKey = "config"
 
   def injector: Injector = app.injector
 
@@ -79,13 +77,14 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
-  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   def messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
   implicit val hc: HeaderCarrier  = HeaderCarrier()
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit def phaseConfig: PhaseConfig             = injector.instanceOf[PhaseConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 
@@ -101,8 +100,11 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: Section[JsObject]): BigInt =
-      getValue[JsNumber](section, SequenceNumber).value.toBigInt
+    def getSequenceNumber(section: Section[JsObject]): String =
+      getValue[JsNumber](section, SequenceNumber).value.toBigInt.toString()
+
+    def getRemoved(section: Section[JsObject]): Boolean =
+      getValue[JsBoolean](section, Removed).value
 
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get

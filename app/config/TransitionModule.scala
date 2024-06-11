@@ -14,32 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package config
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+class TransitionModule extends Module {
 
-class ConfirmRemoveCommentsFormProviderSpec extends BooleanFieldBehaviours {
+  override def configure(): Unit = {
+    super.configure()
 
-  val requiredKey = "confirmRemoveComments.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new ConfirmRemoveCommentsFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
   }
 }

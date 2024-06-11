@@ -47,7 +47,7 @@ class GrossWeightController @Inject() (
     formProvider("grossWeight", grossWeightDecimalPlaces, grossWeightIntegerLength)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(GrossWeightPage) match {
           case None        => form
@@ -58,7 +58,7 @@ class GrossWeightController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

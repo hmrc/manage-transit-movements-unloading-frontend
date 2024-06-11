@@ -53,7 +53,7 @@ class AddAdditionalReferenceNumberYesNoController @Inject() (
     itemIndex: Index,
     additionalReferenceIndex: Index
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
 
       implicit request =>
         val preparedForm = request.userAnswers.get(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
@@ -85,7 +85,7 @@ class AddAdditionalReferenceNumberYesNoController @Inject() (
     itemIndex: Index,
     additionalReferenceIndex: Index
   ): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

@@ -32,7 +32,7 @@ case class PackageShippingMarkPage(houseConsignmentIndex: Index, itemIndex: Inde
   override def valueInIE043(ie043: Seq[PackagingType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .flatMap(_.shippingMarks)
 }

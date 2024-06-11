@@ -44,7 +44,7 @@ class AddDepartureTransportMeansYesNoController @Inject() (
 
   private def form(houseConsignmentIndex: Index) = formProvider("houseConsignment.index.addDepartureTransportMeansYesNo", houseConsignmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage(houseConsignmentIndex)) match {
         case None        => form(houseConsignmentIndex)
@@ -54,7 +54,7 @@ class AddDepartureTransportMeansYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form(houseConsignmentIndex)
         .bindFromRequest()

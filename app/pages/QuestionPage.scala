@@ -19,7 +19,7 @@ package pages
 import play.api.libs.json.{__, Reads}
 import queries.{Gettable, Settable}
 import services.submission.RichJsPath
-import utils.transformers.SequenceNumber
+import utils.transformers._
 
 trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
 

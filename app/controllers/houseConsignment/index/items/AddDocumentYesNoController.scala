@@ -44,31 +44,35 @@ class AddDocumentYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.item.addDocumentYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
-  }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
+              ),
             value =>
               for {
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield {
-                val navigator = navigatorProvider.apply(mode)
-                Redirect(navigator.nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
+                val navigator = navigatorProvider.apply(houseConsignmentMode)
+                Redirect(navigator.nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), itemMode, updatedAnswers))
               }
           )
     }

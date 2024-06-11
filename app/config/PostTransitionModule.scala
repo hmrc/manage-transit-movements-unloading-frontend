@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package config
 
-import javax.inject.Inject
+class PostTransitionModule extends Module {
 
-import forms.mappings.Mappings
-import play.api.data.Form
+  override def configure(): Unit = {
+    super.configure()
 
-class ConfirmRemoveCommentsFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("confirmRemoveComments.error.required")
-    )
+    bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
+  }
 }

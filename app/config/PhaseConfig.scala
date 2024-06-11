@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package config
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.ItemSection
-import play.api.libs.json.JsPath
-import utils.transformers.DeclarationGoodsItemNumber
+import models.Phase
+import models.Phase.{PostTransition, Transition}
 
-case class DeclarationGoodsItemNumberPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[BigInt] {
+trait PhaseConfig {
+  val phase: Phase
+}
 
-  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
+class TransitionConfig() extends PhaseConfig {
+  override val phase: Phase = Transition
+}
 
-  override def toString: String = DeclarationGoodsItemNumber
+class PostTransitionConfig() extends PhaseConfig {
+  override val phase: Phase = PostTransition
 }

@@ -54,4 +54,9 @@ trait Section[T <: JsValue] extends QuestionPage[T] {
 
           rec(jsArray.value.zipWithIndex.toList)
       }
+
+  def count(f: JsValue => Boolean): Reads[BigInt] =
+    path.last
+      .readWithDefault(JsArray())
+      .map(_.value.count(f))
 }

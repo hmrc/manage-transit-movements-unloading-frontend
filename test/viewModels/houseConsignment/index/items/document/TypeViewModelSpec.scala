@@ -52,7 +52,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                                                        itemIndex
         )
 
-        result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+        result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to this item. You can, however, still add a supporting document."
     }
   }
 
@@ -65,7 +65,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                                                        itemIndex
         )
 
-        result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+        result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to this item. You can, however, still add a transport document."
     }
   }
 }

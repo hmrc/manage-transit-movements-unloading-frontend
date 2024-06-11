@@ -38,14 +38,14 @@ class UnloadingFindingsController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers)
         Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       Redirect(
         controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)
       )

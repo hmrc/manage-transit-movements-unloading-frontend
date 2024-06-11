@@ -19,16 +19,19 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GoodsReferenceService
 import viewModels.ListItem
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
@@ -48,14 +51,20 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val mockViewModelProvider = mock[AddAnotherItemViewModelProvider]
 
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AddAnotherItemViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[AddAnotherItemViewModelProvider]).toInstance(mockViewModelProvider),
+        bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
+    reset(mockGoodsReferenceService)
   }
 
   private val listItem          = arbitrary[ListItem].sample.value
@@ -108,11 +117,22 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to add description page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
+        "must redirect to add description page at next index and set declaration goods item number" in {
+          val initialAnswers                 = emptyUserAnswers
+          val answersAfterCleanup            = emptyUserAnswers
+          val nextIndex                      = Index(0)
+          val nextDeclarationGoodsItemNumber = positiveBigInts.sample.value
 
-          setExistingUserAnswers(emptyUserAnswers)
+          when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+            .thenReturn(notMaxedOutViewModel.copy(nextIndex = nextIndex))
+
+          when(mockGoodsReferenceService.getNextDeclarationGoodsItemNumber(any()))
+            .thenReturn(nextDeclarationGoodsItemNumber)
+
+          when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+            .thenReturn(answersAfterCleanup)
+
+          setExistingUserAnswers(initialAnswers)
 
           val request = FakeRequest(POST, addAnotherItemRoute)
             .withFormUrlEncodedBody(("value", "true"))
@@ -122,8 +142,17 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.DescriptionController
-            .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
+            .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, nextIndex)
             .url
+
+          verify(mockViewModelProvider).apply(eqTo(answersAfterCleanup), eqTo(arrivalId), eqTo(houseConsignmentIndex), eqTo(houseConsignmentMode))(any())
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          val expectedAnswers = answersAfterCleanup.setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, nextIndex), nextDeclarationGoodsItemNumber)
+          userAnswersCaptor.getValue mustBe expectedAnswers
+
+          verify(mockGoodsReferenceService).removeEmptyItems(eqTo(initialAnswers), eqTo(houseConsignmentIndex))
         }
       }
 
@@ -132,10 +161,16 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           "when adding house consignment" in {
             val houseConsignmentMode = NormalMode
 
+            val initialAnswers      = emptyUserAnswers
+            val answersAfterCleanup = emptyUserAnswers
+
             when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
               .thenReturn(notMaxedOutViewModel)
 
-            setExistingUserAnswers(emptyUserAnswers)
+            when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+              .thenReturn(answersAfterCleanup)
+
+            setExistingUserAnswers(initialAnswers)
 
             val request = FakeRequest(POST, routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url)
               .withFormUrlEncodedBody(("value", "false"))
@@ -146,15 +181,23 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, houseConsignmentMode).url
+
+            verify(mockViewModelProvider).apply(eqTo(answersAfterCleanup), eqTo(arrivalId), eqTo(houseConsignmentIndex), eqTo(houseConsignmentMode))(any())
           }
 
           "when changing house consignment" in {
             val houseConsignmentMode = CheckMode
 
+            val initialAnswers      = emptyUserAnswers
+            val answersAfterCleanup = emptyUserAnswers
+
             when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
               .thenReturn(notMaxedOutViewModel)
 
-            setExistingUserAnswers(emptyUserAnswers)
+            when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+              .thenReturn(answersAfterCleanup)
+
+            setExistingUserAnswers(initialAnswers)
 
             val request = FakeRequest(POST, routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url)
               .withFormUrlEncodedBody(("value", "false"))
@@ -165,6 +208,10 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            verify(mockViewModelProvider).apply(eqTo(answersAfterCleanup), eqTo(arrivalId), eqTo(houseConsignmentIndex), eqTo(houseConsignmentMode))(any())
+
+            verify(mockSessionRepository).set(eqTo(answersAfterCleanup))
           }
         }
       }
@@ -191,10 +238,16 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
+        val initialAnswers      = emptyUserAnswers
+        val answersAfterCleanup = emptyUserAnswers
+
         when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
-        setExistingUserAnswers(emptyUserAnswers)
+        when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
+          .thenReturn(answersAfterCleanup)
+
+        setExistingUserAnswers(initialAnswers)
 
         val request = FakeRequest(POST, addAnotherItemRoute)
           .withFormUrlEncodedBody(("value", ""))

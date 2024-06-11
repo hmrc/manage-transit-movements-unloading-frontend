@@ -26,22 +26,29 @@ import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
+  unreachablePageAction: UnreachablePageAction,
   indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen dataRetrievalAction(arrivalId)
+    identifierAction andThen
+      checkArrivalStatusProvider(arrivalId) andThen
+      dataRetrievalAction(arrivalId)
 
   def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
-    getData(arrivalId) andThen dataRequiredAction
+    getData(arrivalId) andThen
+      dataRequiredAction andThen
+      unreachablePageAction
 
-  def getStatus(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
-    identify andThen identifierAction andThen checkArrivalStatusProvider(arrivalId) andThen requireData(arrivalId)
+  def requireDataOnly(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
+    identifierAction andThen
+      dataRetrievalAction(arrivalId) andThen
+      dataRequiredAction
 
   def requireIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
-    requireData(arrivalId) andThen indexRequiredAction(section, addAnother)
+    requireData(arrivalId) andThen
+      indexRequiredAction(section, addAnother)
 }

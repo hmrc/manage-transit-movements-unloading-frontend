@@ -91,4 +91,6 @@ package object submission {
 
     def getList[B](f: A => Seq[B]): Seq[B] = value.map(f).getOrElse(Seq.empty)
   }
+
+  implicit def bigIntToString(value: BigInt): String = value.toString()
 }

@@ -45,14 +45,14 @@ class RemoveNetWeightYesNoController @Inject() (
     formProvider("houseConsignment.index.item.removeNetWeightYesNo", houseConsignmentIndex.display, itemIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val insetText: Option[String] = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).map(_.toString())
         Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val insetText: Option[String] = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).map(_.toString())
         form(houseConsignmentIndex, itemIndex)

@@ -51,11 +51,6 @@ POST       /:arrivalId/fully-partially-unloaded                                 
 GET        /:arrivalId/change-fully-partially-unloaded                                                               controllers.UnloadingTypeController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-fully-partially-unloaded                                                               controllers.UnloadingTypeController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/remove-additional-comments                                                                    controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/remove-additional-comments                                                                    controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-remove-additional-comments                                                             controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-remove-additional-comments                                                             controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
-
 GET        /:arrivalId/add-transit-unloading-permission-discrepancies                                                controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/add-transit-unloading-permission-discrepancies                                                controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-add-transit-unloading-permission-discrepancies                                         controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)

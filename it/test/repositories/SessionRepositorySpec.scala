@@ -17,7 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import generated.{CC043C, CC043CType, CustomsOfficeOfDestinationActualType03, MESSAGESequence, Number0, TraderAtDestinationType03, TransitOperationType14}
+import generated._
 import itbase.ItSpecBase
 import models.{ArrivalId, EoriNumber, MovementReferenceNumber, SensitiveFormats, UserAnswers}
 import play.api.libs.json.Json
@@ -39,11 +39,17 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
   private val ie043: CC043CType = CC043CType(
     messageSequence1 = MESSAGESequence(
       messageSender = "",
-      messageRecipient = "",
-      preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
-      messageIdentification = "",
-      messageType = CC043C,
-      correlationIdentifier = None
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "",
+        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+        messageIdentification = ""
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC043C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
     ),
     TransitOperation = TransitOperationType14(
       MRN = "MRN",

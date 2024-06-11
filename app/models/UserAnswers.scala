@@ -19,10 +19,11 @@ package models
 import generated.CC043CType
 import models.SensitiveFormats.SensitiveWrites
 import pages._
+import pages.sections.Section
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import utils.transformers.{Removed, SequenceNumber}
+import utils.transformers.{DeclarationGoodsItemNumber, Removed, SequenceNumber}
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
@@ -80,14 +81,20 @@ final case class UserAnswers(
     }
   }
 
-  def removeDataGroup[A](section: QuestionPage[A]): Try[UserAnswers] =
+  def removeDataGroup(section: Section[JsObject]): Try[UserAnswers] =
     removeExceptPaths(section, __ \ SequenceNumber)
 
-  def removeItem[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptPaths(section, __ \ SequenceNumber, __ \ "declarationGoodsItemNumber")
+  def removeItem(section: Section[JsObject]): Try[UserAnswers] =
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ DeclarationGoodsItemNumber)
 
-  def removeDocument[A](section: QuestionPage[A]): Try[UserAnswers] =
+  def removeDocument(section: Section[JsObject]): Try[UserAnswers] =
     removeExceptPaths(section, __ \ SequenceNumber, __ \ "type" \ "type")
+
+  def removeSeal(section: Section[JsObject]): Try[UserAnswers] =
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ "identifier")
+
+  def removeGoodsReference(section: Section[JsObject]): Try[UserAnswers] =
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ DeclarationGoodsItemNumber)
 
   private def removeExceptPaths[A](section: QuestionPage[A], paths: JsPath*): Try[UserAnswers] =
     for {
@@ -107,8 +114,9 @@ final case class UserAnswers(
           ).getOrElse(acc)
       }
       userAnswers <- objWithPathsRetained.fields match {
-        case Nil    => remove(section)
-        case values => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
+        case Nil                                                  => remove(section)
+        case values if !values.map(_._1).contains(SequenceNumber) => remove(section)
+        case values                                               => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
       }
     } yield userAnswers
 }

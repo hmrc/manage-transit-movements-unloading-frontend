@@ -24,7 +24,7 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
-import pages.sections.ItemSection
+import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -82,7 +82,10 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
     "must redirect to the next page" - {
       "when yes is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
+        val userAnswers = emptyUserAnswers
+          .setSequenceNumber(ItemSection(equipmentIndex, itemIndex), BigInt(1))
+          .setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
+
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeItemYesNoRoute)
@@ -97,7 +100,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(ItemSection(equipmentIndex, itemIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.getRemoved(ItemSection(equipmentIndex, itemIndex)) mustBe true
       }
 
       "when no is submitted" in {

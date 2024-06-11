@@ -33,7 +33,7 @@ case class PackageTypePage(houseConsignmentIndex: Index, itemIndex: Index, packa
   override def valueInIE043(ie043: Seq[PackagingType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.typeOfPackages)
 }
