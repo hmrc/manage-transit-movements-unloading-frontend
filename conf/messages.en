@@ -1301,7 +1301,6 @@ houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any 
 houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
 
-newAuthYesNo.title = Do you want to add any comments?
-newAuthYesNo.heading = Do you want to add any comments?
-newAuthYesNo.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
+newAuthYesNo.title = Are you using the new procedure?
+newAuthYesNo.heading = Are you using the new procedure?
 newAuthYesNo.error.required = Select yes if you want to add any comments
