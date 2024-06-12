@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{__, Reads}
@@ -145,20 +146,87 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "unloadingRemarkReads" - {
-    "must create unloading remarks" - {
-      import pages._
+    "when RevisedUnloadingPermission is true" - {
+      "must create unloading remark" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
 
-      "when there are seal numbers in the IE043 message" - {
-        "when seals can be read and no seals broken" - {
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+        val reads  = service.unloadingRemarkReads
+        val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+        result mustBe UnloadingRemarkType(
+          conform = Number1,
+          unloadingCompletion = Number1,
+          unloadingDate = XMLCalendar("2020-01-01"),
+          stateOfSeals = Some(Number1),
+          unloadingRemark = None
+        )
+      }
+    }
+    "when RevisedUnloadingPermission is false" - {
+      "must create unloading remarks" - {
+        import pages._
+
+        "when there are seal numbers in the IE043 message" - {
+          "when seals can be read and no seals broken" - {
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+              forAll(Gen.alphaNumStr) {
+                unloadingRemark =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(NewAuthYesNoPage, false)
+                    .setValue(UnloadingTypePage, UnloadingType.Fully)
+                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                    .setValue(CanSealsBeReadPage, true)
+                    .setValue(AreAnySealsBrokenPage, false)
+                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+                    .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                  val reads  = service.unloadingRemarkReads
+                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                  result mustBe UnloadingRemarkType(
+                    conform = Number0,
+                    unloadingCompletion = Number1,
+                    unloadingDate = XMLCalendar("2020-01-01"),
+                    stateOfSeals = Some(Number1),
+                    unloadingRemark = Some(unloadingRemark)
+                  )
+              }
+            }
+
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
+              forAll(Gen.alphaNumStr) {
+                unloadingRemark =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UnloadingTypePage, UnloadingType.Fully)
+                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                    .setValue(CanSealsBeReadPage, true)
+                    .setValue(AreAnySealsBrokenPage, false)
+                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+                    .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                  val reads  = service.unloadingRemarkReads
+                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                  result mustBe UnloadingRemarkType(
+                    conform = Number1,
+                    unloadingCompletion = Number1,
+                    unloadingDate = XMLCalendar("2020-01-01"),
+                    stateOfSeals = Some(Number1),
+                    unloadingRemark = Some(unloadingRemark)
+                  )
+              }
+            }
+          }
+
+          "when seals can be read and seals broken" in {
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, true)
-                  .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+                  .setValue(AreAnySealsBrokenPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
                 val reads  = service.unloadingRemarkReads
@@ -168,141 +236,258 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   conform = Number0,
                   unloadingCompletion = Number1,
                   unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number1),
+                  stateOfSeals = Some(Number0),
                   unloadingRemark = Some(unloadingRemark)
                 )
             }
           }
 
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
+          "when seals can't be read and seals broken" in {
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                  .setValue(CanSealsBeReadPage, true)
-                  .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+                  .setValue(CanSealsBeReadPage, false)
+                  .setValue(AreAnySealsBrokenPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
                 val reads  = service.unloadingRemarkReads
                 val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                 result mustBe UnloadingRemarkType(
-                  conform = Number1,
+                  conform = Number0,
                   unloadingCompletion = Number1,
                   unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number1),
+                  stateOfSeals = Some(Number0),
                   unloadingRemark = Some(unloadingRemark)
                 )
             }
           }
-        }
 
-        "when seals can be read and seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
+          "when seals can't be read and no seals broken" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, false)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number0),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
+          }
+
+          "when there are no seal numbers in the IE043 message" - {
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
               val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
+                .setValue(UnloadingTypePage, UnloadingType.Partially)
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, true)
-                .setValue(AreAnySealsBrokenPage, true)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+              val reads  = service.unloadingRemarkReads
+              val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+              result mustBe UnloadingRemarkType(
+                conform = Number1,
+                unloadingCompletion = Number0,
+                unloadingDate = XMLCalendar("2020-01-01"),
+                stateOfSeals = None,
+                unloadingRemark = None
+              )
+            }
+
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(UnloadingTypePage, UnloadingType.Partially)
+                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
               val reads  = service.unloadingRemarkReads
               val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
               result mustBe UnloadingRemarkType(
                 conform = Number0,
-                unloadingCompletion = Number1,
+                unloadingCompletion = Number0,
                 unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number0),
-                unloadingRemark = Some(unloadingRemark)
+                stateOfSeals = None,
+                unloadingRemark = None
               )
+            }
           }
         }
+      }
+    }
+    "when RevisedUnloadingPermission is not defined" - {
+      "must create unloading remarks" - {
+        import pages._
 
-        "when seals can't be read and seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
+        "when there are seal numbers in the IE043 message" - {
+          "when seals can be read and no seals broken" - {
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+              forAll(Gen.alphaNumStr) {
+                unloadingRemark =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UnloadingTypePage, UnloadingType.Fully)
+                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                    .setValue(CanSealsBeReadPage, true)
+                    .setValue(AreAnySealsBrokenPage, false)
+                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+                    .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                  val reads  = service.unloadingRemarkReads
+                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                  result mustBe UnloadingRemarkType(
+                    conform = Number0,
+                    unloadingCompletion = Number1,
+                    unloadingDate = XMLCalendar("2020-01-01"),
+                    stateOfSeals = Some(Number1),
+                    unloadingRemark = Some(unloadingRemark)
+                  )
+              }
+            }
+
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
+              forAll(Gen.alphaNumStr) {
+                unloadingRemark =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UnloadingTypePage, UnloadingType.Fully)
+                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                    .setValue(CanSealsBeReadPage, true)
+                    .setValue(AreAnySealsBrokenPage, false)
+                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+                    .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                  val reads  = service.unloadingRemarkReads
+                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                  result mustBe UnloadingRemarkType(
+                    conform = Number1,
+                    unloadingCompletion = Number1,
+                    unloadingDate = XMLCalendar("2020-01-01"),
+                    stateOfSeals = Some(Number1),
+                    unloadingRemark = Some(unloadingRemark)
+                  )
+              }
+            }
+          }
+
+          "when seals can be read and seals broken" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, true)
+                  .setValue(AreAnySealsBrokenPage, true)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number0),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
+          }
+
+          "when seals can't be read and seals broken" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, false)
+                  .setValue(AreAnySealsBrokenPage, true)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number0),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
+          }
+
+          "when seals can't be read and no seals broken" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, false)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number0),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
+          }
+
+          "when there are no seal numbers in the IE043 message" - {
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
               val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
+                .setValue(UnloadingTypePage, UnloadingType.Partially)
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, false)
-                .setValue(AreAnySealsBrokenPage, true)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+              val reads  = service.unloadingRemarkReads
+              val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+              result mustBe UnloadingRemarkType(
+                conform = Number1,
+                unloadingCompletion = Number0,
+                unloadingDate = XMLCalendar("2020-01-01"),
+                stateOfSeals = None,
+                unloadingRemark = None
+              )
+            }
+
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(UnloadingTypePage, UnloadingType.Partially)
+                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
               val reads  = service.unloadingRemarkReads
               val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
               result mustBe UnloadingRemarkType(
                 conform = Number0,
-                unloadingCompletion = Number1,
+                unloadingCompletion = Number0,
                 unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number0),
-                unloadingRemark = Some(unloadingRemark)
+                stateOfSeals = None,
+                unloadingRemark = None
               )
-          }
-        }
-
-        "when seals can't be read and no seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
-                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, false)
-                .setValue(AreAnySealsBrokenPage, false)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
-
-              val reads  = service.unloadingRemarkReads
-              val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-              result mustBe UnloadingRemarkType(
-                conform = Number0,
-                unloadingCompletion = Number1,
-                unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number0),
-                unloadingRemark = Some(unloadingRemark)
-              )
-          }
-        }
-
-        "when there are no seal numbers in the IE043 message" - {
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(UnloadingTypePage, UnloadingType.Partially)
-              .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-            val reads  = service.unloadingRemarkReads
-            val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-            result mustBe UnloadingRemarkType(
-              conform = Number1,
-              unloadingCompletion = Number0,
-              unloadingDate = XMLCalendar("2020-01-01"),
-              stateOfSeals = None,
-              unloadingRemark = None
-            )
-          }
-
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(UnloadingTypePage, UnloadingType.Partially)
-              .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-
-            val reads  = service.unloadingRemarkReads
-            val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-            result mustBe UnloadingRemarkType(
-              conform = Number0,
-              unloadingCompletion = Number0,
-              unloadingDate = XMLCalendar("2020-01-01"),
-              stateOfSeals = None,
-              unloadingRemark = None
-            )
+            }
           }
         }
       }
