@@ -42,9 +42,7 @@ object CheckYourAnswersViewModel {
           helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
-          helper.anySealsBroken,
-          helper.anyNewProcedure,
-          helper.otherThingsToReport
+          helper.anySealsBroken
         ).flatten
       )
 
