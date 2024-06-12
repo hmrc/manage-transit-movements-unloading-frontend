@@ -643,6 +643,12 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
+checkYourAnswers.rowHeadings.anyNewProcedure = Are you using the new procedure?
+checkYourAnswers.rowHeadings.anyNewProcedure.change.hidden = if new procedure is used
+
+checkYourAnswers.rowHeadings.otherThingsToReport = Other things to report
+checkYourAnswers.rowHeadings.otherThingsToReport.change.hidden = if other things to report is provided
+
 checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
 checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit and unloading permission?
 checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
