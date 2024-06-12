@@ -123,8 +123,8 @@ class SubmissionService @Inject() (
         unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
         stateOfSeals        <- __.read[StateOfSeals].map(_.value)
         conform <- stateOfSeals match {
-          case Some(false) => Reads.pure(false)
-          case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_).orElse(Reads.pure(true))
+          case Some(false) => false: Reads[Boolean]
+          case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
         }
       } yield UnloadingRemarkType(
         conform = conform,
