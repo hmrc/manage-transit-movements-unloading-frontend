@@ -410,5 +410,91 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "anyNewProcedure" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.anyNewProcedure
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Are you using the new procedure?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if new procedure is used"),
+                      attributes = Map("id" -> "change-any-new-procedure")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.anyNewProcedure
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Are you using the new procedure?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if new procedure is used"),
+                      attributes = Map("id" -> "change-any-new-procedure")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    "otherThingsToReport" - {
+      "must return row" in {
+
+        forAll(Gen.alphaNumStr) {
+          otherThingsToReport =>
+            val answers = emptyUserAnswers.setValue(OtherThingsToReportPage, otherThingsToReport)
+            val helper  = new CheckYourAnswersHelper(answers)
+            val result  = helper.otherThingsToReport
+
+            result mustBe Some(
+              SummaryListRow(
+                key = Key("Other things to report".toText),
+                value = Value(s"$otherThingsToReport".toText),
+                actions = Some(
+                  Actions(
+                    items = List(
+                      ActionItem(
+                        content = "Change".toText,
+                        href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
+                        visuallyHiddenText = Some("if other things to report is provided"),
+                        attributes = Map("id" -> "change-other-things-to-report")
+                      )
+                    )
+                  )
+                )
+              )
+            )
+        }
+      }
+    }
+
   }
 }
