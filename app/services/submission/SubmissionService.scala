@@ -107,34 +107,39 @@ class SubmissionService @Inject() (
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
     import pages._
 
+    def generateUnloadingRemarkForRevisedProcedureYes: Reads[UnloadingRemarkType] =
+      dateTimeService.currentDateTime.toLocalDate.map(localDateToXMLGregorianCalendar).map {
+        unloadingDate =>
+          UnloadingRemarkType(
+            conform = Number1,
+            unloadingCompletion = Number1,
+            unloadingDate = unloadingDate,
+            stateOfSeals = Some(Number1),
+            unloadingRemark = None
+          )
+      }
+
+    def generateUnloadingRemarkDefaultCase: Reads[UnloadingRemarkType] =
+      for {
+        unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
+        unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
+        unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
+        stateOfSeals        <- __.read[StateOfSeals].map(_.value)
+        conform <- stateOfSeals match {
+          case Some(false) => Reads.pure(false)
+          case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_).orElse(Reads.pure(true))
+        }
+      } yield UnloadingRemarkType(
+        conform = conform,
+        unloadingCompletion = unloadingCompletion,
+        unloadingDate = unloadingDate,
+        stateOfSeals = stateOfSeals,
+        unloadingRemark = unloadingRemark
+      )
+
     NewAuthYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) =>
-        for {
-          unloadingDate <- dateTimeService.currentDateTime.toLocalDate.map(localDateToXMLGregorianCalendar)
-        } yield UnloadingRemarkType(
-          conform = Number1,
-          unloadingCompletion = Number1,
-          unloadingDate = unloadingDate,
-          stateOfSeals = Some(Number1),
-          unloadingRemark = None
-        )
-      case _ =>
-        for {
-          unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
-          unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
-          unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
-          stateOfSeals        <- __.read[StateOfSeals].map(_.value)
-          conform <- stateOfSeals match {
-            case Some(false) => false: Reads[Boolean]
-            case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
-          }
-        } yield UnloadingRemarkType(
-          conform = conform,
-          unloadingCompletion = unloadingCompletion,
-          unloadingDate = unloadingDate,
-          stateOfSeals = stateOfSeals,
-          unloadingRemark = unloadingRemark
-        )
+      case Some(true) => generateUnloadingRemarkForRevisedProcedureYes
+      case _          => generateUnloadingRemarkDefaultCase
     }
   }
 
