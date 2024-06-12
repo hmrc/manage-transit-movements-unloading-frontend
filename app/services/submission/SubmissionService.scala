@@ -108,16 +108,13 @@ class SubmissionService @Inject() (
     import pages._
 
     def generateUnloadingRemarkForRevisedProcedureYes: Reads[UnloadingRemarkType] =
-      dateTimeService.currentDateTime.toLocalDate.map(localDateToXMLGregorianCalendar).map {
-        unloadingDate =>
-          UnloadingRemarkType(
-            conform = Number1,
-            unloadingCompletion = Number1,
-            unloadingDate = unloadingDate,
-            stateOfSeals = Some(Number1),
-            unloadingRemark = None
-          )
-      }
+      UnloadingRemarkType(
+        conform = Number1,
+        unloadingCompletion = Number1,
+        unloadingDate = dateTimeService.currentDateTime.toLocalDate,
+        stateOfSeals = Some(Number1),
+        unloadingRemark = None
+      )
 
     def generateUnloadingRemarkDefaultCase: Reads[UnloadingRemarkType] =
       for {
