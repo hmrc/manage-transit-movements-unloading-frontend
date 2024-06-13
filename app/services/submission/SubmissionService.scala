@@ -123,7 +123,7 @@ class SubmissionService @Inject() (
         unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
         stateOfSeals        <- __.read[StateOfSeals].map(_.value)
         conform <- stateOfSeals match {
-          case Some(false) => false: Reads[Boolean]
+          case Some(false) => Reads.pure(false)
           case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
         }
       } yield UnloadingRemarkType(
@@ -134,9 +134,9 @@ class SubmissionService @Inject() (
         unloadingRemark = unloadingRemark
       )
 
-    NewAuthYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => generateUnloadingRemarkForRevisedProcedureYes
-      case _          => generateUnloadingRemarkDefaultCase
+    NewAuthYesNoPage.path.read[Boolean].flatMap {
+      case true => generateUnloadingRemarkForRevisedProcedureYes
+      case _    => generateUnloadingRemarkDefaultCase
     }
   }
 

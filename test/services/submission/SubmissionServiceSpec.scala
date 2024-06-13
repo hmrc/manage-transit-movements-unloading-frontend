@@ -198,6 +198,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               forAll(Gen.alphaNumStr) {
                 unloadingRemark =>
                   val userAnswers = emptyUserAnswers
+                    .setValue(NewAuthYesNoPage, false)
                     .setValue(UnloadingTypePage, UnloadingType.Fully)
                     .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                     .setValue(CanSealsBeReadPage, true)
@@ -223,6 +224,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, true)
@@ -246,6 +248,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, false)
@@ -269,6 +272,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, false)
@@ -291,6 +295,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           "when there are no seal numbers in the IE043 message" - {
             "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setValue(UnloadingTypePage, UnloadingType.Partially)
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
@@ -309,170 +314,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
               val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Partially)
-                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-
-              val reads  = service.unloadingRemarkReads
-              val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-              result mustBe UnloadingRemarkType(
-                conform = Number0,
-                unloadingCompletion = Number0,
-                unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = None,
-                unloadingRemark = None
-              )
-            }
-          }
-        }
-      }
-    }
-    "when RevisedUnloadingPermission is not defined" - {
-      "must create unloading remarks" - {
-        import pages._
-
-        "when there are seal numbers in the IE043 message" - {
-          "when seals can be read and no seals broken" - {
-            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
-              forAll(Gen.alphaNumStr) {
-                unloadingRemark =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(UnloadingTypePage, UnloadingType.Fully)
-                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                    .setValue(CanSealsBeReadPage, true)
-                    .setValue(AreAnySealsBrokenPage, false)
-                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-                    .setValue(UnloadingCommentsPage, unloadingRemark)
-
-                  val reads  = service.unloadingRemarkReads
-                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-                  result mustBe UnloadingRemarkType(
-                    conform = Number0,
-                    unloadingCompletion = Number1,
-                    unloadingDate = XMLCalendar("2020-01-01"),
-                    stateOfSeals = Some(Number1),
-                    unloadingRemark = Some(unloadingRemark)
-                  )
-              }
-            }
-
-            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
-              forAll(Gen.alphaNumStr) {
-                unloadingRemark =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(UnloadingTypePage, UnloadingType.Fully)
-                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                    .setValue(CanSealsBeReadPage, true)
-                    .setValue(AreAnySealsBrokenPage, false)
-                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-                    .setValue(UnloadingCommentsPage, unloadingRemark)
-
-                  val reads  = service.unloadingRemarkReads
-                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-                  result mustBe UnloadingRemarkType(
-                    conform = Number1,
-                    unloadingCompletion = Number1,
-                    unloadingDate = XMLCalendar("2020-01-01"),
-                    stateOfSeals = Some(Number1),
-                    unloadingRemark = Some(unloadingRemark)
-                  )
-              }
-            }
-          }
-
-          "when seals can be read and seals broken" in {
-            forAll(Gen.alphaNumStr) {
-              unloadingRemark =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(UnloadingTypePage, UnloadingType.Fully)
-                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                  .setValue(CanSealsBeReadPage, true)
-                  .setValue(AreAnySealsBrokenPage, true)
-                  .setValue(UnloadingCommentsPage, unloadingRemark)
-
-                val reads  = service.unloadingRemarkReads
-                val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-                result mustBe UnloadingRemarkType(
-                  conform = Number0,
-                  unloadingCompletion = Number1,
-                  unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number0),
-                  unloadingRemark = Some(unloadingRemark)
-                )
-            }
-          }
-
-          "when seals can't be read and seals broken" in {
-            forAll(Gen.alphaNumStr) {
-              unloadingRemark =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(UnloadingTypePage, UnloadingType.Fully)
-                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                  .setValue(CanSealsBeReadPage, false)
-                  .setValue(AreAnySealsBrokenPage, true)
-                  .setValue(UnloadingCommentsPage, unloadingRemark)
-
-                val reads  = service.unloadingRemarkReads
-                val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-                result mustBe UnloadingRemarkType(
-                  conform = Number0,
-                  unloadingCompletion = Number1,
-                  unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number0),
-                  unloadingRemark = Some(unloadingRemark)
-                )
-            }
-          }
-
-          "when seals can't be read and no seals broken" in {
-            forAll(Gen.alphaNumStr) {
-              unloadingRemark =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(UnloadingTypePage, UnloadingType.Fully)
-                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                  .setValue(CanSealsBeReadPage, false)
-                  .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(UnloadingCommentsPage, unloadingRemark)
-
-                val reads  = service.unloadingRemarkReads
-                val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-                result mustBe UnloadingRemarkType(
-                  conform = Number0,
-                  unloadingCompletion = Number1,
-                  unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number0),
-                  unloadingRemark = Some(unloadingRemark)
-                )
-            }
-          }
-
-          "when there are no seal numbers in the IE043 message" - {
-            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
-              val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Partially)
-                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-              val reads  = service.unloadingRemarkReads
-              val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-              result mustBe UnloadingRemarkType(
-                conform = Number1,
-                unloadingCompletion = Number0,
-                unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = None,
-                unloadingRemark = None
-              )
-            }
-
-            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
-              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setValue(UnloadingTypePage, UnloadingType.Partially)
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
@@ -513,6 +355,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setValue(GrossWeightPage, grossMass)
 
               val reads  = service.consignmentReads(Some(ie043))
@@ -530,6 +373,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setValue(GrossWeightPage, grossMass)
 
               val reads  = service.consignmentReads(Some(ie043))
@@ -546,6 +390,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(grossMass = Some(grossMass))
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setValue(GrossWeightPage, grossMass)
 
             val reads  = service.consignmentReads(Some(ie043))
@@ -637,6 +482,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportEquipment = transportEquipment)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport equipment 1 - Changed
               .setSequenceNumber(TransportEquipmentSection(Index(0)), 1)
               .setNotRemoved(TransportEquipmentSection(Index(0)))
@@ -870,6 +716,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportEquipment = transportEquipment)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport equipment 1 - Unchanged
               .setSequenceNumber(TransportEquipmentSection(Index(0)), 1)
               .setNotRemoved(TransportEquipmentSection(Index(0)))
@@ -956,6 +803,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Departure transport means 1 - Changed type value
               .setSequenceNumber(TransportMeansSection(Index(0)), 1)
               .setNotRemoved(TransportMeansSection(Index(0)))
@@ -1042,6 +890,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Departure transport means 1 - Unchanged
               .setSequenceNumber(TransportMeansSection(Index(0)), 1)
               .setNotRemoved(TransportMeansSection(Index(0)))
@@ -1101,6 +950,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(SupportingDocument = supportingDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Supporting document 1 - Changed type value
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -1180,6 +1030,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(SupportingDocument = supportingDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Supporting document 1 - Unchanged
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -1233,6 +1084,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportDocument = transportDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport document 1 - Changed type value
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -1302,6 +1154,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportDocument = transportDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport document 1 - Unchanged
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -1353,6 +1206,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(AdditionalReference = additionalReferences)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Additional reference 1 - Changed type value
               .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
               .setNotRemoved(AdditionalReferenceSection(Index(0)))
@@ -1421,6 +1275,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(AdditionalReference = additionalReferences)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Additional reference 1 - Unchanged
               .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
               .setNotRemoved(AdditionalReferenceSection(Index(0)))
@@ -1464,6 +1319,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setSequenceNumber(HouseConsignmentSection(Index(0)), 1)
                 .setValue(GrossWeightPage(Index(0)), grossMass)
 
@@ -1484,6 +1340,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setSequenceNumber(HouseConsignmentSection(Index(0)), 1)
               .setValue(GrossWeightPage(Index(0)), grossMass)
 
@@ -1534,6 +1391,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Departure transport means 1 - Changed type value
@@ -1627,6 +1485,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Departure transport means 1 - Unchanged
@@ -1693,6 +1552,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Supporting document 1 - Changed type value
@@ -1777,6 +1637,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Supporting document 1 - Unchanged
@@ -1835,6 +1696,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Transport document 1 - Changed type value
@@ -1909,6 +1771,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Transport document 1 - Unchanged
@@ -1965,6 +1828,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Additional reference 1 - Changed type value
@@ -2042,6 +1906,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Additional reference 1 - Unchanged
@@ -2103,6 +1968,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Consignment item 1 - Changed description of goods
@@ -2180,6 +2046,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Consignment item 1 - Unchanged
@@ -2239,6 +2106,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               .setValue(ItemDescriptionPage(Index(0), Index(0)), "newDescriptionOfGoods")
@@ -2296,6 +2164,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               .setValue(ItemDescriptionPage(Index(0), Index(0)), "originalDescriptionOfGoods")
@@ -2352,6 +2221,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Packaging 1 - Changed type value
@@ -2435,6 +2305,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Packaging 1 - Unchanged
@@ -2497,6 +2368,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Supporting document 1 - Changed type value
@@ -2581,6 +2453,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Supporting document 1 - Unchanged
@@ -2639,6 +2512,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Transport document 1 - Changed type value
@@ -2713,6 +2587,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Transport document 1 - Unchanged
@@ -2769,6 +2644,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Additional reference 1 - Changed type value
@@ -2846,6 +2722,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Additional reference 1 - Unchanged
