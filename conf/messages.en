@@ -455,7 +455,7 @@ unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods i
 
 declarationType = Declaration type
 securityType = Safety and security details
-reducedDatasetIndicator = Do you want to add a reduced data set?
+reducedDatasetIndicator = Do you want to use a reduced data set?
 declarationAcceptanceDate = Declaration acceptance date
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
