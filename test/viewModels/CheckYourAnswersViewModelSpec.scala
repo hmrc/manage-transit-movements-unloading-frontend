@@ -37,7 +37,6 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         .setValue(CanSealsBeReadPage, true)
         .setValue(AreAnySealsBrokenPage, true)
         .setValue(NewAuthYesNoPage, true)
-        .setValue(OtherThingsToReportPage, "other information")
 
       setExistingUserAnswers(userAnswers)
 
@@ -45,7 +44,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val result            = viewModelProvider.apply(userAnswers)
 
       result.sections.length mustBe 2
-      result.sections.head.rows.size mustBe 5
+      result.sections.head.rows.size mustBe 4
     }
 
   }

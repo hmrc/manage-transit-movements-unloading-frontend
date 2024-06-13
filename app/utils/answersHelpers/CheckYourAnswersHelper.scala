@@ -58,14 +58,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
-  def otherThingsToReport: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = OtherThingsToReportPage,
-    formatAnswer = formatAsText,
-    prefix = "checkYourAnswers.rowHeadings.otherThingsToReport",
-    id = Some("change-other-things-to-report"),
-    call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
-  )
-
   def canSealsBeRead: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = CanSealsBeReadPage,
     formatAnswer = formatAsYesOrNo,

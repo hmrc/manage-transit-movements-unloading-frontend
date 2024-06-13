@@ -465,36 +465,5 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
-    "otherThingsToReport" - {
-      "must return row" in {
-
-        forAll(Gen.alphaNumStr) {
-          otherThingsToReport =>
-            val answers = emptyUserAnswers.setValue(OtherThingsToReportPage, otherThingsToReport)
-            val helper  = new CheckYourAnswersHelper(answers)
-            val result  = helper.otherThingsToReport
-
-            result mustBe Some(
-              SummaryListRow(
-                key = Key("Other things to report".toText),
-                value = Value(s"$otherThingsToReport".toText),
-                actions = Some(
-                  Actions(
-                    items = List(
-                      ActionItem(
-                        content = "Change".toText,
-                        href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
-                        visuallyHiddenText = Some("if other things to report is provided"),
-                        attributes = Map("id" -> "change-other-things-to-report")
-                      )
-                    )
-                  )
-                )
-              )
-            )
-        }
-      }
-    }
-
   }
 }
