@@ -118,7 +118,8 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
         .parse(s"""
              |{
              |  "otherQuestions" : {
-             |    "foo" : "bar"
+             |    "foo" : "bar",
+             |    "otherThingsToReport" : "other things"
              |  },
              |  "someDummyTransformedData" : {
              |    "foo" : "bar"
@@ -153,6 +154,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
              |    "foo" : "bar"
              |  },
              |  "otherQuestions" : {
+             |    "otherThingsToReport" : "other things",
              |    "newAuthYesNo" : false
              |  }
              |}
