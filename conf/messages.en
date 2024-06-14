@@ -1011,7 +1011,7 @@ unloadingFindings.additionalInformation.description = Description
 
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
-departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
