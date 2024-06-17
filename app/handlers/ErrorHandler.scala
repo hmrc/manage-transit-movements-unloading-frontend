@@ -16,9 +16,7 @@
 
 package handlers
 
-import javax.inject.{Inject, Singleton}
-import logging.Logging
-import play.api.PlayException
+import play.api.{Logging, PlayException}
 import play.api.http.HttpErrorHandler
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,6 +24,7 @@ import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton

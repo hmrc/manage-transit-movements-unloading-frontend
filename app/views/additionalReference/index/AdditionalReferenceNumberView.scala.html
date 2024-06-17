@@ -17,14 +17,13 @@
 @import controllers.additionalReference.index.routes
 @import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel
 @import models.MovementReferenceNumber
-@import viewModels.components.InputCharacterCountViewModel
-@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
-@import forms.Constants.maxAdditionalReferenceNumLength
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputCharacterCount: InputCharacterCount,
+    inputText: InputText,
     button: Button,
     errorSummary: ErrorSummary
 )
@@ -40,15 +39,13 @@
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputText(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountViewModel(
+            inputTextType = OrdinaryTextInput(
                 heading = viewModel.heading,
-                caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = None
+                caption = Some(messages("site.caption", mrn.toString))
             ),
-            maxLength = maxAdditionalReferenceNumLength,
-            rows = 2
+            hint = Some(messages("additionalReferenceNumber.index.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

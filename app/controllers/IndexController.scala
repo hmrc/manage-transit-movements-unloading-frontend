@@ -17,8 +17,8 @@
 package controllers
 
 import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
-import logging.Logging
 import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
