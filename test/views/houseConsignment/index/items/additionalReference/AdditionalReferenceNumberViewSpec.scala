@@ -16,19 +16,16 @@
 
 package views.houseConsignment.index.items.additionalReference
 
-import base.SpecBase
-import forms.Constants.maxAdditionalReferenceNumLength
 import forms.ItemsAdditionalReferenceNumberFormProvider
-import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberViewModel
-import views.behaviours.CharacterCountViewBehaviours
+import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
+class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
@@ -47,6 +44,8 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
     .sample
     .value
 
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
   behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
@@ -55,7 +54,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
 
   behave like pageWithHeading(viewModel.heading)
 
-  behave like pageWithCharacterCount(maxAdditionalReferenceNumLength)
+  behave like pageWithHint("This can be up to 70 characters long.")
 
   behave like pageWithSubmitButton("Continue")
 
