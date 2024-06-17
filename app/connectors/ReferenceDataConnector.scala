@@ -20,11 +20,11 @@ import cats.Order
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import logging.Logging
 import models.DocType.{Previous, Support, Transport}
 import models.reference.TransportMode.InlandMode
 import models.reference._
 import models.{DocType, SecurityType}
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
