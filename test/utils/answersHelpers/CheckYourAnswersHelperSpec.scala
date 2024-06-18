@@ -420,7 +420,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Are you using the new procedure?".toText),
+              key = Key("Do you want to use the revised unloading procedure?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -428,7 +428,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if new procedure is used"),
+                      visuallyHiddenText = Some("if you want to use the revised unloading procedure"),
                       attributes = Map("id" -> "change-any-new-procedure")
                     )
                   )
@@ -445,7 +445,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Are you using the new procedure?".toText),
+              key = Key("Do you want to use the revised unloading procedure?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -453,7 +453,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if new procedure is used"),
+                      visuallyHiddenText = Some("if you want to use the revised unloading procedure"),
                       attributes = Map("id" -> "change-any-new-procedure")
                     )
                   )
