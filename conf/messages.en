@@ -1303,3 +1303,7 @@ houseConsignment.addAnotherHouseConsignment.label = Do you want to add another h
 houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any more house consignments. To add another, you need to remove one first.
 houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
+
+newAuthYesNo.title = Are you using the new procedure?
+newAuthYesNo.heading = Are you using the new procedure?
+newAuthYesNo.error.required = Select yes if you want to add any comments
