@@ -347,10 +347,18 @@ unloadingComments.error.required = Enter your comments
 unloadingComments.error.length = Your comments must be 512 characters or less
 unloadingComments.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
-otherThingsToReport.title = What do you want to report?
-otherThingsToReport.heading = What do you want to report?
-otherThingsToReport.checkYourAnswersLabel = What do you want to report?
-otherThingsToReport.error.required = Enter what you want to report
+otherThingsToReport.oldAuth.title = What do you want to report?
+otherThingsToReport.newAuth.title = Enter all the seal identification numbers
+otherThingsToReport.oldAuth.heading = What do you want to report?
+otherThingsToReport.newAuth.heading = Enter all the seal identification numbers
+otherThingsToReport.newAuth.paragraph1 = Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.
+otherThingsToReport.newAuth.paragraph2 = If any seals are broken, you must
+otherThingsToReport.newAuth.link = select no to using the revised unloading procedure
+otherThingsToReport.newAuth.paragraph4 = You will then need to unload the goods and report any discrepancies.
+otherThingsToReport.newAuth.hint = Each seal can be up to 20 characters long and include both letters and numbers.
+otherThingsToReport.checkYourAnswersLabel = What do you want to report? //TODO: Check if this is taken care of in CYA ticket
+otherThingsToReport.oldAuth.error.required = Enter what you want to report
+otherThingsToReport.newAuth.error.required = Enter all the seal identification numbers
 otherThingsToReport.error.length = Your report must be 512 characters or less
 otherThingsToReport.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 

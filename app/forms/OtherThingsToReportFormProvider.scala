@@ -25,9 +25,9 @@ import javax.inject.Inject
 
 class OtherThingsToReportFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(errorRequired: String): Form[String] =
     Form(
-      "value" -> text("otherThingsToReport.error.required")
+      "value" -> text(errorRequired)
         .verifying(
           forms.StopOnFirstFail[String](
             maxLength(otherThingsToReportLength, "otherThingsToReport.error.length"),

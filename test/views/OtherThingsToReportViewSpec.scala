@@ -18,32 +18,61 @@ package views
 
 import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
+import generators.Generators
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.OtherThingsToReportViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.OtherThingsToReportView
 
-class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours {
+class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Generators {
 
-  override def form: Form[String] = new OtherThingsToReportFormProvider()()
+  val viewModelOldAuth: OtherThingsToReportViewModel = OtherThingsToReportViewModel(false)
+  val viewModelNewAuth: OtherThingsToReportViewModel = OtherThingsToReportViewModel(true)
+
+  override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModelOldAuth.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelOldAuth)(fakeRequest, messages)
 
-  override val prefix: String = "otherThingsToReport"
+  def applyViewNewAuth: HtmlFormat.Appendable =
+    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
 
-  behave like pageWithTitle()
+  override val prefix: String = Gen
+    .oneOf(
+      "otherThingsToReport.oldAuth",
+      "otherThingsToReport.newAuth"
+    )
+    .sample
+    .value
 
-  behave like pageWithBackLink()
+  "when old auth" - {
 
-  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
+    behave like pageWithTitle(viewModelOldAuth.title)
 
-  behave like pageWithHeading()
+    behave like pageWithBackLink()
 
-  behave like pageWithCharacterCount(otherThingsToReportLength)
+    behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHint(s"You can enter up to $otherThingsToReportLength characters")
+    behave like pageWithHeading(viewModelOldAuth.heading)
 
-  behave like pageWithSubmitButton("Continue")
+    behave like pageWithCharacterCount(otherThingsToReportLength)
+
+    behave like pageWithHint(s"You can enter up to $otherThingsToReportLength characters")
+
+    behave like pageWithSubmitButton("Continue")
+  }
+
+  "alternative new auth content" - {
+
+    val doc = parseView(applyViewNewAuth)
+
+    behave like pageWithTitle(doc, viewModelNewAuth.prefix)
+
+    behave like pageWithHeading(doc, viewModelNewAuth.prefix)
+
+    behave like pageWithHint(doc, "Each seal can be up to 20 characters long and include both letters and numbers.")
+  }
 }

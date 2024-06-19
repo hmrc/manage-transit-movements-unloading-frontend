@@ -17,15 +17,18 @@
 package controllers
 
 import controllers.actions._
-import forms.OtherThingsToReportFormProvider
 import forms.Constants.otherThingsToReportLength
+import forms.OtherThingsToReportFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigation
-import pages.OtherThingsToReportPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.OtherThingsToReportViewModel
+import viewModels.OtherThingsToReportViewModel.OtherThingsToReportViewModelProvider
 import views.html.OtherThingsToReportView
 
 import javax.inject.Inject
@@ -36,33 +39,38 @@ class OtherThingsToReportController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigation,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: OtherThingsToReportFormProvider,
   val controllerComponents: MessagesControllerComponents,
+  viewModelProvider: OtherThingsToReportViewModelProvider,
   view: OtherThingsToReportView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private def form(viewModel: OtherThingsToReportViewModel)(implicit messages: Messages): Form[String] = formProvider(viewModel.requiredError)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)) {
       implicit request =>
+        val viewModel = viewModelProvider(request.arg)
         val preparedForm = request.userAnswers.get(OtherThingsToReportPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, otherThingsToReportLength, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, otherThingsToReportLength, mode, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)).async {
       implicit request =>
-        form
+        val viewModel = viewModelProvider(request.arg)
+        form(viewModel)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, otherThingsToReportLength, mode))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, otherThingsToReportLength, mode, viewModel))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherThingsToReportPage, value))
