@@ -989,9 +989,9 @@ transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you 
 transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
 
-transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
-transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
-transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}
+transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove this seal from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove this seal from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove this seal from transport equipment {0}
 
 transportEquipment.index.addAnotherSeal.empty.title = You have added 0 seals to transport equipment {1}
 transportEquipment.index.addAnotherSeal.singular.title = You have added 1 seal to transport equipment {1}
@@ -1011,7 +1011,7 @@ unloadingFindings.additionalInformation.description = Description
 
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
-departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?

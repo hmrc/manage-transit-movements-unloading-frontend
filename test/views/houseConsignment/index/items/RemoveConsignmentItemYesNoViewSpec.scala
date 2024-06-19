@@ -18,6 +18,7 @@ package views.houseConsignment.index.items
 
 import generators.Generators
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -27,10 +28,12 @@ class RemoveConsignmentItemYesNoViewSpec extends YesNoViewBehaviours with Genera
 
   private val mode = NormalMode
 
+  private val insetText = Gen.alphaNumStr.sample.value
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveConsignmentItemYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.removeConsignmentItemYesNo"
 
@@ -43,6 +46,8 @@ class RemoveConsignmentItemYesNoViewSpec extends YesNoViewBehaviours with Genera
   behave like pageWithHeading(itemIndex.display, houseConsignmentIndex.display)
 
   behave like pageWithRadioItems(args = Seq(houseConsignmentIndex.display, itemIndex.display))
+
+  behave like pageWithInsetText(insetText)
 
   behave like pageWithSubmitButton("Continue")
 }
