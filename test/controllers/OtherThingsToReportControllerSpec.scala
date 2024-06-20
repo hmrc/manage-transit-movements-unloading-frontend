@@ -31,6 +31,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.OtherThingsToReportViewModel
+import viewModels.OtherThingsToReportViewModel.OtherThingsToReportViewModelProvider
 import views.html.OtherThingsToReportView
 
 import scala.concurrent.Future
@@ -45,15 +46,22 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
 
   private lazy val otherThingsToReportRoute = controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode).url
 
-  private val mockViewModelProvider = mock[OtherThingsToReportViewModel]
+  private val mockViewModelProvider = mock[OtherThingsToReportViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind(classOf[OtherThingsToReportViewModel]).toInstance(mockViewModelProvider)
+        bind(classOf[OtherThingsToReportViewModelProvider]).toInstance(mockViewModelProvider)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   "OtherThingsToReportController" - {
 
@@ -117,7 +125,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, viewModel.newAuth)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 

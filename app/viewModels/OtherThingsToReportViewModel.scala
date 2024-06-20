@@ -17,22 +17,30 @@
 package viewModels
 
 import play.api.i18n.Messages
+import controllers.routes
+import models.{ArrivalId, Mode}
+import play.api.mvc.Call
 
-case class OtherThingsToReportViewModel(newAuth: Boolean) {
+case class OtherThingsToReportViewModel(
+  newAuth: Boolean,
+  prefix: String,
+  title: String,
+  heading: String,
+  hint: Option[String],
+  requiredError: String,
+  arrivalId: ArrivalId,
+  mode: Mode
+) {
 
-  def prefix: String = if (newAuth) "otherThingsToReport.newAuth" else "otherThingsToReport.oldAuth"
+  def onSubmit(): Call = routes.OtherThingsToReportController.onSubmit(
+    arrivalId,
+    mode
+  )
 
-  def title(implicit messages: Messages): String =
-    messages(s"$prefix.title")
-
-  def heading(implicit messages: Messages): String =
-    messages(s"$prefix.heading")
-
-  def hint(implicit messages: Messages): Option[String] =
-    if (newAuth) Some(messages("otherThingsToReport.newAuth.hint")) else None
-
-  def requiredError(implicit messages: Messages): String =
-    messages(s"$prefix.error.required")
+  def newAuthLink(): Call = routes.NewAuthYesNoController.onSubmit(
+    arrivalId,
+    mode
+  )
 
 }
 
@@ -41,8 +49,26 @@ object OtherThingsToReportViewModel {
   class OtherThingsToReportViewModelProvider {
 
     def apply(
+      arrivalId: ArrivalId,
+      mode: Mode,
       newAuth: Boolean
-    ): OtherThingsToReportViewModel =
-      new OtherThingsToReportViewModel(newAuth)
+    )(implicit messages: Messages): OtherThingsToReportViewModel = {
+
+      def prefix: String = if (newAuth) "otherThingsToReport.newAuth" else "otherThingsToReport.oldAuth"
+
+      def title(implicit messages: Messages): String =
+        messages(s"$prefix.title")
+
+      def heading(implicit messages: Messages): String =
+        messages(s"$prefix.heading")
+
+      def hint(implicit messages: Messages): Option[String] =
+        if (newAuth) Some(messages("otherThingsToReport.newAuth.hint")) else None
+
+      def requiredError(implicit messages: Messages): String =
+        messages(s"$prefix.error.required")
+
+      new OtherThingsToReportViewModel(newAuth, prefix, title, heading, hint, requiredError, arrivalId, mode)
+    }
   }
 }

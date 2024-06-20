@@ -23,7 +23,7 @@ import models.{ArrivalId, Mode}
 import navigation.Navigation
 import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,12 +48,12 @@ class OtherThingsToReportController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: OtherThingsToReportViewModel)(implicit messages: Messages): Form[String] = formProvider(viewModel.requiredError)
+  private def form(viewModel: OtherThingsToReportViewModel): Form[String] = formProvider(viewModel.requiredError)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)) {
       implicit request =>
-        val viewModel = viewModelProvider(request.arg)
+        val viewModel = viewModelProvider(arrivalId, mode, request.arg)
         val preparedForm = request.userAnswers.get(OtherThingsToReportPage) match {
           case None        => form(viewModel)
           case Some(value) => form(viewModel).fill(value)
@@ -65,7 +65,7 @@ class OtherThingsToReportController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)).async {
       implicit request =>
-        val viewModel = viewModelProvider(request.arg)
+        val viewModel = viewModelProvider(arrivalId, mode, request.arg)
         form(viewModel)
           .bindFromRequest()
           .fold(

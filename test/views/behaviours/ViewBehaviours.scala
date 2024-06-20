@@ -164,7 +164,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithHint(doc: Document, expectedText: String): Unit =
-    "must render hint" in {
+    s"must render hint" in {
       val hint = getElementByClass(doc, "govuk-hint")
       assertElementContainsText(hint, expectedText)
     }
@@ -184,6 +184,11 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithoutHint(): Unit =
+    "must not render hint" in {
+      assertElementDoesNotExist(doc, "govuk-hint")
+    }
+
+  def pageWithoutHint(doc: Document): Unit =
     "must not render hint" in {
       assertElementDoesNotExist(doc, "govuk-hint")
     }
@@ -222,6 +227,11 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assertElementContainsHref(link, expectedHref)
     }
 
+  def pageWithoutLink(doc: Document, id: String): Unit =
+    s"must not render link with id $id" in {
+      assertElementDoesNotExist(doc, id)
+    }
+
   def pageWithBackLink(): Unit =
     "must render back link" in {
       val link = getElementByClass(doc, "govuk-back-link")
@@ -241,6 +251,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     pageWithContent(doc, tag, expectedText, _ equals _)
 
   def pageWithPartialContent(tag: String, expectedText: String): Unit =
+    pageWithContent(doc, tag, expectedText, _ contains _)
+
+  def pageWithPartialContent(doc: Document, tag: String, expectedText: String): Unit =
     pageWithContent(doc, tag, expectedText, _ contains _)
 
   private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =

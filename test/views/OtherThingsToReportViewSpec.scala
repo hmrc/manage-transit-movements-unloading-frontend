@@ -20,6 +20,7 @@ import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
 import generators.Generators
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,16 +30,12 @@ import views.html.OtherThingsToReportView
 
 class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Generators {
 
-  val viewModelOldAuth: OtherThingsToReportViewModel = OtherThingsToReportViewModel(false)
-  val viewModelNewAuth: OtherThingsToReportViewModel = OtherThingsToReportViewModel(true)
+  private val viewModel = arbitrary[OtherThingsToReportViewModel].sample.value
 
-  override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModelOldAuth.requiredError)
+  override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelOldAuth)(fakeRequest, messages)
-
-  def applyViewNewAuth: HtmlFormat.Appendable =
-    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
+    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
@@ -48,31 +45,48 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
     .sample
     .value
 
-  "when old auth" - {
+  behave like pageWithTitle(viewModel.title)
 
-    behave like pageWithTitle(viewModelOldAuth.title)
+  behave like pageWithBackLink()
 
-    behave like pageWithBackLink()
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-    behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
+  behave like pageWithHeading(viewModel.heading)
 
-    behave like pageWithHeading(viewModelOldAuth.heading)
+  behave like pageWithCharacterCount(otherThingsToReportLength)
 
-    behave like pageWithCharacterCount(otherThingsToReportLength)
+  behave like pageWithSubmitButton("Continue")
 
-    behave like pageWithHint(s"You can enter up to $otherThingsToReportLength characters")
+  "when newAuth is false" - {
+    val viewModelOldAuth = viewModel.copy(newAuth = false, hint = None)
+    val doc = parseView(
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelOldAuth)(fakeRequest, messages)
+    )
 
-    behave like pageWithSubmitButton("Continue")
+    behave like pageWithoutHint(doc) //TODO: Test fails due to character count hint existing
   }
 
-  "alternative new auth content" - {
+  "when newAuth is true" - {
 
-    val doc = parseView(applyViewNewAuth)
+    val hint             = "Each seal can be up to 20 characters long and include both letters and numbers."
+    val viewModelNewAuth = viewModel.copy(newAuth = true, hint = Some(hint))
+    val doc = parseView(
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
+    )
 
-    behave like pageWithTitle(doc, viewModelNewAuth.prefix)
+    behave like pageWithContent(doc, "p", "Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.")
 
-    behave like pageWithHeading(doc, viewModelNewAuth.prefix)
+    behave like pageWithPartialContent(doc, "p", "If any seals are broken, you must")
 
-    behave like pageWithHint(doc, "Each seal can be up to 20 characters long and include both letters and numbers.")
+    behave like pageWithLink(
+      doc = doc,
+      id = "link",
+      expectedText = "select no to using the revised unloading procedure",
+      expectedHref = s"/manage-transit-movements/unloading/${viewModel.arrivalId.value}/new-auth"
+    )
+
+    behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
+
+    behave like pageWithHint(doc, viewModelNewAuth.hint.get)
   }
 }
