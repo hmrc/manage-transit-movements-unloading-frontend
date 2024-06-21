@@ -35,7 +35,7 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
 
   private val mode: Mode = NormalMode
 
-  override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModel.requiredError)
+  override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModel.requiredError, viewModel.maxLengthError, viewModel.invalidError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, mode, viewModel)(fakeRequest, messages)

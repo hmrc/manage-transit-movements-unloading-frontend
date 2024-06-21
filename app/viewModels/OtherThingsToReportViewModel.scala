@@ -28,6 +28,8 @@ case class OtherThingsToReportViewModel(
   hint: Option[String],
   additionalHtml: Option[Html],
   requiredError: String,
+  maxLengthError: String,
+  invalidError: String,
   onSubmitCall: Call
 )
 
@@ -62,6 +64,8 @@ object OtherThingsToReportViewModel {
         hint = hint,
         additionalHtml = additionalHtml.map(Html(_)),
         requiredError = messages(s"$prefix.error.required"),
+        maxLengthError = messages(s"$prefix.error.length"),
+        invalidError = messages(s"$prefix.error.invalid"),
         onSubmitCall = routes.OtherThingsToReportController.onSubmit(arrivalId, mode)
       )
     }

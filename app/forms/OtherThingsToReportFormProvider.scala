@@ -25,13 +25,13 @@ import javax.inject.Inject
 
 class OtherThingsToReportFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(requiredError: String, maxLengthError: String, invalidError: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required")
+      "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
-            maxLength(otherThingsToReportLength, s"$prefix.error.length"),
-            regexp(stringFieldRegexComma, s"$prefix.error.invalid")
+            maxLength(otherThingsToReportLength, maxLengthError),
+            regexp(stringFieldRegexComma, invalidError)
           )
         )
     )

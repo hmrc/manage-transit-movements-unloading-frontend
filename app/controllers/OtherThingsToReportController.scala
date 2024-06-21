@@ -48,7 +48,8 @@ class OtherThingsToReportController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: OtherThingsToReportViewModel): Form[String] = formProvider(viewModel.requiredError)
+  private def form(viewModel: OtherThingsToReportViewModel): Form[String] =
+    formProvider(viewModel.requiredError, viewModel.maxLengthError, viewModel.invalidError)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)) {

@@ -34,7 +34,7 @@ class OtherThingsToReportFormProviderSpec extends StringFieldBehaviours {
   val invalidKey  = s"$prefix.error.invalid"
   val maxLength   = 512
 
-  val form = new OtherThingsToReportFormProvider()(s"otherThingsToReport.$auth")
+  val form = new OtherThingsToReportFormProvider()(requiredKey, lengthKey, invalidKey)
 
   ".value" - {
 

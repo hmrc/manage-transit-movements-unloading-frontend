@@ -682,7 +682,9 @@ trait ViewModelGenerators {
       hint           <- Gen.option(nonEmptyString)
       additionalHtml <- Gen.const(None)
       requiredError  <- nonEmptyString
+      maxLengthError <- nonEmptyString
+      invalidError   <- nonEmptyString
       onSubmitCall   <- arbitrary[Call]
-    } yield OtherThingsToReportViewModel(title, heading, hint, additionalHtml, requiredError, onSubmitCall)
+    } yield OtherThingsToReportViewModel(title, heading, hint, additionalHtml, requiredError, maxLengthError, invalidError, onSubmitCall)
   }
 }

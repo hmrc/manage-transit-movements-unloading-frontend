@@ -34,6 +34,8 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
       result.hint must not be defined
       result.additionalHtml must not be defined
       result.requiredError mustBe "Enter what you want to report"
+      result.maxLengthError mustBe "Your report must be 512 characters or less"
+      result.invalidError mustBe "Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces"
       result.onSubmitCall.url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
     }
 
@@ -46,6 +48,8 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
       result.hint mustBe Some("Each seal can be up to 20 characters long and include both letters and numbers.")
       result.additionalHtml must be(defined)
       result.requiredError mustBe "Enter all the seal identification numbers"
+      result.maxLengthError mustBe "The identification numbers must be 512 characters or less"
+      result.invalidError mustBe "The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces"
       result.onSubmitCall.url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
     }
   }

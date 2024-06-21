@@ -41,7 +41,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
   private val viewModel = arbitrary[OtherThingsToReportViewModel].sample.value
 
   private val formProvider = new OtherThingsToReportFormProvider()
-  private val form         = formProvider(viewModel.requiredError)
+  private val form         = formProvider(viewModel.requiredError, viewModel.maxLengthError, viewModel.invalidError)
   private val mode         = NormalMode
 
   private lazy val otherThingsToReportRoute = controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode).url
