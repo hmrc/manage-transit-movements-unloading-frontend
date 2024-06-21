@@ -418,9 +418,9 @@ cannotSendUnloadingRemarks.message =  If you still need to send these unloading 
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
 
-unloadingFindings.title = Cross-check the transit with this declaration summary
-unloadingFindings.heading = Cross-check the transit with this declaration summary
-unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
+unloadingFindings.title = Enter the discrepancies between the transit and unloading permission
+unloadingFindings.heading = Enter the discrepancies between the transit and unloading permission
+unloadingFindings.paragraph = Change the declaration details below to match the transit that arrived.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
@@ -455,7 +455,7 @@ unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods i
 
 declarationType = Declaration type
 securityType = Safety and security details
-reducedDatasetIndicator = Do you want to add a reduced data set?
+reducedDatasetIndicator = Do you want to use a reduced data set?
 declarationAcceptanceDate = Declaration acceptance date
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
@@ -615,9 +615,9 @@ unloadingFindings.dangerousGoods.unNumbers = UN numbers
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
-houseConsignment.title = Cross-check the transit with house consignment {0}
-houseConsignment.heading = Cross-check the transit with house consignment {0}
-houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
+houseConsignment.title = House consignment {0}
+houseConsignment.heading = House consignment {0}
+houseConsignment.paragraph = Change the declaration details below to match the transit that arrived.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 houseConsignment.securityIndicator = Safety and security details
 
@@ -872,6 +872,7 @@ additionalReferenceNumber.index.NormalMode.title = What is the additional refere
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
 additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
+additionalReferenceNumber.index.hint = This can be up to 70 characters long.
 additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
@@ -899,6 +900,7 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.Norma
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.heading = What is the additional reference number?
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.title = What is the new additional reference number for item {1} in house consignment {0}?
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.heading = What is the new additional reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.hint = This can be up to 70 characters long.
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
@@ -987,9 +989,9 @@ transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you 
 transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
 
-transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
-transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
-transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}
+transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove this seal from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove this seal from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove this seal from transport equipment {0}
 
 transportEquipment.index.addAnotherSeal.empty.title = You have added 0 seals to transport equipment {1}
 transportEquipment.index.addAnotherSeal.singular.title = You have added 1 seal to transport equipment {1}
@@ -1009,7 +1011,7 @@ unloadingFindings.additionalInformation.description = Description
 
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
-departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
@@ -1174,6 +1176,7 @@ houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.error.req
 
 houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
 houseConsignment.index.additionalReference.additionalReferenceNumber.heading = What is the additional reference number?
+houseConsignment.index.additionalReference.additionalReferenceNumber.hint = This can be up to 70 characters long.
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.required = Enter the additional reference number
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces

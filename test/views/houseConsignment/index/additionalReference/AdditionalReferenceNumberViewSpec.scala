@@ -16,17 +16,15 @@
 
 package views.houseConsignment.index.additionalReference
 
-import base.SpecBase
-import forms.Constants.maxAdditionalReferenceNumLength
 import forms.HouseConsignmentAdditionalReferenceNumberFormProvider
-import generators.Generators
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.CharacterCountViewBehaviours
+import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.additionalReference.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
+class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   private val formProvider = new HouseConsignmentAdditionalReferenceNumberFormProvider()
 
@@ -40,6 +38,8 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
   override val prefix: String =
     "houseConsignment.index.additionalReference.additionalReferenceNumber"
 
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
@@ -48,7 +48,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(maxAdditionalReferenceNumLength)
+  behave like pageWithHint("This can be up to 70 characters long.")
 
   behave like pageWithSubmitButton("Continue")
 
