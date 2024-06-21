@@ -32,22 +32,12 @@
 
 @(form: Form[_],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode, viewModel: OtherThingsToReportViewModel)(implicit request: Request[_], messages: Messages)
 
-@html = {
-<p class="govuk-body">@messages("otherThingsToReport.newAuth.paragraph1")</p>
-<p class="govuk-body">@messages("otherThingsToReport.newAuth.paragraph2")
-    <a id="link" class="govuk-link" href=@viewModel.newAuthLink()>
-        @messages("otherThingsToReport.newAuth.link")
-    </a>.
-    @messages("otherThingsToReport.newAuth.paragraph3")
-</p>
-}
-
 @mainTemplate(
     title = messages(viewModel.title),
     showBackLink = true
 ) {
 
-    @formHelper(action = viewModel.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -56,9 +46,9 @@
             inputCharacterCountType = InputCharacterCountViewModel.apply(
                 heading = messages(viewModel.heading),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = if(viewModel.newAuth) Some(html) else None
+                additionalHtml = viewModel.additionalHtml
             ),
-            hint = if(viewModel.newAuth) viewModel.hint else None,
+            hint = viewModel.hint,
             maxLength = maxLength
         )
 

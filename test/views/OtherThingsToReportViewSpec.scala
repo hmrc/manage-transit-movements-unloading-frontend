@@ -19,12 +19,13 @@ package views
 import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.OtherThingsToReportViewModel
+import viewModels.OtherThingsToReportViewModel.OtherThingsToReportViewModelProvider
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.OtherThingsToReportView
 
@@ -32,10 +33,12 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
 
   private val viewModel = arbitrary[OtherThingsToReportViewModel].sample.value
 
+  private val mode: Mode = NormalMode
+
   override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, mode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
@@ -57,21 +60,22 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
 
   behave like pageWithSubmitButton("Continue")
 
+  private val hint = "Each seal can be up to 20 characters long and include both letters and numbers."
+
   "when newAuth is false" - {
-    val viewModelOldAuth = viewModel.copy(newAuth = false, hint = None)
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = false)
     val doc = parseView(
-      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelOldAuth)(fakeRequest, messages)
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
     )
 
-    behave like pageWithoutHint(doc) //TODO: Test fails due to character count hint existing
+    behave like pageWithoutHint(doc, hint)
   }
 
   "when newAuth is true" - {
 
-    val hint             = "Each seal can be up to 20 characters long and include both letters and numbers."
-    val viewModelNewAuth = viewModel.copy(newAuth = true, hint = Some(hint))
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true)
     val doc = parseView(
-      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
     )
 
     behave like pageWithContent(doc, "p", "Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.")
@@ -82,11 +86,11 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
       doc = doc,
       id = "link",
       expectedText = "select no to using the revised unloading procedure",
-      expectedHref = s"/manage-transit-movements/unloading/${viewModel.arrivalId.value}/new-auth"
+      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/new-auth"
     )
 
     behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
 
-    behave like pageWithHint(doc, viewModelNewAuth.hint.get)
+    behave like pageWithHint(doc, hint)
   }
 }

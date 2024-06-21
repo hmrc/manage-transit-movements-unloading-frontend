@@ -677,13 +677,12 @@ trait ViewModelGenerators {
 
   implicit lazy val otherThingsToReportViewModel: Arbitrary[OtherThingsToReportViewModel] = Arbitrary {
     for {
-      newAuth       <- arbitrary[Boolean]
-      prefix        <- nonEmptyString
-      title         <- nonEmptyString
-      heading       <- nonEmptyString
-      hint          <- Gen.option(nonEmptyString)
-      requiredError <- nonEmptyString
-      arrivalId     <- arbitrary[ArrivalId]
-    } yield OtherThingsToReportViewModel(newAuth, prefix, title, heading, hint, requiredError, arrivalId, NormalMode)
+      title          <- nonEmptyString
+      heading        <- nonEmptyString
+      hint           <- Gen.option(nonEmptyString)
+      additionalHtml <- Gen.const(None)
+      requiredError  <- nonEmptyString
+      onSubmitCall   <- arbitrary[Call]
+    } yield OtherThingsToReportViewModel(title, heading, hint, additionalHtml, requiredError, onSubmitCall)
   }
 }

@@ -193,6 +193,12 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assertElementDoesNotExist(doc, "govuk-hint")
     }
 
+  def pageWithoutHint(doc: Document, text: String): Unit =
+    s"must not render hint with text $text" in {
+      val hint = doc.getElementsByClass("govuk-hint").map(_.text()).find(_ == text)
+      assert(hint.isEmpty)
+    }
+
   def pageWithSubmitButton(expectedText: String): Unit =
     pageWithButton(expectedText) {
       button => assertElementContainsId(button, "submit")

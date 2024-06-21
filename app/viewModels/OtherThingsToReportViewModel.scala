@@ -16,33 +16,20 @@
 
 package viewModels
 
-import play.api.i18n.Messages
 import controllers.routes
 import models.{ArrivalId, Mode}
+import play.api.i18n.Messages
 import play.api.mvc.Call
+import play.twirl.api.Html
 
 case class OtherThingsToReportViewModel(
-  newAuth: Boolean,
-  prefix: String,
   title: String,
   heading: String,
   hint: Option[String],
+  additionalHtml: Option[Html],
   requiredError: String,
-  arrivalId: ArrivalId,
-  mode: Mode
-) {
-
-  def onSubmit(): Call = routes.OtherThingsToReportController.onSubmit(
-    arrivalId,
-    mode
-  )
-
-  def newAuthLink(): Call = routes.NewAuthYesNoController.onSubmit(
-    arrivalId,
-    mode
-  )
-
-}
+  onSubmitCall: Call
+)
 
 object OtherThingsToReportViewModel {
 
@@ -53,22 +40,30 @@ object OtherThingsToReportViewModel {
       mode: Mode,
       newAuth: Boolean
     )(implicit messages: Messages): OtherThingsToReportViewModel = {
+      val prefix = if (newAuth) "otherThingsToReport.newAuth" else "otherThingsToReport.oldAuth"
 
-      def prefix: String = if (newAuth) "otherThingsToReport.newAuth" else "otherThingsToReport.oldAuth"
+      val hint = Option.when(newAuth)(messages("otherThingsToReport.newAuth.hint"))
 
-      def title(implicit messages: Messages): String =
-        messages(s"$prefix.title")
+      val additionalHtml = Option.when(newAuth) {
+        s"""
+          |<p class="govuk-body">${messages("otherThingsToReport.newAuth.paragraph1")}</p>
+          |<p class="govuk-body">${messages("otherThingsToReport.newAuth.paragraph2")}
+          |    <a id="link" class="govuk-link" href=${routes.NewAuthYesNoController.onSubmit(arrivalId, mode)}>
+          |        ${messages("otherThingsToReport.newAuth.link")}
+          |    </a>.
+          |    ${messages("otherThingsToReport.newAuth.paragraph3")}
+          |</p>
+          |""".stripMargin
+      }
 
-      def heading(implicit messages: Messages): String =
-        messages(s"$prefix.heading")
-
-      def hint(implicit messages: Messages): Option[String] =
-        if (newAuth) Some(messages("otherThingsToReport.newAuth.hint")) else None
-
-      def requiredError(implicit messages: Messages): String =
-        messages(s"$prefix.error.required")
-
-      new OtherThingsToReportViewModel(newAuth, prefix, title, heading, hint, requiredError, arrivalId, mode)
+      new OtherThingsToReportViewModel(
+        title = messages(s"$prefix.title"),
+        heading = messages(s"$prefix.heading"),
+        hint = hint,
+        additionalHtml = additionalHtml.map(Html(_)),
+        requiredError = messages(s"$prefix.error.required"),
+        onSubmitCall = routes.OtherThingsToReportController.onSubmit(arrivalId, mode)
+      )
     }
   }
 }

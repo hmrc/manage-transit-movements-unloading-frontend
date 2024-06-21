@@ -29,26 +29,24 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = false)
 
-      result.prefix mustBe "otherThingsToReport.oldAuth"
       result.title mustBe "What do you want to report?"
       result.heading mustBe "What do you want to report?"
       result.hint must not be defined
+      result.additionalHtml must not be defined
       result.requiredError mustBe "Enter what you want to report"
-      result.newAuthLink().url mustBe controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode).url
-      result.onSubmit().url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
+      result.onSubmitCall.url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
     }
 
     "when newAuth is true" in {
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = true)
 
-      result.prefix mustBe "otherThingsToReport.newAuth"
       result.title mustBe "Enter all the seal identification numbers"
       result.heading mustBe "Enter all the seal identification numbers"
       result.hint mustBe Some("Each seal can be up to 20 characters long and include both letters and numbers.")
+      result.additionalHtml must be(defined)
       result.requiredError mustBe "Enter all the seal identification numbers"
-      result.newAuthLink().url mustBe controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode).url
-      result.onSubmit().url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
+      result.onSubmitCall.url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
     }
   }
 }

@@ -56,6 +56,8 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
         bind(classOf[OtherThingsToReportViewModelProvider]).toInstance(mockViewModelProvider)
       )
 
+  private val newAuth = arbitrary[Boolean].sample.value
+
   override def beforeEach(): Unit = {
     super.beforeEach()
 
@@ -68,7 +70,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, viewModel.newAuth)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, newAuth)
 
       setExistingUserAnswers(userAnswers)
 
@@ -87,7 +89,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
       checkArrivalStatus()
 
       val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, viewModel.newAuth)
+        .setValue(NewAuthYesNoPage, newAuth)
         .setValue(OtherThingsToReportPage, "answer")
       setExistingUserAnswers(userAnswers)
 
@@ -109,7 +111,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, viewModel.newAuth)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, newAuth)
 
       setExistingUserAnswers(userAnswers)
 
