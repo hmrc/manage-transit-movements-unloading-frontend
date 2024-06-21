@@ -24,36 +24,55 @@ import models.NormalMode
 import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.OtherThingsToReportPage
+import org.scalacheck.Arbitrary.arbitrary
+import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.OtherThingsToReportViewModel
+import viewModels.OtherThingsToReportViewModel.OtherThingsToReportViewModelProvider
 import views.html.OtherThingsToReportView
 
 import scala.concurrent.Future
 
 class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val viewModel = arbitrary[OtherThingsToReportViewModel].sample.value
+
   private val formProvider = new OtherThingsToReportFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(viewModel.requiredError, viewModel.maxLengthError, viewModel.invalidError)
   private val mode         = NormalMode
 
   private lazy val otherThingsToReportRoute = controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode).url
+
+  private val mockViewModelProvider = mock[OtherThingsToReportViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation)
+        bind[Navigation].toInstance(fakeNavigation),
+        bind(classOf[OtherThingsToReportViewModelProvider]).toInstance(mockViewModelProvider)
       )
+
+  private val newAuth = arbitrary[Boolean].sample.value
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   "OtherThingsToReportController" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, newAuth)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, otherThingsToReportRoute)
 
@@ -63,13 +82,15 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, mrn, arrivalId, otherThingsToReportLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(form, mrn, arrivalId, otherThingsToReportLength, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "answer")
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, newAuth)
+        .setValue(OtherThingsToReportPage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, otherThingsToReportRoute)
@@ -82,7 +103,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, otherThingsToReportLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, otherThingsToReportLength, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -90,7 +111,9 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, newAuth)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, otherThingsToReportRoute)
         .withFormUrlEncodedBody(("value", "answer"))
@@ -104,7 +127,9 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, otherThingsToReportRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -115,7 +140,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, otherThingsToReportLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, otherThingsToReportLength, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

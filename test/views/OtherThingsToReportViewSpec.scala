@@ -18,32 +18,79 @@ package views
 
 import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
-import models.NormalMode
+import generators.Generators
+import models.{Mode, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.OtherThingsToReportViewModel
+import viewModels.OtherThingsToReportViewModel.OtherThingsToReportViewModelProvider
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.OtherThingsToReportView
 
-class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours {
+class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Generators {
 
-  override def form: Form[String] = new OtherThingsToReportFormProvider()()
+  private val viewModel = arbitrary[OtherThingsToReportViewModel].sample.value
+
+  private val mode: Mode = NormalMode
+
+  override def form: Form[String] = new OtherThingsToReportFormProvider()(viewModel.requiredError, viewModel.maxLengthError, viewModel.invalidError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, mode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "otherThingsToReport"
+  override val prefix: String = Gen
+    .oneOf(
+      "otherThingsToReport.oldAuth",
+      "otherThingsToReport.newAuth"
+    )
+    .sample
+    .value
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(viewModel.heading)
 
   behave like pageWithCharacterCount(otherThingsToReportLength)
 
-  behave like pageWithHint(s"You can enter up to $otherThingsToReportLength characters")
-
   behave like pageWithSubmitButton("Continue")
+
+  private val hint = "Each seal can be up to 20 characters long and include both letters and numbers."
+
+  "when newAuth is false" - {
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = false)
+    val doc = parseView(
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
+    )
+
+    behave like pageWithoutHint(doc, hint)
+  }
+
+  "when newAuth is true" - {
+
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true)
+    val doc = parseView(
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
+    )
+
+    behave like pageWithContent(doc, "p", "Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.")
+
+    behave like pageWithPartialContent(doc, "p", "If any seals are broken, you must")
+
+    behave like pageWithLink(
+      doc = doc,
+      id = "link",
+      expectedText = "select no to using the revised unloading procedure",
+      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/new-auth"
+    )
+
+    behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
+
+    behave like pageWithHint(doc, hint)
+  }
 }
