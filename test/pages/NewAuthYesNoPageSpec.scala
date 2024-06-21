@@ -28,6 +28,30 @@ class NewAuthYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](NewAuthYesNoPage)
 
-    // TODO Add clean up test
+    "cleanup" - {
+      "must remove other things to report page when yes selected" in {
+        forAll(nonEmptyString) {
+          otherThingsToReport =>
+            val userAnswers = emptyUserAnswers
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+            val result = userAnswers.setValue(NewAuthYesNoPage, true)
+
+            result.get(OtherThingsToReportPage) must not be defined
+        }
+      }
+
+      "must keep other things to report page when no selected" in {
+        forAll(nonEmptyString) {
+          otherThingsToReport =>
+            val userAnswers = emptyUserAnswers
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+            val result = userAnswers.setValue(NewAuthYesNoPage, false)
+
+            result.get(OtherThingsToReportPage) mustBe defined
+        }
+      }
+    }
   }
 }

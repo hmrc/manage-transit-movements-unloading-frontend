@@ -18,17 +18,20 @@ package controllers
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.NewAuthYesNoPage
+import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.transformers.IE043Transformer
 import views.html.NewAuthYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class NewAuthYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -37,7 +40,8 @@ class NewAuthYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: NewAuthYesNoView
+  view: NewAuthYesNoView,
+  dataTransformer: IE043Transformer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -60,11 +64,25 @@ class NewAuthYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value =>
+          value => {
+            def updateUserAnswers(): Future[UserAnswers] =
+              if (value) {
+                Future.successful(request.userAnswers)
+              } else {
+                for {
+                  otherThingsToReport <- Future.successful(request.userAnswers.get(OtherThingsToReportPage))
+                  wipedAnswers = request.userAnswers.copy(data = Json.obj())
+                  transformedAnswers <- dataTransformer.transform(wipedAnswers)
+                  updatedAnswers     <- Future.fromTry(otherThingsToReport.fold(Try(transformedAnswers))(transformedAnswers.set(OtherThingsToReportPage, _)))
+                } yield updatedAnswers
+              }
+
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NewAuthYesNoPage, value))
+              userAnswers    <- updateUserAnswers()
+              updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
+          }
         )
   }
 }
