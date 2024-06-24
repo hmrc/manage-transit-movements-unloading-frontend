@@ -380,13 +380,15 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
     }
 
     "report" - {
-      "must return row" in {
+      "must return row containing old auth content" in {
 
         forAll(Gen.alphaNumStr) {
           report =>
-            val answers = emptyUserAnswers.setValue(OtherThingsToReportPage, report)
-            val helper  = new CheckYourAnswersHelper(answers)
-            val result  = helper.report
+            val answers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
+              .setValue(OtherThingsToReportPage, report)
+            val helper = new CheckYourAnswersHelper(answers)
+            val result = helper.report
 
             result mustBe Some(
               SummaryListRow(
@@ -406,6 +408,92 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 )
               )
             )
+        }
+      }
+
+      "must return row containing new auth content" in {
+
+        forAll(Gen.alphaNumStr) {
+          report =>
+            val answers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(OtherThingsToReportPage, report)
+            val helper = new CheckYourAnswersHelper(answers)
+            val result = helper.report
+
+            result mustBe Some(
+              SummaryListRow(
+                key = Key("Enter all the seal identification numbers".toText),
+                value = Value(s"$report".toText),
+                actions = Some(
+                  Actions(
+                    items = List(
+                      ActionItem(
+                        content = "Change".toText,
+                        href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
+                        visuallyHiddenText = Some("all the seal identification numbers"),
+                        attributes = Map("id" -> "change-report")
+                      )
+                    )
+                  )
+                )
+              )
+            )
+        }
+      }
+    }
+
+    "anyNewProcedure" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.anyNewProcedure
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you want to use the revised unloading procedure?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if you want to use the revised unloading procedure"),
+                      attributes = Map("id" -> "change-any-new-procedure")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.anyNewProcedure
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you want to use the revised unloading procedure?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if you want to use the revised unloading procedure"),
+                      attributes = Map("id" -> "change-any-new-procedure")
+                    )
+                  )
+                )
+              )
+            )
+          )
         }
       }
     }

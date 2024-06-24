@@ -37,6 +37,11 @@ trait CharacterCountViewBehaviours extends QuestionViewBehaviours[String] {
           module mustBe maxLength.toString
         }
 
+        "must contain a character count message" in {
+          val message = getElementByClass(doc, "govuk-character-count__message").text()
+          message mustBe s"You can enter up to $maxLength characters"
+        }
+
         behave like pageWithoutErrorSummary()
       }
 

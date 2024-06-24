@@ -50,6 +50,14 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.AreAnySealsBrokenController.onPageLoad(arrivalId, CheckMode))
   )
 
+  def anyNewProcedure: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = NewAuthYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.anyNewProcedure",
+    id = Some("change-any-new-procedure"),
+    call = Some(controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
   def canSealsBeRead: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = CanSealsBeReadPage,
     formatAnswer = formatAsYesOrNo,
@@ -90,12 +98,17 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
-  def report: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = OtherThingsToReportPage,
-    formatAnswer = formatAsText,
-    prefix = "checkYourAnswers.rowHeadings.report",
-    id = Some("change-report"),
-    call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
-  )
+  def report: Option[SummaryListRow] =
+    userAnswers.get(NewAuthYesNoPage).flatMap {
+      bool =>
+        val authType = if (bool) "newAuth" else "oldAuth"
+        getAnswerAndBuildRow[String](
+          page = OtherThingsToReportPage,
+          formatAnswer = formatAsText,
+          prefix = s"checkYourAnswers.rowHeadings.report.$authType",
+          id = Some("change-report"),
+          call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
+        )
+    }
 
 }

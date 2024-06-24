@@ -15,7 +15,9 @@
  *@
 
 @import models.MovementReferenceNumber
+@import viewModels.components.InputCharacterCountViewModel
 @import viewModels.components.InputCharacterCountViewModel._
+@import viewModels.OtherThingsToReportViewModel
 @import views.html.components.{Button, ErrorSummary, Heading, InputCharacterCount, InputYesNo}
 
 @this(
@@ -28,23 +30,25 @@
     inputCharacterCount: InputCharacterCount
 )
 
-@(form: Form[_],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode, viewModel: OtherThingsToReportViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("otherThingsToReport.title"),
+    title = messages(viewModel.title),
     showBackLink = true
 ) {
 
-    @formHelper(action = controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputCharacterCount(
             field = form("value"),
-            inputCharacterCountType = OrdinaryInputCharacterCount(
-                heading = messages("otherThingsToReport.heading"),
-                caption = Some(messages("site.caption", mrn.toString))
+            inputCharacterCountType = InputCharacterCountViewModel.apply(
+                heading = messages(viewModel.heading),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = viewModel.additionalHtml
             ),
+            hint = viewModel.hint,
             maxLength = maxLength
         )
 
