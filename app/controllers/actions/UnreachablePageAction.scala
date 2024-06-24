@@ -18,9 +18,9 @@ package controllers.actions
 
 import com.google.inject.{Inject, Singleton}
 import config.PhaseConfig
-import logging.Logging
 import models.Phase
 import models.requests.DataRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 

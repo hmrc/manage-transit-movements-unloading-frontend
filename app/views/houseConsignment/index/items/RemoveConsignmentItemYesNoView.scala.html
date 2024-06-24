@@ -17,17 +17,19 @@
 @import controllers.houseConsignment.index.items.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
+    insetText: InsetText,
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode, itemDescription: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.removeConsignmentItemYesNo.title", itemIndex.display, houseConsignmentIndex.display, itemIndex.display),
@@ -40,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("houseConsignment.removeConsignmentItemYesNo.heading", itemIndex.display,houseConsignmentIndex.display),
-                caption = Some(messages("site.caption", mrn.toString))
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = itemDescription.map(insetText(_))
             )
         )
 
