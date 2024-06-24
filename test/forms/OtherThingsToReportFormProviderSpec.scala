@@ -26,12 +26,15 @@ import scala.util.Random
 
 class OtherThingsToReportFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "otherThingsToReport.error.required"
-  val lengthKey   = "otherThingsToReport.error.length"
-  val invalidKey  = "otherThingsToReport.error.invalid"
+  val auth: String = Gen.oneOf("newAuth", "oldAuth").sample.value
+  val prefix       = s"otherThingsToReport.$auth"
+
+  val requiredKey = s"$prefix.error.required"
+  val lengthKey   = s"$prefix.error.length"
+  val invalidKey  = s"$prefix.error.invalid"
   val maxLength   = 512
 
-  val form = new OtherThingsToReportFormProvider()()
+  val form = new OtherThingsToReportFormProvider()(requiredKey, lengthKey, invalidKey)
 
   ".value" - {
 
