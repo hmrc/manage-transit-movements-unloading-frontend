@@ -2645,7 +2645,7 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="GoodsMeasure" minOccurs="0" type="GoodsMeasureType03"> <!--##Added minOccurs="0" as this is optional (IE029 Only)##-->
+      <xs:element name="GoodsMeasure" minOccurs="0" type="GoodsMeasureType06"> <!--##Added minOccurs="0" as this is optional (IE029 Only)##-->
         <xs:annotation>
           <xs:documentation>
             <description value="GOODS MEASURE" />
@@ -5118,7 +5118,7 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="DepartureTransportMeans" minOccurs="0" maxOccurs="999" type="DepartureTransportMeansType02">
+      <xs:element name="DepartureTransportMeans" minOccurs="0" maxOccurs="999" type="DepartureTransportMeansType07">
         <xs:annotation>
           <xs:documentation>
             <description value="DEPARTURE TRANSPORT MEANS" />
@@ -9985,6 +9985,55 @@
       </xs:element>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="DepartureTransportMeansType07">
+    <xs:annotation>
+      <xs:documentation>
+        <usedBy>Used by 1/91 messages: CC043C</usedBy>
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="sequenceNumber" type="SequenceNumberContentType">
+        <xs:annotation>
+          <xs:documentation>
+            <description value="Sequence number" />
+            <format value="n..5" />
+            <optionality value="R" />
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="typeOfIdentification" minOccurs="0" type="TypeOfIdentificationContentType">
+        <xs:annotation>
+          <xs:documentation>
+            <description value="Type of identification" />
+            <codeList code="CL750" type="business" name="ClTypeOfIdentificationOfMeansOfTransport" />
+            <format value="n2" />
+            <optionality value="O" />
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="identificationNumber" minOccurs="0" type="IdentificationNumberContentType06">
+        <xs:annotation>
+          <xs:documentation>
+            <description value="Identification number" />
+            <format value="an..35" />
+            <optionality value="O" />
+            <xsdBaseType value="AlphaNumeric_MAX35_NoSpaces" />
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="nationality" minOccurs="0" type="NationalityContentType">
+        <xs:annotation>
+          <xs:documentation>
+            <description value="Nationality" />
+            <codeList code="CL165" type="business" name="Nationality" />
+            <format value="a2" />
+            <optionality value="O" />
+            <xsdBaseType value="CountryCodeType" />
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
   <!--================================================================================-->
   <!--===== EconomicOperator                                                                -->
   <!--================================================================================-->
@@ -11115,6 +11164,35 @@
             <description value="Gross mass" />
             <format value="n..16,6" />
             <optionality value="O" />
+            <xsdBaseType value="DecimalWithZero_16_6" />
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="netMass" minOccurs="0" type="NetMassContentType">
+        <xs:annotation>
+          <xs:documentation>
+            <description value="Net mass" />
+            <format value="n..16,6" />
+            <optionality value="D" />
+            <xsdBaseType value="DecimalWithoutZero_16_6" />
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GoodsMeasureType06">
+    <xs:annotation>
+      <xs:documentation>
+        <usedBy>Used by 1/91 messages: CC043C</usedBy>
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="grossMass" minOccurs="0" type="GrossMassContentType02">
+        <xs:annotation>
+          <xs:documentation>
+            <description value="Gross mass" />
+            <format value="n..16,6" />
+            <optionality value="D" />
             <xsdBaseType value="DecimalWithZero_16_6" />
           </xs:documentation>
         </xs:annotation>

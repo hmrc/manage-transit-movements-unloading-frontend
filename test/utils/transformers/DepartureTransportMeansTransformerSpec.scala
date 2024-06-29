@@ -18,13 +18,14 @@ package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generated.DepartureTransportMeansType02
+import generated.{DepartureTransportMeansType02, DepartureTransportMeansType07}
 import generators.Generators
 import models.Index
 import models.reference.{Country, TransportMeansIdentification}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -50,42 +51,70 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
   }
 
   // Because each DTM has its own set of mocks, we need to ensure the values are unique
-  private val departureTransportMeansGen = arbitrary[Seq[DepartureTransportMeansType02]]
+  private val departureTransportMeansType02Gen = arbitrary[Seq[DepartureTransportMeansType02]]
     .map {
       _.distinctBy(_.typeOfIdentification)
         .distinctBy(_.nationality)
     }
 
+  private def departureTransportMeansType07Gen(implicit a: Arbitrary[DepartureTransportMeansType07]): Gen[Seq[DepartureTransportMeansType07]] =
+    arbitrary[Seq[DepartureTransportMeansType07]]
+      .map {
+        _.distinctBy(_.typeOfIdentification)
+          .distinctBy(_.nationality)
+      }
+
   "must transform data" - {
-    "when consignment level" in {
+    "when consignment level" - {
       import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
       import pages.sections.TransportMeansSection
 
-      forAll(departureTransportMeansGen) {
-        departureTransportMeans =>
-          beforeEach()
+      "when values defined" in {
+        forAll(departureTransportMeansType07Gen(arbitraryDepartureTransportMeansType07AllDefined)) {
+          departureTransportMeans =>
+            beforeEach()
 
-          departureTransportMeans.zipWithIndex.map {
-            case (dtm, i) =>
-              when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(eqTo(dtm.typeOfIdentification))(any(), any()))
-                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, i.toString)))
+            departureTransportMeans.zipWithIndex.map {
+              case (dtm, i) =>
+                when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(eqTo(dtm.typeOfIdentification.value))(any(), any()))
+                  .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification.value, i.toString)))
 
-              when(mockReferenceDataConnector.getCountry(eqTo(dtm.nationality))(any(), any()))
-                .thenReturn(Future.successful(Country(dtm.nationality, i.toString)))
-          }
+                when(mockReferenceDataConnector.getCountry(eqTo(dtm.nationality.value))(any(), any()))
+                  .thenReturn(Future.successful(Country(dtm.nationality.value, i.toString)))
+            }
 
-          val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
+            val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
 
-          departureTransportMeans.zipWithIndex.map {
-            case (dtm, i) =>
-              val dtmIndex = Index(i)
+            departureTransportMeans.zipWithIndex.map {
+              case (dtm, i) =>
+                val dtmIndex = Index(i)
 
-              result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustBe dtm.sequenceNumber
-              result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustBe dtm.typeOfIdentification
-              result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustBe i.toString
-              result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustBe dtm.identificationNumber
-              result.getValue(CountryPage(dtmIndex)).code mustBe dtm.nationality
-          }
+                result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustBe dtm.sequenceNumber
+                result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustBe dtm.typeOfIdentification.value
+                result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustBe i.toString
+                result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustBe dtm.identificationNumber.value
+                result.getValue(CountryPage(dtmIndex)).code mustBe dtm.nationality.value
+            }
+        }
+      }
+
+      "when no values defined" in {
+        forAll(departureTransportMeansType07Gen(arbitraryDepartureTransportMeansType07NoneDefined)) {
+          departureTransportMeans =>
+            beforeEach()
+
+            val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
+
+            departureTransportMeans.zipWithIndex.map {
+              case (dtm, i) =>
+                val dtmIndex = Index(i)
+
+                result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustBe dtm.sequenceNumber
+                result.get(TransportMeansIdentificationPage(dtmIndex)) must not be defined
+                result.get(VehicleIdentificationNumberPage(dtmIndex)) must not be defined
+                result.get(CountryPage(dtmIndex)) must not be defined
+            }
+        }
       }
     }
 
@@ -93,7 +122,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       import pages.houseConsignment.index.departureMeansOfTransport._
       import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
-      forAll(departureTransportMeansGen) {
+      forAll(departureTransportMeansType02Gen) {
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>

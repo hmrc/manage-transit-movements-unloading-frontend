@@ -328,6 +328,33 @@ trait MessagesModelGenerators {
       )
     }
 
+  lazy val arbitraryDepartureTransportMeansType07AllDefined: Arbitrary[DepartureTransportMeansType07] =
+    Arbitrary {
+      for {
+        sequenceNumber       <- positiveBigInts.map(_.toString())
+        typeOfIdentification <- Gen.alphaNumStr
+        identificationNumber <- Gen.alphaNumStr
+        nationality          <- Gen.alphaNumStr
+      } yield DepartureTransportMeansType07(
+        sequenceNumber = sequenceNumber,
+        typeOfIdentification = Some(typeOfIdentification),
+        identificationNumber = Some(identificationNumber),
+        nationality = Some(nationality)
+      )
+    }
+
+  lazy val arbitraryDepartureTransportMeansType07NoneDefined: Arbitrary[DepartureTransportMeansType07] =
+    Arbitrary {
+      for {
+        sequenceNumber <- positiveBigInts.map(_.toString())
+      } yield DepartureTransportMeansType07(
+        sequenceNumber = sequenceNumber,
+        typeOfIdentification = None,
+        identificationNumber = None,
+        nationality = None
+      )
+    }
+
   implicit lazy val arbitraryTransportEquipmentType05: Arbitrary[TransportEquipmentType05] =
     Arbitrary {
       for {
@@ -456,7 +483,7 @@ trait MessagesModelGenerators {
         cusCode            <- Gen.option(Gen.alphaNumStr)
         commodityCode      <- Gen.option(arbitrary[CommodityCodeType05])
         dangerousGoods     <- arbitrary[Seq[DangerousGoodsType01]]
-        goodsMeasure       <- Gen.option(arbitrary[GoodsMeasureType03])
+        goodsMeasure       <- Gen.option(arbitrary[GoodsMeasureType06])
       } yield CommodityType08(
         descriptionOfGoods = descriptionOfGoods,
         cusCode = cusCode,
@@ -494,6 +521,17 @@ trait MessagesModelGenerators {
         grossMass <- positiveBigDecimals
         netMass   <- Gen.option(positiveBigDecimals)
       } yield GoodsMeasureType03(
+        grossMass = grossMass,
+        netMass = netMass
+      )
+    }
+
+  implicit lazy val arbitraryGoodsMeasureType06: Arbitrary[GoodsMeasureType06] =
+    Arbitrary {
+      for {
+        grossMass <- Gen.option(positiveBigDecimals)
+        netMass   <- Gen.option(positiveBigDecimals)
+      } yield GoodsMeasureType06(
         grossMass = grossMass,
         netMass = netMass
       )

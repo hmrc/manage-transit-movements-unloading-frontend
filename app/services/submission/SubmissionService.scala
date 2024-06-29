@@ -250,7 +250,7 @@ class SubmissionService @Inject() (
   // scalastyle:on method.length
 
   private def consignmentDepartureTransportMeansReads(
-    ie043: Seq[DepartureTransportMeansType02]
+    ie043: Seq[DepartureTransportMeansType07]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
     import pages.departureMeansOfTransport._
 
@@ -679,7 +679,7 @@ class SubmissionService @Inject() (
           )
       }
 
-    def goodsMeasureReads(ie043: Option[GoodsMeasureType03]): Reads[Option[GoodsMeasureType04]] =
+    def goodsMeasureReads(ie043: Option[GoodsMeasureType06]): Reads[Option[GoodsMeasureType04]] =
       for {
         grossMass <- GrossWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
         netMass   <- NetWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)

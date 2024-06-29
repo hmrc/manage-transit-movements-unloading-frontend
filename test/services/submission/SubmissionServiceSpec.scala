@@ -743,29 +743,29 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val departureTransportMeans = Seq(
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType07(
                 sequenceNumber = "1",
-                typeOfIdentification = "originalTypeOfIdentification1",
-                identificationNumber = "originalIdentificationNumber1",
-                nationality = "originalNationality1"
+                typeOfIdentification = Some("originalTypeOfIdentification1"),
+                identificationNumber = Some("originalIdentificationNumber1"),
+                nationality = Some("originalNationality1")
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType07(
                 sequenceNumber = "2",
-                typeOfIdentification = "originalTypeOfIdentification2",
-                identificationNumber = "originalIdentificationNumber2",
-                nationality = "originalNationality2"
+                typeOfIdentification = Some("originalTypeOfIdentification2"),
+                identificationNumber = Some("originalIdentificationNumber2"),
+                nationality = Some("originalNationality2")
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType07(
                 sequenceNumber = "3",
-                typeOfIdentification = "originalTypeOfIdentification3",
-                identificationNumber = "originalIdentificationNumber3",
-                nationality = "originalNationality3"
+                typeOfIdentification = Some("originalTypeOfIdentification3"),
+                identificationNumber = Some("originalIdentificationNumber3"),
+                nationality = Some("originalNationality3")
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType07(
                 sequenceNumber = "4",
-                typeOfIdentification = "originalTypeOfIdentification4",
-                identificationNumber = "originalIdentificationNumber4",
-                nationality = "originalNationality4"
+                typeOfIdentification = Some("originalTypeOfIdentification4"),
+                identificationNumber = Some("originalIdentificationNumber4"),
+                nationality = Some("originalNationality4")
               )
             )
             val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
@@ -841,17 +841,17 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val departureTransportMeans = Seq(
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType07(
                 sequenceNumber = "1",
-                typeOfIdentification = "originalTypeOfIdentification1",
-                identificationNumber = "originalIdentificationNumber1",
-                nationality = "originalNationality1"
+                typeOfIdentification = Some("originalTypeOfIdentification1"),
+                identificationNumber = Some("originalIdentificationNumber1"),
+                nationality = Some("originalNationality1")
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType07(
                 sequenceNumber = "2",
-                typeOfIdentification = "originalTypeOfIdentification2",
-                identificationNumber = "originalIdentificationNumber2",
-                nationality = "originalNationality2"
+                typeOfIdentification = Some("originalTypeOfIdentification2"),
+                identificationNumber = Some("originalIdentificationNumber2"),
+                nationality = Some("originalNationality2")
               )
             )
             val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
@@ -2042,8 +2042,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               ),
               DangerousGoods = Nil,
               GoodsMeasure = Some(
-                GoodsMeasureType03(
-                  grossMass = 100,
+                GoodsMeasureType06(
+                  grossMass = Some(100),
                   netMass = Some(50)
                 )
               )
@@ -2099,8 +2099,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               ),
               DangerousGoods = Nil,
               GoodsMeasure = Some(
-                GoodsMeasureType03(
-                  grossMass = 100,
+                GoodsMeasureType06(
+                  grossMass = Some(100),
                   netMass = Some(50)
                 )
               )
