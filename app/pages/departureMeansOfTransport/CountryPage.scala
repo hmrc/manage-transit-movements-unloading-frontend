@@ -34,5 +34,5 @@ case class CountryPage(transportMeansIndex: Index) extends DiscrepancyQuestionPa
       .find {
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
-      .map(_.nationality)
+      .flatMap(_.nationality)
 }
