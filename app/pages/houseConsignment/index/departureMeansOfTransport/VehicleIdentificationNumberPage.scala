@@ -34,5 +34,5 @@ case class VehicleIdentificationNumberPage(houseConsignmentIndex: Index, transpo
       .find {
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
-      .map(_.identificationNumber)
+      .flatMap(_.identificationNumber)
 }

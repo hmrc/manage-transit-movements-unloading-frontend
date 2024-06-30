@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.GoodsMeasureType06
+import generated.GoodsMeasureType03
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.{GrossWeightPage, NetWeightPage}
 
@@ -25,9 +25,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsMeasureTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(goodsMeasure: Option[GoodsMeasureType06], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(goodsMeasure: Option[GoodsMeasureType03], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     goodsMeasure match {
-      case Some(GoodsMeasureType06(grossMass, netMass)) =>
+      case Some(GoodsMeasureType03(grossMass, netMass)) =>
         val pipeline: UserAnswers => Future[UserAnswers] =
           set(GrossWeightPage(hcIndex, itemIndex), grossMass) andThen
             set(NetWeightPage(hcIndex, itemIndex), netMass)

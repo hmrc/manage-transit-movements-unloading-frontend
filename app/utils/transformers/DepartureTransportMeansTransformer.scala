@@ -17,7 +17,7 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.{DepartureTransportMeansType02, DepartureTransportMeansType07}
+import generated.DepartureTransportMeansType02
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,11 +36,41 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   )
 
   def transform(
-    departureTransportMeans: Seq[DepartureTransportMeansType07]
-  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+    departureTransportMeans: Seq[DepartureTransportMeansType02]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.departureMeansOfTransport._
     import pages.sections.TransportMeansSection
 
+    genericTransform(departureTransportMeans) {
+      case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
+        setSequenceNumber(TransportMeansSection(index), underlying.sequenceNumber) andThen
+          set(TransportMeansIdentificationPage(index), typeOfIdentification) andThen
+          set(VehicleIdentificationNumberPage(index), underlying.identificationNumber) andThen
+          set(CountryPage(index), nationality)
+    }
+  }
+
+  def transform(
+    departureTransportMeans: Seq[DepartureTransportMeansType02],
+    hcIndex: Index
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.departureMeansOfTransport._
+    import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
+
+    genericTransform(departureTransportMeans) {
+      case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
+        setSequenceNumber(TransportMeansSection(hcIndex, index), underlying.sequenceNumber) andThen
+          set(TransportMeansIdentificationPage(hcIndex, index), typeOfIdentification) andThen
+          set(VehicleIdentificationNumberPage(hcIndex, index), underlying.identificationNumber) andThen
+          set(CountryPage(hcIndex, index), nationality)
+    }
+  }
+
+  private def genericTransform(
+    departureTransportMeans: Seq[DepartureTransportMeansType02]
+  )(
+    pipeline: (TempDepartureTransportMeans[DepartureTransportMeansType02], Index) => UserAnswers => Future[UserAnswers]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
     lazy val referenceDataLookups = departureTransportMeans.map {
       dtm =>
         // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
@@ -60,58 +90,7 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
     Future.sequence(referenceDataLookups).flatMap {
       _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
         case (acc, (dtm, i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                setSequenceNumber(TransportMeansSection(index), dtm.underlying.sequenceNumber) andThen
-                  set(TransportMeansIdentificationPage(index), dtm.typeOfIdentification) andThen
-                  set(VehicleIdentificationNumberPage(index), dtm.underlying.identificationNumber) andThen
-                  set(CountryPage(index), dtm.nationality)
-
-              pipeline(userAnswers)
-          }
-      })
-    }
-  }
-
-  def transform(
-    departureTransportMeans: Seq[DepartureTransportMeansType02],
-    hcIndex: Index
-  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
-    import pages.houseConsignment.index.departureMeansOfTransport._
-    import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
-
-    lazy val referenceDataLookups = departureTransportMeans.map {
-      dtm =>
-        // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
-        val typeOfIdentificationF = referenceDataConnector.getMeansOfTransportIdentificationType(dtm.typeOfIdentification)
-        val nationalityF          = referenceDataConnector.getCountry(dtm.nationality)
-
-        for {
-          typeOfIdentification <- typeOfIdentificationF
-          nationality          <- nationalityF
-        } yield TempDepartureTransportMeans(
-          underlying = dtm,
-          typeOfIdentification = Some(typeOfIdentification),
-          nationality = Some(nationality)
-        )
-    }
-
-    Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (dtm, i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                setSequenceNumber(TransportMeansSection(hcIndex, index), dtm.underlying.sequenceNumber) andThen
-                  set(TransportMeansIdentificationPage(hcIndex, index), dtm.typeOfIdentification) andThen
-                  set(VehicleIdentificationNumberPage(hcIndex, index), dtm.underlying.identificationNumber) andThen
-                  set(CountryPage(hcIndex, index), dtm.nationality)
-
-              pipeline(userAnswers)
-          }
+          acc.flatMap(pipeline(dtm, Index(i)))
       })
     }
   }
