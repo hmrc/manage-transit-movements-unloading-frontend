@@ -27,21 +27,21 @@
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel)(implicit request: Request[_], messages: Messages)
 
-    @mainTemplate(
-        title = messages("unloadingFindings.title"),
-        showBackLink = true,
-    ) {
+@mainTemplate(
+    title = messages("unloadingFindings.title"),
+    showBackLink = true,
+) {
 
-        @heading(
-            heading = messages("unloadingFindings.heading"),
-            caption = Some(messages("site.caption", mrn.toString))
-        )
+    @heading(
+        heading = messages("unloadingFindings.heading"),
+        caption = Some(messages("site.caption", mrn.toString))
+    )
 
-        <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
+    <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
 
-        @answerSections(unloadingFindingsViewModel.sections)
+    @answerSections(unloadingFindingsViewModel.sections)
 
-        @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-            @button(attributes = Map("id" -> "submit"), messageKey = messages("site.continue"))
-        }
+    @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
+        @button(attributes = Map("id" -> "submit"))
+    }
 }
