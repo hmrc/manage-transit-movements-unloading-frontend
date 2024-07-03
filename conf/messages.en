@@ -307,7 +307,7 @@ unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswersLabel = Are any of the seals broken?
 unloadingType.1 = Fully unloaded
 unloadingType.0 = Partially unloaded
-unloadingType.error.required = Select whether you have fully or partially unloaded the goods
+unloadingType.NormalMode.error.required = Select whether you have fully or partially unloaded the goods
 unloadingType.checkYourAnswers.change.hidden = whether you fully or partially unloaded the goods
 
 areAnySealsBroken.title = Are any of the seals broken?
