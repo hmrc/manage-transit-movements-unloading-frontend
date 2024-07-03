@@ -131,7 +131,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/CustomsOffices"
     http
       .get(url)
-      .transform(_.withQueryStringParameters("data.code" -> code))
+      .transform(_.withQueryStringParameters("data.id" -> code))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[CustomsOffice]]
       .map(_.head)
@@ -180,7 +180,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
     http
       .get(url)
-      .transform(_.withQueryStringParameters("data.code" -> typeValue))
+      .transform(_.withQueryStringParameters("data.documentType" -> typeValue))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[AdditionalReferenceType]]
       .map(_.head)
@@ -220,7 +220,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
     http
       .get(url)
-      .transform(_.addQueryStringParameters(queryParams.head))
+      .transform(_.withQueryStringParameters(queryParams: _*))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[DocumentType]]
   }
@@ -229,7 +229,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/QualifierOfIdentificationIncident"
     http
       .get(url)
-      .transform(_.withQueryStringParameters("data.code" -> qualifier))
+      .transform(_.withQueryStringParameters("data.qualifier" -> qualifier))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[QualifierOfIdentification]]
       .map(_.head)
