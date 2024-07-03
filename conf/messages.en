@@ -209,6 +209,7 @@ netWeight.NormalMode.error.required = Enter the net weight of item {1} in house 
 netWeight.error.invalidValue = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
+netWeight.error.zero = The net weight must be more than 0
 
 transportEquipment.index.seal.identificationNumber.NormalMode.title = What is the seal identification number?
 transportEquipment.index.seal.identificationNumber.CheckMode.title = What is the new seal identification number?
@@ -1166,6 +1167,8 @@ houseConsignment.index.grossWeight.NormalMode.error.invalidCharacters = The gros
 houseConsignment.index.grossWeight.CheckMode.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.NormalMode.error.invalidFormat = The gross weight must only include 6 decimal places or less
 houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+houseConsignment.index.grossWeight.NormalMode.error.zero = The gross weight must be more than 0
+houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight must be more than 0
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
