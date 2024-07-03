@@ -46,7 +46,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
   private val characterCount = notTooBigPositiveNumbers.sample.value
 
   private val formProvider = new WeightFormProvider()
-  private val form         = formProvider("netWeight", viewModel.requiredError, decimalPlace, characterCount)
+  private val form         = formProvider("netWeight", viewModel.requiredError, decimalPlace, characterCount, isZeroAllowed = false)
 
   private val houseConsignmentMode = NormalMode
   private val itemMode             = NormalMode
@@ -134,6 +134,23 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       val request   = FakeRequest(POST, NetWeightRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+      val view = injector.instanceOf[NetWeightView]
+
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, viewModel)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when 0 is submitted" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request   = FakeRequest(POST, NetWeightRoute).withFormUrlEncodedBody(("value", "0"))
+      val boundForm = form.bind(Map("value" -> "0"))
 
       val result = route(app, request).value
 
