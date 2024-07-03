@@ -19,11 +19,14 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import matchers.JsonMatchers
+import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
+
+  private val unloadingGuidanceRoute = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
@@ -31,7 +34,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url)
+      val request = FakeRequest(GET, unloadingGuidanceRoute)
 
       val result = route(app, request).value
 
@@ -42,5 +45,46 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       contentAsString(result) mustEqual view(mrn, arrivalId, messageId)(request, messages).toString
     }
 
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+      checkArrivalStatus()
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(GET, unloadingGuidanceRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must redirect to unloading type for a POST" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, unloadingGuidanceRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustBe routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+      checkArrivalStatus()
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, unloadingGuidanceRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
   }
 }

@@ -40,12 +40,9 @@
 
     <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
 
-
     @answerSection(houseConsignmentViewModel.section)
 
-    <div>
-        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url>
-        @messages("site.backToSummary")
-        </a>
-    </div>
+    @formHelper(action = routes.HouseConsignmentController.onSubmit(arrivalId, houseConsignmentIndex), Symbol("autoComplete") -> "off") {
+        @button(attributes = Map("id" -> "submit"), messageKey = messages("site.backToSummary"))
+    }
 }

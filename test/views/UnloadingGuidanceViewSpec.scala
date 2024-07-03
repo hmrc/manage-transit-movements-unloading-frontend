@@ -16,7 +16,6 @@
 
 package views
 
-import models.NormalMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.UnloadingGuidanceView
@@ -45,5 +44,5 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
     expectedHref = s"http://localhost:9485/manage-transit-movements/${arrivalId.value}/unloading-permission-document/$messageId"
   )
 
-  behave like pageWithLinkAsButton("Continue", controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url)
+  behave like pageWithSubmitButton("Continue")
 }

@@ -21,14 +21,13 @@
 @(
     messageKey: String = "site.continue",
     isStartButton: Boolean = false,
-    preventDoubleClick: Boolean = false,
     attributes: Map[String, String] = Map.empty,
     href: Option[String] = None
 )(implicit messages: Messages)
 
 @govukButton(Button(
     isStartButton = isStartButton,
-    preventDoubleClick = Some(preventDoubleClick),
+    preventDoubleClick = Some(true),
     content = Text(messages(messageKey)),
     attributes = attributes,
     href = href
