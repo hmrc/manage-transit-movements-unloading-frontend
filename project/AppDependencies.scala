@@ -12,7 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-30"              % bootstrapVersion,
     "org.apache.commons"    % "commons-text"                            % "1.11.0",
     "org.typelevel"        %% "cats-core"                               % "2.10.0",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc-play-30"              % "9.11.0",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc-play-30"              % "10.3.0",
     "uk.gov.hmrc"          %% "crypto-json-play-30"                     % "8.0.0",
     "javax.xml.bind"        % "jaxb-api"                                % "2.3.1"
   )
