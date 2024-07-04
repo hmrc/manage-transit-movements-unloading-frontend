@@ -17,6 +17,7 @@
 package forms.mappings
 
 import models.{Enumerable, Radioable}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -170,9 +171,13 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
   "BigDecimal" - {
 
+    val decimalPlaces          = 6
+    val length                 = 16
+    val isZeroAllowed: Boolean = arbitrary[Boolean].sample.value
+
     val testForm: Form[BigDecimal] =
       Form(
-        "value" -> bigDecimal(6, 16)
+        "value" -> bigDecimal(decimalPlaces, length, isZeroAllowed)
       )
 
     "must bind a valid BigDecimal" in {
@@ -233,6 +238,30 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must unbind a valid value" in {
       val result = testForm.fill(123)
       result.apply("value").value.value mustEqual "123"
+    }
+
+    "when zero is allowed" - {
+      "must bind 0" in {
+        val testForm: Form[BigDecimal] =
+          Form(
+            "value" -> bigDecimal(decimalPlaces, length, isZeroAllowed = true)
+          )
+
+        val result = testForm.bind(Map("value" -> "0"))
+        result.get mustEqual 0
+      }
+    }
+
+    "when zero is not allowed" - {
+      "must not bind 0" in {
+        val testForm: Form[BigDecimal] =
+          Form(
+            "value" -> bigDecimal(decimalPlaces, length, isZeroAllowed = false)
+          )
+
+        val result = testForm.bind(Map("value" -> "0"))
+        result.errors must contain(FormError("value", "error.zero"))
+      }
     }
   }
 

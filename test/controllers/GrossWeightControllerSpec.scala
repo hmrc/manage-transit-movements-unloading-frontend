@@ -37,7 +37,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val decimalPlace   = notTooBigPositiveNumbers.sample.value
   private val characterCount = notTooBigPositiveNumbers.sample.value
   private val formProvider   = new WeightFormProvider()
-  private val form           = formProvider("grossWeight", decimalPlace, characterCount)
+  private val form           = formProvider("grossWeight", decimalPlace, characterCount, isZeroAllowed = true)
   private val mode           = CheckMode
   private val validAnswer    = BigDecimal(123.45)
 

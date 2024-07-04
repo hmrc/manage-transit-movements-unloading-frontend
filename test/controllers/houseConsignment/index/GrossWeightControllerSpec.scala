@@ -38,8 +38,10 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val characterCount = notTooBigPositiveNumbers.sample.value
   private val formProvider   = new WeightFormProvider()
   private val mode           = NormalMode
-  private val form           = formProvider(s"houseConsignment.index.grossWeight.$mode", decimalPlace, characterCount, houseConsignmentIndex.display)
-  private val validAnswer    = BigDecimal(123.45)
+
+  private val form =
+    formProvider(s"houseConsignment.index.grossWeight.$mode", decimalPlace, characterCount, isZeroAllowed = false, houseConsignmentIndex.display)
+  private val validAnswer = BigDecimal(123.45)
 
   private lazy val grossWeightAmountRoute =
     controllers.houseConsignment.index.routes.GrossWeightController.onPageLoad(arrivalId, index, mode).url
@@ -114,6 +116,23 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val request   = FakeRequest(POST, grossWeightAmountRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+      val view = injector.instanceOf[GrossWeightView]
+
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when 0 is submitted" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request   = FakeRequest(POST, grossWeightAmountRoute).withFormUrlEncodedBody(("value", "0"))
+      val boundForm = form.bind(Map("value" -> "0"))
 
       val result = route(app, request).value
 
