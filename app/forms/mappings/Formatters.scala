@@ -112,10 +112,9 @@ trait Formatters {
   private[mappings] def bigDecimalFormatter(
     decimalPlaces: Int,
     integerLength: Int,
-    requiredKey: String = "error.required",
-    invalidCharactersKey: String = "error.invalidCharacters",
-    invalidFractionKey: String = "error.invalidFormat",
-    invalidLengthKey: String = "error.invalidValue",
+    isZeroAllowed: Boolean,
+    prefix: String,
+    requiredKey: String,
     args: Seq[String] = Seq.empty
   ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
@@ -131,11 +130,17 @@ trait Formatters {
         baseFormatter
           .bind(key, data)
           .flatMap {
-            case s if !s.matches(validCharactersRegex) => Left(Seq(FormError(key, invalidCharactersKey)))
-            case s if !s.matches(validFractionRegex)   => Left(Seq(FormError(key, invalidFractionKey)))
-            case s if !s.matches(validIntegerRegex)    => Left(Seq(FormError(key, invalidLengthKey)))
-            case s if !s.matches(validLengthRegex)     => Left(Seq(FormError(key, invalidLengthKey)))
-            case s                                     => Right(BigDecimal(s))
+            case s if !s.matches(validCharactersRegex) => Left(Seq(FormError(key, s"$prefix.invalidCharacters")))
+            case s if !s.matches(validFractionRegex)   => Left(Seq(FormError(key, s"$prefix.invalidFormat")))
+            case s if !s.matches(validIntegerRegex)    => Left(Seq(FormError(key, s"$prefix.invalidValue")))
+            case s if !s.matches(validLengthRegex)     => Left(Seq(FormError(key, s"$prefix.invalidValue")))
+            case s =>
+              val value = BigDecimal(s)
+              if (!isZeroAllowed && value.compareTo(BigDecimal(0)) == 0) {
+                Left(Seq(FormError(key, s"$prefix.zero")))
+              } else {
+                Right(value)
+              }
           }
 
       override def unbind(key: String, value: BigDecimal): Map[String, String] =

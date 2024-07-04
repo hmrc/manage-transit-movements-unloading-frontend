@@ -49,7 +49,13 @@ class GrossWeightController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: GrossWeightViewModel): Form[BigDecimal] =
-    formProvider("houseConsignment.item.grossWeight", viewModel.requiredError, grossWeightDecimalPlaces, grossWeightIntegerLength)
+    formProvider(
+      prefix = "houseConsignment.item.grossWeight",
+      requiredError = viewModel.requiredError,
+      decimalPlaceCount = grossWeightDecimalPlaces,
+      characterCount = grossWeightIntegerLength,
+      isZeroAllowed = true
+    )
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
