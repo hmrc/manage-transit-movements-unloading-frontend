@@ -40,7 +40,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[Country]]
   }
 
@@ -49,7 +49,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[Country]]
       .map(_.head)
   }
@@ -63,7 +63,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[T]]
   }
 
@@ -72,7 +72,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[InlandMode]]
       .map(_.head)
   }
@@ -81,7 +81,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[TransportMeansIdentification]]
   }
 
@@ -90,7 +90,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> typeValue))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[SecurityType]]
       .map(_.head)
   }
@@ -102,7 +102,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.type" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[TransportMeansIdentification]]
       .map(_.head)
   }
@@ -112,7 +112,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[Country]]
       .map(_.head)
   }
@@ -123,7 +123,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> cusCode))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[CUSCode]]
   }
 
@@ -135,7 +135,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters(queryParams: _*))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[CustomsOffice]]
       .map(_.head)
   }
@@ -144,7 +144,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/KindOfPackages"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[PackageType]]
   }
 
@@ -153,7 +153,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> typeValue))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[PackageType]]
       .map(_.head)
   }
@@ -163,7 +163,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> typeValue))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[Incident]]
       .map(_.head)
   }
@@ -175,7 +175,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[AdditionalReferenceType]]
   }
 
@@ -184,7 +184,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.documentType" -> typeValue))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[AdditionalReferenceType]]
       .map(_.head)
   }
@@ -194,7 +194,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[AdditionalInformationCode]]
       .map(_.head)
   }
@@ -224,7 +224,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters(queryParams: _*))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[DocumentType]]
   }
 
@@ -233,7 +233,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.qualifier" -> qualifier))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header)
       .execute[NonEmptySet[QualifierOfIdentification]]
       .map(_.head)
   }
@@ -241,9 +241,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
     getDocuments(dt, path, Seq("data.code" -> typeValue)).map(_.head)
 
-  private def version2Header: Seq[(String, String)] = Seq(
+  private def version2Header: (String, String) =
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
-  )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, url: String, response: HttpResponse) => {
