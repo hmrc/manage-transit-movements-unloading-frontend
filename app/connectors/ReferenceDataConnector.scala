@@ -101,7 +101,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http
       .get(url)
-      .transform(_.withQueryStringParameters("data.code" -> code))
+      .transform(_.withQueryStringParameters("data.type" -> code))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[TransportMeansIdentification]]
       .map(_.head)
@@ -129,9 +129,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] = {
     val url = url"${config.referenceDataUrl}/lists/CustomsOffices"
+
+    val queryParams: Seq[(String, String)] = Seq("data.id" -> code)
+
     http
       .get(url)
-      .transform(_.withQueryStringParameters("data.id" -> code))
+      .transform(_.withQueryStringParameters(queryParams: _*))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[CustomsOffice]]
       .map(_.head)
