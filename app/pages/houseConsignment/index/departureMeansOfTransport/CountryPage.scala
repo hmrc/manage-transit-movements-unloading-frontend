@@ -35,5 +35,5 @@ case class CountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index)
       .find {
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
-      .map(_.nationality)
+      .flatMap(_.nationality)
 }

@@ -42,7 +42,8 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo")
+  def form(transportMeansIndex: Index): Form[Boolean] =
+    formProvider("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo", transportMeansIndex)
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode)
@@ -54,7 +55,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode)) {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
-        Ok(view(form, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, insetText))
+        Ok(view(form(transportMeansIndex), request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
@@ -62,7 +63,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     .async {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
-        form
+        form(transportMeansIndex)
           .bindFromRequest()
           .fold(
             formWithErrors =>

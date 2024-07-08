@@ -30,7 +30,7 @@ class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
   private val decimalPlace: Int   = positiveInts.sample.value
   private val characterCount: Int = positiveInts.sample.value
 
-  override def form: Form[BigDecimal] = app.injector.instanceOf[WeightFormProvider].apply(prefix, decimalPlace, characterCount)
+  override def form: Form[BigDecimal] = app.injector.instanceOf[WeightFormProvider].apply(prefix, decimalPlace, characterCount, isZeroAllowed = true)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)

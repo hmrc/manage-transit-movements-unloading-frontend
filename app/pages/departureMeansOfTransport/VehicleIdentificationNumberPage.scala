@@ -32,5 +32,5 @@ case class VehicleIdentificationNumberPage(transportMeansIndex: Index) extends D
       .find {
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
-      .map(_.identificationNumber)
+      .flatMap(_.identificationNumber)
 }
