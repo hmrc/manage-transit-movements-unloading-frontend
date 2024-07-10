@@ -37,6 +37,10 @@ class NewAuthYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This allows you to make unloading remarks without physically unloading the goods.")
+
+  behave like pageWithHint("You can only use the revised unloading procedure if:")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

@@ -92,11 +92,10 @@ POST       /:arrivalId/add-report                                               
 GET        /:arrivalId/change-add-report                                                                             controllers.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-add-report                                                                             controllers.DoYouHaveAnythingElseToReportYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/new-auth                                                                                      controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/new-auth                                                                                      controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-new-auth                                                                               controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-new-auth                                                                               controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
-
+GET        /:arrivalId/revised-unloading-procedure                                                                   controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/revised-unloading-procedure                                                                   controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-revised-unloading-procedure                                                            controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-revised-unloading-procedure                                                            controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/goods-too-large-for-container                                                                 controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-too-large-for-container                                                                 controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

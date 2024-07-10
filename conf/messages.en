@@ -1308,9 +1308,14 @@ houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any 
 houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
 
-newAuthYesNo.title = Are you using the new procedure?
-newAuthYesNo.heading = Are you using the new procedure?
-newAuthYesNo.error.required = Select yes if you want to add any comments
+newAuthYesNo.title = Do you want to use the revised unloading procedure?
+newAuthYesNo.heading = Do you want to use the revised unloading procedure?
+newAuthYesNo.paragraph = This allows you to make unloading remarks without physically unloading the goods.
+newAuthYesNo.hint = You can only use the revised unloading procedure if:
+newAuthYesNo.bullet1 = all items have the same office of destination
+newAuthYesNo.bullet2 = there are no broken seals
+newAuthYesNo.bullet3 = there are no discrepancies between the transit movement and unloading permission
+newAuthYesNo.error.required = Select yes if you want to use the revised unloading procedure
 
 goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
 goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?

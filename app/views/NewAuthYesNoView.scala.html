@@ -40,10 +40,21 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("newAuthYesNo.heading"),
-                caption = Some(messages("site.caption", mrn.toString))
-            )
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = Html(
+                        s"""
+                        <p>${messages("newAuthYesNo.paragraph").toParagraph}</p>
+                        <p class = "govuk-hint">${messages("newAuthYesNo.hint")}</p>
+                            <ul class="govuk-list govuk-list--bullet govuk-hint">
+                                  <li>${messages("newAuthYesNo.bullet1")}</li>
+                                  <li>${messages("newAuthYesNo.bullet2")}</li>
+                                  <li>${messages("newAuthYesNo.bullet3")}</li>
+                            </ul>
+                        """
+                        )
+            ),
         )
 
         @button(attributes = Map("id" -> "submit"))
