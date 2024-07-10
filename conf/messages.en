@@ -1311,3 +1311,9 @@ houseConsignment.prefix = House consignment {0}
 newAuthYesNo.title = Are you using the new procedure?
 newAuthYesNo.heading = Are you using the new procedure?
 newAuthYesNo.error.required = Select yes if you want to add any comments
+
+goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
+goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
+
