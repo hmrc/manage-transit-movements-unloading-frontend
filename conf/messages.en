@@ -1307,3 +1307,8 @@ houseConsignment.addAnotherHouseConsignment.label = Do you want to add another h
 houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any more house consignments. To add another, you need to remove one first.
 houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
+
+goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
+goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
