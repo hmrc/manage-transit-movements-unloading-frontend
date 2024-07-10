@@ -28,8 +28,10 @@ GET        /unauthorised-group-access                                           
 GET        /keep-alive                                                                                               controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
 GET        /:arrivalId/keep-alive                                                                                    controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
-GET        /:arrivalId/unloading-guidance/:messageId                                                                 controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
 GET        /:arrivalId/cannot-send-unloading-remarks                                                                 controllers.CannotSendUnloadingRemarksController.onPageLoad(arrivalId: ArrivalId)
+
+GET        /:arrivalId/unloading-guidance/:messageId                                                                 controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
+POST       /:arrivalId/unloading-guidance/:messageId                                                                 controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId, messageId: String)
 
 GET        /:arrivalId/goods-unloaded-date                                                                           controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-unloaded-date                                                                           controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -59,12 +61,13 @@ POST       /:arrivalId/change-add-transit-unloading-permission-discrepancies    
 GET        /:arrivalId/comments                                                                                      controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/comments                                                                                      controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-comments                                                                               controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-tcomments                                                                              controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-comments                                                                               controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/transit-unloading-permission-discrepancies/house-consignment/:index                           controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
+POST       /:arrivalId/transit-unloading-permission-discrepancies/house-consignment/:index                           controllers.HouseConsignmentController.onSubmit(arrivalId: ArrivalId, index:Index)
 
 GET        /:arrivalId/unloading-remarks-sent                                                                        controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)
 

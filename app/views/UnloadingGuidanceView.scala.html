@@ -42,9 +42,7 @@
         </a>.
     </p>
 
-    <div>
-        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url>
-            @messages("site.continue")
-        </a>
-    </div>
+    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

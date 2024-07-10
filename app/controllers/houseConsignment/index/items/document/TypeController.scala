@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TypeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,

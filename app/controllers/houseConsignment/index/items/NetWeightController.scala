@@ -48,7 +48,13 @@ class NetWeightController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: NetWeightViewModel): Form[BigDecimal] =
-    formProvider("netWeight", viewModel.requiredError, netWeightDecimalPlaces, netWeightIntegerLength)
+    formProvider(
+      prefix = "netWeight",
+      requiredError = viewModel.requiredError,
+      decimalPlaceCount = netWeightDecimalPlaces,
+      characterCount = netWeightIntegerLength,
+      isZeroAllowed = false
+    )
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {

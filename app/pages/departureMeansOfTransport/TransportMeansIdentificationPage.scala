@@ -35,5 +35,5 @@ case class TransportMeansIdentificationPage(transportMeansIndex: Index)
       .find {
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
-      .map(_.typeOfIdentification)
+      .flatMap(_.typeOfIdentification)
 }

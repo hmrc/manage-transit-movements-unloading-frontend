@@ -80,5 +80,32 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
+    "must redirect back to unloading findings for a POST" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, houseConsignmentRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+      checkArrivalStatus()
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, houseConsignmentRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
   }
 }
