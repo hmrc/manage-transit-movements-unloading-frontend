@@ -16,6 +16,7 @@
 
 @import views.html.components.{Button, Heading}
 @import config.FrontendAppConfig
+@import viewModels.UnloadingGuidanceViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -25,22 +26,37 @@
     config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, newAuth: Boolean, goodsTooLarge: Boolean, messageId: String, viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("unloadingGuidance.title"),
+    title = messages(viewModel.title(newAuth, goodsTooLarge)),
     showBackLink = true
 ) {
 
-    @heading(messages("unloadingGuidance.heading"), caption = Some(messages("site.caption", mrn.toString)))
+    @heading(messages(viewModel.heading(newAuth, goodsTooLarge)), caption = Some(messages("site.caption", mrn.toString)))
 
-    <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
 
-    <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
-        <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
-            @messages("unloadingGuidance.pdf.link")
-        </a>.
-    </p>
+    @if(newAuth && goodsTooLarge){
+        <p class="govuk-body">@messages("unloadingGuidance.para1")</p>
+        }
+
+
+    <p class="govuk-body">@messages(s"${viewModel.para2(newAuth, goodsTooLarge)}", mrn.toString)</p>
+
+
+        <p class="govuk-body">@messages(viewModel.preLinkText(newAuth, goodsTooLarge))
+            <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
+                @messages("unloadingGuidance.pdf.link")
+            </a>@messages(viewModel.postLinkText(newAuth, goodsTooLarge))
+        </p>
+
+        @if(newAuth && !goodsTooLarge ){
+        <p class="govuk-body">@messages("unloadingGuidance.para2.preLinkText")
+            <a id="download" class="govuk-link" href=???>
+                @messages("unloadingGuidance.para3.linkText")
+            </a>@messages("unloadingGuidance.para3.postLinkText")
+        </p>
+        }
 
     @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))

@@ -18,9 +18,11 @@ package controllers
 
 import controllers.actions._
 import models.{ArrivalId, NormalMode}
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.UnloadingGuidanceViewModel
 import views.html.UnloadingGuidanceView
 
 import javax.inject.Inject
@@ -29,15 +31,22 @@ class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
-  view: UnloadingGuidanceView
+  view: UnloadingGuidanceView,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  unloadingGuidanceViewModel: UnloadingGuidanceViewModel
 ) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
-    actions.requireData(arrivalId) {
-      implicit request =>
-        Ok(view(request.userAnswers.mrn, arrivalId, messageId))
-    }
+    actions
+      .requireData(arrivalId)
+      .andThen(getMandatoryPage.getFirst(NewAuthYesNoPage))
+      .andThen(getMandatoryPage.getSecond(GoodsTooLargeForContainerYesNoPage)) {
+        implicit request =>
+          val newAuth: Boolean       = request.arg._1
+          val goodsTooLarge: Boolean = request.arg._2
+          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, unloadingGuidanceViewModel))
+      }
 
   def onSubmit(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
     actions.requireData(arrivalId) {
