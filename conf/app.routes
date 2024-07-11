@@ -103,4 +103,8 @@ POST       /:arrivalId/goods-too-large-for-container                            
 GET        /:arrivalId/change-goods-too-large-for-container                                                          controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-goods-too-large-for-container                                                          controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
+GET        /:arrivalId/seals-replaced-by-customs-authority                                                                 controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/seals-replaced-by-customs-authority                                                                 controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-seals-replaced-by-customs-authority                                                          controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-seals-replaced-by-customs-authority                                                          controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 

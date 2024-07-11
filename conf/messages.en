@@ -1317,3 +1317,7 @@ goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a c
 goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
 goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
 
+sealsReplacedByCustomsAuthorityYesNo.title = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.heading = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.paragraph = This could have happened during routine checks or following an incident.
+sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals been replaced by a customs authority
