@@ -30,8 +30,8 @@ GET        /:arrivalId/keep-alive                                               
 
 GET        /:arrivalId/cannot-send-unloading-remarks                                                                 controllers.CannotSendUnloadingRemarksController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/unload-goods/:messageId                                                                 controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
-POST       /:arrivalId/unload-goods/:messageId                                                                 controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId, messageId: String)
+GET        /:arrivalId/unload-goods/:messageId                                                                       controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String, mode:Mode = NormalMode)
+POST       /:arrivalId/unload-goods/:messageId                                                                       controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId, messageId: String, mode:Mode = NormalMode)
 
 GET        /:arrivalId/goods-unloaded-date                                                                           controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-unloaded-date                                                                           controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

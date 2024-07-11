@@ -26,7 +26,7 @@
     config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, newAuth: Boolean, goodsTooLarge: Boolean, messageId: String, viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, newAuth: Boolean, goodsTooLarge: Boolean, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages(viewModel.title(newAuth, goodsTooLarge)),
@@ -48,11 +48,11 @@
         </p>
 
         @if(newAuth && !goodsTooLarge ){
-        <p class="govuk-body">@messages("unloadingGuidance.para3.preLinkText")
-            <a id="download1" class="govuk-link" href=???>
-                @messages("unloadingGuidance.para3.linkText")
-            </a>@messages("unloadingGuidance.para3.postLinkText")
-        </p>
+            <p class="govuk-body">@messages("unloadingGuidance.para3.preLinkText")
+                <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
+                    @messages("unloadingGuidance.para3.linkText")
+                </a>@messages("unloadingGuidance.para3.postLinkText")href
+            </p>
         }
 
     @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {

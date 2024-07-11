@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import models.{ArrivalId, NormalMode}
+import models.{ArrivalId, Mode, NormalMode}
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,7 +37,7 @@ class UnloadingGuidanceController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] =
     actions
       .requireData(arrivalId)
       .andThen(getMandatoryPage.getFirst(NewAuthYesNoPage))
@@ -45,10 +45,10 @@ class UnloadingGuidanceController @Inject() (
         implicit request =>
           val newAuth: Boolean       = request.arg._1
           val goodsTooLarge: Boolean = request.arg._2
-          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, unloadingGuidanceViewModel))
+          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, mode, unloadingGuidanceViewModel))
       }
 
-  def onSubmit(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       _ => Redirect(routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
     }
