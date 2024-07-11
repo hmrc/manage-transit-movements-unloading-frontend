@@ -44,6 +44,11 @@ class UnloadingGuidanceViewModel {
     case (true, true)  => ""
   }
 
+  def para1(newAuth: Boolean, goodsTooLarge: Boolean): String =
+    if (newAuth && goodsTooLarge) {
+      s"$prefix.para1"
+    } else ""
+
   def para2(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
     case (false, _)    => s"$prefix.para2.notNewAuth"
     case (true, false) => ""

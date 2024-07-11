@@ -36,10 +36,7 @@
     @heading(messages(viewModel.heading(newAuth, goodsTooLarge)), caption = Some(messages("site.caption", mrn.toString)))
 
 
-    @if(newAuth && goodsTooLarge){
-        <p class="govuk-body">@messages("unloadingGuidance.para1")</p>
-        }
-
+    <p class="govuk-body">@messages(s"${viewModel.para1(newAuth, goodsTooLarge)}")</p>
 
     <p class="govuk-body">@messages(s"${viewModel.para2(newAuth, goodsTooLarge)}", mrn.toString)</p>
 
@@ -51,8 +48,8 @@
         </p>
 
         @if(newAuth && !goodsTooLarge ){
-        <p class="govuk-body">@messages("unloadingGuidance.para2.preLinkText")
-            <a id="download" class="govuk-link" href=???>
+        <p class="govuk-body">@messages("unloadingGuidance.para3.preLinkText")
+            <a id="download1" class="govuk-link" href=???>
                 @messages("unloadingGuidance.para3.linkText")
             </a>@messages("unloadingGuidance.para3.postLinkText")
         </p>
