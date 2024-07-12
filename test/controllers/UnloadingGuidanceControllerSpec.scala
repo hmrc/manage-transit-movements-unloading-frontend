@@ -24,12 +24,13 @@ import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.UnloadingGuidanceViewModel
+import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
-  private val unloadingGuidanceRoute        = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
-  val viewModel: UnloadingGuidanceViewModel = mock[UnloadingGuidanceViewModel]
+  private val unloadingGuidanceRoute                = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+  val viewModel: UnloadingGuidanceViewModelProvider = mock[UnloadingGuidanceViewModelProvider]
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
@@ -49,8 +50,9 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, newAuth = false, goodsTooLarge = true, messageId, NormalMode, viewModel)(request,
-                                                                                                                                      messages
+      contentAsString(result) mustEqual view(mrn, arrivalId, newAuth = false, goodsTooLarge = true, messageId, NormalMode, viewModel.apply())(
+        request,
+        messages
       ).toString
     }
 

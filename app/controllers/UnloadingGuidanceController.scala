@@ -46,7 +46,7 @@ class UnloadingGuidanceController @Inject() (
         implicit request =>
           val newAuth: Boolean       = request.arg._1
           val goodsTooLarge: Boolean = request.arg._2
-          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, mode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, mode, unloadingGuidanceViewModel.apply()))
       }
 
   def onSubmit(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] =

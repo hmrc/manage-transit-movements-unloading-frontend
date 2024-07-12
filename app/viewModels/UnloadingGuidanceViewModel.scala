@@ -64,7 +64,7 @@ object UnloadingGuidanceViewModel {
 
   class UnloadingGuidanceViewModelProvider @Inject() () {
 
-    def apply(newAuth: Boolean, goodsTooLarge: Boolean): UnloadingGuidanceViewModel =
+    def apply(): UnloadingGuidanceViewModel =
       new UnloadingGuidanceViewModel()
   }
 
