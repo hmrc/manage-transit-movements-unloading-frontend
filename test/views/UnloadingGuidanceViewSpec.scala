@@ -27,20 +27,22 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
   private val viewModel = new UnloadingGuidanceViewModel
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, true, true, messageId, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, false, true, messageId, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "unloadingGuidance"
+  override val prefix: String = "unloadingGuidance.notNewAuth"
 
-  behave like pageWithTitle(true, true)
+  behave like pageWithTitle(false, true)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(true, true)
+  behave like pageWithHeading(false, true)
 
-  behave like pageWithContent("p", s"When unloading, check that the goods match the Unloading Permission for Movement Reference Number (MRN) $mrn.")
-  behave like pageWithPartialContent("p", "or further guidance,")
+  behave like pageWithContent(
+    "p",
+    s"When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) $mrn. Take note of any discrepancies as you will need to include them in your unloading remarks."
+  )
 
   behave like pageWithLink(
     id = "download",

@@ -23,15 +23,15 @@ case class UnloadingGuidanceViewModel() {
   val prefix = "unloadingGuidance"
 
   def title(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
-    case (false, _)    => s"$prefix.title.notNewAuth"
-    case (true, false) => s"$prefix.title.newAuth.goodsTooLargeNo"
-    case (true, true)  => s"$prefix.title.newAuth.goodsTooLargeYes"
+    case (false, _)    => s"$prefix.notNewAuth.title"
+    case (true, false) => s"$prefix.newAuth.goodsTooLargeNo.title"
+    case (true, true)  => s"$prefix.newAuth.goodsTooLargeYes.title"
   }
 
   def heading(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
-    case (false, _)    => s"$prefix.heading.notNewAuth"
-    case (true, false) => s"$prefix.heading.newAuth.goodsTooLargeNo"
-    case (true, true)  => s"$prefix.heading.newAuth.goodsTooLargeYes"
+    case (false, _)    => s"$prefix.notNewAuth.heading"
+    case (true, false) => s"$prefix.newAuth.goodsTooLargeNo.heading"
+    case (true, true)  => s"$prefix.newAuth.goodsTooLargeYes.heading"
   }
 
   def preLinkText(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
