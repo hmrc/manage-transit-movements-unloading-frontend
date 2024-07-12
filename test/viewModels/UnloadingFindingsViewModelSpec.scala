@@ -518,7 +518,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsigneeNamePage(hcIndex), "John Smith")
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage(hcIndex, dtmIndex),
-            TransportMeansIdentification("2", "")
+                    TransportMeansIdentification("2", "")
           )
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage(hcIndex, dtmIndex), "23")
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(hcIndex, dtmIndex), Country("IT", ""))
@@ -544,7 +544,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsigneeNamePage(Index(0)), "John Smith")
           .setValue(ConsigneeIdentifierPage(Index(0)), "csgee1")
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage(Index(0), dtmIndex),
-            TransportMeansIdentification("2", "")
+                    TransportMeansIdentification("2", "")
           )
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage(Index(0), dtmIndex), "23")
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(Index(0), dtmIndex), Country("IT", ""))
@@ -556,7 +556,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsigneeNamePage(Index(1)), "John Smith")
           .setValue(ConsigneeIdentifierPage(Index(1)), "csgee1")
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage(Index(1), dtmIndex),
-            TransportMeansIdentification("2", "")
+                    TransportMeansIdentification("2", "")
           )
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage(Index(1), dtmIndex), "23")
           .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(Index(1), dtmIndex), Country("IT", ""))

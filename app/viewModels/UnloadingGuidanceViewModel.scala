@@ -36,14 +36,12 @@ case class UnloadingGuidanceViewModel() {
 
   def preLinkText(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
     case (true, false) => s"$prefix.preLinkText"
-    case (false, _)    => ""
-    case (true, true)  => ""
+    case _             => ""
   }
 
   def postLinkText(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
     case (true, false) => s"$prefix.postLinkText"
-    case (false, _)    => ""
-    case (true, true)  => ""
+    case _             => ""
   }
 
   def para1(newAuth: Boolean, goodsTooLarge: Boolean): String =
