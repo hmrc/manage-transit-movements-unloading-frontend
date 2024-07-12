@@ -41,15 +41,15 @@
 
     <p class="govuk-body">@messages(viewModel.preLinkText())
         <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
-               @messages("unloadingGuidance.pdf.link")
+               @messages(viewModel.pdfLinkText)
         </a>@messages(viewModel.postLinkText())
     </p>
 
     @if(viewModel.newAuth && !viewModel.goodsTooLarge ){
-        <p class="govuk-body">@messages("unloadingGuidance.para3.preLinkText")
+        <p class="govuk-body">@messages(viewModel.para3preLinkText)
             <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
-                @messages("unloadingGuidance.para3.linkText")
-            </a>@messages("unloadingGuidance.para3.postLinkText")
+                @messages(viewModel.para3linkText)
+            </a>@messages(viewModel.para3postlinkText)
         </p>
     }
 

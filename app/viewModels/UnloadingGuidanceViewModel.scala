@@ -56,6 +56,11 @@ case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Boolean) 
     case (true, false) => ""
     case (true, true)  => s"$prefix.para2.newAuth.goodsTooLargeYes"
   }
+
+  val para3preLinkText: String  = s"$prefix.para3.preLinkText"
+  val para3linkText: String     = s"$prefix.para3.linkText"
+  val para3postlinkText: String = s"$prefix.para3.postLinkText"
+  val pdfLinkText: String       = s"$prefix.pdf.link"
 }
 
 object UnloadingGuidanceViewModel {
