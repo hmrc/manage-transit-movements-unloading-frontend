@@ -61,7 +61,7 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockViewModelProvider.apply(any(), any(), any())(any()))
+    when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
       .thenReturn(viewModel)
   }
 

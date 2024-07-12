@@ -21,7 +21,7 @@ import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigation
-import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
+import pages.{NewAuthYesNoPage, OtherThingsToReportPage, SealsReplacedByCustomsAuthorityYesNoPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +54,8 @@ class OtherThingsToReportController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)) {
       implicit request =>
-        val viewModel = viewModelProvider(arrivalId, mode, request.arg)
+        val sealsReplaced = request.userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage)
+        val viewModel     = viewModelProvider(arrivalId, mode, request.arg, sealsReplaced)
         val preparedForm = request.userAnswers.get(OtherThingsToReportPage) match {
           case None        => form(viewModel)
           case Some(value) => form(viewModel).fill(value)
@@ -66,7 +67,8 @@ class OtherThingsToReportController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)).async {
       implicit request =>
-        val viewModel = viewModelProvider(arrivalId, mode, request.arg)
+        val sealsReplaced = request.userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage)
+        val viewModel     = viewModelProvider(arrivalId, mode, request.arg, sealsReplaced)
         form(viewModel)
           .bindFromRequest()
           .fold(

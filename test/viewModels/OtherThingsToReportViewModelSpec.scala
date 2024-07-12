@@ -27,7 +27,7 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
   "must create view model" - {
     "when newAuth is false" in {
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = false)
+      val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = false, sealsReplaced = None)
 
       result.title mustBe "What do you want to report?"
       result.heading mustBe "What do you want to report?"
@@ -39,9 +39,23 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
       result.onSubmitCall.url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
     }
 
-    "when newAuth is true" in {
+    "when newAuth is true and sealsReplaced is false" in {
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = true)
+      val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = true, sealsReplaced = Some(false))
+
+      result.title mustBe "Enter all the original seal identification numbers"
+      result.heading mustBe "Enter all the original seal identification numbers"
+      result.hint mustBe Some("Each seal can be up to 20 characters long and include both letters and numbers.")
+      result.additionalHtml must be(defined)
+      result.requiredError mustBe "Enter all the original seal identification numbers"
+      result.maxLengthError mustBe "The identification numbers must be 512 characters or less"
+      result.invalidError mustBe "The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces"
+      result.onSubmitCall.url mustBe controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, NormalMode).url
+    }
+
+    "when newAuth is true and sealsReplace is true" in {
+      val viewModelProvider = new OtherThingsToReportViewModelProvider()
+      val result            = viewModelProvider.apply(arrivalId, NormalMode, newAuth = true, sealsReplaced = Some(true))
 
       result.title mustBe "Enter all the seal identification numbers"
       result.heading mustBe "Enter all the seal identification numbers"

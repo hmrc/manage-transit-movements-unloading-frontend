@@ -26,7 +26,7 @@ import scala.util.Random
 
 class OtherThingsToReportFormProviderSpec extends StringFieldBehaviours {
 
-  val auth: String = Gen.oneOf("newAuth", "oldAuth").sample.value
+  val auth: String = Gen.oneOf("newAuthAndSealsReplaced", "newAuth", "oldAuth").sample.value
   val prefix       = s"otherThingsToReport.$auth"
 
   val requiredKey = s"$prefix.error.required"

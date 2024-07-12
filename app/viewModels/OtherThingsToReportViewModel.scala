@@ -40,20 +40,28 @@ object OtherThingsToReportViewModel {
     def apply(
       arrivalId: ArrivalId,
       mode: Mode,
-      newAuth: Boolean
+      newAuth: Boolean,
+      sealsReplaced: Option[Boolean]
     )(implicit messages: Messages): OtherThingsToReportViewModel = {
-      val prefix = if (newAuth) "otherThingsToReport.newAuth" else "otherThingsToReport.oldAuth"
+      val prefix = if (newAuth) {
+        sealsReplaced match {
+          case Some(true) => "otherThingsToReport.newAuthAndSealsReplaced"
+          case _          => "otherThingsToReport.newAuth"
+        }
+      } else {
+        "otherThingsToReport.oldAuth"
+      }
 
-      val hint = Option.when(newAuth)(messages("otherThingsToReport.newAuth.hint"))
+      val hint = Option.when(newAuth)(messages(s"$prefix.hint"))
 
       val additionalHtml = Option.when(newAuth) {
         s"""
-          |<p class="govuk-body">${messages("otherThingsToReport.newAuth.paragraph1")}</p>
-          |<p class="govuk-body">${messages("otherThingsToReport.newAuth.paragraph2")}
+          |<p class="govuk-body">${messages(s"$prefix.paragraph1")}</p>
+          |<p class="govuk-body">${messages(s"$prefix.paragraph2")}
           |    <a id="link" class="govuk-link" href=${routes.NewAuthYesNoController.onSubmit(arrivalId, mode)}>
-          |        ${messages("otherThingsToReport.newAuth.link")}
+          |        ${messages(s"$prefix.link")}
           |    </a>.
-          |    ${messages("otherThingsToReport.newAuth.paragraph3")}
+          |    ${messages(s"$prefix.paragraph3")}
           |</p>
           |""".stripMargin
       }

@@ -43,7 +43,7 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
   override val prefix: String = Gen
     .oneOf(
       "otherThingsToReport.oldAuth",
-      "otherThingsToReport.newAuth"
+      "otherThingsToReport.newAuthAndSealsReplaced"
     )
     .sample
     .value
@@ -63,7 +63,7 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
   private val hint = "Each seal can be up to 20 characters long and include both letters and numbers."
 
   "when newAuth is false" - {
-    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = false)
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = false, sealsReplaced = None)
     val doc = parseView(
       injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
     )
@@ -71,9 +71,32 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
     behave like pageWithoutHint(doc, hint)
   }
 
-  "when newAuth is true" - {
+  "when newAuth is true and sealsReplaced is false" - {
 
-    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true)
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true, sealsReplaced = Some(false))
+    val doc = parseView(
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
+    )
+
+    behave like pageWithContent(doc, "p", "Only enter original seals affixed by an authorised consignor.")
+
+    behave like pageWithPartialContent(doc, "p", "If any seals are broken, you must")
+
+    behave like pageWithLink(
+      doc = doc,
+      id = "link",
+      expectedText = "select no to using the revised unloading procedure",
+      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/revised-unloading-procedure"
+    )
+
+    behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
+
+    behave like pageWithHint(doc, hint)
+  }
+
+  "when newAuth is true and sealsReplaced is true" - {
+
+    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true, sealsReplaced = Some(true))
     val doc = parseView(
       injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
     )
@@ -86,7 +109,7 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
       doc = doc,
       id = "link",
       expectedText = "select no to using the revised unloading procedure",
-      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/new-auth"
+      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/revised-unloading-procedure"
     )
 
     behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
