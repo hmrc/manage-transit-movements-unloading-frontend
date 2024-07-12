@@ -18,40 +18,40 @@ package viewModels
 
 import javax.inject.Inject
 
-case class UnloadingGuidanceViewModel() {
+case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Boolean) {
 
   val prefix = "unloadingGuidance"
 
-  def title(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
+  def title(): String = (newAuth, goodsTooLarge) match {
     case (false, _)    => s"$prefix.notNewAuth.title"
     case (true, false) => s"$prefix.newAuth.goodsTooLargeNo.title"
     case (true, true)  => s"$prefix.newAuth.goodsTooLargeYes.title"
   }
 
-  def heading(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
+  def heading(): String = (newAuth, goodsTooLarge) match {
     case (false, _)    => s"$prefix.notNewAuth.heading"
     case (true, false) => s"$prefix.newAuth.goodsTooLargeNo.heading"
     case (true, true)  => s"$prefix.newAuth.goodsTooLargeYes.heading"
   }
 
-  def preLinkText(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
+  def preLinkText(): String = (newAuth, goodsTooLarge) match {
     case (true, false) => s"$prefix.preLinkText"
     case _             => ""
   }
 
-  def postLinkText(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
+  def postLinkText(): String = (newAuth, goodsTooLarge) match {
     case (true, false) => s"$prefix.postLinkText"
     case _             => ""
   }
 
-  def para1(newAuth: Boolean, goodsTooLarge: Boolean): String =
+  def para1(): String =
     if (newAuth && goodsTooLarge) {
       s"$prefix.para1"
     } else {
       ""
     }
 
-  def para2(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
+  def para2(): String = (newAuth, goodsTooLarge) match {
     case (false, _)    => s"$prefix.para2.notNewAuth"
     case (true, false) => ""
     case (true, true)  => s"$prefix.para2.newAuth.goodsTooLargeYes"
@@ -62,8 +62,8 @@ object UnloadingGuidanceViewModel {
 
   class UnloadingGuidanceViewModelProvider @Inject() () {
 
-    def apply(): UnloadingGuidanceViewModel =
-      new UnloadingGuidanceViewModel()
+    def apply(newAuth: Boolean, goodsTooLarge: Boolean): UnloadingGuidanceViewModel =
+      new UnloadingGuidanceViewModel(newAuth, goodsTooLarge)
   }
 
 }

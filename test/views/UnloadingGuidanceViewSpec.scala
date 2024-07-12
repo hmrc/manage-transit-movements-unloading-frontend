@@ -24,10 +24,10 @@ import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
-  private val viewModel = new UnloadingGuidanceViewModel
+  private val viewModel = new UnloadingGuidanceViewModel(false, true)
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, false, true, messageId, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "unloadingGuidance.notNewAuth"
 

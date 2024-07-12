@@ -26,34 +26,32 @@
     config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, newAuth: Boolean, goodsTooLarge: Boolean, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(viewModel.title(newAuth, goodsTooLarge)),
+    title = messages(viewModel.title()),
     showBackLink = true
 ) {
 
-    @heading(messages(viewModel.heading(newAuth, goodsTooLarge)), caption = Some(messages("site.caption", mrn.toString)))
+    @heading(messages(viewModel.heading()), caption = Some(messages("site.caption", mrn.toString)))
 
+    <p class="govuk-body">@messages(s"${viewModel.para1()}")</p>
 
-    <p class="govuk-body">@messages(s"${viewModel.para1(newAuth, goodsTooLarge)}")</p>
+    <p class="govuk-body">@messages(s"${viewModel.para2()}", mrn.toString)</p>
 
-    <p class="govuk-body">@messages(s"${viewModel.para2(newAuth, goodsTooLarge)}", mrn.toString)</p>
+    <p class="govuk-body">@messages(viewModel.preLinkText())
+        <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
+               @messages("unloadingGuidance.pdf.link")
+        </a>@messages(viewModel.postLinkText())
+    </p>
 
-
-        <p class="govuk-body">@messages(viewModel.preLinkText(newAuth, goodsTooLarge))
-            <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
-                @messages("unloadingGuidance.pdf.link")
-            </a>@messages(viewModel.postLinkText(newAuth, goodsTooLarge))
+    @if(viewModel.newAuth && !viewModel.goodsTooLarge ){
+        <p class="govuk-body">@messages("unloadingGuidance.para3.preLinkText")
+            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
+                @messages("unloadingGuidance.para3.linkText")
+            </a>@messages("unloadingGuidance.para3.postLinkText")href
         </p>
-
-        @if(newAuth && !goodsTooLarge ){
-            <p class="govuk-body">@messages("unloadingGuidance.para3.preLinkText")
-                <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
-                    @messages("unloadingGuidance.para3.linkText")
-                </a>@messages("unloadingGuidance.para3.postLinkText")href
-            </p>
-        }
+    }
 
     @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))

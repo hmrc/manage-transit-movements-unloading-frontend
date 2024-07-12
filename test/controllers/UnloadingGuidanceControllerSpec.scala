@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.inject.bind
@@ -30,8 +29,6 @@ import play.api.test.Helpers._
 import viewModels.UnloadingGuidanceViewModel
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView
-
-import scala.concurrent.Future
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
@@ -52,7 +49,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
           .setValue(NewAuthYesNoPage, false)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
       )
-      when(mockViewModel.apply()).thenReturn(UnloadingGuidanceViewModel.apply())
+      when(mockViewModel.apply(newAuth = false, goodsTooLarge = true)).thenReturn(UnloadingGuidanceViewModel.apply(newAuth = false, goodsTooLarge = true))
 
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 
@@ -62,7 +59,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, newAuth = false, goodsTooLarge = true, messageId, NormalMode, mockViewModel.apply())(
+      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, mockViewModel.apply(newAuth = false, goodsTooLarge = true))(
         request,
         messages
       ).toString
