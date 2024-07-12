@@ -209,6 +209,7 @@ netWeight.NormalMode.error.required = Enter the net weight of item {1} in house 
 netWeight.error.invalidValue = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
+netWeight.error.zero = The net weight must be more than 0
 
 transportEquipment.index.seal.identificationNumber.NormalMode.title = What is the seal identification number?
 transportEquipment.index.seal.identificationNumber.CheckMode.title = What is the new seal identification number?
@@ -307,7 +308,8 @@ unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswersLabel = Are any of the seals broken?
 unloadingType.1 = Fully unloaded
 unloadingType.0 = Partially unloaded
-unloadingType.error.required = Select whether you have fully or partially unloaded the goods
+unloadingType.NormalMode.error.required = Select whether you have fully or partially unloaded the goods
+unloadingType.CheckMode.error.required = Select whether you have fully or partially unloaded the goods
 unloadingType.checkYourAnswers.change.hidden = whether you fully or partially unloaded the goods
 
 areAnySealsBroken.title = Are any of the seals broken?
@@ -1176,6 +1178,8 @@ houseConsignment.index.grossWeight.NormalMode.error.invalidCharacters = The gros
 houseConsignment.index.grossWeight.CheckMode.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.NormalMode.error.invalidFormat = The gross weight must only include 6 decimal places or less
 houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+houseConsignment.index.grossWeight.NormalMode.error.zero = The gross weight must be more than 0
+houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight must be more than 0
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
@@ -1315,6 +1319,21 @@ houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any 
 houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
 
-newAuthYesNo.title = Are you using the new procedure?
-newAuthYesNo.heading = Are you using the new procedure?
-newAuthYesNo.error.required = Select yes if you want to add any comments
+newAuthYesNo.title = Do you want to use the revised unloading procedure?
+newAuthYesNo.heading = Do you want to use the revised unloading procedure?
+newAuthYesNo.paragraph = This allows you to make unloading remarks without physically unloading the goods.
+newAuthYesNo.hint = You can only use the revised unloading procedure if:
+newAuthYesNo.bullet1 = all items have the same office of destination
+newAuthYesNo.bullet2 = there are no broken seals
+newAuthYesNo.bullet3 = there are no discrepancies between the transit movement and unloading permission
+newAuthYesNo.error.required = Select yes if you want to use the revised unloading procedure
+
+goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
+goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
+
+sealsReplacedByCustomsAuthorityYesNo.title = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.heading = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.paragraph = This could have happened during routine checks or following an incident.
+sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals been replaced by a customs authority

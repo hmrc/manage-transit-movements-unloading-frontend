@@ -20,42 +20,34 @@
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    errorSummary: ErrorSummary,
-    button: Button
+mainTemplate: MainTemplate,
+formHelper: FormWithCSRF,
+inputYesNo: InputYesNo,
+errorSummary: ErrorSummary,
+button: Button
 )
 
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@html = {
-    <p>@messages("newAuthYesNo.hint")</p>
-    <ul class="govuk-list govuk-list--bullet govuk-hint">
-        <li>@messages("newAuthYesNo.bullet1")</li>
-        <li>@messages("newAuthYesNo.bullet2")</li>
-        <li>@messages("newAuthYesNo.bullet3")</li>
-    </ul>
-}
-
 @mainTemplate(
-    title = messages("newAuthYesNo.title"),
+    title = messages("sealsReplacedByCustomsAuthorityYesNo.title"),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.routes.NewAuthYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("newAuthYesNo.heading"),
+                heading = messages("sealsReplacedByCustomsAuthorityYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("newAuthYesNo.paragraph").toParagraph
-            ),
-            hint = Some(HtmlContent(html))
+                additionalHtml = messages("sealsReplacedByCustomsAuthorityYesNo.paragraph").toParagraph
+            )
         )
+
+
 
         @button(attributes = Map("id" -> "submit"))
     }

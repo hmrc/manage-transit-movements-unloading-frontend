@@ -22,6 +22,7 @@ import forms.WeightFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigation
 import pages.GrossWeightPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -43,8 +44,13 @@ class GrossWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form =
-    formProvider("grossWeight", grossWeightDecimalPlaces, grossWeightIntegerLength)
+  private def form: Form[BigDecimal] =
+    formProvider(
+      prefix = "grossWeight",
+      decimalPlaceCount = grossWeightDecimalPlaces,
+      characterCount = grossWeightIntegerLength,
+      isZeroAllowed = true
+    )
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {

@@ -20,16 +20,16 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.NewAuthYesNoView
+import views.html.GoodsTooLargeForContainerYesNoView
 
-class NewAuthYesNoViewSpec extends YesNoViewBehaviours {
+class GoodsTooLargeForContainerYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[NewAuthYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GoodsTooLargeForContainerYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "newAuthYesNo"
+  override val prefix: String = "goodsTooLargeForContainerYesNo"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle("Are the goods too large to fit into a container?")
 
   behave like pageWithBackLink()
 
@@ -37,23 +37,10 @@ class NewAuthYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This allows you to make unloading remarks without physically unloading the goods.")
-
-  behave like pageWithHint(
-    "You can only use the revised unloading procedure if: " +
-      "all items have the same office of destination " +
-      "there are no broken seals " +
-      "there are no discrepancies between the transit movement and unloading permission"
-  )
-
-  behave like pageWithList(
-    "govuk-list--bullet",
-    "all items have the same office of destination",
-    "there are no broken seals",
-    "there are no discrepancies between the transit movement and unloading permission"
+  behave like pageWithContent(
+    "p",
+    "These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails."
   )
 
   behave like pageWithRadioItems()
-
-  behave like pageWithSubmitButton("Continue")
 }

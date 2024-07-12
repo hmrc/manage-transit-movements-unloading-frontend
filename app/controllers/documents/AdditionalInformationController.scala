@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   formProvider: AdditionalInformationFormProvider,

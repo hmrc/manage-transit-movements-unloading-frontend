@@ -210,19 +210,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       additionalAssertions.map(_(button))
     }
 
-  def pageWithLinkAsButton(expectedText: String, expectedHref: String, expectedId: String = "submit"): Unit =
-    pageWithLinkAsButton(expectedText) {
-      button =>
-        assertElementContainsId(button, expectedId)
-        assertElementContainsHref(button, expectedHref)
-    }
-
-  private def pageWithLinkAsButton(expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
-    s"must render $expectedText link as button" in {
-      val button = doc.getElementsByClass("govuk-button").toList.find(_.text() == expectedText).value
-      additionalAssertions.map(_(button))
-    }
-
   def pageWithLink(id: String, expectedText: String, expectedHref: String): Unit =
     pageWithLink(doc, id, expectedText, expectedHref)
 

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+package pages
 
-@this(govukButton: GovukButton)
+import pages.sections.OtherQuestionsSection
+import play.api.libs.json.JsPath
 
-@(
-    messageKey: String = "site.continue",
-    isStartButton: Boolean = false,
-    attributes: Map[String, String] = Map.empty,
-    href: Option[String] = None
-)(implicit messages: Messages)
+case object GoodsTooLargeForContainerYesNoPage extends QuestionPage[Boolean] {
 
-@govukButton(Button(
-    isStartButton = isStartButton,
-    preventDoubleClick = Some(true),
-    content = Text(messages(messageKey)),
-    attributes = attributes,
-    href = href
-))
+  override def path: JsPath = OtherQuestionsSection.path \ toString
+
+  override def toString: String = "goodsTooLargeForContainerYesNo"
+
+}

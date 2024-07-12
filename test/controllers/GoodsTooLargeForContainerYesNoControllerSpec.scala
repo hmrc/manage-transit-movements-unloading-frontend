@@ -17,32 +17,27 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.WeightFormProvider
-import generators.Generators
-import models.CheckMode
+import forms.YesNoFormProvider
+import models.NormalMode
 import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.GrossWeightPage
+import pages.GoodsTooLargeForContainerYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.GrossWeightView
+import views.html.GoodsTooLargeForContainerYesNoView
 
 import scala.concurrent.Future
 
-class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class GoodsTooLargeForContainerYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val decimalPlace   = notTooBigPositiveNumbers.sample.value
-  private val characterCount = notTooBigPositiveNumbers.sample.value
-  private val formProvider   = new WeightFormProvider()
-  private val form           = formProvider("grossWeight", decimalPlace, characterCount, isZeroAllowed = true)
-  private val mode           = CheckMode
-  private val validAnswer    = BigDecimal(123.45)
-
-  private lazy val grossWeightAmountRoute =
-    routes.GrossWeightController.onPageLoad(arrivalId).url
+  private lazy val goodsTooLargeForContainerYesNoRoute =
+    controllers.routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, mode).url
+  private val formProvider = new YesNoFormProvider()
+  private val form         = formProvider("goodsTooLargeForContainerYesNo")
+  private val mode         = NormalMode
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -51,18 +46,17 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         bind[Navigation].toInstance(fakeNavigation)
       )
 
-  "GrossWeightAmount Controller" - {
+  "GoodsTooLargeForContainerYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, grossWeightAmountRoute)
+      val request = FakeRequest(GET, goodsTooLargeForContainerYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[GrossWeightView]
+      val view = injector.instanceOf[GoodsTooLargeForContainerYesNoView]
 
       status(result) mustEqual OK
 
@@ -71,39 +65,37 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, grossWeightAmountRoute)
+      val request = FakeRequest(GET, goodsTooLargeForContainerYesNoRoute)
 
       val result = route(app, request).value
 
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[GoodsTooLargeForContainerYesNoView]
+
       status(result) mustEqual OK
-
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
-
-      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      checkArrivalStatus()
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, grossWeightAmountRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
@@ -111,24 +103,26 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, grossWeightAmountRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val invalidAnswer = ""
+
+      val request    = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
-      val view = injector.instanceOf[GrossWeightView]
+
+      val view = injector.instanceOf[GoodsTooLargeForContainerYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, grossWeightAmountRoute)
+      val request = FakeRequest(GET, goodsTooLargeForContainerYesNoRoute)
 
       val result = route(app, request).value
 
@@ -138,13 +132,11 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, grossWeightAmountRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+      val request = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute)
+        .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
 

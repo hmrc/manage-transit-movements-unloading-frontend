@@ -29,10 +29,10 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   ec: ExecutionContext
 ) extends PageTransformer {
 
-  private case class TempDepartureTransportMeans(
-    underlying: DepartureTransportMeansType02,
-    typeOfIdentification: TransportMeansIdentification,
-    nationality: Country
+  private case class TempDepartureTransportMeans[T](
+    underlying: T,
+    typeOfIdentification: Option[TransportMeansIdentification],
+    nationality: Option[Country]
   )
 
   def transform(
@@ -69,13 +69,13 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   private def genericTransform(
     departureTransportMeans: Seq[DepartureTransportMeansType02]
   )(
-    pipeline: (TempDepartureTransportMeans, Index) => UserAnswers => Future[UserAnswers]
+    pipeline: (TempDepartureTransportMeans[DepartureTransportMeansType02], Index) => UserAnswers => Future[UserAnswers]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
     lazy val referenceDataLookups = departureTransportMeans.map {
       dtm =>
         // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
-        val typeOfIdentificationF = referenceDataConnector.getMeansOfTransportIdentificationType(dtm.typeOfIdentification)
-        val nationalityF          = referenceDataConnector.getCountry(dtm.nationality)
+        val typeOfIdentificationF = dtm.typeOfIdentification.lookup(referenceDataConnector.getMeansOfTransportIdentificationType)
+        val nationalityF          = dtm.nationality.lookup(referenceDataConnector.getCountry)
 
         for {
           typeOfIdentification <- typeOfIdentificationF

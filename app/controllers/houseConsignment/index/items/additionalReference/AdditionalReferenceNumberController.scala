@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   formProvider: ItemsAdditionalReferenceNumberFormProvider,
   actions: Actions,
