@@ -16,7 +16,9 @@
 
 package viewModels
 
-class UnloadingGuidanceViewModel {
+import javax.inject.Inject
+
+case class UnloadingGuidanceViewModel() {
 
   val prefix = "unloadingGuidance"
 
@@ -47,11 +49,23 @@ class UnloadingGuidanceViewModel {
   def para1(newAuth: Boolean, goodsTooLarge: Boolean): String =
     if (newAuth && goodsTooLarge) {
       s"$prefix.para1"
-    } else ""
+    } else {
+      ""
+    }
 
   def para2(newAuth: Boolean, goodsTooLarge: Boolean): String = (newAuth, goodsTooLarge) match {
     case (false, _)    => s"$prefix.para2.notNewAuth"
     case (true, false) => ""
     case (true, true)  => s"$prefix.para2.newAuth.goodsTooLargeYes"
   }
+}
+
+object UnloadingGuidanceViewModel {
+
+  class UnloadingGuidanceViewModelProvider @Inject() () {
+
+    def apply(newAuth: Boolean, goodsTooLarge: Boolean): UnloadingGuidanceViewModel =
+      new UnloadingGuidanceViewModel()
+  }
+
 }

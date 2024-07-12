@@ -20,19 +20,26 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import matchers.JsonMatchers
 import models.NormalMode
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.UnloadingGuidanceViewModel
 import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
-  private val unloadingGuidanceRoute = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+  private val unloadingGuidanceRoute        = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+  val viewModel: UnloadingGuidanceViewModel = mock[UnloadingGuidanceViewModel]
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
       checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+      )
 
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 
@@ -42,14 +49,19 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, messageId)(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, newAuth = false, goodsTooLarge = true, messageId, NormalMode, viewModel)(request,
+                                                                                                                                      messages
+      ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
 
-      setNoExistingUserAnswers()
-
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+      )
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 
       val result = route(app, request).value
@@ -62,8 +74,11 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     "must redirect to unloading type for a POST" in {
       checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers)
-
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+      )
       val request = FakeRequest(POST, unloadingGuidanceRoute)
 
       val result = route(app, request).value
@@ -76,8 +91,11 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
 
-      setNoExistingUserAnswers()
-
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+      )
       val request = FakeRequest(POST, unloadingGuidanceRoute)
 
       val result = route(app, request).value

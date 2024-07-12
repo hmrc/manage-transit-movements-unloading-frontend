@@ -23,6 +23,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingGuidanceViewModel
+import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView
 
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class UnloadingGuidanceController @Inject() (
   actions: Actions,
   view: UnloadingGuidanceView,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  unloadingGuidanceViewModel: UnloadingGuidanceViewModel
+  unloadingGuidanceViewModel: UnloadingGuidanceViewModelProvider
 ) extends FrontendBaseController
     with I18nSupport {
 
@@ -45,7 +46,7 @@ class UnloadingGuidanceController @Inject() (
         implicit request =>
           val newAuth: Boolean       = request.arg._1
           val goodsTooLarge: Boolean = request.arg._2
-          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, mode, unloadingGuidanceViewModel))
+          Ok(view(request.userAnswers.mrn, arrivalId, newAuth, goodsTooLarge, messageId, mode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
       }
 
   def onSubmit(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] =

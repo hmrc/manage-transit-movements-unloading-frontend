@@ -16,24 +16,28 @@
 
 package views
 
+import models.NormalMode
 import play.twirl.api.HtmlFormat
+import viewModels.UnloadingGuidanceViewModel
 import views.behaviours.ViewBehaviours
 import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
+  private val viewModel = new UnloadingGuidanceViewModel
+
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId)(fakeRequest, messages)
+    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, true, true, messageId, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "unloadingGuidance"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(true, true)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(true, true)
 
   behave like pageWithContent("p", s"When unloading, check that the goods match the Unloading Permission for Movement Reference Number (MRN) $mrn.")
   behave like pageWithPartialContent("p", "or further guidance,")
