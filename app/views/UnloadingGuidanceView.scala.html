@@ -45,9 +45,9 @@
         </a>@messages(viewModel.postLinkText())
     </p>
 
-    @if(viewModel.newAuth && !viewModel.goodsTooLarge ){
+    @if(viewModel.newAuth && viewModel.goodsTooLarge == Some(false) ){
         <p class="govuk-body">@messages(viewModel.para3preLinkText)
-            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
+            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, messageId, mode)>
                 @messages(viewModel.para3linkText)
             </a>@messages(viewModel.para3postlinkText)
         </p>

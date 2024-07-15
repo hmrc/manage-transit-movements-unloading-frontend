@@ -25,7 +25,7 @@ import views.html.NewAuthYesNoView
 class NewAuthYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[NewAuthYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NewAuthYesNoView].apply(form, mrn, arrivalId, messageId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "newAuthYesNo"
 

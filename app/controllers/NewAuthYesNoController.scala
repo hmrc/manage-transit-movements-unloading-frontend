@@ -44,27 +44,27 @@ class NewAuthYesNoController @Inject() (
 
   private val form = formProvider("newAuthYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NewAuthYesNoPage) match {
+      val preparedForm = request.userAnswers.get(NewAuthYesNoPage(messageId)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, messageId, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, messageId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NewAuthYesNoPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NewAuthYesNoPage(messageId), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(NewAuthYesNoPage(messageId), mode, updatedAnswers))
         )
   }
 }

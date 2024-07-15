@@ -46,10 +46,11 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       setExistingUserAnswers(
         emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(NewAuthYesNoPage(messageId), false)
+          .setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
       )
-      when(mockViewModel.apply(newAuth = false, goodsTooLarge = true)).thenReturn(UnloadingGuidanceViewModel.apply(newAuth = false, goodsTooLarge = true))
+      when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
+        .thenReturn(UnloadingGuidanceViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
 
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 
@@ -59,7 +60,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, mockViewModel.apply(newAuth = false, goodsTooLarge = true))(
+      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))(
         request,
         messages
       ).toString
@@ -84,8 +85,8 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       setExistingUserAnswers(
         emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(NewAuthYesNoPage(messageId), false)
+          .setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
       )
       val request = FakeRequest(POST, unloadingGuidanceRoute)
 

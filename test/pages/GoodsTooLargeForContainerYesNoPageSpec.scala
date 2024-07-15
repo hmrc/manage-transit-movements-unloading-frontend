@@ -22,11 +22,11 @@ class GoodsTooLargeForContainerYesNoPageSpec extends PageBehaviours {
 
   "GoodsTooLargeForContainerYesNoPage" - {
 
-    beRetrievable[Boolean](GoodsTooLargeForContainerYesNoPage)
+    beRetrievable[Boolean](GoodsTooLargeForContainerYesNoPage(messageId))
 
-    beSettable[Boolean](GoodsTooLargeForContainerYesNoPage)
+    beSettable[Boolean](GoodsTooLargeForContainerYesNoPage(messageId))
 
-    beRemovable[Boolean](GoodsTooLargeForContainerYesNoPage)
+    beRemovable[Boolean](GoodsTooLargeForContainerYesNoPage(messageId))
 
   }
 }

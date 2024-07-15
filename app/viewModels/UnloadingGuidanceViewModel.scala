@@ -18,43 +18,43 @@ package viewModels
 
 import javax.inject.Inject
 
-case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Boolean) {
+case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Option[Boolean]) {
 
   val prefix = "unloadingGuidance"
 
   def title(): String = (newAuth, goodsTooLarge) match {
-    case (false, _)    => s"$prefix.notNewAuth.title"
-    case (true, false) => s"$prefix.newAuth.goodsTooLargeNo.title"
-    case (true, true)  => s"$prefix.newAuth.goodsTooLargeYes.title"
+    case (false, _)          => s"$prefix.notNewAuth.title"
+    case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.title"
+    case _                   => s"$prefix.newAuth.goodsTooLargeYes.title"
   }
 
   def heading(): String = (newAuth, goodsTooLarge) match {
-    case (false, _)    => s"$prefix.notNewAuth.heading"
-    case (true, false) => s"$prefix.newAuth.goodsTooLargeNo.heading"
-    case (true, true)  => s"$prefix.newAuth.goodsTooLargeYes.heading"
+    case (false, _)          => s"$prefix.notNewAuth.heading"
+    case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.heading"
+    case _                   => s"$prefix.newAuth.goodsTooLargeYes.heading"
   }
 
   def preLinkText(): String = (newAuth, goodsTooLarge) match {
-    case (true, false) => s"$prefix.preLinkText"
-    case _             => ""
+    case (true, Some(false)) => s"$prefix.preLinkText"
+    case _                   => ""
   }
 
   def postLinkText(): String = (newAuth, goodsTooLarge) match {
-    case (true, false) => s"$prefix.postLinkText"
-    case _             => ""
+    case (true, Some(false)) => s"$prefix.postLinkText"
+    case _                   => ""
   }
 
   def para1(): String =
-    if (newAuth && goodsTooLarge) {
+    if (newAuth && goodsTooLarge.get) {
       s"$prefix.para1"
     } else {
       ""
     }
 
   def para2(): String = (newAuth, goodsTooLarge) match {
-    case (false, _)    => s"$prefix.para2.notNewAuth"
-    case (true, false) => ""
-    case (true, true)  => s"$prefix.para2.newAuth.goodsTooLargeYes"
+    case (false, _)          => s"$prefix.para2.notNewAuth"
+    case (true, Some(false)) => ""
+    case _                   => s"$prefix.para2.newAuth.goodsTooLargeYes"
   }
 
   val para3preLinkText: String  = s"$prefix.para3.preLinkText"
@@ -67,7 +67,7 @@ object UnloadingGuidanceViewModel {
 
   class UnloadingGuidanceViewModelProvider @Inject() () {
 
-    def apply(newAuth: Boolean, goodsTooLarge: Boolean): UnloadingGuidanceViewModel =
+    def apply(newAuth: Boolean, goodsTooLarge: Option[Boolean]): UnloadingGuidanceViewModel =
       new UnloadingGuidanceViewModel(newAuth, goodsTooLarge)
   }
 

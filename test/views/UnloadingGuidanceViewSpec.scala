@@ -24,7 +24,7 @@ import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
-  private val viewModel = new UnloadingGuidanceViewModel(false, true)
+  private val viewModel = new UnloadingGuidanceViewModel(false, Some(true))
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId, NormalMode, viewModel)(fakeRequest, messages)
@@ -55,7 +55,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
 class UnloadingGuidanceViewSpecNewAuthGoodsTooLargeSpec extends ViewBehaviours {
 
-  private val viewModel = new UnloadingGuidanceViewModel(true, true)
+  private val viewModel = new UnloadingGuidanceViewModel(true, Some(true))
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId, NormalMode, viewModel)(fakeRequest, messages)
@@ -86,7 +86,7 @@ class UnloadingGuidanceViewSpecNewAuthGoodsTooLargeSpec extends ViewBehaviours {
 
 class UnloadingGuidanceViewSpecNewAuthGoodsNotTooLargeSpec extends ViewBehaviours {
 
-  private val viewModel = new UnloadingGuidanceViewModel(true, false)
+  private val viewModel = new UnloadingGuidanceViewModel(true, Some(false))
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId, NormalMode, viewModel)(fakeRequest, messages)
@@ -115,7 +115,7 @@ class UnloadingGuidanceViewSpecNewAuthGoodsNotTooLargeSpec extends ViewBehaviour
   behave like pageWithLink(
     id = "download1",
     expectedText = "select no to using the revised unloading procedure.",
-    expectedHref = s"/manage-transit-movements/unloading/${arrivalId.value}/revised-unloading-procedure"
+    expectedHref = s"/manage-transit-movements/unloading/${arrivalId.value}/revised-unloading-procedure/$messageId"
   )
   behave like pageWithSubmitButton("Continue")
 }

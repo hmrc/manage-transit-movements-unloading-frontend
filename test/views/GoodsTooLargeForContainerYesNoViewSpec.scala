@@ -25,7 +25,7 @@ import views.html.GoodsTooLargeForContainerYesNoView
 class GoodsTooLargeForContainerYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[GoodsTooLargeForContainerYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GoodsTooLargeForContainerYesNoView].apply(form, mrn, arrivalId, messageId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "goodsTooLargeForContainerYesNo"
 

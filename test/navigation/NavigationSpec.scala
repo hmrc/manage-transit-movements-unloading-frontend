@@ -34,6 +34,33 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "in Normal mode" - {
 
       val mode = NormalMode
+
+      "must go from GoodsTooLargeForContainerYesNoPage to UnloadingGuidancePage" in {
+
+        val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
+        navigator
+          .nextPage(GoodsTooLargeForContainerYesNoPage(messageId), mode, userAnswers)
+          .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id, messageId))
+      }
+
+      "must go NewAuthYesNoPage" - {
+        "to GoodsTooLargeForContainerYesNoPage when answer is Yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage(messageId), true)
+          navigator
+            .nextPage(NewAuthYesNoPage(messageId), mode, userAnswers)
+            .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, messageId, mode))
+        }
+
+        "to UnloadingGuidancePage when the answer is No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
+          navigator
+            .nextPage(NewAuthYesNoPage(messageId), mode, userAnswers)
+            .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id, messageId))
+        }
+      }
+
       "must go from Unloading type page to unloading date page" in {
 
         val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
