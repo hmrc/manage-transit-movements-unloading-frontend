@@ -69,7 +69,7 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
-import viewModels.{ListItem, UnloadingFindingsViewModel}
+import viewModels.{ListItem, OtherThingsToReportViewModel, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -673,5 +673,18 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       arrivalId     <- arbitrary[ArrivalId]
     } yield CombinedNomenclatureCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+  }
+
+  implicit lazy val otherThingsToReportViewModel: Arbitrary[OtherThingsToReportViewModel] = Arbitrary {
+    for {
+      title          <- nonEmptyString
+      heading        <- nonEmptyString
+      hint           <- Gen.option(nonEmptyString)
+      additionalHtml <- Gen.const(None)
+      requiredError  <- nonEmptyString
+      maxLengthError <- nonEmptyString
+      invalidError   <- nonEmptyString
+      onSubmitCall   <- arbitrary[Call]
+    } yield OtherThingsToReportViewModel(title, heading, hint, additionalHtml, requiredError, maxLengthError, invalidError, onSubmitCall)
   }
 }
