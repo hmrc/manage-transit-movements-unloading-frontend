@@ -107,3 +107,8 @@ POST       /:arrivalId/seals-replaced-by-customs-authority                      
 GET        /:arrivalId/change-seals-replaced-by-customs-authority                                                          controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-seals-replaced-by-customs-authority                                                          controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
+GET        /:arrivalId/large-unsealed-goods/add-transit-unloading-permission-discrepancies                                                controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/large-unsealed-goods/add-transit-unloading-permission-discrepancies                                                controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/large-unsealed-goods/change-add-transit-unloading-permission-discrepancies                                         controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/large-unsealed-goods/change-add-transit-unloading-permission-discrepancies                                         controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
