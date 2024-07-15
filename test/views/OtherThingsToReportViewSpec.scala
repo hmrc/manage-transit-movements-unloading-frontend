@@ -23,9 +23,8 @@ import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import viewModels.OtherThingsToReportViewModel
-import viewModels.OtherThingsToReportViewModel.OtherThingsToReportViewModelProvider
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.OtherThingsToReportView
 
@@ -60,59 +59,49 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
 
   behave like pageWithSubmitButton("Continue")
 
-  private val hint = "Each seal can be up to 20 characters long and include both letters and numbers."
+  private val hint = nonEmptyString.sample.value
 
-  "when newAuth is false" - {
-    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = false, sealsReplaced = None)
+  "oldAuth (without hint)" - {
+    val viewModelOldAuth = viewModel.copy(hint = None)
     val doc = parseView(
-      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
+      injector
+        .instanceOf[OtherThingsToReportView]
+        .apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelOldAuth)(fakeRequest, messages)
     )
 
     behave like pageWithoutHint(doc, hint)
   }
 
-  "when newAuth is true and sealsReplaced is false" - {
+  "newAuth (with hint and additionalHtml)" - {
 
-    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true, sealsReplaced = Some(false))
+    val additionalHtml = s"""
+                  |<p class="govuk-body">paragraph1</p>
+                  |<p class="govuk-body">paragraph2
+                  |    <a id="link" class="govuk-link" href="url">
+                  |        link
+                  |    </a>.
+                  |    paragraph3
+                  |</p>
+                  |""".stripMargin
+
+    val viewModelNewAuth = viewModel.copy(hint = Some(hint), additionalHtml = Some(additionalHtml).map(Html(_)))
+
     val doc = parseView(
-      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
     )
 
-    behave like pageWithContent(doc, "p", "Only enter original seals affixed by an authorised consignor.")
+    behave like pageWithContent(doc, "p", "paragraph1")
 
-    behave like pageWithPartialContent(doc, "p", "If any seals are broken, you must")
+    behave like pageWithPartialContent(doc, "p", "paragraph2")
 
     behave like pageWithLink(
       doc = doc,
       id = "link",
-      expectedText = "select no to using the revised unloading procedure",
-      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/revised-unloading-procedure"
+      expectedText = "link",
+      expectedHref = "url"
     )
 
-    behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
-
-    behave like pageWithHint(doc, hint)
-  }
-
-  "when newAuth is true and sealsReplaced is true" - {
-
-    val viewModel = new OtherThingsToReportViewModelProvider().apply(arrivalId, mode, newAuth = true, sealsReplaced = Some(true))
-    val doc = parseView(
-      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModel)(fakeRequest, messages)
-    )
-
-    behave like pageWithContent(doc, "p", "Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.")
-
-    behave like pageWithPartialContent(doc, "p", "If any seals are broken, you must")
-
-    behave like pageWithLink(
-      doc = doc,
-      id = "link",
-      expectedText = "select no to using the revised unloading procedure",
-      expectedHref = s"/manage-transit-movements/unloading/$arrivalId/revised-unloading-procedure"
-    )
-
-    behave like pageWithPartialContent(doc, "p", ". You will then need to unload the goods and report any discrepancies.")
+    behave like pageWithPartialContent(doc, "p", "paragraph3")
 
     behave like pageWithHint(doc, hint)
   }
