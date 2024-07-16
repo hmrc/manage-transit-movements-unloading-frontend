@@ -18,11 +18,10 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.Navigation
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import pages.LargeUnsealedGoodsRecordDiscrepanciesYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder

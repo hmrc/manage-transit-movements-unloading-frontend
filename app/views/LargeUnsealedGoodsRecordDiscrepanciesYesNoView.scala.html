@@ -16,13 +16,14 @@
 
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputRadioViewModel._
+@import views.html.components.{Button, ErrorSummary, InputRadio}
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
 mainTemplate: MainTemplate,
 formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
+inputRadio: InputRadio,
 errorSummary: ErrorSummary,
 button: Button
 )
@@ -36,18 +37,33 @@ button: Button
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.routes.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
-        @inputYesNo(
+
+        @inputRadio(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
+            radioType = RadioWithAdditionalHtml(
                 heading = messages("largeUnsealedGoodsRecordDiscrepanciesYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("largeUnsealedGoodsRecordDiscrepanciesYesNo.paragraph").toParagraph
+            ),
+            radioItems = fieldId => {
+            Seq(
+                RadioItem(
+                id = Some(fieldId),
+                value = Some("true"),
+                content = Text(messages("largeUnsealedGoodsRecordDiscrepanciesYesNo.yes")),
+                checked = form("value").value.contains("true")
+                ),
+            RadioItem(
+                id = Some(s"${fieldId}-no"),
+                value = Some("false"),
+                content = Text(messages("site.no")),
+                checked = form("value").value.contains("false")
+                )
             )
+            }
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }
