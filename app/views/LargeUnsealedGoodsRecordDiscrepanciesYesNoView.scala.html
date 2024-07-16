@@ -17,13 +17,13 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import viewModels.components.InputRadioViewModel._
-@import views.html.components.{Button, ErrorSummary, InputRadio}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
 mainTemplate: MainTemplate,
 formHelper: FormWithCSRF,
-inputRadio: InputRadio,
+inputYesNo: InputYesNo,
 errorSummary: ErrorSummary,
 button: Button
 )
@@ -39,30 +39,14 @@ button: Button
 
         @formHelper(action = controllers.routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
-
-        @inputRadio(
+        @inputYesNo(
             field = form("value"),
-            radioType = RadioWithAdditionalHtml(
+            yesMessage = "largeUnsealedGoodsRecordDiscrepanciesYesNo.yes",
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("largeUnsealedGoodsRecordDiscrepanciesYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("largeUnsealedGoodsRecordDiscrepanciesYesNo.paragraph").toParagraph
-            ),
-            radioItems = fieldId => {
-            Seq(
-                RadioItem(
-                id = Some(fieldId),
-                value = Some("true"),
-                content = Text(messages("largeUnsealedGoodsRecordDiscrepanciesYesNo.yes")),
-                checked = form("value").value.contains("true")
-                ),
-            RadioItem(
-                id = Some(s"${fieldId}-no"),
-                value = Some("false"),
-                content = Text(messages("site.no")),
-                checked = form("value").value.contains("false")
-                )
             )
-            }
         )
 
         @button(attributes = Map("id" -> "submit"))
