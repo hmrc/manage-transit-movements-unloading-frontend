@@ -44,7 +44,12 @@ case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Option[Bo
     case _                   => ""
   }
 
-  def para1(): String = s"$prefix.para1"
+  def para1(): String =
+    if (newAuth && goodsTooLarge.get) {
+      s"$prefix.para1"
+    } else {
+      ""
+    }
 
   def para2(): String = (newAuth, goodsTooLarge) match {
     case (false, _)          => s"$prefix.para2.notNewAuth"
