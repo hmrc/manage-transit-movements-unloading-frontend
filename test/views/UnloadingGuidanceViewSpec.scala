@@ -18,14 +18,23 @@ package views
 
 import models.NormalMode
 import play.twirl.api.HtmlFormat
-import viewModels.UnloadingGuidanceViewModel
+import viewModels.{Para3, UnloadingGuidanceViewModel}
 import views.behaviours.ViewBehaviours
 import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   private val viewModel =
-    new UnloadingGuidanceViewModel(dynamicText = "dynamicText", preLinkText = "preLinkText", postLinkText = "postLinkText", para1 = "para1", para2 = "para2")
+    UnloadingGuidanceViewModel(
+      title = "title",
+      heading = "heading",
+      preLinkText = "preLinkText",
+      linkText = "link",
+      postLinkText = "postLinkText",
+      para1 = Some("para1"),
+      para2 = "para2",
+      para3 = Some(Para3)
+    )
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId, NormalMode, viewModel)(fakeRequest, messages)

@@ -26,7 +26,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.UnloadingGuidanceViewModel
+import viewModels.{Para3, UnloadingGuidanceViewModel}
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView
 
@@ -50,7 +50,18 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
           .setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
       )
       when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
-        .thenReturn(UnloadingGuidanceViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
+        .thenReturn(
+          UnloadingGuidanceViewModel(
+            title = "title",
+            heading = "heading",
+            preLinkText = "preLinkText",
+            linkText = "link",
+            postLinkText = "postLinkText",
+            para1 = Some("para1"),
+            para2 = "para2",
+            para3 = Some(Para3)
+          )
+        )
 
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 

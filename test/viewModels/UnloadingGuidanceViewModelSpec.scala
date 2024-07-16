@@ -16,63 +16,66 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 
-class UnloadingGuidanceViewModelSpec extends SpecBase {
+class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "UnloadingFindingsViewModel" - {
-    val viewModel  = UnloadingGuidanceViewModel
-    val testString = "testString"
+    val viewModel = new UnloadingGuidanceViewModelProvider
 
-    "return correct text for not newAuth" in {
-      viewModel.apply(newAuth = false, Some(true)).dynamicText(testString) mustBe s"unloadingGuidance.notNewAuth.$testString"
+    "return correct text for not newAuth title" in {
+      viewModel.apply(newAuth = false, Some(true)).title mustBe s"unloadingGuidance.notNewAuth.title"
+    }
+    "return correct text for not newAuth heading" in {
+      viewModel.apply(newAuth = false, Some(true)).heading mustBe s"unloadingGuidance.notNewAuth.heading"
     }
 
     "return correct text for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).dynamicText(testString) mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.$testString"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.title"
     }
 
     "return correct text for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).dynamicText(testString) mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.$testString"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
     }
 
     "return correct preLinkText for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).preLinkText() mustBe "unloadingGuidance.preLinkText"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).preLinkText mustBe "unloadingGuidance.preLinkText"
     }
 
     "return empty preLinkText for not newAuth" in {
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).preLinkText() mustBe ""
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).preLinkText() mustBe ""
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).preLinkText mustBe ""
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).preLinkText mustBe ""
     }
 
     "return empty preLinkText for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).preLinkText() mustBe ""
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).preLinkText mustBe ""
     }
 
     "return correct postLinkText for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).postLinkText() mustBe "unloadingGuidance.postLinkText"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).postLinkText mustBe "unloadingGuidance.postLinkText"
     }
 
     "return empty postLinkText for not newAuth" in {
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).postLinkText() mustBe ""
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).postLinkText() mustBe ""
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).postLinkText mustBe ""
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).postLinkText mustBe ""
     }
 
     "return empty postLinkText for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).postLinkText() mustBe ""
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).postLinkText mustBe ""
     }
 
     "return correct para2 for not newAuth" in {
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).para2() mustBe "unloadingGuidance.para2.notNewAuth"
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).para2() mustBe "unloadingGuidance.para2.notNewAuth"
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).para2 mustBe "unloadingGuidance.para2.notNewAuth"
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).para2 mustBe "unloadingGuidance.para2.notNewAuth"
     }
 
     "return empty para2 for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).para2() mustBe ""
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).para2 mustBe ""
     }
 
     "return correct para2 for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).para2() mustBe "unloadingGuidance.para2.newAuth.goodsTooLargeYes"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).para2 mustBe "unloadingGuidance.para2.newAuth.goodsTooLargeYes"
     }
 
   }
