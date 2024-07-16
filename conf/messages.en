@@ -1344,4 +1344,10 @@ goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too 
 sealsReplacedByCustomsAuthorityYesNo.title = Have any seals been replaced by a customs authority?
 sealsReplacedByCustomsAuthorityYesNo.heading = Have any seals been replaced by a customs authority?
 sealsReplacedByCustomsAuthorityYesNo.paragraph = This could have happened during routine checks or following an incident.
-sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals have been replaced by a customs authority
+
+largeUnsealedGoodsRecordDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
+largeUnsealedGoodsRecordDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
+largeUnsealedGoodsRecordDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
+largeUnsealedGoodsRecordDiscrepanciesYesNo.yes = Yes - this means you must select no to using the revised unloading procedure and report the discrepancies
+largeUnsealedGoodsRecordDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission
