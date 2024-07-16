@@ -18,46 +18,63 @@ package viewModels
 
 import javax.inject.Inject
 
-case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Option[Boolean]) {
+case class UnloadingGuidanceViewModel(title: String,
+                                      heading: String,
+                                      preLinkText: String,
+                                      postLinkText: String,
+                                      para1: Option[String],
+                                      para2: String,
+                                      para3: Option[Para3.type]
+) {
+  val prefix              = "unloadingGuidance"
+  val pdfLinkText: String = s"$prefix.pdf.link"
+}
 
-  val prefix = "unloadingGuidance"
-
-  def dynamicText(text: String): String = (newAuth, goodsTooLarge) match {
-    case (false, _)          => s"$prefix.notNewAuth.$text"
-    case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.$text"
-    case _                   => s"$prefix.newAuth.goodsTooLargeYes.$text"
-  }
-
-  def preLinkText(): String = (newAuth, goodsTooLarge) match {
-    case (true, Some(false)) => s"$prefix.preLinkText"
-    case _                   => ""
-  }
-
-  def postLinkText(): String = (newAuth, goodsTooLarge) match {
-    case (true, Some(false)) => s"$prefix.postLinkText"
-    case _                   => ""
-  }
-
-  def para1(): String = s"$prefix.para1"
-
-  def para2(): String = (newAuth, goodsTooLarge) match {
-    case (false, _)          => s"$prefix.para2.notNewAuth"
-    case (true, Some(false)) => ""
-    case _                   => s"$prefix.para2.newAuth.goodsTooLargeYes"
-  }
-
+case object Para3 {
+  val prefix                    = "unloadingGuidance"
   val para3preLinkText: String  = s"$prefix.para3.preLinkText"
   val para3linkText: String     = s"$prefix.para3.linkText"
   val para3postlinkText: String = s"$prefix.para3.postLinkText"
-  val pdfLinkText: String       = s"$prefix.pdf.link"
 }
 
 object UnloadingGuidanceViewModel {
 
   class UnloadingGuidanceViewModelProvider @Inject() () {
 
-    def apply(newAuth: Boolean, goodsTooLarge: Option[Boolean]): UnloadingGuidanceViewModel =
-      new UnloadingGuidanceViewModel(newAuth, goodsTooLarge)
-  }
+    def apply(newAuth: Boolean, goodsTooLarge: Option[Boolean]): UnloadingGuidanceViewModel = {
+      val prefix = "unloadingGuidance"
 
+      def dynamicText(text: String): String = (newAuth, goodsTooLarge) match {
+        case (false, _)          => s"$prefix.notNewAuth.$text"
+        case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.$text"
+        case _                   => s"$prefix.newAuth.goodsTooLargeYes.$text"
+      }
+      val title   = dynamicText("title")
+      val heading = dynamicText("heading")
+
+      def preLinkText: String = (newAuth, goodsTooLarge) match {
+        case (true, Some(false)) => s"$prefix.preLinkText"
+        case _                   => ""
+      }
+
+      def postLinkText(): String = (newAuth, goodsTooLarge) match {
+        case (true, Some(false)) => s"$prefix.postLinkText"
+        case _                   => ""
+      }
+
+      def para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(false))(s"$prefix.para1")
+
+      def para2: String = (newAuth, goodsTooLarge) match {
+        case (false, _)          => s"$prefix.para2.notNewAuth"
+        case (true, Some(false)) => ""
+        case _                   => s"$prefix.para2.newAuth.goodsTooLargeYes"
+      }
+
+      def para3: Option[Para3.type] = Option.when(newAuth && goodsTooLarge.contains(false))(Para3)
+
+      UnloadingGuidanceViewModel(title, heading, preLinkText, postLinkText(), para1, para2, para3)
+
+    }
+
+  }
 }

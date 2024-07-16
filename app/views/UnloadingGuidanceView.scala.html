@@ -29,31 +29,30 @@
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(viewModel.dynamicText("title")),
+    title = messages(viewModel.title),
     showBackLink = true
 ) {
 
-    @heading(messages(viewModel.dynamicText("heading")), caption = Some(messages("site.caption", mrn.toString)))
+    @heading(messages(viewModel.heading), caption = Some(messages("site.caption", mrn.toString)))
 
-    @if(viewModel.newAuth && viewModel.goodsTooLarge == Some(false) ){
-        <p class="govuk-body">@messages(viewModel.para1())</p>
-    }
+    @viewModel.para1.map { para1Value => <p class="govuk-body">messages(para1Value)</p> }
 
-    <p class="govuk-body">@messages(s"${viewModel.para2()}", mrn.toString)</p>
+    <p class="govuk-body">@messages(s"${viewModel.para2}", mrn.toString)</p>
 
-    <p class="govuk-body">@messages(viewModel.preLinkText())
+    <p class="govuk-body">@messages(viewModel.preLinkText))
         <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
                @messages(viewModel.pdfLinkText)
-        </a>@messages(viewModel.postLinkText())
+        </a>@messages(viewModel.postLinkText)
     </p>
 
-    @if(viewModel.newAuth && viewModel.goodsTooLarge == Some(false) ){
-        <p class="govuk-body">@messages(viewModel.para3preLinkText)
+    @viewModel.para3.map{ para3Value =>
+        <p class="govuk-body">@messages(para3Value.para3preLinkText)
             <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, messageId, mode)>
-                @messages(viewModel.para3linkText)
-            </a>@messages(viewModel.para3postlinkText)
+                @messages(para3Value.para3linkText)
+            </a>@messages(para3Value.para3postlinkText)
         </p>
     }
+
 
     @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
