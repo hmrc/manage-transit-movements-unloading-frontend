@@ -35,13 +35,13 @@
 
     @heading(messages(viewModel.heading), caption = Some(messages("site.caption", mrn.toString)))
 
-    @viewModel.para1.map { para1Value => <p class="govuk-body">messages(para1Value)</p> }
+    @viewModel.para1.map { para1Value => <p class="govuk-body">@messages(para1Value)</p> }
 
     <p class="govuk-body">@messages(s"${viewModel.para2}", mrn.toString)</p>
 
-    <p class="govuk-body">@messages(viewModel.preLinkText))
+    <p class="govuk-body">@messages(viewModel.preLinkText)
         <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
-               @messages(viewModel.pdfLinkText)
+               @messages(viewModel.linkText)
         </a>@messages(viewModel.postLinkText)
     </p>
 

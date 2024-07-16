@@ -107,6 +107,7 @@ unloadingGuidance.newAuth.goodsTooLargeYes.heading = Check the goods and note an
 unloadingGuidance.preLinkText = You do not have to physically unload the goods as you are using the revised unloading procedure. But you can
 unloadingGuidance.postLinkText = for reference.
 unloadingGuidance.pdf.link = Download the Unloading Permission PDF
+unloadingGuidance.pdf.midSentence.link = download the Unloading Permission PDF
 unloadingGuidance.para1 = As the goods are too large to unload, you can just perform visual checks.
 unloadingGuidance.para2.notNewAuth = When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) {0}. Take note of any discrepancies as you will need to include them in your unloading remarks.
 unloadingGuidance.para2.newAuth.goodsTooLargeYes = When checking the goods, make sure that the goods match the unloading permission for Movement Reference Number (MRN) {0}. Take note of any discrepancies as you will need to include them in your unloading remarks.

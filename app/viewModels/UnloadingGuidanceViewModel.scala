@@ -21,13 +21,13 @@ import javax.inject.Inject
 case class UnloadingGuidanceViewModel(title: String,
                                       heading: String,
                                       preLinkText: String,
+                                      linkText: String,
                                       postLinkText: String,
                                       para1: Option[String],
                                       para2: String,
                                       para3: Option[Para3.type]
 ) {
-  val prefix              = "unloadingGuidance"
-  val pdfLinkText: String = s"$prefix.pdf.link"
+  val prefix = "unloadingGuidance"
 }
 
 case object Para3 {
@@ -57,6 +57,11 @@ object UnloadingGuidanceViewModel {
         case _                   => ""
       }
 
+      def linkText(): String = (newAuth, goodsTooLarge) match {
+        case (true, Some(false)) => s"$prefix.pdf.midSentence.link"
+        case _                   => s"$prefix.pdf.link"
+      }
+
       def postLinkText(): String = (newAuth, goodsTooLarge) match {
         case (true, Some(false)) => s"$prefix.postLinkText"
         case _                   => ""
@@ -72,7 +77,7 @@ object UnloadingGuidanceViewModel {
 
       def para3: Option[Para3.type] = Option.when(newAuth && goodsTooLarge.contains(false))(Para3)
 
-      UnloadingGuidanceViewModel(title, heading, preLinkText, postLinkText(), para1, para2, para3)
+      UnloadingGuidanceViewModel(title, heading, preLinkText, linkText(), postLinkText(), para1, para2, para3)
 
     }
 
