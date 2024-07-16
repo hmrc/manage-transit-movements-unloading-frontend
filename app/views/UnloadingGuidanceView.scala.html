@@ -35,7 +35,9 @@
 
     @heading(messages(viewModel.heading()), caption = Some(messages("site.caption", mrn.toString)))
 
-    <p class="govuk-body">@messages(s"${viewModel.para1()}")</p>
+    @if(viewModel.newAuth && viewModel.goodsTooLarge == Some(false) ){
+        <p class="govuk-body">@messages(viewModel.para1)</p>
+    }
 
     <p class="govuk-body">@messages(s"${viewModel.para2()}", mrn.toString)</p>
 
