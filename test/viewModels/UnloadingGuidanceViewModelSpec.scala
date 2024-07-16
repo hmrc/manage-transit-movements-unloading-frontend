@@ -21,31 +21,19 @@ import base.SpecBase
 class UnloadingGuidanceViewModelSpec extends SpecBase {
 
   "UnloadingFindingsViewModel" - {
-    val viewModel = UnloadingGuidanceViewModel
+    val viewModel  = UnloadingGuidanceViewModel
+    val testString = "testString"
 
-    "return correct title for not newAuth" in {
-      viewModel.apply(newAuth = false, Some(true)).title() mustBe "unloadingGuidance.notNewAuth.title"
+    "return correct text for not newAuth" in {
+      viewModel.apply(newAuth = false, Some(true)).dynamicText(testString) mustBe s"unloadingGuidance.notNewAuth.$testString"
     }
 
-    "return correct title for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).title() mustBe "unloadingGuidance.newAuth.goodsTooLargeNo.title"
+    "return correct text for newAuth and goodsTooLarge = false" in {
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).dynamicText(testString) mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.$testString"
     }
 
-    "return correct title for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).title mustBe "unloadingGuidance.newAuth.goodsTooLargeYes.title"
-    }
-
-    "return correct heading for not newAuth" in {
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).heading() mustBe "unloadingGuidance.notNewAuth.heading"
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).heading() mustBe "unloadingGuidance.notNewAuth.heading"
-    }
-
-    "return correct heading for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).heading mustBe "unloadingGuidance.newAuth.goodsTooLargeNo.heading"
-    }
-
-    "return correct heading for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).heading() mustBe "unloadingGuidance.newAuth.goodsTooLargeYes.heading"
+    "return correct text for newAuth and goodsTooLarge = true" in {
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).dynamicText(testString) mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.$testString"
     }
 
     "return correct preLinkText for newAuth and goodsTooLarge = false" in {

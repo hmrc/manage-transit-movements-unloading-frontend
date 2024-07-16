@@ -22,16 +22,10 @@ case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Option[Bo
 
   val prefix = "unloadingGuidance"
 
-  def title(): String = (newAuth, goodsTooLarge) match {
-    case (false, _)          => s"$prefix.notNewAuth.title"
-    case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.title"
-    case _                   => s"$prefix.newAuth.goodsTooLargeYes.title"
-  }
-
-  def heading(): String = (newAuth, goodsTooLarge) match {
-    case (false, _)          => s"$prefix.notNewAuth.heading"
-    case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.heading"
-    case _                   => s"$prefix.newAuth.goodsTooLargeYes.heading"
+  def dynamicText(text: String): String = (newAuth, goodsTooLarge) match {
+    case (false, _)          => s"$prefix.notNewAuth.$text"
+    case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.$text"
+    case _                   => s"$prefix.newAuth.goodsTooLargeYes.$text"
   }
 
   def preLinkText(): String = (newAuth, goodsTooLarge) match {
@@ -44,12 +38,7 @@ case class UnloadingGuidanceViewModel(newAuth: Boolean, goodsTooLarge: Option[Bo
     case _                   => ""
   }
 
-  def para1(): String =
-    if (newAuth && goodsTooLarge.get) {
-      s"$prefix.para1"
-    } else {
-      ""
-    }
+  def para1(): String = s"$prefix.para1"
 
   def para2(): String = (newAuth, goodsTooLarge) match {
     case (false, _)          => s"$prefix.para2.notNewAuth"

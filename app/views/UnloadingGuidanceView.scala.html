@@ -29,11 +29,11 @@
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(viewModel.title()),
+    title = messages(viewModel.dynamicText("title")),
     showBackLink = true
 ) {
 
-    @heading(messages(viewModel.heading()), caption = Some(messages("site.caption", mrn.toString)))
+    @heading(messages(viewModel.dynamicText("heading")), caption = Some(messages("site.caption", mrn.toString)))
 
     @if(viewModel.newAuth && viewModel.goodsTooLarge == Some(false) ){
         <p class="govuk-body">@messages(viewModel.para1())</p>
