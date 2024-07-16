@@ -26,13 +26,14 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   private val viewModel =
     UnloadingGuidanceViewModel(
-      title = "title",
-      heading = "heading",
+      title = "Unload the goods and note any discrepancies",
+      heading = "Unload the goods and note any discrepancies",
       preLinkText = "preLinkText",
-      linkText = "link",
+      linkText = "select no to using the revised unloading procedure.",
       postLinkText = "postLinkText",
       para1 = Some("para1"),
-      para2 = "para2",
+      para2 =
+        "When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) 19GB1234567890123. Take note of any discrepancies as you will need to include them in your unloading remarks.",
       para3 = Some(Para3)
     )
 
@@ -47,7 +48,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(false, true)
+  behave like pageWithHeading()
 
   behave like pageWithContent(
     "p",
@@ -56,7 +57,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   behave like pageWithLink(
     id = "download",
-    expectedText = "Download the Unloading Permission PDF",
+    expectedText = "select no to using the revised unloading procedure.",
     expectedHref = s"http://localhost:9485/manage-transit-movements/${arrivalId.value}/unloading-permission-document/$messageId"
   )
 
