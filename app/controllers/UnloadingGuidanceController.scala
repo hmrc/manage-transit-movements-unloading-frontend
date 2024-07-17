@@ -53,14 +53,15 @@ class UnloadingGuidanceController @Inject() (
           val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
 
           val message: Future[Option[CC043CType]] = unloadingPermission.getIE043(arrivalId)
-          val messageId2                          = "12344565gf" //todo
 
           for {
             ctype43 <- message
             messageId = ctype43.map(_.messageSequence1.messagE_1Sequence2.messageIdentification)
           } yield messageId match {
-            case Some(mes) => Ok(view(request.userAnswers.mrn, arrivalId, mes, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
-            case None      => Ok(view(request.userAnswers.mrn, arrivalId, messageId2, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+            case Some(mes) =>
+              println(s"\n\n***$mes\n\n")
+              Ok(view(request.userAnswers.mrn, arrivalId, mes, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+            case None => Redirect(controllers.routes.ErrorController.technicalDifficulties())
           }
 
       }
