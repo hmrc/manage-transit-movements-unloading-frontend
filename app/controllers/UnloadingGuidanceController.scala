@@ -17,20 +17,18 @@
 package controllers
 
 import controllers.actions._
-import generated.CC043CType
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.P5.UnloadingPermissionMessageService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
