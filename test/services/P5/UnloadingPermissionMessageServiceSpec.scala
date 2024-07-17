@@ -462,6 +462,16 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         service.getIE044(arrivalId).futureValue.value mustBe a[CC044CType]
       }
 
+      "must return latest unloading remarks messageId" in {
+
+        val messageMetaData = Messages(List(unloadingPermission1))
+
+        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+        service.getMessageId(arrivalId, UnloadingPermission).futureValue.value mustBe a[String]
+
+      }
+
       "must return none when there is no unloading remarks message" in {
 
         val messageMetaData = Messages(List(arrivalNotification))

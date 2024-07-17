@@ -65,6 +65,12 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
   def getIE044(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC044CType]] =
     getMessage[CC044CType](arrivalId, UnloadingRemarks)
 
+  def getMessageId(
+    arrivalId: ArrivalId,
+    messageType: ArrivalMessageType
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[String]] =
+    getMessageMetaData(arrivalId, messageType).map(_.map(_.id))
+
   private def getMessage[T](
     arrivalId: ArrivalId,
     messageType: ArrivalMessageType

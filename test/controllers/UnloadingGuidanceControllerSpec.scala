@@ -20,15 +20,18 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import matchers.JsonMatchers
 import models.NormalMode
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.{Para3, UnloadingGuidanceViewModel}
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
+import viewModels.{Para3, UnloadingGuidanceViewModel}
 import views.html.UnloadingGuidanceView
+
+import scala.concurrent.Future
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
@@ -43,6 +46,8 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
       checkArrivalStatus()
+
+      when(mockUnloadingPermissionMessageService.getMessageId(any(), any())(any(), any())).thenReturn(Future.successful(Some(messageId)))
 
       setExistingUserAnswers(
         emptyUserAnswers

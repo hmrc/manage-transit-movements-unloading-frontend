@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import generated.CC043CType
+import models.P5.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,15 +53,13 @@ class UnloadingGuidanceController @Inject() (
           val newAuth: Boolean               = request.arg
           val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
 
-          val message: Future[Option[CC043CType]] = unloadingPermission.getIE043(arrivalId)
+          val message = unloadingPermission.getMessageId(arrivalId, UnloadingPermission)
 
           for {
-            ctype43 <- message
-            messageId = ctype43.map(_.messageSequence1.messagE_1Sequence2.messageIdentification)
+            messageId <- message
           } yield messageId match {
-            case Some(mes) =>
-              println(s"\n\n***$mes\n\n")
-              Ok(view(request.userAnswers.mrn, arrivalId, mes, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+            case Some(id) =>
+              Ok(view(request.userAnswers.mrn, arrivalId, id, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
             case None => Redirect(controllers.routes.ErrorController.technicalDifficulties())
           }
 
