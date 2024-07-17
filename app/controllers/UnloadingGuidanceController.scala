@@ -49,13 +49,20 @@ class UnloadingGuidanceController @Inject() (
       .andThen(getMandatoryPage(NewAuthYesNoPage))
       .async {
         implicit request =>
-          val message: Future[Option[CC043CType]] = unloadingPermission.getIE043(arrivalId)
-          val messageId                           = "12344565gf" //todo
-
-
           val newAuth: Boolean               = request.arg
           val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
-          Future.successful(Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge))))
+
+          val message: Future[Option[CC043CType]] = unloadingPermission.getIE043(arrivalId)
+          val messageId2                          = "12344565gf" //todo
+
+          for {
+            ctype43 <- message
+            messageId = ctype43.map(_.messageSequence1.messagE_1Sequence2.messageIdentification)
+          } yield messageId match {
+            case Some(mes) => Ok(view(request.userAnswers.mrn, arrivalId, mes, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+            case None      => Ok(view(request.userAnswers.mrn, arrivalId, messageId2, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+          }
+
       }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
