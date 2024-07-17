@@ -22,11 +22,11 @@ class NewAuthYesNoPageSpec extends PageBehaviours {
 
   "NewAuthYesNoPage" - {
 
-    beRetrievable[Boolean](NewAuthYesNoPage(messageId))
+    beRetrievable[Boolean](NewAuthYesNoPage)
 
-    beSettable[Boolean](NewAuthYesNoPage(messageId))
+    beSettable[Boolean](NewAuthYesNoPage)
 
-    beRemovable[Boolean](NewAuthYesNoPage(messageId))
+    beRemovable[Boolean](NewAuthYesNoPage)
 
     // TODO Add clean up test
   }

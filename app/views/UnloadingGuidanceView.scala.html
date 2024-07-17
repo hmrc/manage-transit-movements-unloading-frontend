@@ -47,14 +47,14 @@
 
     @viewModel.para3.map{ para3Value =>
         <p class="govuk-body">@messages(para3Value.para3preLinkText)
-            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, messageId, mode)>
+            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
                 @messages(para3Value.para3linkText)
             </a>@messages(para3Value.para3postlinkText)
         </p>
     }
 
 
-    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }

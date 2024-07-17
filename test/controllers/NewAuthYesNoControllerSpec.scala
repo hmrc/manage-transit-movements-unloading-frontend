@@ -38,7 +38,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val mode         = NormalMode
 
   private lazy val newAuthYesNoRoute =
-    controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, messageId, mode).url
+    controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -62,12 +62,12 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, messageId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage(messageId), true)
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, newAuthYesNoRoute)
@@ -81,7 +81,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, messageId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -116,7 +116,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val view = injector.instanceOf[NewAuthYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, messageId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

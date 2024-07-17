@@ -17,37 +17,48 @@
 package controllers
 
 import controllers.actions._
+import generated.CC043CType
 import models.{ArrivalId, NormalMode}
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.P5.UnloadingPermissionMessageService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
   view: UnloadingGuidanceView,
+  unloadingPermission: UnloadingPermissionMessageService,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   unloadingGuidanceViewModel: UnloadingGuidanceViewModelProvider
-) extends FrontendBaseController
+)(implicit executionContext: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     actions
       .requireData(arrivalId)
-      .andThen(getMandatoryPage(NewAuthYesNoPage(messageId))) {
+      .andThen(getMandatoryPage(NewAuthYesNoPage))
+      .async {
         implicit request =>
+          val message: Future[Option[CC043CType]] = unloadingPermission.getIE043(arrivalId)
+          val messageId                           = "12344565gf" //todo
+
+
           val newAuth: Boolean               = request.arg
-          val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage(messageId))
-          Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+          val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+          Future.successful(Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge))))
       }
 
-  def onSubmit(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.requireData(arrivalId) {
       _ => Redirect(routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
     }

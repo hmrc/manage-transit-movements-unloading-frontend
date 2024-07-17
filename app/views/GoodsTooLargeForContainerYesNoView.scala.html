@@ -27,7 +27,7 @@ errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId:String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("goodsTooLargeForContainerYesNo.title"),
@@ -36,7 +36,7 @@ button: Button
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.routes.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId, messageId, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),

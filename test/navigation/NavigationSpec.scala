@@ -37,27 +37,27 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "must go from GoodsTooLargeForContainerYesNoPage to UnloadingGuidancePage" in {
 
-        val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
+        val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
         navigator
-          .nextPage(GoodsTooLargeForContainerYesNoPage(messageId), mode, userAnswers)
-          .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id, messageId))
+          .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+          .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
       }
 
       "must go NewAuthYesNoPage" - {
         "to GoodsTooLargeForContainerYesNoPage when answer is Yes" in {
 
-          val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage(messageId), true)
+          val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
           navigator
-            .nextPage(NewAuthYesNoPage(messageId), mode, userAnswers)
-            .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, messageId, mode))
+            .nextPage(NewAuthYesNoPage, mode, userAnswers)
+            .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
         }
 
         "to UnloadingGuidancePage when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
           navigator
-            .nextPage(NewAuthYesNoPage(messageId), mode, userAnswers)
-            .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id, messageId))
+            .nextPage(NewAuthYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
         }
       }
 

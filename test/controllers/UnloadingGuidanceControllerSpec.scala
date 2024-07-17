@@ -32,7 +32,7 @@ import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
-  lazy val unloadingGuidanceRoute: String               = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+  lazy val unloadingGuidanceRoute: String               = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
   val mockViewModel: UnloadingGuidanceViewModelProvider = mock[UnloadingGuidanceViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -46,8 +46,8 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       setExistingUserAnswers(
         emptyUserAnswers
-          .setValue(NewAuthYesNoPage(messageId), false)
-          .setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
       )
       when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
         .thenReturn(
@@ -96,8 +96,8 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       setExistingUserAnswers(
         emptyUserAnswers
-          .setValue(NewAuthYesNoPage(messageId), false)
-          .setValue(GoodsTooLargeForContainerYesNoPage(messageId), true)
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
       )
       val request = FakeRequest(POST, unloadingGuidanceRoute)
 

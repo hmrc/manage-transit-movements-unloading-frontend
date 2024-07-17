@@ -44,27 +44,27 @@ class GoodsTooLargeForContainerYesNoController @Inject() (
 
   private val form = formProvider("goodsTooLargeForContainerYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage(messageId)) match {
+      val preparedForm = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, messageId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, messageId: String, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, messageId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsTooLargeForContainerYesNoPage(messageId), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsTooLargeForContainerYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GoodsTooLargeForContainerYesNoPage(messageId), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(GoodsTooLargeForContainerYesNoPage, mode, updatedAnswers))
         )
   }
 }

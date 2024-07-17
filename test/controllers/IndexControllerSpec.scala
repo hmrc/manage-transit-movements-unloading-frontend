@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val nextPage = controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+  private lazy val nextPage = controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
   private val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
@@ -68,7 +68,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
     "unloadingRemarks" - {
       "must redirect to onward route for a GET when there are no UserAnswers and prepopulated data" in {
-        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId, messageId).url)
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
 
         val unloadingAction: FakeUnloadingPermissionAction = new FakeUnloadingPermissionAction(
           ArrivalId("AB123"),
@@ -98,7 +98,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
       "must redirect to onward route when there are UserAnswers" in {
 
-        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId, messageId).url)
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
 
         val unloadingAction: FakeUnloadingPermissionAction = new FakeUnloadingPermissionAction(
           ArrivalId("AB123"),

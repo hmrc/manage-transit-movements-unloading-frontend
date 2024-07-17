@@ -42,7 +42,7 @@ class IndexController @Inject() (
     with I18nSupport
     with Logging {
 
-  def unloadingRemarks(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
+  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
     implicit request =>
       for {
         userAnswers <- sessionRepository.get(arrivalId, request.eoriNumber).flatMap {
@@ -60,6 +60,6 @@ class IndexController @Inject() (
             dataTransformer.transform(userAnswers)
         }
         _ <- sessionRepository.set(userAnswers)
-      } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId))
+      } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
   }
 }

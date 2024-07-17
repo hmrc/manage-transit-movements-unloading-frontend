@@ -10,7 +10,7 @@
 
 ->         /hmrc-frontend                                                                                            hmrcfrontend.Routes
 
-GET        /:arrivalId/unloading-remarks/:messageId                                                                  controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId, messageId: String)
+GET        /:arrivalId/unloading-remarks                                                                             controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId)
 
 GET        /assets/*file                                                                                             controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -30,8 +30,8 @@ GET        /:arrivalId/keep-alive                                               
 
 GET        /:arrivalId/cannot-send-unloading-remarks                                                                 controllers.CannotSendUnloadingRemarksController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/unload-goods/:messageId                                                                       controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
-POST       /:arrivalId/unload-goods/:messageId                                                                       controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId, messageId: String)
+GET        /:arrivalId/unload-goods                                                                                  controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/unload-goods                                                                                  controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/goods-unloaded-date                                                                           controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-unloaded-date                                                                           controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -92,14 +92,14 @@ POST       /:arrivalId/add-report                                               
 GET        /:arrivalId/change-add-report                                                                             controllers.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-add-report                                                                             controllers.DoYouHaveAnythingElseToReportYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/revised-unloading-procedure/:messageId                                                        controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, messageId:String, mode: Mode = NormalMode)
-POST       /:arrivalId/revised-unloading-procedure/:messageId                                                        controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId,  messageId:String, mode: Mode = NormalMode)
-GET        /:arrivalId/change-revised-unloading-procedure/:messageId                                                 controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, messageId:String, mode: Mode = CheckMode)
-POST       /:arrivalId/change-revised-unloading-procedure/:messageId                                                 controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId,  messageId:String, mode: Mode = CheckMode)
+GET        /:arrivalId/revised-unloading-procedure                                                                   controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/revised-unloading-procedure                                                                   controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-revised-unloading-procedure                                                            controllers.NewAuthYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-revised-unloading-procedure                                                            controllers.NewAuthYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/goods-too-large-for-container/:messageId                                                      controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, messageId:String, mode: Mode = NormalMode)
-POST       /:arrivalId/goods-too-large-for-container/:messageId                                                      controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, messageId:String, mode: Mode = NormalMode)
-GET        /:arrivalId/change-goods-too-large-for-container/:messageId                                               controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, messageId:String, mode: Mode = CheckMode)
-POST       /:arrivalId/change-goods-too-large-for-container/:messageId                                               controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, messageId:String, mode: Mode = CheckMode)
+GET        /:arrivalId/goods-too-large-for-container                                                                 controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/goods-too-large-for-container                                                                 controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-goods-too-large-for-container                                                          controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-goods-too-large-for-container                                                          controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 
