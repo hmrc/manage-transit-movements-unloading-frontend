@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
-import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
+import models.{ArrivalId, MovementReferenceNumber, NormalMode, UserAnswers}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -60,6 +60,6 @@ class IndexController @Inject() (
             dataTransformer.transform(userAnswers)
         }
         _ <- sessionRepository.set(userAnswers)
-      } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+      } yield Redirect(controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode))
   }
 }

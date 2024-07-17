@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.actions.FakeUnloadingPermissionAction
 import generators.Generators
-import models.{ArrivalId, UserAnswers}
+import models.{ArrivalId, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val nextPage = controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  private lazy val nextPage = controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode).url
 
   private val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
@@ -77,7 +77,6 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(None)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
         when(mockUnloadingPermissionActionProvider.apply(any())) thenReturn unloadingAction
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
