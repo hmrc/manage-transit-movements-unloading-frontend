@@ -331,9 +331,6 @@ addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepan
 addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit and unloading permission?
 addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
-addTransitUnloadingPermissionDiscrepanciesYesNo.checkYourAnswers.change.hidden = if there were any discrepancies between the transit movement and unloading permission
-addTransitUnloadingPermissionDiscrepanciesYesNo.checkYourAnswers = Were there any discrepancies between the transit movement and unloading permission?
-
 
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
@@ -378,13 +375,6 @@ otherThingsToReport.oldAuth.error.invalid = Your report must only include letter
 otherThingsToReport.newAuthAndSealsReplaced.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
-
-
-otherThingsToReport.checkYourAnswers.change.hidden = what you want to report
-otherThingsToReport.checkYourAnswers = What do you want to report?
-
-otherThingsToReportYesNo.checkYourAnswers.change.hidden = if you have anything to report
-otherThingsToReportYesNo.checkYourAnswers = Do you have anything else to report?
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
