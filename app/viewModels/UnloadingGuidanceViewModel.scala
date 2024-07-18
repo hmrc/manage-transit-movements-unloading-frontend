@@ -52,20 +52,14 @@ object UnloadingGuidanceViewModel {
       val title   = dynamicText("title")
       val heading = dynamicText("heading")
 
-      def preLinkText: String = (newAuth, goodsTooLarge) match {
-        case (true, Some(false)) => s"$prefix.preLinkText"
-        case _                   => ""
-      }
+      def preLinkText: String = s"$prefix.preLinkText"
 
       def linkText(): String = (newAuth, goodsTooLarge) match {
         case (true, Some(false)) => s"$prefix.pdf.midSentence.link"
         case _                   => s"$prefix.pdf.link"
       }
 
-      def postLinkText(): String = (newAuth, goodsTooLarge) match {
-        case (true, Some(false)) => s"$prefix.postLinkText"
-        case _                   => ""
-      }
+      def postLinkText(): String = s"$prefix.postLinkText"
 
       def para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(false))(s"$prefix.para1")
 
