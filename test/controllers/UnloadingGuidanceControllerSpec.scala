@@ -20,19 +20,53 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import matchers.JsonMatchers
 import models.NormalMode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
+import viewModels.{Para3, UnloadingGuidanceViewModel}
 import views.html.UnloadingGuidanceView
+
+import scala.concurrent.Future
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
-  private val unloadingGuidanceRoute = routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+  lazy val unloadingGuidanceRoute: String               = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  val mockViewModel: UnloadingGuidanceViewModelProvider = mock[UnloadingGuidanceViewModelProvider]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[UnloadingGuidanceViewModelProvider].toInstance(mockViewModel))
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
       checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockUnloadingPermissionMessageService.getMessageId(any(), any())(any(), any())).thenReturn(Future.successful(Some(messageId)))
+
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+      )
+      when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
+        .thenReturn(
+          UnloadingGuidanceViewModel(
+            title = "title",
+            heading = "heading",
+            preLinkText = "preLinkText",
+            linkText = "link",
+            postLinkText = "postLinkText",
+            para1 = Some("para1"),
+            para2 = Some("para2"),
+            para3 = Some(Para3.apply("unloadingGuidance"))
+          )
+        )
 
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 
@@ -42,7 +76,10 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, messageId)(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))(
+        request,
+        messages
+      ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -62,8 +99,11 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     "must redirect to unloading type for a POST" in {
       checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers)
-
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+      )
       val request = FakeRequest(POST, unloadingGuidanceRoute)
 
       val result = route(app, request).value

@@ -16,6 +16,7 @@
 
 @import views.html.components.{Button, Heading}
 @import config.FrontendAppConfig
+@import viewModels.UnloadingGuidanceViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -25,24 +26,36 @@
     config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("unloadingGuidance.title"),
+    title = messages(viewModel.title),
     showBackLink = true
 ) {
 
-    @heading(messages("unloadingGuidance.heading"), caption = Some(messages("site.caption", mrn.toString)))
+    @heading(messages(viewModel.heading), caption = Some(messages("site.caption", mrn.toString)))
 
-    <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
+    @viewModel.para1.map { para1Value => <p class="govuk-body">@messages(para1Value)</p> }
 
-    <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
+    @viewModel.para2.map { para2Value => <p class="govuk-body">@messages(para2Value, mrn.toString)</p> }
+
+
+    <p class="govuk-body">@messages(viewModel.preLinkText)
         <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
-            @messages("unloadingGuidance.pdf.link")
-        </a>.
+               @messages(viewModel.linkText)
+        </a>@messages(viewModel.postLinkText)
     </p>
 
-    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId, messageId), Symbol("autoComplete") -> "off") {
+    @viewModel.para3.map{ para3Value =>
+        <p class="govuk-body">@messages(para3Value.preLinkText)
+            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
+                @messages(para3Value.linkText)
+            </a>@messages(para3Value.postLinkText)
+        </p>
+    }
+
+
+    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }
