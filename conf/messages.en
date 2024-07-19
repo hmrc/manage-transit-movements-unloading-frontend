@@ -374,6 +374,7 @@ otherThingsToReport.newAuth.error.length = The identification numbers must be 51
 otherThingsToReport.oldAuth.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 otherThingsToReport.newAuthAndSealsReplaced.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
@@ -1335,16 +1336,22 @@ newAuthYesNo.bullet1 = all items have the same office of destination
 newAuthYesNo.bullet2 = there are no broken seals
 newAuthYesNo.bullet3 = there are no discrepancies between the transit movement and unloading permission
 newAuthYesNo.error.required = Select yes if you want to use the revised unloading procedure
+newAuthYesNo.checkYourAnswers.change.hidden = if you want to use the revised unloading procedure
+newAuthYesNo.checkYourAnswers = Do you want to use the revised unloading procedure?
 
 goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
 goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?
 goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
 goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
+goodsTooLargeForContainerYesNo.checkYourAnswers.change.hidden = if the goods are too large to fit into a container
+goodsTooLargeForContainerYesNo.checkYourAnswers = Are the goods too large to fit into a container?
 
 sealsReplacedByCustomsAuthorityYesNo.title = Have any seals been replaced by a customs authority?
 sealsReplacedByCustomsAuthorityYesNo.heading = Have any seals been replaced by a customs authority?
 sealsReplacedByCustomsAuthorityYesNo.paragraph = This could have happened during routine checks or following an incident.
 sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals have been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers.change.hidden = if any seals been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers = Have any seals been replaced by a customs authority?
 
 largeUnsealedGoodsRecordDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
 largeUnsealedGoodsRecordDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
