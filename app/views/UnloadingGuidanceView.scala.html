@@ -47,10 +47,10 @@
     </p>
 
     @viewModel.para3.map{ para3Value =>
-        <p class="govuk-body">@messages(para3Value.para3preLinkText)
+        <p class="govuk-body">@messages(para3Value.preLinkText)
             <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
-                @messages(para3Value.para3linkText)
-            </a>@messages(para3Value.para3postlinkText)
+                @messages(para3Value.linkText)
+            </a>@messages(para3Value.postLinkText)
         </p>
     }
 

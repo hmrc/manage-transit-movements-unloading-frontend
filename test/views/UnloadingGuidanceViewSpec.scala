@@ -35,7 +35,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
       para2 = Some(
         "When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) 19GB1234567890123. Take note of any discrepancies as you will need to include them in your unloading remarks."
       ),
-      para3 = Some(Para3)
+      para3 = Some(Para3.apply("unloadingGuidance"))
     )
 
   override def view: HtmlFormat.Appendable =

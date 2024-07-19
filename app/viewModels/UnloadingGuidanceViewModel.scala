@@ -25,16 +25,15 @@ case class UnloadingGuidanceViewModel(title: String,
                                       postLinkText: String,
                                       para1: Option[String],
                                       para2: Option[String],
-                                      para3: Option[Para3.type]
+                                      para3: Option[Para3]
 ) {
   val prefix = "unloadingGuidance"
 }
 
-case object Para3 {
-  val prefix                    = "unloadingGuidance"
-  val para3preLinkText: String  = s"$prefix.para3.preLinkText"
-  val para3linkText: String     = s"$prefix.para3.linkText"
-  val para3postlinkText: String = s"$prefix.para3.postLinkText"
+case class Para3(preLinkText: String, linkText: String, postLinkText: String)
+
+object Para3 {
+  def apply(prefix: String): Para3 = new Para3(s"$prefix.para3.preLinkText", s"$prefix.para3.preLinkText", s"$prefix.para3.preLinkText")
 }
 
 object UnloadingGuidanceViewModel {
@@ -52,26 +51,26 @@ object UnloadingGuidanceViewModel {
       val title   = dynamicText("title")
       val heading = dynamicText("heading")
 
-      def preLinkText: String = s"$prefix.preLinkText"
+      val preLinkText: String = s"$prefix.preLinkText"
 
-      def linkText(): String = (newAuth, goodsTooLarge) match {
+      val linkText: String = (newAuth, goodsTooLarge) match {
         case (true, Some(false)) => s"$prefix.pdf.midSentence.link"
         case _                   => s"$prefix.pdf.link"
       }
 
-      def postLinkText(): String = s"$prefix.postLinkText"
+      val postLinkText: String = s"$prefix.postLinkText"
 
-      def para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(false))(s"$prefix.para1")
+      val para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(false))(s"$prefix.para1")
 
-      def para2: Option[String] = (newAuth, goodsTooLarge) match {
+      val para2: Option[String] = (newAuth, goodsTooLarge) match {
         case (false, _)          => Some(s"$prefix.para2.notNewAuth")
         case (true, Some(false)) => None
         case _                   => Some(s"$prefix.para2.newAuth.goodsTooLargeYes")
       }
 
-      def para3: Option[Para3.type] = Option.when(newAuth && goodsTooLarge.contains(false))(Para3)
+      val para3: Option[Para3] = Option.when(newAuth && goodsTooLarge.contains(false))(Para3(prefix))
 
-      UnloadingGuidanceViewModel(title, heading, preLinkText, linkText(), postLinkText(), para1, para2, para3)
+      UnloadingGuidanceViewModel(title, heading, preLinkText, linkText, postLinkText, para1, para2, para3)
 
     }
 

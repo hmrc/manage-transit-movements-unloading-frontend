@@ -64,7 +64,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
             postLinkText = "postLinkText",
             para1 = Some("para1"),
             para2 = Some("para2"),
-            para3 = Some(Para3)
+            para3 = Some(Para3.apply("unloadingGuidance"))
           )
         )
 
