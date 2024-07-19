@@ -37,7 +37,7 @@
 
     @viewModel.para1.map { para1Value => <p class="govuk-body">@messages(para1Value)</p> }
 
-    @viewModel.para2.map { para2Value => <p class="govuk-body">@messages(para2Value)</p> }
+    @viewModel.para2.map { para2Value => <p class="govuk-body">@messages(para2Value, mrn.toString)</p> }
 
 
     <p class="govuk-body">@messages(viewModel.preLinkText)
