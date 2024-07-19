@@ -24,7 +24,7 @@ case class UnloadingGuidanceViewModel(title: String,
                                       linkText: String,
                                       postLinkText: String,
                                       para1: Option[String],
-                                      para2: String,
+                                      para2: Option[String],
                                       para3: Option[Para3.type]
 ) {
   val prefix = "unloadingGuidance"
@@ -63,10 +63,10 @@ object UnloadingGuidanceViewModel {
 
       def para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(false))(s"$prefix.para1")
 
-      def para2: String = (newAuth, goodsTooLarge) match {
-        case (false, _)          => s"$prefix.para2.notNewAuth"
-        case (true, Some(false)) => ""
-        case _                   => s"$prefix.para2.newAuth.goodsTooLargeYes"
+      def para2: Option[String] = (newAuth, goodsTooLarge) match {
+        case (false, _)          => Some(s"$prefix.para2.notNewAuth")
+        case (true, Some(false)) => None
+        case _                   => Some(s"$prefix.para2.newAuth.goodsTooLargeYes")
       }
 
       def para3: Option[Para3.type] = Option.when(newAuth && goodsTooLarge.contains(false))(Para3)

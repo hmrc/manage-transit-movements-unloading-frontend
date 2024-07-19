@@ -51,16 +51,12 @@ class UnloadingGuidanceController @Inject() (
           val newAuth: Boolean               = request.arg
           val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
 
-          val message = unloadingPermission.getMessageId(arrivalId, UnloadingPermission)
-
-          for {
-            messageId <- message
-          } yield messageId match {
-            case Some(id) =>
-              Ok(view(request.userAnswers.mrn, arrivalId, id, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
-            case None => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+          unloadingPermission.getMessageId(arrivalId, UnloadingPermission).map {
+            case Some(messageId) =>
+              Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+            case None =>
+              Redirect(controllers.routes.ErrorController.technicalDifficulties())
           }
-
       }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =

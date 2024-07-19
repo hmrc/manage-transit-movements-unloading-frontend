@@ -32,8 +32,9 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
       linkText = "select no to using the revised unloading procedure.",
       postLinkText = "postLinkText",
       para1 = Some("para1"),
-      para2 =
-        "When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) 19GB1234567890123. Take note of any discrepancies as you will need to include them in your unloading remarks.",
+      para2 = Some(
+        "When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) 19GB1234567890123. Take note of any discrepancies as you will need to include them in your unloading remarks."
+      ),
       para3 = Some(Para3)
     )
 

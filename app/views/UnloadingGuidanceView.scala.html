@@ -37,7 +37,8 @@
 
     @viewModel.para1.map { para1Value => <p class="govuk-body">@messages(para1Value)</p> }
 
-    <p class="govuk-body">@messages(s"${viewModel.para2}", mrn.toString)</p>
+    @viewModel.para2.map { para2Value => <p class="govuk-body">@messages(para2Value)</p> }
+
 
     <p class="govuk-body">@messages(viewModel.preLinkText)
         <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>

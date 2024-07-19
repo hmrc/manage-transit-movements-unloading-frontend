@@ -48,16 +48,16 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "return correct para2 for not newAuth" in {
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).para2 mustBe "unloadingGuidance.para2.notNewAuth"
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).para2 mustBe "unloadingGuidance.para2.notNewAuth"
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).para2 mustBe Some("unloadingGuidance.para2.notNewAuth")
+      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).para2 mustBe Some("unloadingGuidance.para2.notNewAuth")
     }
 
-    "return empty para2 for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).para2 mustBe ""
+    "return None when newAuth and goodsTooLarge = false" in {
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).para2 mustBe None
     }
 
     "return correct para2 for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).para2 mustBe "unloadingGuidance.para2.newAuth.goodsTooLargeYes"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).para2 mustBe Some("unloadingGuidance.para2.newAuth.goodsTooLargeYes")
     }
 
   }
