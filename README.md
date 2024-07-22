@@ -21,7 +21,7 @@ To toggle between the Phase 5 transition and post-transition modes we have defin
 #### Transition
 <pre>
 sm2 --start CTC_TRADERS_P5_ACCEPTANCE_TRANSITION
-sm2 --stop MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND
+sm2 --stop MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND_TRANSITION
 sbt -Dplay.additional.module=config.TransitionModule run
 </pre>
 
