@@ -26,7 +26,7 @@ sbt -Dplay.additional.module=config.TransitionModule run
 </pre>
 
 #### Final
-Phase 5 final introduces multi-house consingment allowing traders to enter multiple house consignments instead of a singular one.
+Phase 5 final introduces multiple house consignments. This provides users with functionalities that are not available during the transition period, like the ability to add and remove entire house consignments.
 <pre>
 sm2 --start CTC_TRADERS_P5_ACCEPTANCE
 sm2 --stop MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND
