@@ -59,9 +59,9 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
           UnloadingGuidanceViewModel(
             title = "title",
             heading = "heading",
-            preLinkText = "preLinkText",
+            preLinkText = Some("preLinkText"),
             linkText = "link",
-            postLinkText = "postLinkText",
+            postLinkText = Some("postLinkText"),
             para1 = Some("para1"),
             para2 = Some("para2"),
             para3 = Some(Para3.apply("unloadingGuidance"))

@@ -20,9 +20,9 @@ import javax.inject.Inject
 
 case class UnloadingGuidanceViewModel(title: String,
                                       heading: String,
-                                      preLinkText: String,
+                                      preLinkText: Option[String],
                                       linkText: String,
-                                      postLinkText: String,
+                                      postLinkText: Option[String],
                                       para1: Option[String],
                                       para2: Option[String],
                                       para3: Option[Para3]
@@ -51,16 +51,22 @@ object UnloadingGuidanceViewModel {
       val title   = dynamicText("title")
       val heading = dynamicText("heading")
 
-      val preLinkText: String = s"$prefix.preLinkText"
+      val preLinkText: Option[String] = (newAuth, goodsTooLarge) match {
+        case (true, Some(false)) => Some(s"$prefix.preLinkText")
+        case _                   => None
+      }
 
       val linkText: String = (newAuth, goodsTooLarge) match {
         case (true, Some(false)) => s"$prefix.pdf.midSentence.link"
         case _                   => s"$prefix.pdf.link"
       }
 
-      val postLinkText: String = s"$prefix.postLinkText"
+      val postLinkText: Option[String] = (newAuth, goodsTooLarge) match {
+        case (true, Some(false)) => Some(s"$prefix.postLinkText")
+        case _                   => None
+      }
 
-      val para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(false))(s"$prefix.para1")
+      val para1: Option[String] = Option.when(newAuth && goodsTooLarge.contains(true))(s"$prefix.para1")
 
       val para2: Option[String] = (newAuth, goodsTooLarge) match {
         case (false, _)          => Some(s"$prefix.para2.notNewAuth")

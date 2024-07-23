@@ -28,9 +28,9 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
     UnloadingGuidanceViewModel(
       title = "Unload the goods and note any discrepancies",
       heading = "Unload the goods and note any discrepancies",
-      preLinkText = "preLinkText",
+      preLinkText = Some("preLinkText"),
       linkText = "select no to using the revised unloading procedure.",
-      postLinkText = "postLinkText",
+      postLinkText = Some("postLinkText"),
       para1 = Some("para1"),
       para2 = Some(
         "When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) 19GB1234567890123. Take note of any discrepancies as you will need to include them in your unloading remarks."

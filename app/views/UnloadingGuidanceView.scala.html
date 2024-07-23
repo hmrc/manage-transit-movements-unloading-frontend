@@ -40,11 +40,11 @@
     @viewModel.para2.map { para2Value => <p class="govuk-body">@messages(para2Value, mrn.toString)</p> }
 
 
-    <p class="govuk-body">@messages(viewModel.preLinkText)
-        <a id="download" class="govuk-link" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
-               @messages(viewModel.linkText)
-        </a>@messages(viewModel.postLinkText)
-    </p>
+        @viewModel.preLinkText.map { preLinkText => <p class="govuk-body">@messages(preLinkText)}
+        <a id="download" class="govuk-link govuk-body" href=@config.unloadingPermissionDocumentUrl(arrivalId, messageId)>
+            @messages(viewModel.linkText) </a>
+        @viewModel.postLinkText.map { postLinkText =>  @messages(postLinkText) }
+        </p>
 
     @viewModel.para3.map{ para3Value =>
         <p class="govuk-body">@messages(para3Value.preLinkText)

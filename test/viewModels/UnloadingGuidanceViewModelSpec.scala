@@ -40,11 +40,11 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "return correct preLinkText for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).preLinkText mustBe "unloadingGuidance.preLinkText"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).preLinkText mustBe Some("unloadingGuidance.preLinkText")
     }
 
     "return correct postLinkText for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).postLinkText mustBe "unloadingGuidance.postLinkText"
+      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).postLinkText mustBe Some("unloadingGuidance.postLinkText")
     }
 
     "return correct para2 for not newAuth" in {
