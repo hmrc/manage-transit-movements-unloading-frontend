@@ -33,7 +33,7 @@ case class UnloadingGuidanceViewModel(title: String,
 case class Para3(preLinkText: String, linkText: String, postLinkText: String)
 
 object Para3 {
-  def apply(prefix: String): Para3 = new Para3(s"$prefix.para3.preLinkText", s"$prefix.para3.preLinkText", s"$prefix.para3.preLinkText")
+  def apply(prefix: String): Para3 = new Para3(s"$prefix.para3.preLinkText", s"$prefix.para3.linkText", s"$prefix.para3.postLinkText")
 }
 
 object UnloadingGuidanceViewModel {
