@@ -238,6 +238,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .map(_.head)
   }
 
+  def getDocumentTypeExcise(docType: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocTypeExcise] = {
+    val url = url"${config.referenceDataUrl}/lists/DocumentTypeExcise"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> docType))
+      .setHeader(version2Header)
+      .execute[NonEmptySet[DocTypeExcise]]
+      .map(_.head)
+  }
+
   private def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
     getDocuments(dt, path, Seq("data.code" -> typeValue)).map(_.head)
 

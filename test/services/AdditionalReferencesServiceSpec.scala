@@ -19,9 +19,11 @@ package services
 import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import models.SelectableList
-import models.reference.AdditionalReferenceType
+import models.reference.{AdditionalReferenceType, DocTypeExcise}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -41,6 +43,9 @@ class AdditionalReferencesServiceSpec extends SpecBase with BeforeAndAfterEach w
     AdditionalReferenceType("Y016", "Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009")
   private val additionalReferences = NonEmptySet.of(additionalReference2, additionalReference1, additionalReference3)
 
+  private val docTypeExcise =
+    DocTypeExcise(activeFrom = "2024-01-01", code = "C651", state = "valid", description = "AAD - Administrative Accompanying Document (EMCS)")
+
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
     super.beforeEach()
@@ -59,6 +64,31 @@ class AdditionalReferencesServiceSpec extends SpecBase with BeforeAndAfterEach w
 
         verify(mockRefDataConnector).getAdditionalReferences()(any(), any())
       }
+    }
+
+    "isDocumentTypeExcise should" - {
+      "return true when docTypeExcise" in {
+
+        when(mockRefDataConnector.getDocumentTypeExcise(any())(any(), any()))
+          .thenReturn(Future.successful(docTypeExcise))
+
+        service.isDocumentTypeExcise("C651").futureValue mustBe
+          true
+
+        verify(mockRefDataConnector).getDocumentTypeExcise(any())(any(), any())
+      }
+
+      "return false when it is not a docTypeExcise" in {
+        val docType = "C656"
+
+        when(mockRefDataConnector.getDocumentTypeExcise(any())(any(), any())).thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+
+        service.isDocumentTypeExcise(docType).futureValue mustBe
+          false
+
+        verify(mockRefDataConnector).getDocumentTypeExcise(ArgumentMatchers.eq(docType))(any(), any())
+      }
+
     }
   }
 }
