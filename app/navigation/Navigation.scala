@@ -35,6 +35,8 @@ class Navigation extends Navigator {
     case UnloadingCommentsPage                               => ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua)
+    case GoodsTooLargeForContainerYesNoPage                  => ua => Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -45,6 +47,14 @@ class Navigation extends Navigator {
     case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
+
+  private def newAuthNavigation(ua: UserAnswers): Option[Call] =
+    ua.get(NewAuthYesNoPage) match {
+      case Some(true) =>
+        Some(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode))
+      case _ =>
+        Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
+    }
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
     StateOfSeals(ua).value match {
