@@ -18,6 +18,7 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
+import models.UnloadingSubmissionValues._
 import models.{ArrivalId, DocType, EoriNumber, Index, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
@@ -109,10 +110,10 @@ class SubmissionService @Inject() (
 
     def generateUnloadingRemarkForRevisedProcedureYes: Reads[UnloadingRemarkType] =
       UnloadingRemarkType(
-        conform = Number1,
-        unloadingCompletion = Number1,
+        conform = Conform,
+        unloadingCompletion = FullyUnloaded,
         unloadingDate = dateTimeService.currentDateTime.toLocalDate,
-        stateOfSeals = Some(Number1),
+        stateOfSeals = Some(PresentAndNotDamaged),
         unloadingRemark = None
       )
 
