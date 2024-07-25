@@ -54,6 +54,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
           .setValue(NewAuthYesNoPage, false)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
       )
+
       when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
         .thenReturn(
           UnloadingGuidanceViewModel(
@@ -96,21 +97,81 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to unloading type for a POST" in {
-      checkArrivalStatus()
+    "must redirect to" - {
+      "unloading type page" - {
+        "when newAuth is false" in {
+          checkArrivalStatus()
 
-      setExistingUserAnswers(
-        emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(GoodsTooLargeForContainerYesNoPage, true)
-      )
-      val request = FakeRequest(POST, unloadingGuidanceRoute)
+          setExistingUserAnswers(
+            emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
+          )
 
-      val result = route(app, request).value
+          val request = FakeRequest(POST, unloadingGuidanceRoute)
 
-      status(result) mustBe SEE_OTHER
+          val result = route(app, request).value
 
-      redirectLocation(result).value mustBe routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url
+          status(result) mustBe SEE_OTHER
+
+          redirectLocation(result).value mustBe routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url
+        }
+      }
+      "large unsealed goods record discrepancies yes no page" - {
+        "when newAuth is true and goodsTooLarge is true" in {
+          checkArrivalStatus()
+
+          setExistingUserAnswers(
+            emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          )
+
+          val request = FakeRequest(POST, unloadingGuidanceRoute)
+
+          val result = route(app, request).value
+
+          status(result) mustBe SEE_OTHER
+
+          redirectLocation(result).value mustBe routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode).url
+        }
+      }
+      "seals replaced by customs authority yes no page" - {
+        "when newAuth is true and goodsTooLarge is false" in {
+          checkArrivalStatus()
+
+          setExistingUserAnswers(
+            emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, false)
+          )
+
+          val request = FakeRequest(POST, unloadingGuidanceRoute)
+
+          val result = route(app, request).value
+
+          status(result) mustBe SEE_OTHER
+
+          redirectLocation(result).value mustBe routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode).url
+        }
+      }
+      "goods too large for container yes no page" - {
+        "when newAuth is true and goodsTooLarge is not answered" in {
+          checkArrivalStatus()
+
+          setExistingUserAnswers(
+            emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+          )
+
+          val request = FakeRequest(POST, unloadingGuidanceRoute)
+
+          val result = route(app, request).value
+
+          status(result) mustBe SEE_OTHER
+
+          redirectLocation(result).value mustBe routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode).url
+        }
+      }
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
