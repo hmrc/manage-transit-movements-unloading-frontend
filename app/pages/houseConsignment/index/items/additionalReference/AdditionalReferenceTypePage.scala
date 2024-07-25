@@ -19,7 +19,7 @@ package pages.houseConsignment.index.items.additionalReference
 import generated.AdditionalReferenceType02
 import models.Index
 import models.reference.AdditionalReferenceType
-import pages.DiscrepancyQuestionPage
+import pages.{DiscrepancyQuestionPage, QuestionPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
@@ -37,4 +37,11 @@ case class AdditionalReferenceTypePage(houseConsignmentIndex: Index, itemIndex: 
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.typeValue)
+}
+
+case class AdditionalReferenceInCL234Page(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
+
+  override def toString: String = "isInCL234"
 }
