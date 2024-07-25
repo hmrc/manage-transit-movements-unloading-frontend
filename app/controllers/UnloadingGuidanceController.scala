@@ -54,7 +54,7 @@ class UnloadingGuidanceController @Inject() (
 
           unloadingPermission
             .getMessageId(arrivalId, UnloadingPermission)
-            .map { //TODO: Why do we fetch messageId here? We don't seem to use it within the view?
+            .map {
               case Some(messageId) =>
                 Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
               case None =>

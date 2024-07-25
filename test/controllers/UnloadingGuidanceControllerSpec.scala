@@ -45,7 +45,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
-      checkArrivalStatus()
 
       when(mockUnloadingPermissionMessageService.getMessageId(any(), any())(any(), any())).thenReturn(Future.successful(Some(messageId)))
 
@@ -84,7 +83,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
 
       setNoExistingUserAnswers()
 
@@ -100,7 +98,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     "must redirect to" - {
       "unloading type page" - {
         "when newAuth is false" in {
-          checkArrivalStatus()
 
           setExistingUserAnswers(
             emptyUserAnswers
@@ -118,7 +115,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       }
       "large unsealed goods record discrepancies yes no page" - {
         "when newAuth is true and goodsTooLarge is true" in {
-          checkArrivalStatus()
 
           setExistingUserAnswers(
             emptyUserAnswers
@@ -137,7 +133,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       }
       "seals replaced by customs authority yes no page" - {
         "when newAuth is true and goodsTooLarge is false" in {
-          checkArrivalStatus()
 
           setExistingUserAnswers(
             emptyUserAnswers
@@ -156,7 +151,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       }
       "goods too large for container yes no page" - {
         "when newAuth is true and goodsTooLarge is not answered" in {
-          checkArrivalStatus()
 
           setExistingUserAnswers(
             emptyUserAnswers
@@ -175,7 +169,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
 
       setNoExistingUserAnswers()
 

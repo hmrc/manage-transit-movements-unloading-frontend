@@ -25,6 +25,7 @@ import play.api.mvc.Call
 @Singleton
 class Navigation extends Navigator {
 
+  // scalastyle:off cyclomatic.complexity
   override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case UnloadingTypePage                                   => ua => Some(routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode))
     case DateGoodsUnloadedPage                               => ua => dateGoodsUnloadedNavigation(ua)
@@ -40,6 +41,7 @@ class Navigation extends Navigator {
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => Some(routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode))
   }
+  // scalastyle:on cyclomatic.complexity
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsCheckNavigation(ua)
