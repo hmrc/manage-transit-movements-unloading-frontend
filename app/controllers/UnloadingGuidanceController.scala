@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
-import navigation.Navigator
+import navigation.UnloadingGuidanceNavigator
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,20 +70,6 @@ class UnloadingGuidanceController @Inject() (
           val newAuth: Boolean               = request.arg
           val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
 
-          if (newAuth) { // TODO:  move this elsewhere ?
-            goodsTooLarge match {
-              case Some(goodsTooLarge) =>
-                if (goodsTooLarge) {
-                  Redirect(routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
-                } else {
-                  Redirect(routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode))
-                }
-              case _ =>
-                Redirect(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode))
-            }
-          } else {
-            Redirect(routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
-          }
-
+          UnloadingGuidanceNavigator.unloadingGuidanceNavigate(arrivalId, newAuth, goodsTooLarge)
       }
 }
