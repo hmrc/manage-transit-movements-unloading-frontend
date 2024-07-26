@@ -17,11 +17,13 @@
 package pages.houseConsignment.index.items.additionalReference
 
 import generated.AdditionalReferenceType02
-import models.Index
+import models.{Index, UserAnswers}
 import models.reference.AdditionalReferenceType
 import pages.{DiscrepancyQuestionPage, QuestionPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case class AdditionalReferenceTypePage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
     extends DiscrepancyQuestionPage[AdditionalReferenceType, Seq[AdditionalReferenceType02], String] {
@@ -37,6 +39,16 @@ case class AdditionalReferenceTypePage(houseConsignmentIndex: Index, itemIndex: 
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.typeValue)
+
+  override def cleanup(value: Option[AdditionalReferenceType], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers
+          .remove(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+          .flatMap(_.remove(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)))
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 }
 
 case class AdditionalReferenceInCL234Page(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[Boolean] {

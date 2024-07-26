@@ -46,9 +46,13 @@ final case class UserAnswers(
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     get(page: Gettable[A])
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
-    set(page.path, value).flatMap {
-      userAnswers => page.cleanup(Some(value), userAnswers)
+  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] =
+    get(page) match {
+      case Some(`value`) => Success(this)
+      case _ =>
+        set(page.path, value).flatMap {
+          userAnswers => page.cleanup(Some(value), userAnswers)
+        }
     }
 
   def set[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
