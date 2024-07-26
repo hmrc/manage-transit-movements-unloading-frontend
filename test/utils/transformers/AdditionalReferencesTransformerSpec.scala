@@ -46,13 +46,13 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+        bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
+        bind[AdditionalReferencesService].toInstance(mockAdditionalReferencesService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockRefDataConnector)
-    reset(mockAdditionalReferencesService)
   }
 
   "must transform data" in {
@@ -90,7 +90,6 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
             Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
           )
     }
-
     val result = transformer.transform(additionalReferenceType03, hcIndex).apply(emptyUserAnswers).futureValue
 
     additionalReferenceType03.zipWithIndex.map {
@@ -100,26 +99,53 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     }
   }
 
-  "must transform data at Item level" in {
-    val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
+  "must transform data at Item level" - {
 
-    additionalReferenceType02.map {
-      type0 =>
-        when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
-          .thenReturn(
-            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
-          )
+    "when is docTypeExcise" in {
+      val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
+
+      additionalReferenceType02.map {
+        type0 =>
+          when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+            .thenReturn(
+              Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+            )
+      }
+
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(true))
+
+      val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+
+      additionalReferenceType02.zipWithIndex.map {
+        case (refType, i) =>
+          result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
+          result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
+          result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustBe true
+      }
     }
 
-    when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
+    "when is not docTypeExcise" in {
+      val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
 
-    val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+      additionalReferenceType02.map {
+        type0 =>
+          when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+            .thenReturn(
+              Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+            )
+      }
 
-    additionalReferenceType02.zipWithIndex.map {
-      case (refType, i) =>
-        result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
-        result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
-        result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustBe false
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
+
+      val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+
+      additionalReferenceType02.zipWithIndex.map {
+        case (refType, i) =>
+          result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
+          result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
+          result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustBe false
+      }
     }
+
   }
 }

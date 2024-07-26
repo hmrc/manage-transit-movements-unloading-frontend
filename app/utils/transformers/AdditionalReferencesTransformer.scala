@@ -64,22 +64,6 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     }
   }
 
-//  def transform(
-//    additionalReferences: Seq[AdditionalReferenceType02],
-//    hcIndex: Index,
-//    itemIndex: Index
-//  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-//    import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-//    import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-//
-//    genericTransform(additionalReferences)(_.typeValue) {
-//      case (TempAdditionalReference(underlying, typeValue), index) =>
-//        setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-//          set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), typeValue) andThen
-//          set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber)
-//    }
-//  }
-
   def transform(
     additionalReferences: Seq[AdditionalReferenceType02],
     hcIndex: Index,
