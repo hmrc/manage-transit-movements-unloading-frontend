@@ -20,12 +20,15 @@ import connectors.ReferenceDataConnector
 import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
+import services.AdditionalReferencesService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalReferencesTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
+class AdditionalReferencesTransformer @Inject() (referenceDataConnector: ReferenceDataConnector, service: AdditionalReferencesService)(implicit
+  ec: ExecutionContext
+) extends PageTransformer {
 
   private case class TempAdditionalReference[T](
     underlying: T,
@@ -61,19 +64,44 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     }
   }
 
+//  def transform(
+//    additionalReferences: Seq[AdditionalReferenceType02],
+//    hcIndex: Index,
+//    itemIndex: Index
+//  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+//    import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
+//    import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+//
+//    genericTransform(additionalReferences)(_.typeValue) {
+//      case (TempAdditionalReference(underlying, typeValue), index) =>
+//        setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
+//          set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), typeValue) andThen
+//          set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber)
+//    }
+//  }
+
   def transform(
     additionalReferences: Seq[AdditionalReferenceType02],
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+
     import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-    import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+    import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
-        setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-          set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), typeValue) andThen
-          set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber)
+        userAnswers =>
+          service.isDocumentTypeExcise(typeValue.documentType).flatMap {
+            isInCL234 =>
+              val transformations =
+                setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
+                  set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), typeValue) andThen
+                  set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber) andThen
+                  set(AdditionalReferenceInCL234Page(hcIndex, itemIndex, index), isInCL234)
+
+              transformations(userAnswers)
+          }
     }
   }
 

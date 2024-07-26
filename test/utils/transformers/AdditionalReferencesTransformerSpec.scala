@@ -27,10 +27,11 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AdditionalReferenceTypePage
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceTypePage => AdditionalReferenceTypeItemPage}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceTypePage => AdditionalReferenceTypeItemPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.AdditionalReferencesService
 
 import scala.concurrent.Future
 
@@ -38,7 +39,8 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
   private val transformer: AdditionalReferencesTransformer = app.injector.instanceOf[AdditionalReferencesTransformer]
 
-  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockRefDataConnector: ReferenceDataConnector                 = mock[ReferenceDataConnector]
+  private lazy val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -50,6 +52,7 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockRefDataConnector)
+    reset(mockAdditionalReferencesService)
   }
 
   "must transform data" in {
@@ -108,12 +111,15 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
           )
     }
 
+    when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
+
     val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
     additionalReferenceType02.zipWithIndex.map {
       case (refType, i) =>
         result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
         result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
+        result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustBe false
     }
   }
 }
