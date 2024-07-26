@@ -28,8 +28,9 @@ class ItemsAdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWi
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
+  private val cl234Key    = s"$prefix.error.cl234Constraint"
 
-  val form = new ItemsAdditionalReferenceNumberFormProvider()(requiredKey)
+  val form = new ItemsAdditionalReferenceNumberFormProvider()(requiredKey, true)
 
   ".value" - {
 
@@ -59,6 +60,12 @@ class ItemsAdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWi
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
       maxAdditionalReferenceNumLength
+    )
+
+    behave like fieldWithInvalidInputCL234(
+      form,
+      fieldName,
+      error = FormError(fieldName, cl234Key)
     )
   }
 }
