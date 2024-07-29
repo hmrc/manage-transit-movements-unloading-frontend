@@ -338,10 +338,10 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepancies between the transit and unloading permission?
-addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
 addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
+addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission
 
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
@@ -650,7 +650,7 @@ unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item
 
 houseConsignment.title = House consignment {0}
 houseConsignment.heading = House consignment {0}
-houseConsignment.paragraph = Change the declaration details below to match the transit that arrived.
+houseConsignment.paragraph = Change the declaration details below to match the transit movement that arrived.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 houseConsignment.securityIndicator = Safety and security details
 

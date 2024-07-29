@@ -53,10 +53,10 @@ POST       /:arrivalId/fully-partially-unloaded                                 
 GET        /:arrivalId/change-fully-partially-unloaded                                                               controllers.UnloadingTypeController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-fully-partially-unloaded                                                               controllers.UnloadingTypeController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/add-transit-unloading-permission-discrepancies                                                controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/add-transit-unloading-permission-discrepancies                                                controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-add-transit-unloading-permission-discrepancies                                         controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-add-transit-unloading-permission-discrepancies                                         controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/add-transit-movement-unloading-permission-discrepancies                                       controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-transit-movement-unloading-permission-discrepancies                                       controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-add-transit-movement-unloading-permission-discrepancies                                controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-add-transit-movement-unloading-permission-discrepancies                                controllers.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/comments                                                                                      controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/comments                                                                                      controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -66,8 +66,8 @@ POST       /:arrivalId/change-comments                                          
 GET        /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/transit-unloading-permission-discrepancies/house-consignment/:index                           controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
-POST       /:arrivalId/transit-unloading-permission-discrepancies/house-consignment/:index                           controllers.HouseConsignmentController.onSubmit(arrivalId: ArrivalId, index:Index)
+GET        /:arrivalId/transit-movement-unloading-permission-discrepancies/house-consignment/:index                  controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
+POST       /:arrivalId/transit-movement-unloading-permission-discrepancies/house-consignment/:index                  controllers.HouseConsignmentController.onSubmit(arrivalId: ArrivalId, index:Index)
 
 GET        /:arrivalId/unloading-remarks-sent                                                                        controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)
 
@@ -102,13 +102,13 @@ POST       /:arrivalId/goods-too-large-for-container                            
 GET        /:arrivalId/change-goods-too-large-for-container                                                          controllers.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-goods-too-large-for-container                                                          controllers.GoodsTooLargeForContainerYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/seals-replaced-by-customs-authority                                                                 controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/seals-replaced-by-customs-authority                                                                 controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-seals-replaced-by-customs-authority                                                          controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-seals-replaced-by-customs-authority                                                          controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/seals-replaced-by-customs-authority                                                           controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/seals-replaced-by-customs-authority                                                           controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-seals-replaced-by-customs-authority                                                    controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-seals-replaced-by-customs-authority                                                    controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/large-unsealed-goods/add-transit-movement-unloading-permission-discrepancies                                                controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/large-unsealed-goods/add-transit-movement-unloading-permission-discrepancies                                                controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloading-permission-discrepancies                                         controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloading-permission-discrepancies                                         controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/large-unsealed-goods/add-transit-movement-unloading-permission-discrepancies                  controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/large-unsealed-goods/add-transit-movement-unloading-permission-discrepancies                  controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloading-permission-discrepancies           controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloading-permission-discrepancies           controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
