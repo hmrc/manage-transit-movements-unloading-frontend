@@ -26,7 +26,6 @@ import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.language.implicitConversions
 
 class UnloadingGuidanceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

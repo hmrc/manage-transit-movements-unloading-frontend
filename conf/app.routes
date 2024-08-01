@@ -63,8 +63,8 @@ POST       /:arrivalId/comments                                                 
 GET        /:arrivalId/change-comments                                                                               controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-comments                                                                               controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/transit-movement-unloading-permission-discrepancies                                           controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/transit-movement-unloading-permission-discrepancies                                           controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/transit-movement-unloading-permission-discrepancies/house-consignment/:index                  controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
 POST       /:arrivalId/transit-movement-unloading-permission-discrepancies/house-consignment/:index                  controllers.HouseConsignmentController.onSubmit(arrivalId: ArrivalId, index:Index)

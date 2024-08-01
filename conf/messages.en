@@ -451,9 +451,9 @@ cannotSendUnloadingRemarks.message =  If you still need to send these unloading 
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
 
-unloadingFindings.title = Enter the discrepancies between the transit and unloading permission
-unloadingFindings.heading = Enter the discrepancies between the transit and unloading permission
-unloadingFindings.paragraph = Change the declaration details below to match the transit that arrived.
+unloadingFindings.title = Enter the discrepancies between the transit movement and unloading permission
+unloadingFindings.heading = Enter the discrepancies between the transit movement and unloading permission
+unloadingFindings.paragraph = Change the declaration details below to match the transit movement that arrived.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
