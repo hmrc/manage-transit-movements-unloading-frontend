@@ -19,6 +19,7 @@ package controllers
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
+import navigation.UnloadingGuidanceNavigator
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,16 +52,24 @@ class UnloadingGuidanceController @Inject() (
           val newAuth: Boolean               = request.arg
           val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
 
-          unloadingPermission.getMessageId(arrivalId, UnloadingPermission).map {
-            case Some(messageId) =>
-              Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
-            case None =>
-              Redirect(controllers.routes.ErrorController.technicalDifficulties())
-          }
+          unloadingPermission
+            .getMessageId(arrivalId, UnloadingPermission)
+            .map {
+              case Some(messageId) =>
+                Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
+              case None =>
+                Redirect(controllers.routes.ErrorController.technicalDifficulties())
+            }
       }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId) {
-      _ => Redirect(routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
-    }
+    actions
+      .requireData(arrivalId)
+      .andThen(getMandatoryPage(NewAuthYesNoPage)) {
+        implicit request =>
+          val newAuth: Boolean               = request.arg
+          val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+
+          UnloadingGuidanceNavigator.unloadingGuidanceNavigate(arrivalId, newAuth, goodsTooLarge)
+      }
 }

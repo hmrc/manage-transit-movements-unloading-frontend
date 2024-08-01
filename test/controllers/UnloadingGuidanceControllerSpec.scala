@@ -45,7 +45,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
-      checkArrivalStatus()
 
       when(mockUnloadingPermissionMessageService.getMessageId(any(), any())(any(), any())).thenReturn(Future.successful(Some(messageId)))
 
@@ -54,6 +53,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
           .setValue(NewAuthYesNoPage, false)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
       )
+
       when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
         .thenReturn(
           UnloadingGuidanceViewModel(
@@ -83,7 +83,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
 
       setNoExistingUserAnswers()
 
@@ -96,25 +95,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to unloading type for a POST" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(
-        emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(GoodsTooLargeForContainerYesNoPage, true)
-      )
-      val request = FakeRequest(POST, unloadingGuidanceRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result).value mustBe routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url
-    }
-
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
 
       setNoExistingUserAnswers()
 
