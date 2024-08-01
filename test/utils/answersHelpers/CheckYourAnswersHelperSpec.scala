@@ -350,7 +350,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any discrepancies between the transit and unloading permission?".toText),
+              key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -359,7 +359,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       content = "Change".toText,
                       href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some(
-                        "if there were any discrepancies between the transit and unloading permission"
+                        "if there were any discrepancies between the transit movement and unloading permission"
                       ),
                       attributes = Map("id" -> "change-add-discrepancies")
                     )
@@ -377,7 +377,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any discrepancies between the transit and unloading permission?".toText),
+              key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -385,7 +385,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if there were any discrepancies between the transit and unloading permission"),
+                      visuallyHiddenText = Some("if there were any discrepancies between the transit movement and unloading permission"),
                       attributes = Map("id" -> "change-add-discrepancies")
                     )
                   )
