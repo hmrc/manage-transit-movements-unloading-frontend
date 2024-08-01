@@ -677,8 +677,8 @@ checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
 checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
-checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit and unloading permission?
-checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit movement and unloading permission?
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
 checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
 checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
 checkYourAnswers.rowHeadings.additionalComments = Comments
