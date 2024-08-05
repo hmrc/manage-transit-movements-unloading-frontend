@@ -31,26 +31,34 @@ class GoodsTooLargeForContainerYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "must cleanup when no selected" in {
-        forAll(arbitrary[Boolean]) {
-          anyDiscrepancies =>
+        forAll(arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
+          (anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
             val userAnswers = emptyUserAnswers
               .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val result = userAnswers.setValue(GoodsTooLargeForContainerYesNoPage, false)
 
             result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) must not be defined
+            result.get(SealsReplacedByCustomsAuthorityYesNoPage) mustBe defined
+            result.get(OtherThingsToReportPage) mustBe defined
         }
       }
 
-      "must not cleanup when yes selected" in {
-        forAll(arbitrary[Boolean]) {
-          anyDiscrepancies =>
+      "must cleanup when yes selected" in {
+        forAll(arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
+          (anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
             val userAnswers = emptyUserAnswers
               .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val result = userAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
 
             result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe defined
+            result.get(SealsReplacedByCustomsAuthorityYesNoPage) must not be defined
+            result.get(OtherThingsToReportPage) must not be defined
         }
       }
     }

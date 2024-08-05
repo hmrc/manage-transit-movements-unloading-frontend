@@ -32,7 +32,11 @@ case object GoodsTooLargeForContainerYesNoPage extends QuestionPage[Boolean] {
     value match {
       case Some(false) =>
         userAnswers.remove(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-      case _ =>
+      case Some(true) =>
+        userAnswers
+          .remove(SealsReplacedByCustomsAuthorityYesNoPage)
+          .flatMap(_.remove(OtherThingsToReportPage))
+      case None =>
         super.cleanup(value, userAnswers)
     }
 }
