@@ -40,7 +40,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "Change the declaration details below to match the transit that arrived.")
+  behave like pageWithContent("p", "Change the declaration details below to match the transit movement that arrived.")
 
   behave like pageWithSections()
 

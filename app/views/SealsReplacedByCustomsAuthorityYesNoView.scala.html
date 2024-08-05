@@ -27,25 +27,27 @@ errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("departureMeansOfTransport.addIdentificationYesNo.title"),
+    title = messages("sealsReplacedByCustomsAuthorityYesNo.title"),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.departureMeansOfTransport.routes.AddIdentificationYesNoController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("departureMeansOfTransport.addIdentificationYesNo.heading"),
+                heading = messages("sealsReplacedByCustomsAuthorityYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("departureMeansOfTransport.addIdentificationYesNo.paragraph").toParagraph
+                additionalHtml = messages("sealsReplacedByCustomsAuthorityYesNo.paragraph").toParagraph
             )
         )
+
+
 
         @button(attributes = Map("id" -> "submit"))
     }
