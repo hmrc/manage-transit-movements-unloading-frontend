@@ -122,4 +122,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
   )
 
+  def largeUnsealedGoodsRecordDiscrepanciesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = LargeUnsealedGoodsRecordDiscrepanciesYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo",
+    id = Some("change-add-large-unsealed-goods-record-discrepancies"),
+    call = Some(controllers.routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
 }

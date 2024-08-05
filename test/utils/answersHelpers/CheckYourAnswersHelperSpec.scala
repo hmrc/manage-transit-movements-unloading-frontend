@@ -144,6 +144,36 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "largeUnsealedGoodsRecordDiscrepanciesYesNo" - {
+      "must return row" - {
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.largeUnsealedGoodsRecordDiscrepanciesYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if there were any discrepancies between the transit movement and unloading permission"),
+                      attributes = Map("id" -> "change-add-large-unsealed-goods-record-discrepancies")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
     "sealsReplaced" - {
       "must return row" - {
         "when answered Yes" in {

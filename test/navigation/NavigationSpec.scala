@@ -477,6 +477,24 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
       }
+
+      "must go from LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
+        "to NewAuthYesNoPage when answer is Yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          navigator
+            .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
+            .mustBe(routes.NewAuthYesNoController.onPageLoad(userAnswers.id, NormalMode))
+        }
+
+        "to CheckYourAnswersPage when the answer is No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+          navigator
+            .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+        }
+      }
     }
     "in CheckMode" - {
       val mode = CheckMode
