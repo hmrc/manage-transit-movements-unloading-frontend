@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package logging
+package pages
 
-import play.api.Logger
+import pages.sections.OtherQuestionsSection
+import play.api.libs.json.JsPath
 
-trait Logging {
+case object GoodsTooLargeForContainerYesNoPage extends QuestionPage[Boolean] {
 
-  protected val logger: Logger = Logger(s"application.${this.getClass.getCanonicalName}")
+  override def path: JsPath = OtherQuestionsSection.path \ toString
+
+  override def toString: String = "goodsTooLargeForContainerYesNo"
+
 }

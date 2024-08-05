@@ -15,16 +15,15 @@
  *@
 
 @import controllers.houseConsignment.index.items.additionalReference.routes
-@import viewModels.components.InputCharacterCountViewModel
+@import viewModels.components.InputTextViewModel._
 @import models.MovementReferenceNumber
-@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
+@import views.html.components.{Button, ErrorSummary, InputText}
 @import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberViewModel
-@import forms.Constants.maxAdditionalReferenceNumLength
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputCharacterCount: InputCharacterCount,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -40,15 +39,13 @@
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputText(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountViewModel(
+            inputTextType = OrdinaryTextInput(
                 heading = viewModel.heading,
-                caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = None
+                caption = Some(messages("site.caption", mrn.toString))
             ),
-            maxLength = maxAdditionalReferenceNumLength,
-            rows = 2
+            hint = Some(messages("houseConsignment.index.items.additionalReference.additionalReferenceNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

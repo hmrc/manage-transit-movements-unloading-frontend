@@ -35,5 +35,5 @@ case class TransportMeansIdentificationPage(houseConsignmentIndex: Index, transp
       .find {
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
-      .map(_.typeOfIdentification)
+      .flatMap(_.typeOfIdentification)
 }

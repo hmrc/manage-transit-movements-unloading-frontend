@@ -34,6 +34,171 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
   "CheckYourAnswersHelper" - {
 
+    "newAuth" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.newProcedure
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you want to use the revised unloading procedure?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if you want to use the revised unloading procedure"),
+                      attributes = Map("id" -> "change-new-auth-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.newProcedure
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Do you want to use the revised unloading procedure?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if you want to use the revised unloading procedure"),
+                      attributes = Map("id" -> "change-new-auth-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    "goodsTooLarge" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.goodsTooLarge
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Are the goods too large to fit into a container?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if the goods are too large to fit into a container"),
+                      attributes = Map("id" -> "change-goods-too-large-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.goodsTooLarge
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Are the goods too large to fit into a container?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if the goods are too large to fit into a container"),
+                      attributes = Map("id" -> "change-goods-too-large-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    "sealsReplaced" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.sealsReplaced
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Have any seals been replaced by a customs authority?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if any seals been replaced by a customs authority"),
+                      attributes = Map("id" -> "change-seals-replaced-customs-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.sealsReplaced
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Have any seals been replaced by a customs authority?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if any seals been replaced by a customs authority"),
+                      attributes = Map("id" -> "change-seals-replaced-customs-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
     "goodsUnloadedDate" - {
       "must return row" in {
 
@@ -185,7 +350,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any discrepancies between the transit and unloading permission?".toText),
+              key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -194,7 +359,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       content = "Change".toText,
                       href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some(
-                        "if there were any discrepancies between the transit and unloading permission"
+                        "if there were any discrepancies between the transit movement and unloading permission"
                       ),
                       attributes = Map("id" -> "change-add-discrepancies")
                     )
@@ -212,7 +377,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any discrepancies between the transit and unloading permission?".toText),
+              key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -220,7 +385,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if there were any discrepancies between the transit and unloading permission"),
+                      visuallyHiddenText = Some("if there were any discrepancies between the transit movement and unloading permission"),
                       attributes = Map("id" -> "change-add-discrepancies")
                     )
                   )
@@ -406,61 +571,6 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 )
               )
             )
-        }
-      }
-    }
-
-    "anyNewProcedure" - {
-      "must return row" - {
-        "when answered Yes" in {
-
-          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
-          val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.anyNewProcedure
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Are you using the new procedure?".toText),
-              value = Value("Yes".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if new procedure is used"),
-                      attributes = Map("id" -> "change-any-new-procedure")
-                    )
-                  )
-                )
-              )
-            )
-          )
-        }
-        "when answered No" in {
-
-          val answers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
-          val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.anyNewProcedure
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Are you using the new procedure?".toText),
-              value = Value("No".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if new procedure is used"),
-                      attributes = Map("id" -> "change-any-new-procedure")
-                    )
-                  )
-                )
-              )
-            )
-          )
         }
       }
     }

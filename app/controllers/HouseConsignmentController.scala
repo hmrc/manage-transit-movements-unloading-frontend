@@ -44,4 +44,9 @@ class HouseConsignmentController @Inject() (
 
         Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
     }
+
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      _ => Redirect(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+    }
 }

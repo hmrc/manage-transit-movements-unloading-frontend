@@ -18,6 +18,7 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
+import models.UnloadingSubmissionValues._
 import models.{ArrivalId, DocType, EoriNumber, Index, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
@@ -107,22 +108,37 @@ class SubmissionService @Inject() (
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
     import pages._
 
-    for {
-      unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
-      unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
-      unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
-      stateOfSeals        <- __.read[StateOfSeals].map(_.value)
-      conform <- stateOfSeals match {
-        case Some(false) => false: Reads[Boolean]
-        case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
-      }
-    } yield UnloadingRemarkType(
-      conform = conform,
-      unloadingCompletion = unloadingCompletion,
-      unloadingDate = unloadingDate,
-      stateOfSeals = stateOfSeals,
-      unloadingRemark = unloadingRemark
-    )
+    def generateUnloadingRemarkForRevisedProcedureYes: Reads[UnloadingRemarkType] =
+      UnloadingRemarkType(
+        conform = Conform,
+        unloadingCompletion = FullyUnloaded,
+        unloadingDate = dateTimeService.currentDateTime.toLocalDate,
+        stateOfSeals = Some(PresentAndNotDamaged),
+        unloadingRemark = None
+      )
+
+    def generateUnloadingRemarkDefaultCase: Reads[UnloadingRemarkType] =
+      for {
+        unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
+        unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
+        unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
+        stateOfSeals        <- __.read[StateOfSeals].map(_.value)
+        conform <- stateOfSeals match {
+          case Some(false) => Reads.pure(false)
+          case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
+        }
+      } yield UnloadingRemarkType(
+        conform = conform,
+        unloadingCompletion = unloadingCompletion,
+        unloadingDate = unloadingDate,
+        stateOfSeals = stateOfSeals,
+        unloadingRemark = unloadingRemark
+      )
+
+    NewAuthYesNoPage.path.read[Boolean].flatMap {
+      case true => generateUnloadingRemarkForRevisedProcedureYes
+      case _    => generateUnloadingRemarkDefaultCase
+    }
   }
 
   def consignmentReads(ie043: Option[ConsignmentType05]): Reads[Option[ConsignmentType06]] = {

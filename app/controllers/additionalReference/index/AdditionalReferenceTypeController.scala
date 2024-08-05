@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalReferenceTypeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigator: AdditionalReferenceNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,

@@ -317,14 +317,41 @@ trait MessagesModelGenerators {
     Arbitrary {
       for {
         sequenceNumber       <- positiveBigInts.map(_.toString())
-        typeOfIdentification <- Gen.alphaNumStr
-        identificationNumber <- Gen.alphaNumStr
-        nationality          <- Gen.alphaNumStr
+        typeOfIdentification <- Gen.option(Gen.alphaNumStr)
+        identificationNumber <- Gen.option(Gen.alphaNumStr)
+        nationality          <- Gen.option(Gen.alphaNumStr)
       } yield DepartureTransportMeansType02(
         sequenceNumber = sequenceNumber,
         typeOfIdentification = typeOfIdentification,
         identificationNumber = identificationNumber,
         nationality = nationality
+      )
+    }
+
+  lazy val arbitraryDepartureTransportMeansType02AllDefined: Arbitrary[DepartureTransportMeansType02] =
+    Arbitrary {
+      for {
+        sequenceNumber       <- positiveBigInts.map(_.toString())
+        typeOfIdentification <- Gen.alphaNumStr
+        identificationNumber <- Gen.alphaNumStr
+        nationality          <- Gen.alphaNumStr
+      } yield DepartureTransportMeansType02(
+        sequenceNumber = sequenceNumber,
+        typeOfIdentification = Some(typeOfIdentification),
+        identificationNumber = Some(identificationNumber),
+        nationality = Some(nationality)
+      )
+    }
+
+  lazy val arbitraryDepartureTransportMeansType02NoneDefined: Arbitrary[DepartureTransportMeansType02] =
+    Arbitrary {
+      for {
+        sequenceNumber <- positiveBigInts.map(_.toString())
+      } yield DepartureTransportMeansType02(
+        sequenceNumber = sequenceNumber,
+        typeOfIdentification = None,
+        identificationNumber = None,
+        nationality = None
       )
     }
 
@@ -491,7 +518,7 @@ trait MessagesModelGenerators {
   implicit lazy val arbitraryGoodsMeasureType03: Arbitrary[GoodsMeasureType03] =
     Arbitrary {
       for {
-        grossMass <- positiveBigDecimals
+        grossMass <- Gen.option(positiveBigDecimals)
         netMass   <- Gen.option(positiveBigDecimals)
       } yield GoodsMeasureType03(
         grossMass = grossMass,

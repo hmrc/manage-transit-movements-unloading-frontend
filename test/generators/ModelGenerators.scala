@@ -119,10 +119,22 @@ trait ModelGenerators {
       Gen.oneOf(UnloadingType.values)
     }
 
-  implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] =
+  implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] = {
+    import models.P5.ArrivalMessageType._
     Arbitrary {
-      Gen.oneOf(ArrivalMessageType.values)
+      for {
+        value <- nonEmptyString
+        result <- Gen.oneOf(
+          ArrivalNotification,
+          GoodsReleasedNotification,
+          UnloadingPermission,
+          UnloadingRemarks,
+          RejectionFromOfficeOfDestination,
+          Other(value)
+        )
+      } yield result
     }
+  }
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {

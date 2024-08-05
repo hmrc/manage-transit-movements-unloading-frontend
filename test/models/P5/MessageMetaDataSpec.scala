@@ -17,18 +17,21 @@
 package models.P5
 
 import base.SpecBase
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.scalacheck.Arbitrary.arbitrary
 
-class MessageMetaDataSpec extends SpecBase {
+class MessageMetaDataSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "MessageMetaData" - {
 
     "must deserialize" in {
 
-      ArrivalMessageType.values.map {
+      forAll(arbitrary[ArrivalMessageType]) {
         messageType =>
           val json = Json.parse(
             s"""

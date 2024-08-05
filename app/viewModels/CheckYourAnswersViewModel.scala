@@ -39,11 +39,12 @@ object CheckYourAnswersViewModel {
 
       val headerSection = StaticSection(
         rows = Seq(
+          helper.newProcedure,
+          helper.goodsTooLarge,
           helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
-          helper.anySealsBroken,
-          helper.anyNewProcedure
+          helper.anySealsBroken
         ).flatten
       )
 
@@ -54,7 +55,8 @@ object CheckYourAnswersViewModel {
           helper.addCommentsYesNo,
           helper.additionalComment,
           helper.addReportYesNo,
-          helper.report
+          helper.report,
+          helper.sealsReplaced
         ).flatten
       )
 

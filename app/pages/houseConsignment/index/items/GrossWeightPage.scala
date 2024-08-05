@@ -29,5 +29,5 @@ case class GrossWeightPage(houseConsignmentIndex: Index, itemIndex: Index) exten
   override def toString: String = "grossMass"
 
   override def valueInIE043(ie043: Option[GoodsMeasureType03], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
-    ie043.map(_.grossMass)
+    ie043.flatMap(_.grossMass)
 }

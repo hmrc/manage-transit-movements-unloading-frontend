@@ -29,7 +29,8 @@
 @(
     field: Field,
     yesNoType: InputYesNoViewModel,
-    hint: Option[Content] = None
+    hint: Option[Content] = None,
+    yesMessage: String = "site.yes"
 )(implicit messages: Messages)
 
 @radios = @{
@@ -40,7 +41,7 @@
             RadioItem(
                 id = Some(field.id),
                 value = Some("true"),
-                content = Text(messages("site.yes"))
+                content = Text(messages(yesMessage))
             ),
             RadioItem(
                 id = Some(s"${field.id}-no"),

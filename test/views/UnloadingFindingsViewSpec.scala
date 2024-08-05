@@ -40,6 +40,8 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "Change the declaration details below to match the transit movement that arrived.")
+
   behave like pageWithSections()
 
   behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId).url)

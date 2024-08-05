@@ -16,32 +16,44 @@
 
 package models.P5
 
-import models.{Enumerable, WithName}
+import play.api.libs.json.{__, Reads}
 
-trait ArrivalMessageType extends WithName
+trait ArrivalMessageType {
+  val value: String
 
-trait ErrorMessageType extends ArrivalMessageType
+  override def toString: String = value
+}
 
-object ArrivalMessageType extends Enumerable.Implicits {
+object ArrivalMessageType {
 
-  case object ArrivalNotification extends WithName("IE007") with ArrivalMessageType
-  case object UnloadingRemarks extends WithName("IE044") with ArrivalMessageType
-  case object GoodsReleasedNotification extends WithName("IE025") with ArrivalMessageType
-  case object UnloadingPermission extends WithName("IE043") with ArrivalMessageType
-  case object RejectionFromOfficeOfDestination extends WithName("IE057") with ArrivalMessageType
+  case object ArrivalNotification extends ArrivalMessageType {
+    override val value: String = "IE007"
+  }
 
-  val values = Seq(
-    ArrivalNotification,
-    UnloadingRemarks,
-    GoodsReleasedNotification,
-    UnloadingPermission,
-    RejectionFromOfficeOfDestination
-  )
+  case object GoodsReleasedNotification extends ArrivalMessageType {
+    override val value: String = "IE025"
+  }
 
-  implicit val enumerable: Enumerable[ArrivalMessageType] =
-    Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
-    )
+  case object UnloadingPermission extends ArrivalMessageType {
+    override val value: String = "IE043"
+  }
+
+  case object UnloadingRemarks extends ArrivalMessageType {
+    override val value: String = "IE044"
+  }
+
+  case object RejectionFromOfficeOfDestination extends ArrivalMessageType {
+    override val value: String = "IE057"
+  }
+
+  case class Other(value: String) extends ArrivalMessageType
+
+  implicit val reads: Reads[ArrivalMessageType] = __.read[String].map {
+    case ArrivalNotification.value              => ArrivalNotification
+    case GoodsReleasedNotification.value        => GoodsReleasedNotification
+    case UnloadingPermission.value              => UnloadingPermission
+    case UnloadingRemarks.value                 => UnloadingRemarks
+    case RejectionFromOfficeOfDestination.value => RejectionFromOfficeOfDestination
+    case value                                  => Other(value)
+  }
 }

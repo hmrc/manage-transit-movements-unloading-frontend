@@ -29,6 +29,15 @@
 
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
+@html = {
+    <p>@messages("newAuthYesNo.hint")</p>
+    <ul class="govuk-list govuk-list--bullet govuk-hint">
+        <li>@messages("newAuthYesNo.bullet1")</li>
+        <li>@messages("newAuthYesNo.bullet2")</li>
+        <li>@messages("newAuthYesNo.bullet3")</li>
+    </ul>
+}
+
 @mainTemplate(
     title = messages("newAuthYesNo.title"),
     showBackLink = true
@@ -40,10 +49,12 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("newAuthYesNo.heading"),
-                caption = Some(messages("site.caption", mrn.toString))
-            )
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = messages("newAuthYesNo.paragraph").toParagraph
+            ),
+            hint = Some(HtmlContent(html))
         )
 
         @button(attributes = Map("id" -> "submit"))
