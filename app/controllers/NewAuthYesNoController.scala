@@ -22,7 +22,6 @@ import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
 import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -66,8 +65,7 @@ class NewAuthYesNoController @Inject() (
           value => {
             val userAnswersF: Future[UserAnswers] =
               if (value) {
-                val wipedAnswers = request.userAnswers.copy(data = Json.obj())
-                dataTransformer.transform(wipedAnswers)
+                request.userAnswers.wipeAndTransform(dataTransformer.transform(_))
               } else {
                 Future.successful(request.userAnswers)
               }
