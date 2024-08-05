@@ -41,6 +41,7 @@ object CheckYourAnswersViewModel {
         rows = Seq(
           helper.newProcedure,
           helper.goodsTooLarge,
+          helper.largeUnsealedGoodsRecordDiscrepanciesYesNo,
           helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
