@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
+import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +31,6 @@ import views.html.NewAuthYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class NewAuthYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -65,20 +64,16 @@ class NewAuthYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value => {
-            def updateUserAnswers(): Future[UserAnswers] =
+            val userAnswersF: Future[UserAnswers] =
               if (value) {
-                Future.successful(request.userAnswers)
+                val wipedAnswers = request.userAnswers.copy(data = Json.obj())
+                dataTransformer.transform(wipedAnswers)
               } else {
-                for {
-                  otherThingsToReport <- Future.successful(request.userAnswers.get(OtherThingsToReportPage))
-                  wipedAnswers = request.userAnswers.copy(data = Json.obj())
-                  transformedAnswers <- dataTransformer.transform(wipedAnswers)
-                  updatedAnswers     <- Future.fromTry(otherThingsToReport.fold(Try(transformedAnswers))(transformedAnswers.set(OtherThingsToReportPage, _)))
-                } yield updatedAnswers
+                Future.successful(request.userAnswers)
               }
 
             for {
-              userAnswers    <- updateUserAnswers()
+              userAnswers    <- userAnswersF
               updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))

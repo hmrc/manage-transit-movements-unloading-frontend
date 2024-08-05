@@ -66,7 +66,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value => {
-            def updateUserAnswers(): Future[UserAnswers] =
+            val userAnswersF: Future[UserAnswers] =
               if (value) {
                 Future.successful(request.userAnswers)
               } else {
@@ -79,7 +79,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
               }
 
             for {
-              userAnswers    <- updateUserAnswers()
+              userAnswers    <- userAnswersF
               updatedAnswers <- Future.fromTry(userAnswers.set(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, updatedAnswers))

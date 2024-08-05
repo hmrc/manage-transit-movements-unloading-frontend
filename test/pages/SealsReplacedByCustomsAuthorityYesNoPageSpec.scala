@@ -28,5 +28,30 @@ class SealsReplacedByCustomsAuthorityYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](SealsReplacedByCustomsAuthorityYesNoPage)
 
+    "cleanup" - {
+      "must cleanup when no selected" in {
+        forAll(nonEmptyString) {
+          otherThingsToReport =>
+            val userAnswers = emptyUserAnswers
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+            val result = userAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
+
+            result.get(OtherThingsToReportPage) must not be defined
+        }
+      }
+
+      "must cleanup when yes selected" in {
+        forAll(nonEmptyString) {
+          otherThingsToReport =>
+            val userAnswers = emptyUserAnswers
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+            val result = userAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+
+            result.get(OtherThingsToReportPage) must not be defined
+        }
+      }
+    }
   }
 }

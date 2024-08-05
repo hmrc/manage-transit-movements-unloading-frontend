@@ -103,7 +103,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(app, request).value
 
@@ -112,7 +112,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted" in {
+    "must drop discrepancies, re-transform data and redirect to the next page when Yes is submitted" in {
 
       val jsonBeforeEverything = Json
         .parse(s"""
@@ -154,8 +154,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
              |    "foo" : "bar"
              |  },
              |  "otherQuestions" : {
-             |    "otherThingsToReport" : "other things",
-             |    "newAuthYesNo" : false
+             |    "newAuthYesNo" : true
              |  }
              |}
              |""".stripMargin)
@@ -175,7 +174,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
-        .withFormUrlEncodedBody(("value", "false"))
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
