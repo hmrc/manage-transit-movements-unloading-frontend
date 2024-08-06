@@ -29,7 +29,7 @@ class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] 
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new ItemsAdditionalReferenceNumberFormProvider()(viewModel.requiredError)
+  override def form: Form[String] = new ItemsAdditionalReferenceNumberFormProvider()(viewModel.requiredError, false)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector

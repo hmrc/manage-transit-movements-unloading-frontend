@@ -18,13 +18,11 @@ package controllers.houseConsignment.index.items.additionalReference
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.reference.AdditionalReferenceType
-import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.AdditionalReferencesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -104,31 +102,26 @@ class AdditionalReferenceTypeController @Inject() (
                       view(formWithErrors, request.userAnswers.mrn, additionalReferences.values, viewModel)
                     )
                   ),
-                value => redirect(value, houseConsignmentIndex, itemIndex, additionalReferenceIndex, houseConsignmentMode, itemMode, additionalReferenceMode)
+                value =>
+                  for {
+                    isInCL234 <- service.isDocumentTypeExcise(value.documentType)
+                    updatedAnswers <- Future.fromTry(
+                      request.userAnswers
+                        .set(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
+                        .flatMap(_.set(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex), isInCL234))
+                    )
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield {
+                    val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+                    Redirect(
+                      navigator.nextPage(
+                        AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+                        additionalReferenceMode,
+                        request.userAnswers
+                      )
+                    )
+                  }
               )
         }
-    }
-
-  private def redirect(
-    value: AdditionalReferenceType,
-    houseConsignmentIndex: Index,
-    itemIndex: Index,
-    additionalReferenceIndex: Index,
-    houseConsignmentMode: Mode,
-    itemMode: Mode,
-    additionalReferenceMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield {
-      val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
-      Redirect(
-        navigator.nextPage(
-          AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-          additionalReferenceMode,
-          request.userAnswers
-        )
-      )
     }
 }

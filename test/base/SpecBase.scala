@@ -91,10 +91,10 @@ trait SpecBase
     def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
       userAnswers.get(page).value
 
-    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T]): UserAnswers =
+    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T], rds: Reads[T]): UserAnswers =
       userAnswers.set(page, value).success.value
 
-    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T]): UserAnswers =
+    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T], rds: Reads[T]): UserAnswers =
       value.map(setValue(page, _)).getOrElse(userAnswers)
 
     def removeValue(page: QuestionPage[_]): UserAnswers =

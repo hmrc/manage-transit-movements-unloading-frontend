@@ -21,7 +21,7 @@ import forms.ItemsAdditionalReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberPage
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -38,6 +38,7 @@ class AdditionalReferenceNumberController @Inject() (
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   formProvider: ItemsAdditionalReferenceNumberFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceNumberView,
   viewModelProvider: AdditionalReferenceNumberViewModelProvider
@@ -55,7 +56,8 @@ class AdditionalReferenceNumberController @Inject() (
     additionalReferenceIndex: Index
   ): Action[AnyContent] =
     actions
-      .requireData(arrivalId) {
+      .requireData(arrivalId)
+      .andThen(getMandatoryPage(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
         implicit request =>
           val viewModel = viewModelProvider.apply(
             arrivalId,
@@ -66,7 +68,7 @@ class AdditionalReferenceNumberController @Inject() (
             itemIndex,
             additionalReferenceIndex
           )
-          val form = formProvider(viewModel.requiredError)
+          val form = formProvider(viewModel.requiredError, request.arg)
           val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -84,6 +86,7 @@ class AdditionalReferenceNumberController @Inject() (
     additionalReferenceIndex: Index
   ): Action[AnyContent] = actions
     .requireData(arrivalId)
+    .andThen(getMandatoryPage(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex)))
     .async {
       implicit request =>
         val viewModel = viewModelProvider.apply(
@@ -95,7 +98,7 @@ class AdditionalReferenceNumberController @Inject() (
           itemIndex,
           additionalReferenceIndex
         )
-        val form = formProvider(viewModel.requiredError)
+        val form = formProvider(viewModel.requiredError, request.arg)
         form
           .bindFromRequest()
           .fold(
