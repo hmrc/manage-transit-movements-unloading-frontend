@@ -29,4 +29,28 @@ class GoodsTooLargeForContainerYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](GoodsTooLargeForContainerYesNoPage)
 
   }
+
+  "cleanup" - {
+    "must remove answer to LargeUnsealedGoodsRecordDiscrepanciesYesNoPage when answered 'no'" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(GoodsTooLargeForContainerYesNoPage, true)
+        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+
+      val result = userAnswers.setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+      result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) must not be defined
+    }
+
+    "must remove answer to pages when answered 'yes'" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+        .setValue(OtherThingsToReportPage, "other")
+
+      val result = userAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+      result.get(SealsReplacedByCustomsAuthorityYesNoPage) must not be defined
+      result.get(OtherThingsToReportPage) must not be defined
+    }
+  }
 }

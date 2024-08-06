@@ -28,6 +28,22 @@ class NewAuthYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](NewAuthYesNoPage)
 
-    // TODO Add clean up test
+    "cleanup" - {
+      "must remove answers to pages when newAuth is answered no" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+          .setValue(OtherThingsToReportPage, "otherThings")
+
+        val result = userAnswers.setValue(NewAuthYesNoPage, false)
+
+        result.get(GoodsTooLargeForContainerYesNoPage) must not be defined
+        result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) must not be defined
+        result.get(SealsReplacedByCustomsAuthorityYesNoPage) must not be defined
+        result.get(OtherThingsToReportPage) must not be defined
+      }
+    }
   }
 }
