@@ -135,4 +135,12 @@ trait Constraints {
       case x if list.contains(x) => Invalid(errorKey)
       case _                     => Valid
     }
+
+  protected def cl234Constraint(isDocumentInCL234: Boolean, errorKey: String): Constraint[String] =
+    Constraint {
+      case "0" if isDocumentInCL234 =>
+        Invalid(errorKey)
+      case _ =>
+        Valid
+    }
 }

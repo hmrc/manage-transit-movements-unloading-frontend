@@ -34,6 +34,68 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "in Normal mode" - {
 
       val mode = NormalMode
+
+      "must go from GoodsTooLargeForContainerYesNoPage to UnloadingGuidancePage" in {
+
+        val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
+        navigator
+          .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+          .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+      }
+
+      "must go NewAuthYesNoPage" - {
+        "to GoodsTooLargeForContainerYesNoPage when answer is Yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
+          navigator
+            .nextPage(NewAuthYesNoPage, mode, userAnswers)
+            .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+        }
+
+        "to UnloadingGuidancePage when the answer is No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+          navigator
+            .nextPage(NewAuthYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+        }
+      }
+
+      "must go from LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
+        "to NewAuthYesNoPage when answer is Yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          navigator
+            .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
+            .mustBe(routes.NewAuthYesNoController.onPageLoad(userAnswers.id, mode))
+        }
+
+        "to CheckYourAnswersPage when the answer is No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+          navigator
+            .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+        }
+      }
+
+      "must go from SealsReplacedByCustomsAuthorityYesNoPage to OtherThingsToReportPage" - {
+        "when answered true" in {
+
+          val userAnswers = emptyUserAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+          navigator
+            .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
+            .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+        }
+        "when answered false" in {
+
+          val userAnswers = emptyUserAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
+          navigator
+            .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
+            .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+        }
+      }
+
       "must go from Unloading type page to unloading date page" in {
 
         val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
@@ -413,6 +475,24 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             navigator
               .nextPage(UnknownPage, mode, answers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
+        "to NewAuthYesNoPage when answer is Yes" in {
+
+          val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          navigator
+            .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
+            .mustBe(routes.NewAuthYesNoController.onPageLoad(userAnswers.id, NormalMode))
+        }
+
+        "to CheckYourAnswersPage when the answer is No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+          navigator
+            .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
         }
       }
     }

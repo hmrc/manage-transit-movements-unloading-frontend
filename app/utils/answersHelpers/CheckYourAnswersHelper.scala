@@ -34,6 +34,30 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, CheckMode))
   )
 
+  def newProcedure: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = NewAuthYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "newAuthYesNo.checkYourAnswers",
+    id = Some("change-new-auth-yes-no"),
+    call = Some(controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def goodsTooLarge: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = GoodsTooLargeForContainerYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "goodsTooLargeForContainerYesNo.checkYourAnswers",
+    id = Some("change-goods-too-large-yes-no"),
+    call = Some(controllers.routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def sealsReplaced: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = SealsReplacedByCustomsAuthorityYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers",
+    id = Some("change-seals-replaced-customs-yes-no"),
+    call = Some(controllers.routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
   def goodsUnloadedDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = DateGoodsUnloadedPage,
     formatAnswer = formatAsDate,
@@ -96,6 +120,14 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     prefix = "checkYourAnswers.rowHeadings.report",
     id = Some("change-report"),
     call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def largeUnsealedGoodsRecordDiscrepanciesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = LargeUnsealedGoodsRecordDiscrepanciesYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo",
+    id = Some("change-add-large-unsealed-goods-record-discrepancies"),
+    call = Some(controllers.routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
 }

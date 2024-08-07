@@ -31,7 +31,7 @@ case class AdditionalInformationPage(documentIndex: Index) extends DiscrepancyQu
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(x.sequenceNumber)
+        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .flatMap(_.complementOfInformation)
 }

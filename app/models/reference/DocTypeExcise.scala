@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package logging
+package models.reference
 
-import play.api.Logger
+import cats.Order
+import play.api.libs.json.{Json, OFormat}
 
-trait Logging {
+case class DocTypeExcise(activeFrom: String, code: String, state: String, description: String)
 
-  protected val logger: Logger = Logger(s"application.${this.getClass.getCanonicalName}")
+object DocTypeExcise {
+  implicit val format: OFormat[DocTypeExcise] = Json.format[DocTypeExcise]
+
+  implicit val order: Order[DocTypeExcise] = (x: DocTypeExcise, y: DocTypeExcise) => {
+    (x, y).compareBy(_.code)
+  }
 }

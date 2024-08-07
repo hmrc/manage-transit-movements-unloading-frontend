@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DescriptionController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   navigatorProvider: HouseConsignmentItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,

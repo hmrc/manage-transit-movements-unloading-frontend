@@ -46,6 +46,19 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.head.rows.size mustBe 3
     }
 
+    "must render LargeUnsealedGoodsRecordDiscrepanciesYesNoPage row when false" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.sections.length mustBe 2
+      result.sections.head.rows.size mustBe 1
+    }
+
   }
   "comments section" - {
 

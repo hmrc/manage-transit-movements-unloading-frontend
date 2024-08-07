@@ -163,6 +163,12 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assertElementContainsText(hint, expectedText)
     }
 
+  def pageWithHint(doc: Document, expectedText: String): Unit =
+    s"must render hint" in {
+      val hint = getElementByClass(doc, "govuk-hint")
+      assertElementContainsText(hint, expectedText)
+    }
+
   def pageWithInsetText(expectedText: String): Unit =
     pageWithInsetText(doc, expectedText)
 
@@ -182,6 +188,17 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assertElementDoesNotExist(doc, "govuk-hint")
     }
 
+  def pageWithoutHint(doc: Document): Unit =
+    "must not render hint" in {
+      assertElementDoesNotExist(doc, "govuk-hint")
+    }
+
+  def pageWithoutHint(doc: Document, text: String): Unit =
+    s"must not render hint with text $text" in {
+      val hint = doc.getElementsByClass("govuk-hint").map(_.text()).find(_ == text)
+      assert(hint.isEmpty)
+    }
+
   def pageWithSubmitButton(expectedText: String): Unit =
     pageWithButton(expectedText) {
       button => assertElementContainsId(button, "submit")
@@ -189,19 +206,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   private def pageWithButton(expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
     s"must render $expectedText button" in {
-      val button = doc.getElementsByClass("govuk-button").toList.find(_.text() == expectedText).value
-      additionalAssertions.map(_(button))
-    }
-
-  def pageWithLinkAsButton(expectedText: String, expectedHref: String, expectedId: String = "submit"): Unit =
-    pageWithLinkAsButton(expectedText) {
-      button =>
-        assertElementContainsId(button, expectedId)
-        assertElementContainsHref(button, expectedHref)
-    }
-
-  private def pageWithLinkAsButton(expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
-    s"must render $expectedText link as button" in {
       val button = doc.getElementsByClass("govuk-button").toList.find(_.text() == expectedText).value
       additionalAssertions.map(_(button))
     }
@@ -214,6 +218,11 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       val link = getElementById(doc, id)
       assertElementContainsText(link, expectedText)
       assertElementContainsHref(link, expectedHref)
+    }
+
+  def pageWithoutLink(doc: Document, id: String): Unit =
+    s"must not render link with id $id" in {
+      assertElementDoesNotExist(doc, id)
     }
 
   def pageWithBackLink(): Unit =
@@ -235,6 +244,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     pageWithContent(doc, tag, expectedText, _ equals _)
 
   def pageWithPartialContent(tag: String, expectedText: String): Unit =
+    pageWithContent(doc, tag, expectedText, _ contains _)
+
+  def pageWithPartialContent(doc: Document, tag: String, expectedText: String): Unit =
     pageWithContent(doc, tag, expectedText, _ contains _)
 
   private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =

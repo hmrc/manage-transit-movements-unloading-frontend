@@ -25,7 +25,7 @@ import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.Addi
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -41,7 +41,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
   private lazy val formProvider = new ItemsAdditionalReferenceNumberFormProvider()
-  private lazy val form         = formProvider(viewModel.requiredError)
+  private lazy val form         = formProvider(viewModel.requiredError, isDocumentInCL234 = false)
 
   private val houseConsignmentMode    = NormalMode
   private val itemMode                = NormalMode
@@ -65,7 +65,9 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   private val additionalReference = arbitrary[AdditionalReferenceType].sample.value
 
   private val baseAnswers =
-    emptyUserAnswers.setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference)
+    emptyUserAnswers
+      .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference)
+      .setValue(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex), false)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

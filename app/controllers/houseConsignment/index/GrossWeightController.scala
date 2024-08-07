@@ -23,6 +23,7 @@ import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import pages.houseConsignment.index.GrossWeightPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -44,8 +45,14 @@ class GrossWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(houseConsignmentIndex: Index, mode: Mode) =
-    formProvider(s"houseConsignment.index.grossWeight.$mode", grossWeightDecimalPlaces, grossWeightIntegerLength, houseConsignmentIndex.display)
+  private def form(houseConsignmentIndex: Index, mode: Mode): Form[BigDecimal] =
+    formProvider(
+      prefix = s"houseConsignment.index.grossWeight.$mode",
+      decimalPlaceCount = grossWeightDecimalPlaces,
+      characterCount = grossWeightIntegerLength,
+      isZeroAllowed = false,
+      args = houseConsignmentIndex.display
+    )
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {

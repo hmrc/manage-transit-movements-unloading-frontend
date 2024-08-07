@@ -98,11 +98,22 @@ technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.savedAnswers = We saved your answers. They will be available for 15 minutes.
 technicalDifficulties.contact.link = Contact the New Computerised Transit System (NCTS) helpdesk if you need to speak to someone about your transit movements (opens in a new tab)
 
-unloadingGuidance.title = Unload the goods before you make unloading remarks
-unloadingGuidance.heading = Unload the goods before you make unloading remarks
-unloadingGuidance.para = When unloading, check that the goods match the Unloading Permission for Movement Reference Number (MRN) {0}.
-unloadingGuidance.pdf.preLinkText = For further guidance,
+unloadingGuidance.notNewAuth.title = Unload the goods and note any discrepancies
+unloadingGuidance.newAuth.goodsTooLargeNo.title = Download the unloading permission
+unloadingGuidance.newAuth.goodsTooLargeYes.title = Check the goods and note any discrepancies
+unloadingGuidance.notNewAuth.heading = Unload the goods and note any discrepancies
+unloadingGuidance.newAuth.goodsTooLargeNo.heading = Download the unloading permission
+unloadingGuidance.newAuth.goodsTooLargeYes.heading = Check the goods and note any discrepancies
+unloadingGuidance.preLinkText = You do not have to physically unload the goods as you are using the revised unloading procedure. But you can
+unloadingGuidance.postLinkText = for reference.
 unloadingGuidance.pdf.link = Download the Unloading Permission PDF
+unloadingGuidance.pdf.midSentence.link = download the Unloading Permission PDF
+unloadingGuidance.para1 = As the goods are too large to unload, you can just perform visual checks.
+unloadingGuidance.para2.notNewAuth = When unloading, check that the goods match the unloading permission for Movement Reference Number (MRN) {0}. Take note of any discrepancies as you will need to include them in your unloading remarks.
+unloadingGuidance.para2.newAuth.goodsTooLargeYes = When checking the goods, make sure that the goods match the unloading permission for Movement Reference Number (MRN) {0}. Take note of any discrepancies as you will need to include them in your unloading remarks.
+unloadingGuidance.para3.preLinkText = If you suspect any discrepancies, you must
+unloadingGuidance.para3.linkText = select no to using the revised unloading procedure.
+unloadingGuidance.para3.postLinkText = You will then need to unload the goods and report any discrepancies.
 
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?
@@ -209,6 +220,7 @@ netWeight.NormalMode.error.required = Enter the net weight of item {1} in house 
 netWeight.error.invalidValue = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
+netWeight.error.zero = The net weight must be more than 0
 
 transportEquipment.index.seal.identificationNumber.NormalMode.title = What is the seal identification number?
 transportEquipment.index.seal.identificationNumber.CheckMode.title = What is the new seal identification number?
@@ -307,7 +319,8 @@ unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswersLabel = Are any of the seals broken?
 unloadingType.1 = Fully unloaded
 unloadingType.0 = Partially unloaded
-unloadingType.error.required = Select whether you have fully or partially unloaded the goods
+unloadingType.NormalMode.error.required = Select whether you have fully or partially unloaded the goods
+unloadingType.CheckMode.error.required = Select whether you have fully or partially unloaded the goods
 unloadingType.checkYourAnswers.change.hidden = whether you fully or partially unloaded the goods
 
 areAnySealsBroken.title = Are any of the seals broken?
@@ -325,10 +338,10 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepancies between the transit and unloading permission?
-addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
 addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
+addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission
 
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
@@ -347,12 +360,32 @@ unloadingComments.error.required = Enter your comments
 unloadingComments.error.length = Your comments must be 512 characters or less
 unloadingComments.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
-otherThingsToReport.title = What do you want to report?
-otherThingsToReport.heading = What do you want to report?
-otherThingsToReport.checkYourAnswersLabel = What do you want to report?
-otherThingsToReport.error.required = Enter what you want to report
-otherThingsToReport.error.length = Your report must be 512 characters or less
-otherThingsToReport.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.oldAuth.title = What do you want to report?
+otherThingsToReport.newAuth.title = Enter all the original seal identification numbers
+otherThingsToReport.newAuthAndSealsReplaced.title = Enter all the seal identification numbers
+otherThingsToReport.oldAuth.heading = What do you want to report?
+otherThingsToReport.newAuth.heading = Enter all the original seal identification numbers
+otherThingsToReport.newAuthAndSealsReplaced.heading = Enter all the seal identification numbers
+otherThingsToReport.newAuthAndSealsReplaced.paragraph1 = Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.
+otherThingsToReport.newAuthAndSealsReplaced.paragraph2 = If any seals are broken, you must
+otherThingsToReport.newAuthAndSealsReplaced.link = select no to using the revised unloading procedure
+otherThingsToReport.newAuthAndSealsReplaced.paragraph3 = You will then need to unload the goods and report any discrepancies.
+otherThingsToReport.newAuthAndSealsReplaced.hint = Each seal can be up to 20 characters long and include both letters and numbers.
+otherThingsToReport.newAuth.paragraph1 = Only enter original seals affixed by an authorised consignor.
+otherThingsToReport.newAuth.paragraph2 = If any seals are broken, you must
+otherThingsToReport.newAuth.link = select no to using the revised unloading procedure
+otherThingsToReport.newAuth.paragraph3 = You will then need to unload the goods and report any discrepancies.
+otherThingsToReport.newAuth.hint = Each seal can be up to 20 characters long and include both letters and numbers.
+otherThingsToReport.oldAuth.error.required = Enter what you want to report
+otherThingsToReport.newAuthAndSealsReplaced.error.required = Enter all the seal identification numbers
+otherThingsToReport.newAuth.error.required = Enter all the original seal identification numbers
+otherThingsToReport.oldAuth.error.length = Your report must be 512 characters or less
+otherThingsToReport.newAuthAndSealsReplaced.error.length = The identification numbers must be 512 characters or less
+otherThingsToReport.newAuth.error.length = The identification numbers must be 512 characters or less
+otherThingsToReport.oldAuth.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.newAuthAndSealsReplaced.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
@@ -418,9 +451,9 @@ cannotSendUnloadingRemarks.message =  If you still need to send these unloading 
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
 
-unloadingFindings.title = Cross-check the transit with this declaration summary
-unloadingFindings.heading = Cross-check the transit with this declaration summary
-unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
+unloadingFindings.title = Enter the discrepancies between the transit movement and unloading permission
+unloadingFindings.heading = Enter the discrepancies between the transit movement and unloading permission
+unloadingFindings.paragraph = Change the declaration details below to match the transit movement that arrived.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
@@ -455,7 +488,7 @@ unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods i
 
 declarationType = Declaration type
 securityType = Safety and security details
-reducedDatasetIndicator = Do you want to add a reduced data set?
+reducedDatasetIndicator = Do you want to use a reduced data set?
 declarationAcceptanceDate = Declaration acceptance date
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
@@ -615,9 +648,9 @@ unloadingFindings.dangerousGoods.unNumbers = UN numbers
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
-houseConsignment.title = Cross-check the transit with house consignment {0}
-houseConsignment.heading = Cross-check the transit with house consignment {0}
-houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
+houseConsignment.title = House consignment {0}
+houseConsignment.heading = House consignment {0}
+houseConsignment.paragraph = Change the declaration details below to match the transit movement that arrived.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 houseConsignment.securityIndicator = Safety and security details
 
@@ -644,8 +677,8 @@ checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
 checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
-checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit and unloading permission?
-checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit movement and unloading permission?
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
 checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
 checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
 checkYourAnswers.rowHeadings.additionalComments = Comments
@@ -654,6 +687,8 @@ checkYourAnswers.rowHeadings.addReportYesNo = Do you have anything else to repor
 checkYourAnswers.rowHeadings.addReportYesNo.change.hidden = if you have anything to report
 checkYourAnswers.rowHeadings.report = What do you want to report?
 checkYourAnswers.rowHeadings.report.change.hidden = what you want to report
+checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo = Were there any discrepancies between the transit movement and unloading permission?
+checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
@@ -743,12 +778,12 @@ houseConsignment.combinedNomenclatureCode.error.invalid = The combined nomenclat
 houseConsignment.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters long
 
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.title = What is the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.title = What is the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.title = What is the Customs Union and Statistics (CUS) code?
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.heading = What is the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.heading = What is the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}?
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.heading = What is the Customs Union and Statistics (CUS) code?
 houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and can include letters, numbers and a hyphen. For example, 1234567-1.
 houseConsignment.item.customsUnionAndStatisticsCode.CheckMode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
-houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.required = Enter the Customs Union and Statistics (CUS) code for item {1} in house consignment {0}
+houseConsignment.item.customsUnionAndStatisticsCode.NormalMode.error.required = Enter the Customs Union and Statistics (CUS) code
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 houseConsignment.item.customsUnionAndStatisticsCode.error.characters = The Customs Union and Statistics (CUS) code must only include letters a to z, numbers 0 to 9 and a hyphen
 houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Union and Statistics (CUS) code
@@ -872,6 +907,7 @@ additionalReferenceNumber.index.NormalMode.title = What is the additional refere
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
 additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
+additionalReferenceNumber.index.hint = This can be up to 70 characters long.
 additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
@@ -899,7 +935,9 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.Norma
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.heading = What is the additional reference number?
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.title = What is the new additional reference number for item {1} in house consignment {0}?
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.heading = What is the new additional reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.hint = This can be up to 70 characters long.
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.cl234Constraint = The additional reference number must be more than 0
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
@@ -961,7 +999,7 @@ houseConsignment.index.items.document.type.hint = Enter the document name or cod
 houseConsignment.index.items.document.type.placeholder = Select a document type
 houseConsignment.index.items.document.type.NormalMode.error.required = Select the type of document you want to add
 houseConsignment.index.items.document.type.CheckMode.error.required = Select the new document type for item {1} in house consignment {0}
-houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to this item. You can, however, still add a {1} document.
 
 houseConsignment.index.document.type.NormalMode.title = What type of document do you want to add?
 houseConsignment.index.document.type.CheckMode.title = What is the new document type for house consignment {0}?
@@ -987,9 +1025,9 @@ transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you 
 transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
 
-transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
-transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
-transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}
+transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove this seal from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove this seal from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove this seal from transport equipment {0}
 
 transportEquipment.index.addAnotherSeal.empty.title = You have added 0 seals to transport equipment {1}
 transportEquipment.index.addAnotherSeal.singular.title = You have added 1 seal to transport equipment {1}
@@ -1009,7 +1047,7 @@ unloadingFindings.additionalInformation.description = Description
 
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
-departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
@@ -1163,6 +1201,8 @@ houseConsignment.index.grossWeight.NormalMode.error.invalidCharacters = The gros
 houseConsignment.index.grossWeight.CheckMode.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.NormalMode.error.invalidFormat = The gross weight must only include 6 decimal places or less
 houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+houseConsignment.index.grossWeight.NormalMode.error.zero = The gross weight must be more than 0
+houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight must be more than 0
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
@@ -1174,6 +1214,7 @@ houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.error.req
 
 houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
 houseConsignment.index.additionalReference.additionalReferenceNumber.heading = What is the additional reference number?
+houseConsignment.index.additionalReference.additionalReferenceNumber.hint = This can be up to 70 characters long.
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.required = Enter the additional reference number
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
@@ -1300,3 +1341,34 @@ houseConsignment.addAnotherHouseConsignment.label = Do you want to add another h
 houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any more house consignments. To add another, you need to remove one first.
 houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
+
+newAuthYesNo.title = Do you want to use the revised unloading procedure?
+newAuthYesNo.heading = Do you want to use the revised unloading procedure?
+newAuthYesNo.paragraph = This allows you to make unloading remarks without physically unloading the goods.
+newAuthYesNo.hint = You can only use the revised unloading procedure if:
+newAuthYesNo.bullet1 = all items have the same office of destination
+newAuthYesNo.bullet2 = there are no broken seals
+newAuthYesNo.bullet3 = there are no discrepancies between the transit movement and unloading permission
+newAuthYesNo.error.required = Select yes if you want to use the revised unloading procedure
+newAuthYesNo.checkYourAnswers.change.hidden = if you want to use the revised unloading procedure
+newAuthYesNo.checkYourAnswers = Do you want to use the revised unloading procedure?
+
+goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?
+goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
+goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
+goodsTooLargeForContainerYesNo.checkYourAnswers.change.hidden = if the goods are too large to fit into a container
+goodsTooLargeForContainerYesNo.checkYourAnswers = Are the goods too large to fit into a container?
+
+sealsReplacedByCustomsAuthorityYesNo.title = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.heading = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.paragraph = This could have happened during routine checks or following an incident.
+sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals have been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers.change.hidden = if any seals been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers = Have any seals been replaced by a customs authority?
+
+largeUnsealedGoodsRecordDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
+largeUnsealedGoodsRecordDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
+largeUnsealedGoodsRecordDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
+largeUnsealedGoodsRecordDiscrepanciesYesNo.yes = Yes - this means you must select no to using the revised unloading procedure and report the discrepancies
+largeUnsealedGoodsRecordDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission

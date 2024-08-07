@@ -369,9 +369,31 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
       }
 
       "removeItem" - {
-        "must remove everything except sequence number and declaration goods item number" in {
-          val data = Json
-            .parse("""
+        "must remove everything except sequence number and declaration goods item number" - {
+          "when sequence number defined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "sequenceNumber" : "1",
+                  |          "declarationGoodsItemNumber" : 1,
+                  |          "foo" : "foo",
+                  |          "bar" : "bar",
+                  |          "baz" : "baz"
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeItem(FakeSection).get
+            result.data mustBe Json.parse("""
                 |{
                 |  "some" : {
                 |    "example" : {
@@ -379,41 +401,80 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
                 |        {
                 |          "sequenceNumber" : "1",
                 |          "declarationGoodsItemNumber" : 1,
-                |          "foo" : "foo",
-                |          "bar" : "bar",
-                |          "baz" : "baz"
+                |          "removed" : true
                 |        }
                 |      ]
                 |    }
                 |  }
                 |}
                 |""".stripMargin)
-            .as[JsObject]
+          }
 
-          val userAnswers = emptyUserAnswers.copy(data = data)
-          val result      = userAnswers.removeItem(FakeSection).get
-          result.data mustBe Json.parse("""
-              |{
-              |  "some" : {
-              |    "example" : {
-              |      "path" : [
-              |        {
-              |          "sequenceNumber" : "1",
-              |          "declarationGoodsItemNumber" : 1,
-              |          "removed" : true
-              |        }
-              |      ]
-              |    }
-              |  }
-              |}
-              |""".stripMargin)
+          "when sequence number undefined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "declarationGoodsItemNumber" : 1,
+                  |          "foo" : "foo",
+                  |          "bar" : "bar",
+                  |          "baz" : "baz"
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeItem(FakeSection).get
+            result.data mustBe Json.parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : []
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+          }
         }
       }
 
       "removeDocument" - {
-        "must remove everything except sequence number and document type" in {
-          val data = Json
-            .parse("""
+        "must remove everything except sequence number and document type" - {
+          "when sequence number defined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "sequenceNumber" : "1",
+                  |          "type" : {
+                  |            "type" : "Supporting",
+                  |            "code" : "N002",
+                  |            "description" : "Certificate of conformity with the European Union marketing standards for fresh fruit and vegetables"
+                  |          },
+                  |          "foo" : "foo",
+                  |          "bar" : "bar",
+                  |          "baz" : "baz"
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeDocument(FakeSection).get
+            result.data mustBe Json.parse("""
                 |{
                 |  "some" : {
                 |    "example" : {
@@ -421,40 +482,195 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
                 |        {
                 |          "sequenceNumber" : "1",
                 |          "type" : {
-                |            "type" : "Supporting",
-                |            "code" : "N002",
-                |            "description" : "Certificate of conformity with the European Union marketing standards for fresh fruit and vegetables"
+                |            "type" : "Supporting"
                 |          },
-                |          "foo" : "foo",
-                |          "bar" : "bar",
-                |          "baz" : "baz"
+                |          "removed" : true
                 |        }
                 |      ]
                 |    }
                 |  }
                 |}
                 |""".stripMargin)
-            .as[JsObject]
+          }
 
-          val userAnswers = emptyUserAnswers.copy(data = data)
-          val result      = userAnswers.removeDocument(FakeSection).get
-          result.data mustBe Json.parse("""
-              |{
-              |  "some" : {
-              |    "example" : {
-              |      "path" : [
-              |        {
-              |          "sequenceNumber" : "1",
-              |          "type" : {
-              |            "type" : "Supporting"
-              |          },
-              |          "removed" : true
-              |        }
-              |      ]
-              |    }
-              |  }
-              |}
-              |""".stripMargin)
+          "when sequence number undefined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "type" : {
+                  |            "type" : "Supporting",
+                  |            "code" : "N002",
+                  |            "description" : "Certificate of conformity with the European Union marketing standards for fresh fruit and vegetables"
+                  |          },
+                  |          "foo" : "foo",
+                  |          "bar" : "bar",
+                  |          "baz" : "baz"
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeDocument(FakeSection).get
+            result.data mustBe Json.parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : []
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+          }
+        }
+      }
+
+      "removeSeal" - {
+        "must remove everything except sequence number and seal identifier" - {
+          "when sequence number defined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "sequenceNumber" : "1",
+                  |          "identifier" : "1"
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeSeal(FakeSection).get
+            result.data mustBe Json.parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : [
+                |        {
+                |          "sequenceNumber" : "1",
+                |          "identifier" : "1",
+                |          "removed" : true
+                |        }
+                |      ]
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+          }
+
+          "when sequence number undefined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "identifier" : "1"
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeSeal(FakeSection).get
+            result.data mustBe Json.parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : []
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+          }
+        }
+      }
+
+      "removeGoodsReference" - {
+        "must remove everything except sequence number and declaration goods item number" - {
+          "when sequence number defined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "sequenceNumber" : "1",
+                  |          "declarationGoodsItemNumber" : 1
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeGoodsReference(FakeSection).get
+            result.data mustBe Json.parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : [
+                |        {
+                |          "sequenceNumber" : "1",
+                |          "declarationGoodsItemNumber" : 1,
+                |          "removed" : true
+                |        }
+                |      ]
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+          }
+
+          "when sequence number undefined" in {
+            val data = Json
+              .parse("""
+                  |{
+                  |  "some" : {
+                  |    "example" : {
+                  |      "path" : [
+                  |        {
+                  |          "declarationGoodsItemNumber" : 1
+                  |        }
+                  |      ]
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = data)
+            val result      = userAnswers.removeGoodsReference(FakeSection).get
+            result.data mustBe Json.parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : []
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+          }
         }
       }
     }

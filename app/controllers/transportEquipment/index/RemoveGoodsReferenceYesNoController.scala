@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveGoodsReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
@@ -94,7 +94,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(ItemSection(equipmentIndex, itemIndex)))
+                    Future.fromTry(request.userAnswers.removeGoodsReference(ItemSection(equipmentIndex, itemIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

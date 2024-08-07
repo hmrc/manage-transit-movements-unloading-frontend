@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{__, Reads}
@@ -75,11 +76,17 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         result mustBe MESSAGESequence(
           messageSender = eoriNumber.value,
-          messageRecipient = "NTA.GB",
-          preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-          messageIdentification = "foo",
-          messageType = CC044C,
-          correlationIdentifier = None
+          messagE_1Sequence2 = MESSAGE_1Sequence(
+            messageRecipient = "NTA.GB",
+            preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
+            messageIdentification = "foo"
+          ),
+          messagE_TYPESequence3 = MESSAGE_TYPESequence(
+            messageType = CC044C
+          ),
+          correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+            correlationIdentifier = None
+          )
         )
       }
 
@@ -88,11 +95,17 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         result mustBe MESSAGESequence(
           messageSender = eoriNumber.value,
-          messageRecipient = "NTA.XI",
-          preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-          messageIdentification = "foo",
-          messageType = CC044C,
-          correlationIdentifier = None
+          messagE_1Sequence2 = MESSAGE_1Sequence(
+            messageRecipient = "NTA.XI",
+            preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
+            messageIdentification = "foo"
+          ),
+          messagE_TYPESequence3 = MESSAGE_TYPESequence(
+            messageType = CC044C
+          ),
+          correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+            correlationIdentifier = None
+          )
         )
       }
     }
@@ -133,20 +146,89 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "unloadingRemarkReads" - {
-    "must create unloading remarks" - {
-      import pages._
+    "when RevisedUnloadingPermission is true" - {
+      "must create unloading remark" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
 
-      "when there are seal numbers in the IE043 message" - {
-        "when seals can be read and no seals broken" - {
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+        val reads  = service.unloadingRemarkReads
+        val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+        result mustBe UnloadingRemarkType(
+          conform = Number1,
+          unloadingCompletion = Number1,
+          unloadingDate = XMLCalendar("2020-01-01"),
+          stateOfSeals = Some(Number1),
+          unloadingRemark = None
+        )
+      }
+    }
+    "when RevisedUnloadingPermission is false" - {
+      "must create unloading remarks" - {
+        import pages._
+
+        "when there are seal numbers in the IE043 message" - {
+          "when seals can be read and no seals broken" - {
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+              forAll(Gen.alphaNumStr) {
+                unloadingRemark =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(NewAuthYesNoPage, false)
+                    .setValue(UnloadingTypePage, UnloadingType.Fully)
+                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                    .setValue(CanSealsBeReadPage, true)
+                    .setValue(AreAnySealsBrokenPage, false)
+                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+                    .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                  val reads  = service.unloadingRemarkReads
+                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                  result mustBe UnloadingRemarkType(
+                    conform = Number0,
+                    unloadingCompletion = Number1,
+                    unloadingDate = XMLCalendar("2020-01-01"),
+                    stateOfSeals = Some(Number1),
+                    unloadingRemark = Some(unloadingRemark)
+                  )
+              }
+            }
+
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
+              forAll(Gen.alphaNumStr) {
+                unloadingRemark =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(NewAuthYesNoPage, false)
+                    .setValue(UnloadingTypePage, UnloadingType.Fully)
+                    .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                    .setValue(CanSealsBeReadPage, true)
+                    .setValue(AreAnySealsBrokenPage, false)
+                    .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+                    .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                  val reads  = service.unloadingRemarkReads
+                  val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                  result mustBe UnloadingRemarkType(
+                    conform = Number1,
+                    unloadingCompletion = Number1,
+                    unloadingDate = XMLCalendar("2020-01-01"),
+                    stateOfSeals = Some(Number1),
+                    unloadingRemark = Some(unloadingRemark)
+                  )
+              }
+            }
+          }
+
+          "when seals can be read and seals broken" in {
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                   .setValue(CanSealsBeReadPage, true)
-                  .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+                  .setValue(AreAnySealsBrokenPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
                 val reads  = service.unloadingRemarkReads
@@ -156,141 +238,98 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   conform = Number0,
                   unloadingCompletion = Number1,
                   unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number1),
+                  stateOfSeals = Some(Number0),
                   unloadingRemark = Some(unloadingRemark)
                 )
             }
           }
 
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
+          "when seals can't be read and seals broken" in {
             forAll(Gen.alphaNumStr) {
               unloadingRemark =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                  .setValue(CanSealsBeReadPage, true)
-                  .setValue(AreAnySealsBrokenPage, false)
-                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+                  .setValue(CanSealsBeReadPage, false)
+                  .setValue(AreAnySealsBrokenPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
                 val reads  = service.unloadingRemarkReads
                 val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                 result mustBe UnloadingRemarkType(
-                  conform = Number1,
+                  conform = Number0,
                   unloadingCompletion = Number1,
                   unloadingDate = XMLCalendar("2020-01-01"),
-                  stateOfSeals = Some(Number1),
+                  stateOfSeals = Some(Number0),
                   unloadingRemark = Some(unloadingRemark)
                 )
             }
           }
-        }
 
-        "when seals can be read and seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
+          "when seals can't be read and no seals broken" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, false)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number0),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
+          }
+
+          "when there are no seal numbers in the IE043 message" - {
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
               val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
+                .setValue(NewAuthYesNoPage, false)
+                .setValue(UnloadingTypePage, UnloadingType.Partially)
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, true)
-                .setValue(AreAnySealsBrokenPage, true)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+              val reads  = service.unloadingRemarkReads
+              val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+              result mustBe UnloadingRemarkType(
+                conform = Number1,
+                unloadingCompletion = Number0,
+                unloadingDate = XMLCalendar("2020-01-01"),
+                stateOfSeals = None,
+                unloadingRemark = None
+              )
+            }
+
+            "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
+                .setValue(UnloadingTypePage, UnloadingType.Partially)
+                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
               val reads  = service.unloadingRemarkReads
               val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
               result mustBe UnloadingRemarkType(
                 conform = Number0,
-                unloadingCompletion = Number1,
+                unloadingCompletion = Number0,
                 unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number0),
-                unloadingRemark = Some(unloadingRemark)
+                stateOfSeals = None,
+                unloadingRemark = None
               )
-          }
-        }
-
-        "when seals can't be read and seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
-                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, false)
-                .setValue(AreAnySealsBrokenPage, true)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
-
-              val reads  = service.unloadingRemarkReads
-              val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-              result mustBe UnloadingRemarkType(
-                conform = Number0,
-                unloadingCompletion = Number1,
-                unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number0),
-                unloadingRemark = Some(unloadingRemark)
-              )
-          }
-        }
-
-        "when seals can't be read and no seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
-                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, false)
-                .setValue(AreAnySealsBrokenPage, false)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
-
-              val reads  = service.unloadingRemarkReads
-              val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-              result mustBe UnloadingRemarkType(
-                conform = Number0,
-                unloadingCompletion = Number1,
-                unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number0),
-                unloadingRemark = Some(unloadingRemark)
-              )
-          }
-        }
-
-        "when there are no seal numbers in the IE043 message" - {
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is false" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(UnloadingTypePage, UnloadingType.Partially)
-              .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-            val reads  = service.unloadingRemarkReads
-            val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-            result mustBe UnloadingRemarkType(
-              conform = Number1,
-              unloadingCompletion = Number0,
-              unloadingDate = XMLCalendar("2020-01-01"),
-              stateOfSeals = None,
-              unloadingRemark = None
-            )
-          }
-
-          "and AddTransitUnloadingPermissionDiscrepanciesYesNo is true" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(UnloadingTypePage, UnloadingType.Partially)
-              .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-
-            val reads  = service.unloadingRemarkReads
-            val result = userAnswers.data.as[UnloadingRemarkType](reads)
-
-            result mustBe UnloadingRemarkType(
-              conform = Number0,
-              unloadingCompletion = Number0,
-              unloadingDate = XMLCalendar("2020-01-01"),
-              stateOfSeals = None,
-              unloadingRemark = None
-            )
+            }
           }
         }
       }
@@ -316,6 +355,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setValue(GrossWeightPage, grossMass)
 
               val reads  = service.consignmentReads(Some(ie043))
@@ -333,6 +373,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setValue(GrossWeightPage, grossMass)
 
               val reads  = service.consignmentReads(Some(ie043))
@@ -349,6 +390,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(grossMass = Some(grossMass))
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setValue(GrossWeightPage, grossMass)
 
             val reads  = service.consignmentReads(Some(ie043))
@@ -371,52 +413,68 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val transportEquipment = Seq(
               TransportEquipmentType05(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 containerIdentificationNumber = Some("originalTransportEquipment1ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
                   SealType04(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     identifier = "originalTransportEquipment1SealIdentifier1"
                   ),
                   SealType04(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     identifier = "originalTransportEquipment1SealIdentifier2"
+                  ),
+                  SealType04(
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment1SealIdentifier3"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType02(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     declarationGoodsItemNumber = 1
                   ),
                   GoodsReferenceType02(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     declarationGoodsItemNumber = 2
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 3
                   )
                 )
               ),
               TransportEquipmentType05(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 containerIdentificationNumber = Some("originalTransportEquipment2ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
                   SealType04(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     identifier = "originalTransportEquipment2SealIdentifier1"
                   ),
                   SealType04(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     identifier = "originalTransportEquipment2SealIdentifier2"
+                  ),
+                  SealType04(
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment2SealIdentifier3"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType02(
-                    sequenceNumber = 1,
-                    declarationGoodsItemNumber = 3
+                    sequenceNumber = "1",
+                    declarationGoodsItemNumber = 4
                   ),
                   GoodsReferenceType02(
-                    sequenceNumber = 2,
-                    declarationGoodsItemNumber = 4
+                    sequenceNumber = "2",
+                    declarationGoodsItemNumber = 5
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 6
                   )
                 )
               )
@@ -424,6 +482,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportEquipment = transportEquipment)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport equipment 1 - Changed
               .setSequenceNumber(TransportEquipmentSection(Index(0)), 1)
               .setNotRemoved(TransportEquipmentSection(Index(0)))
@@ -436,8 +495,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setSequenceNumber(SealSection(Index(0), Index(1)), 2)
               .setNotRemoved(SealSection(Index(0), Index(1)))
               .setValue(SealIdentificationNumberPage(Index(0), Index(1)), "newTransportEquipment1SealIdentifier2")
-              /// Transport equipment 1 - Seal 3 - Added
-              .setValue(SealIdentificationNumberPage(Index(0), Index(2)), "newTransportEquipment1SealIdentifier3")
+              /// Transport equipment 1 - Seal 3 - Removed
+              .setSequenceNumber(SealSection(Index(0), Index(2)), 3)
+              .setRemoved(SealSection(Index(0), Index(2)))
+              .setValue(SealIdentificationNumberPage(Index(0), Index(2)), "originalTransportEquipment1SealIdentifier3")
+              /// Transport equipment 1 - Seal 4 - Added
+              .setValue(SealIdentificationNumberPage(Index(0), Index(3)), "newTransportEquipment1SealIdentifier4")
               /// Transport equipment 1 - Goods reference 1 - Unchanged
               .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
@@ -445,9 +508,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               /// Transport equipment 1 - Goods reference 2 - Changed
               .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
               .setNotRemoved(ItemSection(Index(0), Index(1)))
-              .setValue(ItemPage(Index(0), Index(1)), BigInt(5))
-              /// Transport equipment 1 - Goods reference 3 - Added
-              .setValue(ItemPage(Index(0), Index(2)), BigInt(6))
+              .setValue(ItemPage(Index(0), Index(1)), BigInt(7))
+              /// Transport equipment 1 - Goods reference 3 - Removed
+              .setSequenceNumber(ItemSection(Index(0), Index(2)), 3)
+              .setRemoved(ItemSection(Index(0), Index(2)))
+              .setValue(ItemPage(Index(0), Index(2)), BigInt(3))
+              /// Transport equipment 1 - Goods reference 4 - Added
+              .setValue(ItemPage(Index(0), Index(3)), BigInt(8))
 
               // Transport equipment 2 - Changed
               .setSequenceNumber(TransportEquipmentSection(Index(1)), 2)
@@ -461,18 +528,26 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setSequenceNumber(SealSection(Index(1), Index(1)), 2)
               .setNotRemoved(SealSection(Index(1), Index(1)))
               .setValue(SealIdentificationNumberPage(Index(1), Index(1)), "originalTransportEquipment2SealIdentifier2")
-              /// Transport equipment 2 - Seal 3 - Added
-              .setValue(SealIdentificationNumberPage(Index(1), Index(2)), "newTransportEquipment2SealIdentifier3")
+              /// Transport equipment 2 - Seal 3 - Removed
+              .setSequenceNumber(SealSection(Index(1), Index(2)), 3)
+              .setRemoved(SealSection(Index(1), Index(2)))
+              .setValue(SealIdentificationNumberPage(Index(1), Index(2)), "originalTransportEquipment2SealIdentifier3")
+              /// Transport equipment 2 - Seal 4 - Added
+              .setValue(SealIdentificationNumberPage(Index(1), Index(3)), "newTransportEquipment2SealIdentifier4")
               /// Transport equipment 2 - Goods reference 1 - Unchanged
               .setSequenceNumber(ItemSection(Index(1), Index(0)), 1)
               .setNotRemoved(ItemSection(Index(1), Index(0)))
-              .setValue(ItemPage(Index(1), Index(0)), BigInt(3))
+              .setValue(ItemPage(Index(1), Index(0)), BigInt(4))
               /// Transport equipment 2 - Goods reference 2 - Changed
               .setSequenceNumber(ItemSection(Index(1), Index(1)), 2)
               .setNotRemoved(ItemSection(Index(1), Index(1)))
-              .setValue(ItemPage(Index(1), Index(1)), BigInt(7))
-              /// Transport equipment 2 - Goods reference 3 - Added
-              .setValue(ItemPage(Index(1), Index(2)), BigInt(8))
+              .setValue(ItemPage(Index(1), Index(1)), BigInt(9))
+              /// Transport equipment 2 - Goods reference 3 - Removed
+              .setSequenceNumber(ItemSection(Index(1), Index(2)), 3)
+              .setRemoved(ItemSection(Index(1), Index(2)))
+              .setValue(ItemPage(Index(1), Index(2)), BigInt(6))
+              /// Transport equipment 2 - Goods reference 4 - Added
+              .setValue(ItemPage(Index(1), Index(3)), BigInt(10))
 
               // Transport equipment 3 - Removed
               .setSequenceNumber(TransportEquipmentSection(Index(2)), 3)
@@ -490,75 +565,91 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               TransportEquipmentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 containerIdentificationNumber = None,
-                numberOfSeals = Some(2),
+                numberOfSeals = Some(3),
                 Seal = Seq(
                   SealType02(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     identifier = "newTransportEquipment1SealIdentifier2"
                   ),
                   SealType02(
-                    sequenceNumber = 3,
-                    identifier = "newTransportEquipment1SealIdentifier3"
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment1SealIdentifier3"
+                  ),
+                  SealType02(
+                    sequenceNumber = "4",
+                    identifier = "newTransportEquipment1SealIdentifier4"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType01(
-                    sequenceNumber = 2,
-                    declarationGoodsItemNumber = 5
-                  ),
-                  GoodsReferenceType01(
-                    sequenceNumber = 3,
-                    declarationGoodsItemNumber = 6
-                  )
-                )
-              ),
-              TransportEquipmentType03(
-                sequenceNumber = 2,
-                containerIdentificationNumber = Some("newTransportEquipment2ContainerIdentificationNumber"),
-                numberOfSeals = Some(2),
-                Seal = Seq(
-                  SealType02(
-                    sequenceNumber = 1,
-                    identifier = "newTransportEquipment2SealIdentifier1"
-                  ),
-                  SealType02(
-                    sequenceNumber = 3,
-                    identifier = "newTransportEquipment2SealIdentifier3"
-                  )
-                ),
-                GoodsReference = Seq(
-                  GoodsReferenceType01(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     declarationGoodsItemNumber = 7
                   ),
                   GoodsReferenceType01(
-                    sequenceNumber = 3,
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 3
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = "4",
                     declarationGoodsItemNumber = 8
                   )
                 )
               ),
               TransportEquipmentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "2",
+                containerIdentificationNumber = Some("newTransportEquipment2ContainerIdentificationNumber"),
+                numberOfSeals = Some(3),
+                Seal = Seq(
+                  SealType02(
+                    sequenceNumber = "1",
+                    identifier = "newTransportEquipment2SealIdentifier1"
+                  ),
+                  SealType02(
+                    sequenceNumber = "3",
+                    identifier = "originalTransportEquipment2SealIdentifier3"
+                  ),
+                  SealType02(
+                    sequenceNumber = "4",
+                    identifier = "newTransportEquipment2SealIdentifier4"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType01(
+                    sequenceNumber = "2",
+                    declarationGoodsItemNumber = 9
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = "3",
+                    declarationGoodsItemNumber = 6
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = "4",
+                    declarationGoodsItemNumber = 10
+                  )
+                )
+              ),
+              TransportEquipmentType03(
+                sequenceNumber = "3",
                 containerIdentificationNumber = None,
                 numberOfSeals = None,
                 Seal = Nil,
                 GoodsReference = Nil
               ),
               TransportEquipmentType03(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 containerIdentificationNumber = Some("newTransportEquipment4ContainerIdentificationNumber"),
                 numberOfSeals = Some(1),
                 Seal = Seq(
                   SealType02(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     identifier = "newTransportEquipment4SealIdentifier1"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType01(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     declarationGoodsItemNumber = 9
                   )
                 )
@@ -572,51 +663,51 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val transportEquipment = Seq(
               TransportEquipmentType05(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 containerIdentificationNumber = Some("originalTransportEquipment1ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
                   SealType04(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     identifier = "originalTransportEquipment1SealIdentifier1"
                   ),
                   SealType04(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     identifier = "originalTransportEquipment1SealIdentifier2"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType02(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     declarationGoodsItemNumber = 1
                   ),
                   GoodsReferenceType02(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     declarationGoodsItemNumber = 2
                   )
                 )
               ),
               TransportEquipmentType05(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 containerIdentificationNumber = Some("originalTransportEquipment2ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
                   SealType04(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     identifier = "originalTransportEquipment2SealIdentifier1"
                   ),
                   SealType04(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     identifier = "originalTransportEquipment2SealIdentifier2"
                   )
                 ),
                 GoodsReference = Seq(
                   GoodsReferenceType02(
-                    sequenceNumber = 1,
+                    sequenceNumber = "1",
                     declarationGoodsItemNumber = 3
                   ),
                   GoodsReferenceType02(
-                    sequenceNumber = 2,
+                    sequenceNumber = "2",
                     declarationGoodsItemNumber = 4
                   )
                 )
@@ -625,6 +716,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportEquipment = transportEquipment)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport equipment 1 - Unchanged
               .setSequenceNumber(TransportEquipmentSection(Index(0)), 1)
               .setNotRemoved(TransportEquipmentSection(Index(0)))
@@ -684,33 +776,34 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val departureTransportMeans = Seq(
               DepartureTransportMeansType02(
-                sequenceNumber = 1,
-                typeOfIdentification = "originalTypeOfIdentification1",
-                identificationNumber = "originalIdentificationNumber1",
-                nationality = "originalNationality1"
+                sequenceNumber = "1",
+                typeOfIdentification = Some("originalTypeOfIdentification1"),
+                identificationNumber = Some("originalIdentificationNumber1"),
+                nationality = Some("originalNationality1")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 2,
-                typeOfIdentification = "originalTypeOfIdentification2",
-                identificationNumber = "originalIdentificationNumber2",
-                nationality = "originalNationality2"
+                sequenceNumber = "2",
+                typeOfIdentification = Some("originalTypeOfIdentification2"),
+                identificationNumber = Some("originalIdentificationNumber2"),
+                nationality = Some("originalNationality2")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 3,
-                typeOfIdentification = "originalTypeOfIdentification3",
-                identificationNumber = "originalIdentificationNumber3",
-                nationality = "originalNationality3"
+                sequenceNumber = "3",
+                typeOfIdentification = Some("originalTypeOfIdentification3"),
+                identificationNumber = Some("originalIdentificationNumber3"),
+                nationality = Some("originalNationality3")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 4,
-                typeOfIdentification = "originalTypeOfIdentification4",
-                identificationNumber = "originalIdentificationNumber4",
-                nationality = "originalNationality4"
+                sequenceNumber = "4",
+                typeOfIdentification = Some("originalTypeOfIdentification4"),
+                identificationNumber = Some("originalIdentificationNumber4"),
+                nationality = Some("originalNationality4")
               )
             )
             val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Departure transport means 1 - Changed type value
               .setSequenceNumber(TransportMeansSection(Index(0)), 1)
               .setNotRemoved(TransportMeansSection(Index(0)))
@@ -750,25 +843,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               DepartureTransportMeansType04(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeOfIdentification = Some("newTypeOfIdentification1"),
                 identificationNumber = None,
                 nationality = None
               ),
               DepartureTransportMeansType04(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeOfIdentification = None,
                 identificationNumber = Some("newIdentificationNumber2"),
                 nationality = Some("newNationality2")
               ),
               DepartureTransportMeansType04(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeOfIdentification = None,
                 identificationNumber = None,
                 nationality = None
               ),
               DepartureTransportMeansType04(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeOfIdentification = Some("newTypeOfIdentification5"),
                 identificationNumber = Some("newIdentificationNumber5"),
                 nationality = Some("newNationality5")
@@ -782,21 +875,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val departureTransportMeans = Seq(
               DepartureTransportMeansType02(
-                sequenceNumber = 1,
-                typeOfIdentification = "originalTypeOfIdentification1",
-                identificationNumber = "originalIdentificationNumber1",
-                nationality = "originalNationality1"
+                sequenceNumber = "1",
+                typeOfIdentification = Some("originalTypeOfIdentification1"),
+                identificationNumber = Some("originalIdentificationNumber1"),
+                nationality = Some("originalNationality1")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 2,
-                typeOfIdentification = "originalTypeOfIdentification2",
-                identificationNumber = "originalIdentificationNumber2",
-                nationality = "originalNationality2"
+                sequenceNumber = "2",
+                typeOfIdentification = Some("originalTypeOfIdentification2"),
+                identificationNumber = Some("originalIdentificationNumber2"),
+                nationality = Some("originalNationality2")
               )
             )
             val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Departure transport means 1 - Unchanged
               .setSequenceNumber(TransportMeansSection(Index(0)), 1)
               .setNotRemoved(TransportMeansSection(Index(0)))
@@ -829,25 +923,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1",
                 complementOfInformation = Some("originalComplementOfInformation1")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2",
                 complementOfInformation = Some("originalComplementOfInformation2")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3",
                 complementOfInformation = Some("originalComplementOfInformation3")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4",
                 complementOfInformation = Some("originalComplementOfInformation4")
@@ -856,6 +950,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(SupportingDocument = supportingDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Supporting document 1 - Changed type value
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -888,25 +983,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               SupportingDocumentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None,
                 complementOfInformation = None
               ),
               SupportingDocumentType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2"),
                 complementOfInformation = Some("newComplementOfInformation2")
               ),
               SupportingDocumentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None,
                 complementOfInformation = None
               ),
               SupportingDocumentType03(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5"),
                 complementOfInformation = Some("newComplementOfInformation5")
@@ -920,13 +1015,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1",
                 complementOfInformation = Some("originalComplementOfInformation1")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2",
                 complementOfInformation = Some("originalComplementOfInformation2")
@@ -935,6 +1030,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(SupportingDocument = supportingDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Supporting document 1 - Unchanged
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -965,22 +1061,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val transportDocuments = Seq(
               TransportDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
               TransportDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               ),
               TransportDocumentType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3"
               ),
               TransportDocumentType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4"
               )
@@ -988,6 +1084,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportDocument = transportDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport document 1 - Changed type value
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -1016,22 +1113,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               TransportDocumentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
               TransportDocumentType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
               TransportDocumentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None
               ),
               TransportDocumentType03(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
               )
@@ -1044,12 +1141,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val transportDocuments = Seq(
               TransportDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
               TransportDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               )
@@ -1057,6 +1154,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(TransportDocument = transportDocuments)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Transport document 1 - Unchanged
               .setSequenceNumber(DocumentSection(Index(0)), 1)
               .setNotRemoved(DocumentSection(Index(0)))
@@ -1085,22 +1183,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val additionalReferences = Seq(
               AdditionalReferenceType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = Some("originalReferenceNumber3")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = Some("originalReferenceNumber4")
               )
@@ -1108,6 +1206,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(AdditionalReference = additionalReferences)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Additional reference 1 - Changed type value
               .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
               .setNotRemoved(AdditionalReferenceSection(Index(0)))
@@ -1135,22 +1234,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               AdditionalReferenceType06(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
               )
@@ -1163,12 +1262,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignment =>
             val additionalReferences = Seq(
               AdditionalReferenceType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               )
@@ -1176,6 +1275,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(AdditionalReference = additionalReferences)
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               // Additional reference 1 - Unchanged
               .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
               .setNotRemoved(AdditionalReferenceSection(Index(0)))
@@ -1214,11 +1314,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           forAll(arbitrary[HouseConsignmentType04]) {
             houseConsignment =>
               val ie043 = houseConsignment.copy(
-                sequenceNumber = sequenceNumber,
+                sequenceNumber = sequenceNumber.toString,
                 grossMass = 50
               )
 
               val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
                 .setSequenceNumber(HouseConsignmentSection(Index(0)), 1)
                 .setValue(GrossWeightPage(Index(0)), grossMass)
 
@@ -1234,11 +1335,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               grossMass = grossMass
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setSequenceNumber(HouseConsignmentSection(Index(0)), 1)
               .setValue(GrossWeightPage(Index(0)), grossMass)
 
@@ -1259,36 +1361,37 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val departureTransportMeans = Seq(
               DepartureTransportMeansType02(
-                sequenceNumber = 1,
-                typeOfIdentification = "originalTypeOfIdentification1",
-                identificationNumber = "originalIdentificationNumber1",
-                nationality = "originalNationality1"
+                sequenceNumber = "1",
+                typeOfIdentification = Some("originalTypeOfIdentification1"),
+                identificationNumber = Some("originalIdentificationNumber1"),
+                nationality = Some("originalNationality1")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 2,
-                typeOfIdentification = "originalTypeOfIdentification2",
-                identificationNumber = "originalIdentificationNumber2",
-                nationality = "originalNationality2"
+                sequenceNumber = "2",
+                typeOfIdentification = Some("originalTypeOfIdentification2"),
+                identificationNumber = Some("originalIdentificationNumber2"),
+                nationality = Some("originalNationality2")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 3,
-                typeOfIdentification = "originalTypeOfIdentification3",
-                identificationNumber = "originalIdentificationNumber3",
-                nationality = "originalNationality3"
+                sequenceNumber = "3",
+                typeOfIdentification = Some("originalTypeOfIdentification3"),
+                identificationNumber = Some("originalIdentificationNumber3"),
+                nationality = Some("originalNationality3")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 4,
-                typeOfIdentification = "originalTypeOfIdentification4",
-                identificationNumber = "originalIdentificationNumber4",
-                nationality = "originalNationality4"
+                sequenceNumber = "4",
+                typeOfIdentification = Some("originalTypeOfIdentification4"),
+                identificationNumber = Some("originalIdentificationNumber4"),
+                nationality = Some("originalNationality4")
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               DepartureTransportMeans = departureTransportMeans
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Departure transport means 1 - Changed type value
@@ -1332,25 +1435,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               DepartureTransportMeansType04(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeOfIdentification = Some("newTypeOfIdentification1"),
                 identificationNumber = None,
                 nationality = None
               ),
               DepartureTransportMeansType04(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeOfIdentification = None,
                 identificationNumber = Some("newIdentificationNumber2"),
                 nationality = Some("newNationality2")
               ),
               DepartureTransportMeansType04(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeOfIdentification = None,
                 identificationNumber = None,
                 nationality = None
               ),
               DepartureTransportMeansType04(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeOfIdentification = Some("newTypeOfIdentification5"),
                 identificationNumber = Some("newIdentificationNumber5"),
                 nationality = Some("newNationality5")
@@ -1364,24 +1467,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val departureTransportMeans = Seq(
               DepartureTransportMeansType02(
-                sequenceNumber = 1,
-                typeOfIdentification = "originalTypeOfIdentification1",
-                identificationNumber = "originalIdentificationNumber1",
-                nationality = "originalNationality1"
+                sequenceNumber = "1",
+                typeOfIdentification = Some("originalTypeOfIdentification1"),
+                identificationNumber = Some("originalIdentificationNumber1"),
+                nationality = Some("originalNationality1")
               ),
               DepartureTransportMeansType02(
-                sequenceNumber = 2,
-                typeOfIdentification = "originalTypeOfIdentification2",
-                identificationNumber = "originalIdentificationNumber2",
-                nationality = "originalNationality2"
+                sequenceNumber = "2",
+                typeOfIdentification = Some("originalTypeOfIdentification2"),
+                identificationNumber = Some("originalIdentificationNumber2"),
+                nationality = Some("originalNationality2")
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               DepartureTransportMeans = departureTransportMeans
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Departure transport means 1 - Unchanged
@@ -1418,36 +1522,37 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1",
                 complementOfInformation = Some("originalComplementOfInformation1")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2",
                 complementOfInformation = Some("originalComplementOfInformation2")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3",
                 complementOfInformation = Some("originalComplementOfInformation3")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4",
                 complementOfInformation = Some("originalComplementOfInformation4")
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               SupportingDocument = supportingDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Supporting document 1 - Changed type value
@@ -1482,25 +1587,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               SupportingDocumentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None,
                 complementOfInformation = None
               ),
               SupportingDocumentType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2"),
                 complementOfInformation = Some("newComplementOfInformation2")
               ),
               SupportingDocumentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None,
                 complementOfInformation = None
               ),
               SupportingDocumentType03(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5"),
                 complementOfInformation = Some("newComplementOfInformation5")
@@ -1514,24 +1619,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1",
                 complementOfInformation = Some("originalComplementOfInformation1")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2",
                 complementOfInformation = Some("originalComplementOfInformation2")
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               SupportingDocument = supportingDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Supporting document 1 - Unchanged
@@ -1564,32 +1670,33 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val transportDocuments = Seq(
               TransportDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
               TransportDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               ),
               TransportDocumentType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3"
               ),
               TransportDocumentType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4"
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               TransportDocument = transportDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Transport document 1 - Changed type value
@@ -1620,22 +1727,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               TransportDocumentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
               TransportDocumentType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
               TransportDocumentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None
               ),
               TransportDocumentType03(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
               )
@@ -1648,22 +1755,23 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val transportDocuments = Seq(
               TransportDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
               TransportDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               TransportDocument = transportDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Transport document 1 - Unchanged
@@ -1694,32 +1802,33 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val additionalReferences = Seq(
               AdditionalReferenceType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = Some("originalReferenceNumber3")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = Some("originalReferenceNumber4")
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               AdditionalReference = additionalReferences
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Additional reference 1 - Changed type value
@@ -1753,22 +1862,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               AdditionalReferenceType06(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
               )
@@ -1781,22 +1890,23 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val additionalReferences = Seq(
               AdditionalReferenceType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
               AdditionalReferenceType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               )
             )
             val ie043 = houseConsignment.copy(
-              sequenceNumber = sequenceNumber,
+              sequenceNumber = sequenceNumber.toString,
               AdditionalReference = additionalReferences
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(HouseConsignmentSection(Index(0)))
               .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
               // Additional reference 1 - Unchanged
@@ -1813,6 +1923,142 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                         AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description")
               )
               .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(1)), "originalReferenceNumber2")
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+
+    "must create consignment items" - {
+      import pages.houseConsignment.index.items._
+      import pages.sections.ItemSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val consignmentItems = Seq(
+              ConsignmentItemType04(
+                goodsItemNumber = "1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods1"
+                )
+              ),
+              ConsignmentItemType04(
+                goodsItemNumber = "2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods2"
+                )
+              ),
+              ConsignmentItemType04(
+                goodsItemNumber = "3",
+                declarationGoodsItemNumber = 3,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods3"
+                )
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber.toString,
+              ConsignmentItem = consignmentItems
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Consignment item 1 - Changed description of goods
+              .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              .setValue(ItemDescriptionPage(Index(0), Index(0)), "newDescriptionOfGoods1")
+              // Consignment item 2 - Removed
+              .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
+              .setRemoved(ItemSection(Index(0), Index(1)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+              // Consignment item 3 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(2)), 3)
+              .setNotRemoved(ItemSection(Index(0), Index(2)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(2)), BigInt(3))
+              .setValue(ItemDescriptionPage(Index(0), Index(2)), "originalDescriptionOfGoods3")
+              // Consignment item 4 - Added
+              .setValue(ItemDescriptionPage(Index(0), Index(3)), "newDescriptionOfGoods4")
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(3)), BigInt(4))
+              // Consignment item 4 - Semi-added (user clicks Yes to add another item then clicks Back before adding a description)
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(4)), BigInt(5))
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.ConsignmentItem
+
+            result mustBe Seq(
+              ConsignmentItemType05(
+                goodsItemNumber = "1",
+                declarationGoodsItemNumber = 1,
+                Commodity = Some(
+                  CommodityType03(
+                    descriptionOfGoods = Some("newDescriptionOfGoods1")
+                  )
+                )
+              ),
+              ConsignmentItemType05(
+                goodsItemNumber = "2",
+                declarationGoodsItemNumber = 2
+              ),
+              ConsignmentItemType05(
+                goodsItemNumber = "4",
+                declarationGoodsItemNumber = 4,
+                Commodity = Some(
+                  CommodityType03(
+                    descriptionOfGoods = Some("newDescriptionOfGoods4")
+                  )
+                )
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val consignmentItems = Seq(
+              ConsignmentItemType04(
+                goodsItemNumber = "1",
+                declarationGoodsItemNumber = 1,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods1"
+                )
+              ),
+              ConsignmentItemType04(
+                goodsItemNumber = "2",
+                declarationGoodsItemNumber = 2,
+                Commodity = CommodityType08(
+                  descriptionOfGoods = "originalDescriptionOfGoods2"
+                )
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber.toString,
+              ConsignmentItem = consignmentItems
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Consignment item 1 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              .setValue(ItemDescriptionPage(Index(0), Index(0)), "originalDescriptionOfGoods1")
+              // Consignment item 2 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
+              .setNotRemoved(ItemSection(Index(0), Index(1)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+              .setValue(ItemDescriptionPage(Index(0), Index(1)), "originalDescriptionOfGoods2")
 
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
@@ -1847,17 +2093,20 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 )
               ),
               DangerousGoods = Nil,
-              GoodsMeasure = GoodsMeasureType03(
-                grossMass = 100,
-                netMass = Some(50)
+              GoodsMeasure = Some(
+                GoodsMeasureType03(
+                  grossMass = Some(100),
+                  netMass = Some(50)
+                )
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               Commodity = commodity
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               .setValue(ItemDescriptionPage(Index(0), Index(0)), "newDescriptionOfGoods")
@@ -1902,17 +2151,20 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 )
               ),
               DangerousGoods = Nil,
-              GoodsMeasure = GoodsMeasureType03(
-                grossMass = 100,
-                netMass = Some(50)
+              GoodsMeasure = Some(
+                GoodsMeasureType03(
+                  grossMass = Some(100),
+                  netMass = Some(50)
+                )
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               Commodity = commodity
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               .setValue(ItemDescriptionPage(Index(0), Index(0)), "originalDescriptionOfGoods")
@@ -1939,36 +2191,37 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val packaging = Seq(
               PackagingType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeOfPackages = "originalTypeOfPackages1",
                 numberOfPackages = Some(100),
                 shippingMarks = Some("originalShippingMarks1")
               ),
               PackagingType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeOfPackages = "originalTypeOfPackages2",
                 numberOfPackages = Some(200),
                 shippingMarks = Some("originalShippingMarks2")
               ),
               PackagingType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeOfPackages = "originalTypeOfPackages3",
                 numberOfPackages = Some(300),
                 shippingMarks = Some("originalShippingMarks3")
               ),
               PackagingType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeOfPackages = "originalTypeOfPackages4",
                 numberOfPackages = Some(400),
                 shippingMarks = Some("originalShippingMarks4")
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               Packaging = packaging
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Packaging 1 - Changed type value
@@ -2002,25 +2255,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               PackagingType04(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeOfPackages = Some("newTypeOfPackages1"),
                 numberOfPackages = None,
                 shippingMarks = None
               ),
               PackagingType04(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeOfPackages = None,
                 numberOfPackages = Some(2000),
                 shippingMarks = Some("newShippingMarks2")
               ),
               PackagingType04(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeOfPackages = None,
                 numberOfPackages = None,
                 shippingMarks = None
               ),
               PackagingType04(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeOfPackages = Some("newTypeOfPackages5"),
                 numberOfPackages = Some(5000),
                 shippingMarks = Some("newShippingMarks5")
@@ -2034,24 +2287,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val packaging = Seq(
               PackagingType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeOfPackages = "originalTypeOfPackages1",
                 numberOfPackages = Some(100),
                 shippingMarks = Some("originalShippingMarks1")
               ),
               PackagingType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeOfPackages = "originalTypeOfPackages2",
                 numberOfPackages = Some(200),
                 shippingMarks = Some("originalShippingMarks2")
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               Packaging = packaging
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Packaging 1 - Unchanged
@@ -2084,36 +2338,37 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1",
                 complementOfInformation = Some("originalComplementOfInformation1")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2",
                 complementOfInformation = Some("originalComplementOfInformation2")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3",
                 complementOfInformation = Some("originalComplementOfInformation3")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4",
                 complementOfInformation = Some("originalComplementOfInformation4")
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               SupportingDocument = supportingDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Supporting document 1 - Changed type value
@@ -2148,25 +2403,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               SupportingDocumentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None,
                 complementOfInformation = None
               ),
               SupportingDocumentType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2"),
                 complementOfInformation = Some("newComplementOfInformation2")
               ),
               SupportingDocumentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None,
                 complementOfInformation = None
               ),
               SupportingDocumentType03(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5"),
                 complementOfInformation = Some("newComplementOfInformation5")
@@ -2180,24 +2435,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1",
                 complementOfInformation = Some("originalComplementOfInformation1")
               ),
               SupportingDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2",
                 complementOfInformation = Some("originalComplementOfInformation2")
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               SupportingDocument = supportingDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Supporting document 1 - Unchanged
@@ -2230,32 +2486,33 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val transportDocuments = Seq(
               TransportDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
               TransportDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               ),
               TransportDocumentType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3"
               ),
               TransportDocumentType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4"
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               TransportDocument = transportDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Transport document 1 - Changed type value
@@ -2286,22 +2543,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               TransportDocumentType03(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
               TransportDocumentType03(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
               TransportDocumentType03(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None
               ),
               TransportDocumentType03(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
               )
@@ -2314,22 +2571,23 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val transportDocuments = Seq(
               TransportDocumentType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
               TransportDocumentType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               TransportDocument = transportDocuments
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Transport document 1 - Unchanged
@@ -2360,32 +2618,33 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val additionalReferences = Seq(
               AdditionalReferenceType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
               AdditionalReferenceType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               ),
               AdditionalReferenceType02(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = "originalTypeValue3",
                 referenceNumber = Some("originalReferenceNumber3")
               ),
               AdditionalReferenceType02(
-                sequenceNumber = 4,
+                sequenceNumber = "4",
                 typeValue = "originalTypeValue4",
                 referenceNumber = Some("originalReferenceNumber4")
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               AdditionalReference = additionalReferences
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Additional reference 1 - Changed type value
@@ -2419,22 +2678,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
             result mustBe Seq(
               AdditionalReferenceType06(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 3,
+                sequenceNumber = "3",
                 typeValue = None,
                 referenceNumber = None
               ),
               AdditionalReferenceType06(
-                sequenceNumber = 5,
+                sequenceNumber = "5",
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
               )
@@ -2447,22 +2706,23 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           consignmentItem =>
             val additionalReferences = Seq(
               AdditionalReferenceType02(
-                sequenceNumber = 1,
+                sequenceNumber = "1",
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
               AdditionalReferenceType02(
-                sequenceNumber = 2,
+                sequenceNumber = "2",
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               )
             )
             val ie043 = consignmentItem.copy(
-              goodsItemNumber = sequenceNumber,
+              goodsItemNumber = sequenceNumber.toString,
               AdditionalReference = additionalReferences
             )
 
             val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
               .setNotRemoved(ItemSection(Index(0), Index(0)))
               .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
               // Additional reference 1 - Unchanged

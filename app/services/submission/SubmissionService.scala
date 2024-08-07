@@ -18,6 +18,7 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
+import models.UnloadingSubmissionValues._
 import models.{ArrivalId, DocType, EoriNumber, Index, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
@@ -79,11 +80,17 @@ class SubmissionService @Inject() (
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
-      messageRecipient = s"NTA.${officeOfDestination.take(2)}",
-      preparationDateAndTime = dateTimeService.currentDateTime,
-      messageIdentification = messageIdentificationService.randomIdentifier,
-      messageType = CC044C,
-      correlationIdentifier = None
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = s"NTA.${officeOfDestination.take(2)}",
+        preparationDateAndTime = dateTimeService.currentDateTime,
+        messageIdentification = messageIdentificationService.randomIdentifier
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC044C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
     )
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
@@ -101,22 +108,37 @@ class SubmissionService @Inject() (
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
     import pages._
 
-    for {
-      unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
-      unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
-      unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
-      stateOfSeals        <- __.read[StateOfSeals].map(_.value)
-      conform <- stateOfSeals match {
-        case Some(false) => false: Reads[Boolean]
-        case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
-      }
-    } yield UnloadingRemarkType(
-      conform = conform,
-      unloadingCompletion = unloadingCompletion,
-      unloadingDate = unloadingDate,
-      stateOfSeals = stateOfSeals,
-      unloadingRemark = unloadingRemark
-    )
+    def generateUnloadingRemarkForRevisedProcedureYes: Reads[UnloadingRemarkType] =
+      UnloadingRemarkType(
+        conform = Conform,
+        unloadingCompletion = FullyUnloaded,
+        unloadingDate = dateTimeService.currentDateTime.toLocalDate,
+        stateOfSeals = Some(PresentAndNotDamaged),
+        unloadingRemark = None
+      )
+
+    def generateUnloadingRemarkDefaultCase: Reads[UnloadingRemarkType] =
+      for {
+        unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
+        unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
+        unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
+        stateOfSeals        <- __.read[StateOfSeals].map(_.value)
+        conform <- stateOfSeals match {
+          case Some(false) => Reads.pure(false)
+          case _           => AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_)
+        }
+      } yield UnloadingRemarkType(
+        conform = conform,
+        unloadingCompletion = unloadingCompletion,
+        unloadingDate = unloadingDate,
+        stateOfSeals = stateOfSeals,
+        unloadingRemark = unloadingRemark
+      )
+
+    NewAuthYesNoPage.path.read[Boolean].flatMap {
+      case true => generateUnloadingRemarkForRevisedProcedureYes
+      case _    => generateUnloadingRemarkDefaultCase
+    }
   }
 
   def consignmentReads(ie043: Option[ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
@@ -170,38 +192,53 @@ class SubmissionService @Inject() (
     def sealReads(
       ie043: Seq[SealType04]
     )(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
-      SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043).map {
-        _.map {
-          identifier =>
-            SealType02(
-              sequenceNumber = sequenceNumber,
-              identifier = identifier
-            )
+      for {
+        removed <- (__ \ Removed).readNullable[Boolean]
+        identifier <- removed match {
+          case Some(true) =>
+            successfulReads(SealIdentificationNumberPage(index, sealIndex).valueInIE043(ie043, Some(sequenceNumber)))
+          case _ =>
+            SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043)
         }
+      } yield identifier.map {
+        value =>
+          SealType02(
+            sequenceNumber = sequenceNumber,
+            identifier = value
+          )
       }
 
     def goodsReferenceReads(
       ie043: Seq[GoodsReferenceType02]
     )(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType01]] =
-      ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043).map {
-        _.map {
-          declarationGoodsItemNumber =>
-            GoodsReferenceType01(
-              sequenceNumber = sequenceNumber,
-              declarationGoodsItemNumber = declarationGoodsItemNumber
-            )
+      for {
+        removed <- (__ \ Removed).readNullable[Boolean]
+        declarationGoodsItemNumber <- removed match {
+          case Some(true) =>
+            successfulReads(ItemPage(index, goodsReferenceIndex).valueInIE043(ie043, Some(sequenceNumber)))
+          case _ =>
+            ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043)
         }
+      } yield declarationGoodsItemNumber.map {
+        value =>
+          GoodsReferenceType01(
+            sequenceNumber = sequenceNumber,
+            declarationGoodsItemNumber = value
+          )
       }
 
-    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber)
+    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber.toString())
     lazy val seals              = transportEquipment.getList(_.Seal)
     lazy val goodsReferences    = transportEquipment.getList(_.GoodsReference)
 
     for {
       removed                       <- (__ \ Removed).readNullable[Boolean]
       containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(transportEquipment)
-      seals                         <- SealsSection(index).readArray(sealReads(seals))
-      goodsReferences               <- ItemsSection(index).readArray(goodsReferenceReads(goodsReferences))
+      numberOfSeals <- SealsSection(index).count {
+        !_.validate((__ \ Removed).readNullable[Boolean]).asOpt.flatten.contains(true)
+      }
+      seals           <- SealsSection(index).readArray(sealReads(seals))
+      goodsReferences <- ItemsSection(index).readArray(goodsReferenceReads(goodsReferences))
     } yield removed match {
       case Some(true) =>
         Some(
@@ -218,7 +255,7 @@ class SubmissionService @Inject() (
               TransportEquipmentType03(
                 sequenceNumber = sequenceNumber,
                 containerIdentificationNumber = containerIdentificationNumber,
-                numberOfSeals = Some(seals.length),
+                numberOfSeals = Some(numberOfSeals),
                 Seal = seals,
                 GoodsReference = goodsReferences
               )
@@ -379,7 +416,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.departureTransportMeans._
     import pages.sections.houseConsignment.index.documents._
 
-    lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber)
+    lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber.toString())
     lazy val departureTransportMeans = houseConsignment.getList(_.DepartureTransportMeans)
     lazy val supportingDocuments     = houseConsignment.getList(_.SupportingDocument)
     lazy val transportDocuments      = houseConsignment.getList(_.TransportDocument)
@@ -582,7 +619,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.items.additionalReference._
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
-    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
+    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber.toString())
     lazy val commodity            = consignmentItem.map(_.Commodity)
     lazy val packaging            = consignmentItem.getList(_.Packaging)
     lazy val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
@@ -644,7 +681,7 @@ class SubmissionService @Inject() (
     import pages.houseConsignment.index.items._
 
     lazy val commodityCode = ie043.flatMap(_.CommodityCode)
-    lazy val goodsMeasure  = ie043.map(_.GoodsMeasure)
+    lazy val goodsMeasure  = ie043.flatMap(_.GoodsMeasure)
 
     def commodityCodeReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType03]] =
       for {

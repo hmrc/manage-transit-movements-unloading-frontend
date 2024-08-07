@@ -91,17 +91,20 @@ trait SpecBase
     def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
       userAnswers.get(page).value
 
-    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T]): UserAnswers =
+    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T], rds: Reads[T]): UserAnswers =
       userAnswers.set(page, value).success.value
 
-    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T]): UserAnswers =
+    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T], rds: Reads[T]): UserAnswers =
       value.map(setValue(page, _)).getOrElse(userAnswers)
 
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: Section[JsObject]): BigInt =
-      getValue[JsNumber](section, SequenceNumber).value.toBigInt
+    def getSequenceNumber(section: Section[JsObject]): String =
+      getValue[JsNumber](section, SequenceNumber).value.toBigInt.toString()
+
+    def getRemoved(section: Section[JsObject]): Boolean =
+      getValue[JsBoolean](section, Removed).value
 
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get

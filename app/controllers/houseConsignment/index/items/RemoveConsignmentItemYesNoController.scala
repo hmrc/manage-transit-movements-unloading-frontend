@@ -18,7 +18,8 @@ package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, UserAnswers}
+import pages.houseConsignment.index.items.ItemDescriptionPage
 import pages.sections.ItemSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,13 +42,26 @@ class RemoveConsignmentItemYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[String] =
+    userAnswers.get(ItemDescriptionPage(houseConsignmentIndex, itemIndex))
+
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.removeConsignmentItemYesNo", itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
+        Ok(
+          view(
+            form(houseConsignmentIndex, itemIndex),
+            request.userAnswers.mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            mode,
+            formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex)
+          )
+        )
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
@@ -56,7 +70,20 @@ class RemoveConsignmentItemYesNoController @Inject() (
         form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
+            formWithErrors =>
+              Future.successful(
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    request.userAnswers.mrn,
+                    arrivalId,
+                    houseConsignmentIndex,
+                    itemIndex,
+                    mode,
+                    formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex)
+                  )
+                )
+              ),
             value =>
               for {
                 updatedAnswers <-

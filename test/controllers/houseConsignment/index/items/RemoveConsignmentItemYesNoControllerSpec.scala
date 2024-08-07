@@ -23,12 +23,12 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
+import org.scalacheck.Gen
+import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
 import pages.sections.ItemSection
-import play.api.libs.json.{__, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.transformers.SequenceNumber
 import views.html.houseConsignment.index.items.RemoveConsignmentItemYesNoView
 
 import scala.concurrent.Future
@@ -46,25 +46,31 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      forAll(Gen.alphaNumStr) {
+        itemDescription =>
+          val userAnswers = emptyUserAnswers.setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), itemDescription)
 
-      val request = FakeRequest(GET, removeConsignmentItemRoute)
+          setExistingUserAnswers(userAnswers)
 
-      val result = route(app, request).value
+          val request = FakeRequest(GET, removeConsignmentItemRoute)
 
-      val view = injector.instanceOf[RemoveConsignmentItemYesNoView]
+          val result = route(app, request).value
 
-      status(result) mustEqual OK
+          val view = injector.instanceOf[RemoveConsignmentItemYesNoView]
 
-      contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(itemDescription))(request, messages).toString
+
+      }
     }
 
     "when yes submitted" - {
       "must redirect to cross check page and remove consignment item at specified index" in {
         val userAnswers = emptyUserAnswers
           .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
-          .setValue(ItemSection(houseConsignmentIndex, itemIndex), __ \ SequenceNumber, 1)
+          .setSequenceNumber(ItemSection(houseConsignmentIndex, itemIndex), 1)
           .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
           .setNotRemoved(ItemSection(houseConsignmentIndex, itemIndex))
 
@@ -98,7 +104,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
-          .setValue(ItemSection(houseConsignmentIndex, itemIndex), __ \ SequenceNumber, 1)
+          .setSequenceNumber(ItemSection(houseConsignmentIndex, itemIndex), 1)
           .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
           .setNotRemoved(ItemSection(houseConsignmentIndex, itemIndex))
 
@@ -129,21 +135,27 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      forAll(Gen.alphaNumStr) {
+        itemDescription =>
+          val userAnswers = emptyUserAnswers.setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), itemDescription)
 
-      val invalidAnswer = ""
+          setExistingUserAnswers(userAnswers)
 
-      val request    = FakeRequest(POST, removeConsignmentItemRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+          val invalidAnswer = ""
 
-      val result = route(app, request).value
+          val request    = FakeRequest(POST, removeConsignmentItemRoute).withFormUrlEncodedBody(("value", ""))
+          val filledForm = form.bind(Map("value" -> invalidAnswer))
 
-      status(result) mustEqual BAD_REQUEST
+          val result = route(app, request).value
 
-      val view = injector.instanceOf[RemoveConsignmentItemYesNoView]
+          status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+          val view = injector.instanceOf[RemoveConsignmentItemYesNoView]
+
+          contentAsString(result) mustEqual
+            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(itemDescription))(request, messages).toString
+      }
+
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

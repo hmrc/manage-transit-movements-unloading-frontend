@@ -17,20 +17,22 @@
 @import controllers.transportEquipment.index.seals.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
+    insetText: InsetText,
     button: Button
 )
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index, sealIndex: Index, sealIdNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportEquipment.index.seal.removeSealYesNo.title", equipmentIndex.display, sealIdNumber),
+    title = messages("transportEquipment.index.seal.removeSealYesNo.title", equipmentIndex.display),
     showBackLink = true
 ) {
 
@@ -40,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("transportEquipment.index.seal.removeSealYesNo.heading", equipmentIndex.display, sealIdNumber),
-                caption = Some(messages("site.caption", mrn.toString))
+            yesNoType = InputYesNoViewModel(
+                heading = messages("transportEquipment.index.seal.removeSealYesNo.heading", equipmentIndex.display),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = Some(insetText(sealIdNumber))
             )
         )
 

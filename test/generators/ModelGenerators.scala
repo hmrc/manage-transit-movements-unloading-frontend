@@ -18,6 +18,7 @@ package generators
 
 import models.P5.ArrivalMessageType
 import models._
+import models.reference.TransportMode.InlandMode
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -118,10 +119,22 @@ trait ModelGenerators {
       Gen.oneOf(UnloadingType.values)
     }
 
-  implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] =
+  implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] = {
+    import models.P5.ArrivalMessageType._
     Arbitrary {
-      Gen.oneOf(ArrivalMessageType.values)
+      for {
+        value <- nonEmptyString
+        result <- Gen.oneOf(
+          ArrivalNotification,
+          GoodsReleasedNotification,
+          UnloadingPermission,
+          UnloadingRemarks,
+          RejectionFromOfficeOfDestination,
+          Other(value)
+        )
+      } yield result
     }
+  }
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {
@@ -220,5 +233,17 @@ trait ModelGenerators {
   implicit lazy val arbitraryDocType: Arbitrary[DocType] =
     Arbitrary {
       Gen.oneOf(DocType.values)
+    }
+
+  implicit lazy val arbitraryCoordinates: Arbitrary[Coordinates] = Arbitrary {
+    for {
+      long <- Gen.alphaNumStr
+      lat  <- Gen.alphaNumStr
+    } yield Coordinates(long, lat)
+  }
+
+  implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
     }
 }
