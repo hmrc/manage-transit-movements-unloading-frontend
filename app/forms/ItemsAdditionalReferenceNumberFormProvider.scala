@@ -25,13 +25,14 @@ import javax.inject.Inject
 
 class ItemsAdditionalReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(requiredError: String): Form[String] =
+  def apply(requiredError: String, isDocumentInCL234: Boolean): Form[String] =
     Form(
       "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(stringFieldRegexComma, s"houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters"),
-            maxLength(maxAdditionalReferenceNumLength, s"houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.length")
+            regexp(stringFieldRegexComma, "houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters"),
+            maxLength(maxAdditionalReferenceNumLength, "houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.length"),
+            cl234Constraint(isDocumentInCL234, "houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.cl234Constraint")
           )
         )
     )

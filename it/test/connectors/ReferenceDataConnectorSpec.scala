@@ -681,6 +681,23 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkErrorResponse(url, connector.getPreviousDocuments())
       }
     }
+
+    "getDocumentTypeExcise" - {
+      val code = "C651"
+      val url  = s"/$baseUrl/lists/DocumentTypeExcise?data.code=$code"
+
+      "must return DocumentTypeExcise when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(documentTypeExciseJson))
+        )
+
+        val expectedResult =
+          DocTypeExcise(activeFrom = "2024-01-01", code = "C651", state = "valid", description = "AAD - Administrative Accompanying Document (EMCS)")
+
+        connector.getDocumentTypeExcise(code).futureValue mustEqual expectedResult
+      }
+    }
   }
 
   private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
@@ -1035,6 +1052,36 @@ object ReferenceDataConnectorSpec {
        |  ]
        |}
        |""".stripMargin
+
+  private val documentTypeExciseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/DocumentTypeExcise"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "DocumentTypeExcise",
+      |  "data": [
+      |  {
+      |    "activeFrom": "2024-01-01",
+      |    "code": "C651",
+      |    "state": "valid",
+      |    "description": "AAD - Administrative Accompanying Document (EMCS)"
+      |  },
+      |  {
+      |    "activeFrom": "2024-01-01",
+      |    "code": "C658",
+      |    "state": "valid",
+      |    "description": "FAD - Fallback e-AD (EMCS)"
+      |  }
+      |]
+      |}
+      |""".stripMargin
 
   private val emptyResponseJson: String =
     """
