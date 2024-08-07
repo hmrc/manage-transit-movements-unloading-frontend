@@ -37,7 +37,7 @@ class Navigation extends Navigator {
     case UnloadingCommentsPage                               => ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case GoodsTooLargeForContainerYesNoPage                  => ua => Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
+    case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, NormalMode)
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, NormalMode)
   }
@@ -50,6 +50,7 @@ class Navigation extends Navigator {
     case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, CheckMode)
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
     case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, CheckMode)
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, CheckMode)
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
@@ -75,6 +76,29 @@ class Navigation extends Navigator {
               }
           case false =>
             ua.get(UnloadingTypePage)
+              .fold {
+                routes.UnloadingGuidanceController.onPageLoad(ua.id)
+              } {
+                _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
+              }
+        }
+    }
+
+  private def goodsTooLargeForContainerNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    mode match {
+      case NormalMode =>
+        Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
+      case CheckMode =>
+        ua.get(GoodsTooLargeForContainerYesNoPage).map {
+          case true =>
+            ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+              .fold {
+                routes.UnloadingGuidanceController.onPageLoad(ua.id)
+              } {
+                _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
+              }
+          case false =>
+            ua.get(SealsReplacedByCustomsAuthorityYesNoPage)
               .fold {
                 routes.UnloadingGuidanceController.onPageLoad(ua.id)
               } {

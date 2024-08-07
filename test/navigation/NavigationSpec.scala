@@ -588,6 +588,64 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
         }
       }
+
+      "must go from GoodsTooLargeForContainerYesNoPage" - {
+        "when Yes is submitted" - {
+          "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is answered" - {
+            "to CYA" in {
+              forAll(arbitrary[Boolean]) {
+                bool =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, bool)
+                    .setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+                  navigator
+                    .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is unanswered" - {
+            "to unloading guidance" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+              navigator
+                .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+
+        "when No is submitted" - {
+          "and SealsReplacedByCustomsAuthorityYesNoPage is answered" - {
+            "to CYA" in {
+              forAll(arbitrary[Boolean]) {
+                bool =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SealsReplacedByCustomsAuthorityYesNoPage, bool)
+                    .setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+                  navigator
+                    .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "and SealsReplacedByCustomsAuthorityYesNoPage is unanswered" - {
+            "to unloading guidance" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+              navigator
+                .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+      }
     }
   }
 }
