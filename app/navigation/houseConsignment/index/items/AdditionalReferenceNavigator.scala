@@ -17,7 +17,7 @@
 package navigation.houseConsignment.index.items
 
 import controllers.houseConsignment.index.items.additionalReference.routes
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.Page
 import pages.houseConsignment.index.items.additionalReference._
@@ -63,8 +63,30 @@ class AdditionalReferenceNavigator(houseConsignmentMode: Mode, itemMode: Mode) e
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AdditionalReferenceTypePage(houseConsignmentIndex, _, _) =>
-      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, referenceIndex) =>
+      ua =>
+        ua.get(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, referenceIndex)) match {
+          case Some(false) =>
+            Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+          case _ =>
+            ua.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, referenceIndex))
+              .fold {
+                Some(
+                  routes.AdditionalReferenceNumberController.onPageLoad(
+                    ua.id,
+                    houseConsignmentMode,
+                    itemMode,
+                    CheckMode,
+                    houseConsignmentIndex,
+                    itemIndex,
+                    referenceIndex
+                  )
+                )
+              } {
+                _ =>
+                  Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+              }
+        }
     case AdditionalReferenceNumberPage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
 

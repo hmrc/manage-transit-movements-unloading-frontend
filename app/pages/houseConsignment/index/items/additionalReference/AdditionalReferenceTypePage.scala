@@ -17,10 +17,10 @@
 package pages.houseConsignment.index.items.additionalReference
 
 import generated.AdditionalReferenceType02
-import models.{Index, UserAnswers}
 import models.reference.AdditionalReferenceType
-import pages.{DiscrepancyQuestionPage, QuestionPage}
+import models.{Index, UserAnswers}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
+import pages.{DiscrepancyQuestionPage, QuestionPage}
 import play.api.libs.json.JsPath
 
 import scala.util.Try
@@ -39,16 +39,6 @@ case class AdditionalReferenceTypePage(houseConsignmentIndex: Index, itemIndex: 
         x => sequenceNumber.contains(BigInt(x.sequenceNumber))
       }
       .map(_.typeValue)
-
-  override def cleanup(value: Option[AdditionalReferenceType], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(_) =>
-        userAnswers
-          .remove(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
-          .flatMap(_.remove(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)))
-      case _ =>
-        super.cleanup(value, userAnswers)
-    }
 }
 
 case class AdditionalReferenceInCL234Page(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[Boolean] {
@@ -56,4 +46,13 @@ case class AdditionalReferenceInCL234Page(houseConsignmentIndex: Index, itemInde
   override def path: JsPath = AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
 
   override def toString: String = "isInCL234"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    lazy val numberPage = AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+    lazy val number     = userAnswers.get(numberPage)
+    value match {
+      case Some(true) if number.contains("0") => userAnswers.remove(numberPage)
+      case _                                  => super.cleanup(value, userAnswers)
+    }
+  }
 }
