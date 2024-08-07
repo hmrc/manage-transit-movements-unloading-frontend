@@ -22,7 +22,7 @@ import models.{NormalMode, UserAnswers}
 import navigation.Navigation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.NewAuthYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -187,6 +187,58 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
       userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+    }
+
+    "must redirect to the next page when Yes is re-submitted" in {
+
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, newAuthYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockTransformer)
+    }
+
+    "must redirect to the next page when No is submitted" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, newAuthYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockTransformer)
+    }
+
+    "must redirect to the next page when No is re-submitted" in {
+
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, newAuthYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockTransformer)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

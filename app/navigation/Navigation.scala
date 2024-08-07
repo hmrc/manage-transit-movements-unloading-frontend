@@ -27,6 +27,7 @@ class Navigation extends Navigator {
 
   // scalastyle:off cyclomatic.complexity
   override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua, NormalMode)
     case UnloadingTypePage                                   => ua => Some(routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode))
     case DateGoodsUnloadedPage                               => ua => dateGoodsUnloadedNavigation(ua)
     case CanSealsBeReadPage                                  => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
@@ -36,7 +37,6 @@ class Navigation extends Navigator {
     case UnloadingCommentsPage                               => ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
-    case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua)
     case GoodsTooLargeForContainerYesNoPage                  => ua => Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => Some(routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode))
@@ -44,6 +44,7 @@ class Navigation extends Navigator {
   // scalastyle:on cyclomatic.complexity
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua, CheckMode)
     case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsCheckNavigation(ua)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, CheckMode)
     case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, CheckMode)
@@ -53,20 +54,40 @@ class Navigation extends Navigator {
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
 
-  private def newAuthNavigation(ua: UserAnswers): Option[Call] =
-    ua.get(NewAuthYesNoPage) match {
-      case Some(true) =>
-        Some(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode))
-      case _ =>
-        Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
+  private def newAuthNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    mode match {
+      case NormalMode =>
+        ua.get(NewAuthYesNoPage).map {
+          case true =>
+            routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
+          case false =>
+            routes.UnloadingGuidanceController.onPageLoad(ua.id)
+        }
+      case CheckMode =>
+        ua.get(NewAuthYesNoPage).map {
+          case true =>
+            ua.get(GoodsTooLargeForContainerYesNoPage)
+              .fold {
+                routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
+              } {
+                _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
+              }
+          case false =>
+            ua.get(UnloadingTypePage)
+              .fold {
+                routes.UnloadingGuidanceController.onPageLoad(ua.id)
+              } {
+                _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
+              }
+        }
     }
 
   private def largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua: UserAnswers): Option[Call] =
-    ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) match {
-      case Some(true) =>
-        Some(routes.NewAuthYesNoController.onPageLoad(ua.id, NormalMode))
-      case _ =>
-        Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage).map {
+      case true =>
+        routes.NewAuthYesNoController.onPageLoad(ua.id, NormalMode)
+      case false =>
+        routes.CheckYourAnswersController.onPageLoad(ua.id)
     }
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =

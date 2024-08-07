@@ -48,12 +48,18 @@ final case class UserAnswers(
     get(page: Gettable[A])
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] =
+    if (hasAnswerChanged(page, value)) {
+      set(page.path, value).flatMap {
+        userAnswers => page.cleanup(Some(value), userAnswers)
+      }
+    } else {
+      Success(this)
+    }
+
+  def hasAnswerChanged[A](page: QuestionPage[A], value: A)(implicit rds: Reads[A]): Boolean =
     get(page) match {
-      case Some(`value`) => Success(this)
-      case _ =>
-        set(page.path, value).flatMap {
-          userAnswers => page.cleanup(Some(value), userAnswers)
-        }
+      case Some(`value`) => false
+      case _             => true
     }
 
   def set[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {

@@ -64,7 +64,7 @@ class NewAuthYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value => {
             val userAnswersF: Future[UserAnswers] =
-              if (value) {
+              if (request.userAnswers.hasAnswerChanged(NewAuthYesNoPage, value) && value) {
                 request.userAnswers.wipeAndTransform(dataTransformer.transform(_))
               } else {
                 Future.successful(request.userAnswers)
