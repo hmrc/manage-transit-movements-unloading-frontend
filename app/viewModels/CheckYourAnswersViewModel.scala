@@ -55,9 +55,9 @@ object CheckYourAnswersViewModel {
           helper.addDiscrepanciesYesNo,
           helper.addCommentsYesNo,
           helper.additionalComment,
+          helper.sealsReplaced,
           helper.addReportYesNo,
-          helper.report,
-          helper.sealsReplaced
+          helper.report
         ).flatten
       )
 

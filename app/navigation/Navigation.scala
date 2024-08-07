@@ -39,7 +39,7 @@ class Navigation extends Navigator {
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => Some(routes.UnloadingGuidanceController.onPageLoad(ua.id))
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
-    case SealsReplacedByCustomsAuthorityYesNoPage            => ua => Some(routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode))
+    case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, NormalMode)
   }
   // scalastyle:on cyclomatic.complexity
 
@@ -51,6 +51,7 @@ class Navigation extends Navigator {
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
     case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
+    case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, CheckMode)
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
 
@@ -80,6 +81,19 @@ class Navigation extends Navigator {
                 _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
               }
         }
+    }
+
+  private def sealsReplacedNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    mode match {
+      case NormalMode =>
+        Some(routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode))
+      case CheckMode =>
+        ua.get(OtherThingsToReportPage)
+          .fold {
+            Some(routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode))
+          } {
+            _ => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+          }
     }
 
   private def largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua: UserAnswers): Option[Call] =

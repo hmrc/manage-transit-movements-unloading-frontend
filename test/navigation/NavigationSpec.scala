@@ -553,15 +553,39 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
         }
       }
-    }
-    "in CheckMode" - {
-      val mode = CheckMode
+
       "must go from gross weight page to Unloading findings page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(pages.GrossWeightPage, mode, answers)
               .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from SealsReplacedByCustomsAuthorityYesNoPage" - {
+        "to CYA" - {
+          "when OtherThingsToReportPage is answered" in {
+            forAll(nonEmptyString) {
+              otherThingsToReport =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+                navigator
+                  .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+
+        "to other things to report in NormalMode" - {
+          "when OtherThingsToReportPage is unanswered" in {
+            val userAnswers = emptyUserAnswers
+
+            navigator
+              .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
+              .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, NormalMode))
+          }
         }
       }
     }
