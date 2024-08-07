@@ -18,7 +18,6 @@ package pages.houseConsignment.index.items.additionalReference
 
 import models.reference.AdditionalReferenceType
 import pages.behaviours.PageBehaviours
-import org.scalacheck.Arbitrary.arbitrary
 
 class AdditionalReferenceTypePageSpec extends PageBehaviours {
 
@@ -29,40 +28,44 @@ class AdditionalReferenceTypePageSpec extends PageBehaviours {
     beSettable[AdditionalReferenceType](AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
     beRemovable[AdditionalReferenceType](AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+  }
 
-    "when value changes" - {
-      "must clean up subsequent pages" in {
-        forAll(arbitrary[AdditionalReferenceType]) {
-          value =>
-            forAll(arbitrary[AdditionalReferenceType].retryUntil(_ != value), nonEmptyString) {
-              (differentValue, referenceNumber) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
-                  .setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
-                  .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), referenceNumber)
+  "AdditionalReferenceInCL234Page" - {
+    "cleanup" - {
+      "must cleanup" - {
+        "when true and additional reference number is 0" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "0")
 
-                val result = userAnswers.setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), differentValue)
+          val result = userAnswers.setValue(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
 
-                result.get(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) mustNot be(defined)
-                result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) mustNot be(defined)
-            }
+          result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) must not be defined
         }
       }
-    }
 
-    "when value has not changed" - {
-      "must not clean up subsequent pages" in {
-        forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
-          (value, referenceNumber) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
-              .setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
-              .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), referenceNumber)
+      "must not cleanup" - {
+        "when true and additional reference number is not 0" in {
+          forAll(nonEmptyString.retryUntil(_ != "0")) {
+            referenceNumber =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), referenceNumber)
 
-            val result = userAnswers.setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
+              val result = userAnswers.setValue(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
 
-            result.get(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) must be(defined)
-            result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) must be(defined)
+              result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) mustBe defined
+          }
+        }
+
+        "when false and additional reference number is not 0" in {
+          forAll(nonEmptyString.retryUntil(_ != "0")) {
+            referenceNumber =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), referenceNumber)
+
+              val result = userAnswers.setValue(AdditionalReferenceInCL234Page(houseConsignmentIndex, itemIndex, additionalReferenceIndex), false)
+
+              result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) mustBe defined
+          }
         }
       }
     }

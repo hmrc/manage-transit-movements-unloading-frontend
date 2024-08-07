@@ -39,14 +39,103 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       val additionalReferenceMode = CheckMode
       val navigator               = navigatorProvider.apply(houseConsignmentMode, itemMode)
 
-      "must go from AdditionalReferenceTypePage to HouseConsignmentController page" in {
+      "must go from AdditionalReferenceTypePage" - {
+        "to HouseConsignmentController page" - {
+          "when AddAdditionalReferenceNumberYesNoPage is false" in {
+            forAll(arbitrary[AdditionalReferenceType]) {
+              additionalReferenceType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex, hcIndex, itemIndex), false)
+                  .setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceType)
 
-        val userAnswers =
-          emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), AdditionalReferenceType("test", "test"))
+                navigator
+                  .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
+                  .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+            }
+          }
 
-        navigator
-          .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+          "when AddAdditionalReferenceNumberYesNoPage is true" - {
+            "and AdditionalReferenceNumberPage is defined" in {
+              forAll(nonEmptyString, arbitrary[AdditionalReferenceType]) {
+                (additionalReferenceNumber, additionalReferenceType) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex, hcIndex, itemIndex), true)
+                    .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceNumber)
+                    .setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceType)
+
+                  navigator
+                    .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
+                    .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+              }
+            }
+          }
+
+          "when AddAdditionalReferenceNumberYesNoPage is undefined" - {
+            "and AdditionalReferenceNumberPage is defined" in {
+              forAll(nonEmptyString, arbitrary[AdditionalReferenceType]) {
+                (additionalReferenceNumber, additionalReferenceType) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceNumber)
+                    .setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceType)
+
+                  navigator
+                    .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
+                    .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+              }
+            }
+          }
+        }
+
+        "to AdditionalReferenceNumberController page" - {
+          "when AddAdditionalReferenceNumberYesNoPage is true" - {
+            "and AdditionalReferenceNumberPage is undefined" in {
+              forAll(arbitrary[AdditionalReferenceType]) {
+                additionalReferenceType =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex, hcIndex, itemIndex), true)
+                    .setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceType)
+
+                  navigator
+                    .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
+                    .mustBe(
+                      routes.AdditionalReferenceNumberController.onPageLoad(
+                        arrivalId,
+                        houseConsignmentMode,
+                        itemMode,
+                        additionalReferenceMode,
+                        additionalReferenceIndex,
+                        hcIndex,
+                        itemIndex
+                      )
+                    )
+              }
+            }
+          }
+
+          "when AddAdditionalReferenceNumberYesNoPage is undefined" - {
+            "and AdditionalReferenceNumberPage is defined" in {
+              forAll(arbitrary[AdditionalReferenceType]) {
+                additionalReferenceType =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceType)
+
+                  navigator
+                    .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
+                    .mustBe(
+                      routes.AdditionalReferenceNumberController.onPageLoad(
+                        arrivalId,
+                        houseConsignmentMode,
+                        itemMode,
+                        additionalReferenceMode,
+                        additionalReferenceIndex,
+                        hcIndex,
+                        itemIndex
+                      )
+                    )
+              }
+            }
+          }
+        }
       }
 
       "must go from AdditionalReferenceNumberPage to HouseConsignmentController page" in {

@@ -38,8 +38,8 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
   def transform(
     additionalReferences: Seq[AdditionalReferenceType03]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.sections.additionalReference.AdditionalReferenceSection
     import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+    import pages.sections.additionalReference.AdditionalReferenceSection
 
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
@@ -53,8 +53,8 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     additionalReferences: Seq[AdditionalReferenceType03],
     hcIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
     import pages.houseConsignment.index.additionalReference._
+    import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
 
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
@@ -70,8 +70,8 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
 
-    import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
     import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+    import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
@@ -81,8 +81,8 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
               val transformations =
                 setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
                   set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), typeValue) andThen
-                  set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber) andThen
-                  set(AdditionalReferenceInCL234Page(hcIndex, itemIndex, index), isInCL234)
+                  set(AdditionalReferenceInCL234Page(hcIndex, itemIndex, index), isInCL234) andThen
+                  set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber)
 
               transformations(userAnswers)
           }
