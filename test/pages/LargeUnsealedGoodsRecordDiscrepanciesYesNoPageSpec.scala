@@ -16,6 +16,7 @@
 
 package pages
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class LargeUnsealedGoodsRecordDiscrepanciesYesNoPageSpec extends PageBehaviours {
@@ -28,5 +29,30 @@ class LargeUnsealedGoodsRecordDiscrepanciesYesNoPageSpec extends PageBehaviours 
 
     beRemovable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
 
+    "cleanup" - {
+      "must cleanup when yes selected" in {
+        forAll(arbitrary[Boolean]) {
+          bool =>
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, bool)
+
+            val result = userAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+
+            result.get(NewAuthYesNoPage) must not be defined
+        }
+      }
+
+      "must not cleanup when no selected" in {
+        forAll(arbitrary[Boolean]) {
+          bool =>
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, bool)
+
+            val result = userAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+
+            result.get(NewAuthYesNoPage) mustBe defined
+        }
+      }
+    }
   }
 }

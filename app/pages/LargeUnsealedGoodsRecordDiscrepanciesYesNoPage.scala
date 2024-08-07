@@ -16,8 +16,11 @@
 
 package pages
 
+import models.UserAnswers
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object LargeUnsealedGoodsRecordDiscrepanciesYesNoPage extends QuestionPage[Boolean] {
 
@@ -25,4 +28,11 @@ case object LargeUnsealedGoodsRecordDiscrepanciesYesNoPage extends QuestionPage[
 
   override def toString: String = "largeUnsealedGoodsRecordDiscrepancies"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(true) =>
+        userAnswers.remove(NewAuthYesNoPage)
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 }

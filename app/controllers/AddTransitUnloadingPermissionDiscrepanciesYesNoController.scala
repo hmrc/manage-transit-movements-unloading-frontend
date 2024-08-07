@@ -23,7 +23,6 @@ import navigation.Navigation
 import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -32,7 +31,6 @@ import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -66,20 +64,15 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value => {
-            def updateUserAnswers(): Future[UserAnswers] =
+            val userAnswersF: Future[UserAnswers] =
               if (value) {
                 Future.successful(request.userAnswers)
               } else {
-                for {
-                  unloadingRemarks <- Future.successful(request.userAnswers.get(OtherQuestionsSection))
-                  wipedAnswers = request.userAnswers.copy(data = Json.obj())
-                  transformedAnswers <- dataTransformer.transform(wipedAnswers)
-                  updatedAnswers     <- Future.fromTry(unloadingRemarks.fold(Try(transformedAnswers))(transformedAnswers.set(OtherQuestionsSection, _)))
-                } yield updatedAnswers
+                request.userAnswers.retainAndTransform(OtherQuestionsSection)(dataTransformer.transform(_))
               }
 
             for {
-              userAnswers    <- updateUserAnswers()
+              userAnswers    <- userAnswersF
               updatedAnswers <- Future.fromTry(userAnswers.set(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, updatedAnswers))

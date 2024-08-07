@@ -26,6 +26,7 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import utils.transformers.{DeclarationGoodsItemNumber, Removed, SequenceNumber}
 
 import java.time.Instant
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -47,12 +48,18 @@ final case class UserAnswers(
     get(page: Gettable[A])
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] =
+    if (hasAnswerChanged(page, value)) {
+      set(page.path, value).flatMap {
+        userAnswers => page.cleanup(Some(value), userAnswers)
+      }
+    } else {
+      Success(this)
+    }
+
+  def hasAnswerChanged[A](page: QuestionPage[A], value: A)(implicit rds: Reads[A]): Boolean =
     get(page) match {
-      case Some(`value`) => Success(this)
-      case _ =>
-        set(page.path, value).flatMap {
-          userAnswers => page.cleanup(Some(value), userAnswers)
-        }
+      case Some(`value`) => false
+      case _             => true
     }
 
   def set[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
@@ -67,6 +74,23 @@ final case class UserAnswers(
       d =>
         copy(data = d)
     }
+  }
+
+  def retainAndTransform[A](
+    page: QuestionPage[A]
+  )(
+    block: UserAnswers => Future[UserAnswers]
+  )(implicit rds: Reads[A], writes: Writes[A], ec: ExecutionContext): Future[UserAnswers] =
+    for {
+      transformedAnswers <- wipeAndTransform(block)
+      updatedAnswers <- Future.fromTry {
+        this.get(page).fold(Try(transformedAnswers))(transformedAnswers.set(page, _))
+      }
+    } yield updatedAnswers
+
+  def wipeAndTransform(block: UserAnswers => Future[UserAnswers]): Future[UserAnswers] = {
+    val wipedAnswers = this.copy(data = Json.obj())
+    block(wipedAnswers)
   }
 
   def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {

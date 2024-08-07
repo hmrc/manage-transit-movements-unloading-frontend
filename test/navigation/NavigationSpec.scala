@@ -43,7 +43,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
       }
 
-      "must go NewAuthYesNoPage" - {
+      "must go from NewAuthYesNoPage" - {
         "to GoodsTooLargeForContainerYesNoPage when answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
@@ -304,6 +304,64 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       val mode = CheckMode
 
+      "must go from NewAuthYesNoPage" - {
+        "when answer is Yes" - {
+          "and are goods too large is answered" - {
+            "to CYA" in {
+              forAll(arbitrary[Boolean]) {
+                bool =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(GoodsTooLargeForContainerYesNoPage, bool)
+                    .setValue(NewAuthYesNoPage, true)
+
+                  navigator
+                    .nextPage(NewAuthYesNoPage, mode, userAnswers)
+                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "and are goods too large is unanswered" - {
+            "to are goods too large in NormalMode" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, true)
+
+              navigator
+                .nextPage(NewAuthYesNoPage, mode, userAnswers)
+                .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, NormalMode))
+            }
+          }
+        }
+
+        "when answer is No" - {
+          "and unloading type is answered" - {
+            "to CYA" in {
+              forAll(arbitrary[UnloadingType]) {
+                bool =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UnloadingTypePage, bool)
+                    .setValue(NewAuthYesNoPage, false)
+
+                  navigator
+                    .nextPage(NewAuthYesNoPage, mode, userAnswers)
+                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "and unloading type is unanswered" - {
+            "to unloading guidance" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
+
+              navigator
+                .nextPage(NewAuthYesNoPage, mode, userAnswers)
+                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+      }
+
       "must go from unloading type page to check your answers" in {
         val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
 
@@ -495,15 +553,97 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
         }
       }
-    }
-    "in CheckMode" - {
-      val mode = CheckMode
+
       "must go from gross weight page to Unloading findings page" in {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(pages.GrossWeightPage, mode, answers)
               .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from SealsReplacedByCustomsAuthorityYesNoPage" - {
+        "to CYA" - {
+          "when OtherThingsToReportPage is answered" in {
+            forAll(nonEmptyString) {
+              otherThingsToReport =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+                navigator
+                  .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+
+        "to other things to report in NormalMode" - {
+          "when OtherThingsToReportPage is unanswered" in {
+            val userAnswers = emptyUserAnswers
+
+            navigator
+              .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
+              .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, NormalMode))
+          }
+        }
+      }
+
+      "must go from GoodsTooLargeForContainerYesNoPage" - {
+        "when Yes is submitted" - {
+          "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is answered" - {
+            "to CYA" in {
+              forAll(arbitrary[Boolean]) {
+                bool =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, bool)
+                    .setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+                  navigator
+                    .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is unanswered" - {
+            "to unloading guidance" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+              navigator
+                .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+
+        "when No is submitted" - {
+          "and SealsReplacedByCustomsAuthorityYesNoPage is answered" - {
+            "to CYA" in {
+              forAll(arbitrary[Boolean]) {
+                bool =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SealsReplacedByCustomsAuthorityYesNoPage, bool)
+                    .setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+                  navigator
+                    .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "and SealsReplacedByCustomsAuthorityYesNoPage is unanswered" - {
+            "to unloading guidance" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+              navigator
+                .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
+                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+            }
+          }
         }
       }
     }

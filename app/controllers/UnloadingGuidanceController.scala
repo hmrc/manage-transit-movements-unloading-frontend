@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
-import navigation.UnloadingGuidanceNavigator
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -67,9 +66,20 @@ class UnloadingGuidanceController @Inject() (
       .requireData(arrivalId)
       .andThen(getMandatoryPage(NewAuthYesNoPage)) {
         implicit request =>
-          val newAuth: Boolean               = request.arg
-          val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+          val newAuth: Boolean                    = request.arg
+          lazy val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
 
-          UnloadingGuidanceNavigator.unloadingGuidanceNavigate(arrivalId, newAuth, goodsTooLarge)
+          if (newAuth) {
+            goodsTooLarge match {
+              case Some(true) =>
+                Redirect(routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
+              case Some(false) =>
+                Redirect(routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode))
+              case None =>
+                Redirect(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode))
+            }
+          } else {
+            Redirect(routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
+          }
       }
 }
