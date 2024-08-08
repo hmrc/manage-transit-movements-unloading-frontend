@@ -32,7 +32,7 @@ object ViewUtils {
 
   def breadCrumbTitle(title: String, mainContent: Html)(implicit messages: Messages): String =
     (if (mainContent.body.contains("govuk-error-summary")) s"${messages("error.title.prefix")} " else "") +
-      s"$title - ${messages("site.service_name")} - GOV.UK"
+      s"$title - ${messages("site.title.prefix")} - ${messages("site.service_name")} - GOV.UK"
 
   def errorClass(errors: Seq[FormError], dateArg: String): String =
     if (errors.flatMap(_.args).contains(dateArg)) "govuk-input--error" else ""
