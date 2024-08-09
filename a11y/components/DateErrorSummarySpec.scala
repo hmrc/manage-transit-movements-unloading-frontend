@@ -20,22 +20,23 @@ import a11ySpecBase.A11ySpecBase
 import forms.DateGoodsUnloadedFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
+import services.DateTimeService
 import views.html.components.DateErrorSummary
 import views.html.templates.MainTemplate
 
-import java.time.{Clock, LocalDate}
+import java.time.LocalDate
 
 class DateErrorSummarySpec extends A11ySpecBase {
 
   "the 'date error summary' component" must {
-    val template  = app.injector.instanceOf[MainTemplate]
-    val component = app.injector.instanceOf[DateErrorSummary]
-    val clock     = app.injector.instanceOf[Clock]
+    val template        = app.injector.instanceOf[MainTemplate]
+    val component       = app.injector.instanceOf[DateErrorSummary]
+    val dateTimeService = app.injector.instanceOf[DateTimeService]
 
     val date      = arbitrary[LocalDate].sample.value
     val title     = nonEmptyString.sample.value
     val formError = arbitrary[FormError].sample.value
-    val form      = new DateGoodsUnloadedFormProvider(clock)(date).withError(formError)
+    val form      = new DateGoodsUnloadedFormProvider(dateTimeService)(date).withError(formError)
 
     val content = template.apply(title) {
       component.apply(form).withHeading(title)

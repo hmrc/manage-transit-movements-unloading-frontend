@@ -21,24 +21,25 @@ import forms.DateGoodsUnloadedFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
+import services.DateTimeService
 import viewModels.components.InputDateViewModel.{DateInputWithAdditionalHtml, OrdinaryDateInput}
 import views.html.components.InputDate
 import views.html.templates.MainTemplate
 
-import java.time.{Clock, LocalDate}
+import java.time.LocalDate
 
 class InputDateSpec extends A11ySpecBase {
 
   "the 'input date' component" must {
-    val template  = app.injector.instanceOf[MainTemplate]
-    val component = app.injector.instanceOf[InputDate]
-    val clock     = app.injector.instanceOf[Clock]
+    val template        = app.injector.instanceOf[MainTemplate]
+    val component       = app.injector.instanceOf[InputDate]
+    val dateTimeService = app.injector.instanceOf[DateTimeService]
 
     val minDate = arbitrary[LocalDate].sample.value
     val title   = nonEmptyString.sample.value
     val hint    = Gen.option(nonEmptyString).sample.value
     val caption = Gen.option(nonEmptyString).sample.value
-    val form    = new DateGoodsUnloadedFormProvider(clock)(minDate)
+    val form    = new DateGoodsUnloadedFormProvider(dateTimeService)(minDate)
 
     val html = Html("<p>test</p>")
 
