@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import services._
 
-import java.time.{Clock, ZoneOffset}
+import java.time.Clock
 
 class Module extends AbstractModule {
 
@@ -42,7 +42,7 @@ class Module extends AbstractModule {
 
     bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
 
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
+    bind(classOf[Clock]).toInstance(Clock.systemUTC())
 
   }
 

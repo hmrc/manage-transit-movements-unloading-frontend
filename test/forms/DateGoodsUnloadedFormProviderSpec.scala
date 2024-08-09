@@ -16,16 +16,21 @@
 
 package forms
 
-import java.time.{Clock, LocalDate, ZoneOffset}
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
+import services.DateTimeService
+
+import java.time.{LocalDate, ZoneOffset}
 
 class DateGoodsUnloadedFormProviderSpec extends DateBehaviours {
 
   val minDate         = LocalDate.of(2020, 12, 31)
   val maxDate         = LocalDate.now(ZoneOffset.UTC)
   val minDateAsString = "31 December 2020"
-  val form            = new DateGoodsUnloadedFormProvider(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))(minDate)
+
+  private val dateTimeService = app.injector.instanceOf[DateTimeService]
+
+  val form = new DateGoodsUnloadedFormProvider(dateTimeService)(minDate)
 
   ".value" - {
 
