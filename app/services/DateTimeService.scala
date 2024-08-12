@@ -17,9 +17,8 @@
 package services
 
 import com.google.inject.Singleton
-import utils.Format
 
-import java.time.{Clock, Instant, LocalDateTime}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime}
 import javax.inject.Inject
 
 @Singleton
@@ -27,7 +26,7 @@ class DateTimeServiceImpl @Inject() (clock: Clock) extends DateTimeService {
 
   def currentDateTime: LocalDateTime = LocalDateTime.now(clock)
 
-  def dateFormatted: String = currentDateTime.format(Format.dateFormatter)
+  def currentDate: LocalDate = LocalDate.now(clock)
 
   def now: Instant = Instant.now()
 }
@@ -36,8 +35,7 @@ trait DateTimeService {
 
   def currentDateTime: LocalDateTime
 
-  def dateFormatted: String
+  def currentDate: LocalDate
 
   def now: Instant
-
 }

@@ -20,14 +20,17 @@ import forms.DateGoodsUnloadedFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import services.DateTimeService
 import views.behaviours.DateInputViewBehaviour
 import views.html.DateGoodsUnloadedView
 
-import java.time.{Clock, LocalDate}
+import java.time.LocalDate
 
 class DateGoodsUnloadedViewSpec extends DateInputViewBehaviour {
 
-  override def form = new DateGoodsUnloadedFormProvider(Clock.systemUTC())(LocalDate.now())
+  private val dateTimeService = app.injector.instanceOf[DateTimeService]
+
+  override def form = new DateGoodsUnloadedFormProvider(dateTimeService)(LocalDate.now())
 
   override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
     app.injector.instanceOf[DateGoodsUnloadedView].apply(mrn, arrivalId, NormalMode, form)(fakeRequest, messages)

@@ -28,18 +28,18 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.DateTimeService
 import views.html.DateGoodsUnloadedView
 
-import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
 class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val stubClock      = Clock.fixed(Instant.now, ZoneId.systemDefault)
-  private val dateTimeOfPrep = LocalDateTime.now(stubClock)
-  private val validAnswer    = dateTimeOfPrep
+  private val dateTimeService = app.injector.instanceOf[DateTimeService]
+  private val dateTimeOfPrep  = dateTimeService.currentDate
+  private val validAnswer     = dateTimeOfPrep
 
-  private def form = new DateGoodsUnloadedFormProvider(stubClock)(dateTimeOfPrep.toLocalDate)
+  private def form = new DateGoodsUnloadedFormProvider(dateTimeService)(dateTimeOfPrep)
 
   private lazy val dateGoodsUnloadedRoute = controllers.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
 
@@ -47,8 +47,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation),
-        bind[Clock].toInstance(stubClock)
+        bind[Navigation].toInstance(fakeNavigation)
       )
 
   "DateGoodsUnloaded Controller" - {
@@ -71,7 +70,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
+      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep).success.value
 
       val userAnswersWithIe043Data = userAnswers.copy(ie043Data = basicIe043)
 
@@ -99,7 +98,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
+      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep).success.value
 
       val userAnswersWithIe043Data = userAnswers.copy(ie043Data = basicIe043)
 
