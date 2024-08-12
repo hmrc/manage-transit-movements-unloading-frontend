@@ -17,7 +17,7 @@
 package viewModels
 
 import models.UserAnswers
-import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
+import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -61,10 +61,12 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val discrepanciesPresent = userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
-        case Some(false) => false
-        case _           => true
-      }
+      val discrepanciesPresent =
+        (userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage), userAnswers.get(NewAuthYesNoPage)) match {
+          case (Some(false), _) => false
+          case (_, Some(true))  => false
+          case _                => true
+        }
 
       new CheckYourAnswersViewModel(
         Seq(headerSection, commentsSection),
