@@ -789,7 +789,8 @@ object ReferenceDataConnectorSpec {
       |    "id":"ID1",
       |    "name":"NAME001",
       |    "countryId":"GB",
-      |    "phoneNumber":"004412323232345"
+      |    "phoneNumber":"004412323232345",
+      |    "languageCode": "EN"
       |  }
       | ]
       |}
@@ -803,7 +804,8 @@ object ReferenceDataConnectorSpec {
       |  {
       |    "id":"ID1",
       |    "name":"NAME001",
-      |    "countryId":"GB"
+      |    "countryId":"GB",
+      |    "languageCode": "EN"
       |  }
       | ]
       |}
