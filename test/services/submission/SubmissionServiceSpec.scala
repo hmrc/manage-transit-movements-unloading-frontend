@@ -25,7 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.NewAuthYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{__, Reads}
@@ -146,26 +146,104 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "unloadingRemarkReads" - {
-    "when RevisedUnloadingPermission is true" - {
-      "must create unloading remark" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, true)
+    import pages._
 
-        val reads  = service.unloadingRemarkReads
-        val result = userAnswers.data.as[UnloadingRemarkType](reads)
+    "must create unloading remark" - {
+      "when RevisedUnloadingPermission is true" - {
+        "and seals exist" - {
+          "at consignment level" in {
+            forAll(arbitrary[ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+              (consignment, transportEquipment, seal) =>
+                val ie043Data = basicIe043
+                  .copy(
+                    Consignment = Some(
+                      consignment.copy(
+                        TransportEquipment = Seq(
+                          transportEquipment.copy(
+                            Seal = Seq(seal)
+                          )
+                        )
+                      )
+                    )
+                  )
 
-        result mustBe UnloadingRemarkType(
-          conform = Number1,
-          unloadingCompletion = Number1,
-          unloadingDate = XMLCalendar("2020-01-01"),
-          stateOfSeals = Some(Number1),
-          unloadingRemark = None
-        )
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, true)
+                  .copy(ie043Data = ie043Data)
+
+                val reads  = service.unloadingRemarkReads(userAnswers)
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number1,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number1),
+                  unloadingRemark = None
+                )
+            }
+          }
+
+          "at incident level" in {
+            forAll(arbitrary[ConsignmentType05], arbitrary[IncidentType04], arbitrary[TransportEquipmentType07], arbitrary[SealType04]) {
+              (consignment, incident, transportEquipment, seal) =>
+                val ie043Data = basicIe043
+                  .copy(
+                    Consignment = Some(
+                      consignment.copy(
+                        Incident = Seq(
+                          incident.copy(
+                            TransportEquipment = Seq(
+                              transportEquipment.copy(
+                                Seal = Seq(seal)
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, true)
+                  .copy(ie043Data = ie043Data)
+
+                val reads  = service.unloadingRemarkReads(userAnswers)
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number1,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number1),
+                  unloadingRemark = None
+                )
+            }
+          }
+        }
+
+        "and seals do not exist" in {
+          val ie043Data = basicIe043
+            .copy(Consignment = None)
+
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .copy(ie043Data = ie043Data)
+
+          val reads  = service.unloadingRemarkReads(userAnswers)
+          val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+          result mustBe UnloadingRemarkType(
+            conform = Number1,
+            unloadingCompletion = Number1,
+            unloadingDate = XMLCalendar("2020-01-01"),
+            stateOfSeals = None,
+            unloadingRemark = None
+          )
+        }
       }
-    }
-    "when RevisedUnloadingPermission is false" - {
-      "must create unloading remarks" - {
-        import pages._
+
+      "when RevisedUnloadingPermission is false" - {
 
         "when there are seal numbers in the IE043 message" - {
           "when seals can be read and no seals broken" - {
@@ -181,7 +259,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                     .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                     .setValue(UnloadingCommentsPage, unloadingRemark)
 
-                  val reads  = service.unloadingRemarkReads
+                  val reads  = service.unloadingRemarkReads(userAnswers)
                   val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                   result mustBe UnloadingRemarkType(
@@ -206,7 +284,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                     .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
                     .setValue(UnloadingCommentsPage, unloadingRemark)
 
-                  val reads  = service.unloadingRemarkReads
+                  val reads  = service.unloadingRemarkReads(userAnswers)
                   val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                   result mustBe UnloadingRemarkType(
@@ -231,7 +309,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   .setValue(AreAnySealsBrokenPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
-                val reads  = service.unloadingRemarkReads
+                val reads  = service.unloadingRemarkReads(userAnswers)
                 val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                 result mustBe UnloadingRemarkType(
@@ -255,7 +333,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   .setValue(AreAnySealsBrokenPage, true)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
-                val reads  = service.unloadingRemarkReads
+                val reads  = service.unloadingRemarkReads(userAnswers)
                 val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                 result mustBe UnloadingRemarkType(
@@ -279,7 +357,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   .setValue(AreAnySealsBrokenPage, false)
                   .setValue(UnloadingCommentsPage, unloadingRemark)
 
-                val reads  = service.unloadingRemarkReads
+                val reads  = service.unloadingRemarkReads(userAnswers)
                 val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
                 result mustBe UnloadingRemarkType(
@@ -300,7 +378,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
-              val reads  = service.unloadingRemarkReads
+              val reads  = service.unloadingRemarkReads(userAnswers)
               val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
               result mustBe UnloadingRemarkType(
@@ -319,7 +397,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-              val reads  = service.unloadingRemarkReads
+              val reads  = service.unloadingRemarkReads(userAnswers)
               val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
               result mustBe UnloadingRemarkType(
@@ -342,7 +420,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       (userAnswers.data \ "Consignment").get.as[Option[ConsignmentType06]](reads)
 
     "must create consignment" - {
-      import pages.GrossWeightPage
+      import pages.{GrossWeightPage, NewAuthYesNoPage}
 
       val grossMass = BigDecimal(100)
 
@@ -402,11 +480,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create transport equipment" - {
-      import pages.ContainerIdentificationNumberPage
       import pages.sections.transport.equipment.ItemSection
       import pages.sections.{SealSection, TransportEquipmentSection}
       import pages.transportEquipment.index.ItemPage
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+      import pages.{ContainerIdentificationNumberPage, NewAuthYesNoPage}
 
       "when there are discrepancies" in {
         forAll(arbitrary[ConsignmentType05]) {
@@ -768,6 +846,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create departure transport means" - {
+      import pages.NewAuthYesNoPage
       import pages.departureMeansOfTransport._
       import pages.sections.TransportMeansSection
 
@@ -915,6 +994,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create supporting documents" - {
+      import pages.NewAuthYesNoPage
       import pages.documents._
       import pages.sections.documents._
 
@@ -1053,6 +1133,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create transport documents" - {
+      import pages.NewAuthYesNoPage
       import pages.documents._
       import pages.sections.documents._
 
@@ -1175,6 +1256,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create additional references" - {
+      import pages.NewAuthYesNoPage
       import pages.additionalReference._
       import pages.sections.additionalReference.AdditionalReferenceSection
 

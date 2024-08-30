@@ -19,7 +19,7 @@ package services.submission
 import connectors.ApiConnector
 import generated._
 import models.UnloadingSubmissionValues._
-import models.{ArrivalId, DocType, EoriNumber, Index, StateOfSeals, UnloadingType, UserAnswers}
+import models.{ArrivalId, DocType, EoriNumber, Index, RichCC043CType, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -52,7 +52,7 @@ class SubmissionService @Inject() (
     implicit val reads: Reads[CC044CType] =
       for {
         transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
-        unloadingRemark  <- __.read[UnloadingRemarkType]
+        unloadingRemark  <- __.read[UnloadingRemarkType](unloadingRemarkReads(userAnswers))
         consignment      <- ConsignmentSection.path.readSafe(consignmentReads(userAnswers.ie043Data.Consignment))
       } yield {
         val officeOfDestination = userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
@@ -105,19 +105,19 @@ class SubmissionService @Inject() (
     }
   }
 
-  implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
+  def unloadingRemarkReads(userAnswers: UserAnswers): Reads[UnloadingRemarkType] = {
     import pages._
 
-    def generateUnloadingRemarkForRevisedProcedureYes: Reads[UnloadingRemarkType] =
+    lazy val revisedProcedureReads: Reads[UnloadingRemarkType] =
       UnloadingRemarkType(
         conform = Conform,
         unloadingCompletion = FullyUnloaded,
         unloadingDate = dateTimeService.currentDateTime.toLocalDate,
-        stateOfSeals = Some(PresentAndNotDamaged),
+        stateOfSeals = Option.when(userAnswers.ie043Data.sealsExist)(PresentAndNotDamaged),
         unloadingRemark = None
       )
 
-    def generateUnloadingRemarkDefaultCase: Reads[UnloadingRemarkType] =
+    lazy val unrevisedProcedureReads: Reads[UnloadingRemarkType] =
       for {
         unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
         unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
@@ -136,8 +136,8 @@ class SubmissionService @Inject() (
       )
 
     NewAuthYesNoPage.path.read[Boolean].flatMap {
-      case true => generateUnloadingRemarkForRevisedProcedureYes
-      case _    => generateUnloadingRemarkDefaultCase
+      case true  => revisedProcedureReads
+      case false => unrevisedProcedureReads
     }
   }
 
