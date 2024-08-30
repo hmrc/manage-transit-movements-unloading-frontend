@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import config.{PostTransitionConfig, TransitionConfig}
+import config.PhaseConfig._
 import generated._
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode

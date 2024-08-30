@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.ArrivalId
 import play.api.Logging
 import play.api.http.HeaderNames.{ACCEPT, CONTENT_TYPE}
@@ -28,14 +28,22 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.NodeSeq
 
-class ApiConnector @Inject() (http: HttpClientV2, appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends HttpErrorFunctions with Logging {
+class ApiConnector @Inject() (
+  http: HttpClientV2,
+  appConfig: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+)(implicit ec: ExecutionContext)
+    extends HttpErrorFunctions
+    with Logging {
+
+  private val version = phaseConfig.values.apiVersion
 
   def submit(xml: NodeSeq, arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"${appConfig.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .post(url)
       .setHeader(
-        ACCEPT       -> "application/vnd.hmrc.2.0+json",
+        ACCEPT       -> s"application/vnd.hmrc.$version+json",
         CONTENT_TYPE -> "application/xml"
       )
       .withBody(xml)
