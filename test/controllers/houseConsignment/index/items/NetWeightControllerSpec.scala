@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.WeightFormProvider
 import generators.Generators
 import models.NormalMode
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{ArrivalMessageType, MessageMetaData}
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -35,7 +33,6 @@ import viewModels.houseConsignment.index.items.NetWeightViewModel
 import viewModels.houseConsignment.index.items.NetWeightViewModel.NetWeightViewModelProvider
 import views.html.houseConsignment.index.items.NetWeightView
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -193,9 +190,9 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
     "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
       checkArrivalStatus()
-      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      when(mockUnloadingPermissionMessageService.canSubmitUnloadingRemarks(any())(any(), any()))
+        .thenReturn(Future.successful(false))
 
       setExistingUserAnswers(emptyUserAnswers)
 

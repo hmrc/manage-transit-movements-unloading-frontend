@@ -49,20 +49,89 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
   "UnloadingPermissionMessageService" - {
 
-    "getMessageHead" - {
+    "canSubmitUnloadingRemarks" - {
 
-      val rejectionFromOfficeOfDestination = MessageMetaData(LocalDateTime.now(), RejectionFromOfficeOfDestination, "path/url")
-      val unloadingPermission2             = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path/url")
-      val unloadingPermission1             = MessageMetaData(LocalDateTime.now().minusDays(3), UnloadingPermission, "path/url")
-      val arrivalNotification              = MessageMetaData(LocalDateTime.now().minusDays(4), ArrivalNotification, "path/url")
+      "must return true" - {
 
-      "must return latest message" in {
+        "when head message is an IE043" in {
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
 
-        val messageMetaData = Messages(List(rejectionFromOfficeOfDestination, arrivalNotification, unloadingPermission1, unloadingPermission2))
+          val messageMetaData = Messages(
+            List(
+              ie007,
+              ie043
+            )
+          )
 
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+          when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-        service.getMessageHead(arrivalId).futureValue mustBe Some(rejectionFromOfficeOfDestination)
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+        }
+
+        "when head message is a rejection after an IE044" in {
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
+          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url")
+          val ie057 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url")
+
+          val messageMetaData = Messages(
+            List(
+              ie007,
+              ie043,
+              ie044,
+              ie057
+            )
+          )
+
+          when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+        }
+
+        "when head message is another rejection after an IE044" in {
+          val ie007   = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
+          val ie043   = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
+          val ie044_1 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url")
+          val ie057_1 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url")
+          val ie044_2 = MessageMetaData(LocalDateTime.now().plusDays(4), UnloadingRemarks, "path/url")
+          val ie057_2 = MessageMetaData(LocalDateTime.now().plusDays(5), RejectionFromOfficeOfDestination, "path/url")
+
+          val messageMetaData = Messages(
+            List(
+              ie007,
+              ie043,
+              ie044_1,
+              ie057_1,
+              ie044_2,
+              ie057_2
+            )
+          )
+
+          when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+        }
+      }
+
+      "must return false" - {
+        "when head message is an IE044" in {
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
+          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url")
+
+          val messageMetaData = Messages(
+            List(
+              ie007,
+              ie043,
+              ie044
+            )
+          )
+
+          when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe false
+        }
       }
     }
 
