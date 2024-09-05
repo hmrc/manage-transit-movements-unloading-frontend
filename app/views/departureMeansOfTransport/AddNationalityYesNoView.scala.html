@@ -27,7 +27,7 @@ errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("departureMeansOfTransport.addNationalityYesNo.title"),

@@ -39,7 +39,7 @@ object CustomsOffice {
         (__ \ "name").read[String] and
         (__ \ "countryId").read[String] and
         (__ \ "phoneNumber").readNullable[String]
-    )(CustomsOffice.apply _)
+    )(CustomsOffice.apply)
 
   implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => {
     (x, y).compareBy(_.name, _.id)
@@ -52,7 +52,7 @@ object CustomsOffice {
     implicit val reads: Reads[TempCustomsOffice] = (
       __.read[CustomsOffice] and
         (__ \ "languageCode").read[String]
-    )(TempCustomsOffice.apply _)
+    )(TempCustomsOffice.apply)
 
     Reads {
       case JsArray(customsOffices) =>

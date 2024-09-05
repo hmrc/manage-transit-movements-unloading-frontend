@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, viewModel: AdditionalInformationViewModel, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, viewModel: AdditionalInformationViewModel, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

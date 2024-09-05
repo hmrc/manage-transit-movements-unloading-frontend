@@ -23,7 +23,6 @@ import models.{ArrivalId, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.documents.AddAnotherDocumentViewModel
 import viewModels.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
@@ -33,7 +32,6 @@ import javax.inject.Inject
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,

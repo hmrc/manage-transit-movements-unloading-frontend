@@ -24,7 +24,7 @@ import javax.inject.Inject
 class WeightFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int, isZeroAllowed: Boolean, args: Any*): Form[BigDecimal] =
-    apply(prefix, s"$prefix.error.required", decimalPlaceCount, characterCount, isZeroAllowed, args: _*)
+    apply(prefix, s"$prefix.error.required", decimalPlaceCount, characterCount, isZeroAllowed, args *)
 
   def apply(prefix: String, requiredError: String, decimalPlaceCount: Int, characterCount: Int, isZeroAllowed: Boolean, args: Any*): Form[BigDecimal] =
     Form(

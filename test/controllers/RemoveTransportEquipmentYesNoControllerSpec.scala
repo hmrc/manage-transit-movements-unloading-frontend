@@ -77,7 +77,7 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
     }
     "when yes submitted" - {
       "must redirect to add another TransportEquipment and remove departureTransportMeans at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
           .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
@@ -104,7 +104,7 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
     "when no submitted" - {
       "must redirect to add another TransportEquipment and not remove TransportEquipment at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
@@ -138,7 +138,7 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
         .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
 
       setExistingUserAnswers(userAnswers)
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, removeTransportEquipmentMeansRoute)
         .withFormUrlEncodedBody(("value", "true"))

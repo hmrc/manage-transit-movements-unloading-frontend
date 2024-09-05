@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, viewModel: AdditionalReferenceNumberViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, viewModel: AdditionalReferenceNumberViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

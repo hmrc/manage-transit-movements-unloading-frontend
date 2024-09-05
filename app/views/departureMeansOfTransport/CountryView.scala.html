@@ -31,7 +31,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode, viewModel: CountryViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode, viewModel: CountryViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

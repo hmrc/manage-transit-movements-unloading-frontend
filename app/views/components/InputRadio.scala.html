@@ -36,7 +36,7 @@
         name = field.name,
         classes = if(inline) "govuk-radios--inline" else "",
         errorMessage = field.error.map { e =>
-            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
+            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args *)))
         },
         hint = hint.map(x => Hint(content = Text(x))),
         items = radioItems(field.id)

@@ -123,7 +123,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
       when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 

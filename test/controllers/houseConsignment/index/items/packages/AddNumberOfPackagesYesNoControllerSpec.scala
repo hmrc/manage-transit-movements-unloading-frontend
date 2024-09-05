@@ -109,7 +109,7 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
           .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
       )
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, addNumberOfPackagesYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

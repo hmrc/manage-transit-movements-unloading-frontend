@@ -75,9 +75,9 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           mockUnloadingPermissionMessageService
         )
 
-        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(None)
+        when(mockSessionRepository.get(any(), any())) `thenReturn` Future.successful(None)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-        when(mockUnloadingPermissionActionProvider.apply(any())) thenReturn unloadingAction
+        when(mockUnloadingPermissionActionProvider.apply(any())) `thenReturn` unloadingAction
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 
@@ -104,10 +104,10 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           mockUnloadingPermissionMessageService
         )
 
-        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(emptyUserAnswers))
+        when(mockSessionRepository.get(any(), any())) `thenReturn` Future.successful(Some(emptyUserAnswers))
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-        when(mockUnloadingPermissionActionProvider.apply(any())) thenReturn unloadingAction
+        when(mockUnloadingPermissionActionProvider.apply(any())) `thenReturn` unloadingAction
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 

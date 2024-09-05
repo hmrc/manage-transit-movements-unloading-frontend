@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, form: Form[LocalDate])(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, form: Form[LocalDate])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("dateGoodsUnloaded.title"),

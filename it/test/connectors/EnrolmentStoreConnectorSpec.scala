@@ -144,7 +144,7 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
       }
 
       "return false when the API call returns a no content" in {
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) willReturn {
+        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
           aResponse().withStatus(NO_CONTENT)
         })
 
@@ -154,7 +154,7 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
       }
 
       "return false when the API call returns 404 NOT_FOUND" in {
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) willReturn {
+        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
           aResponse().withStatus(NOT_FOUND)
         })
 
@@ -171,7 +171,7 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
             |}
             |""".stripMargin)
 
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) willReturn {
+        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
           aResponse().withStatus(BAD_REQUEST).withBody(Json.stringify(body))
         })
 
@@ -184,7 +184,7 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
         forAll(Gen.choose(400, 599).retryUntil(_ != 404)) {
           status =>
             server.stubFor(
-              get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) willReturn {
+              get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
                 aResponse().withStatus(status)
               }
             )
@@ -196,7 +196,7 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
       }
 
       "throw exception when the API call returns 200 and invalid JSON" in {
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) willReturn {
+        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
           aResponse()
             .withStatus(OK)
             .withBody("""

@@ -97,7 +97,7 @@ trait SpecBase
     def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T], rds: Reads[T]): UserAnswers =
       value.map(setValue(page, _)).getOrElse(userAnswers)
 
-    def removeValue(page: QuestionPage[_]): UserAnswers =
+    def removeValue(page: QuestionPage[?]): UserAnswers =
       userAnswers.remove(page).success.value
 
     def getSequenceNumber(section: Section[JsObject]): String =

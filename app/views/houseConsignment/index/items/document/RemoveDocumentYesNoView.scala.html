@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, document: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, document: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.items.document.removeDocumentYesNo.title", houseConsignmentIndex.display, itemIndex.display),

@@ -90,7 +90,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
     "when yes submitted" - {
       "must redirect to add another document and remove document at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setSequenceNumber(DocumentSection(houseConsignmentIndex, documentIndex), BigInt(1))
@@ -127,7 +127,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
     "when no submitted" - {
       "must redirect to add another document and not remove document at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(TypePage(houseConsignmentIndex, documentIndex), DocumentType(Support, "code", "desc"))
           .setValue(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), "1234")
@@ -156,7 +156,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, removeDocumentRoute)
         .withFormUrlEncodedBody(("value", "true"))

@@ -63,10 +63,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       .build()
 
   protected def setExistingUserAnswers(answers: UserAnswers): Unit =
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(Some(answers))
+    when(mockDataRetrievalActionProvider.apply(any())) `thenReturn` new FakeDataRetrievalAction(Some(answers))
 
   protected def setNoExistingUserAnswers(): Unit =
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(None)
+    when(mockDataRetrievalActionProvider.apply(any())) `thenReturn` new FakeDataRetrievalAction(None)
 
   // TODO - delete?
   protected def checkArrivalStatus(): Unit = ()

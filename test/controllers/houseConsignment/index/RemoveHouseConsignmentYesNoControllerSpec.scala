@@ -84,7 +84,7 @@ class RemoveHouseConsignmentYesNoControllerSpec extends SpecBase with AppWithDef
 
     "when yes submitted" - {
       "must redirect to add another house consignment and remove house consignment at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setValue(GrossWeightPage(houseConsignmentIndex), BigDecimal(123.4))
@@ -112,7 +112,7 @@ class RemoveHouseConsignmentYesNoControllerSpec extends SpecBase with AppWithDef
 
     "when no submitted" - {
       "must redirect to add another consignment and not remove house consignment at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(GrossWeightPage(houseConsignmentIndex), BigDecimal(123.4))
           .setValue(CountryOfDestinationPage(houseConsignmentIndex), Country("GB", "United Kingdom"))
@@ -141,7 +141,7 @@ class RemoveHouseConsignmentYesNoControllerSpec extends SpecBase with AppWithDef
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, removeHouseConsignmentRoute)
         .withFormUrlEncodedBody(("value", "true"))

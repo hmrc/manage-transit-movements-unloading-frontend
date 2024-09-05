@@ -27,7 +27,7 @@ package object reference {
             case Nil => 0
             case f :: tail =>
               f(x).compareToIgnoreCase(f(y)) match {
-                case 0      => compareBy(tail: _*)
+                case 0      => compareBy(tail *)
                 case result => result
               }
           }

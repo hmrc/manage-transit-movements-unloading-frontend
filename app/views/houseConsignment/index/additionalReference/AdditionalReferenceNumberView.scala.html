@@ -27,7 +27,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, houseConsignmentMode: Mode, additionalReferenceMode: Mode, houseConsignmentIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, houseConsignmentMode: Mode, additionalReferenceMode: Mode, houseConsignmentIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.additionalReference.additionalReferenceNumber.title"),

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Button => HButton}
 
 @this(govukButton: GovukButton)
 
@@ -25,7 +25,7 @@
     href: Option[String] = None
 )(implicit messages: Messages)
 
-@govukButton(Button(
+@govukButton(HButton(
     isStartButton = isStartButton,
     preventDoubleClick = Some(true),
     content = Text(messages(messageKey)),

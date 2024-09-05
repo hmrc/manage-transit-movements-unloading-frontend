@@ -103,7 +103,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, documentReferenceNumberRoute)
         .withFormUrlEncodedBody(("value", "testString"))

@@ -28,7 +28,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode, viewModel: NumberOfPackagesViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode, viewModel: NumberOfPackagesViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

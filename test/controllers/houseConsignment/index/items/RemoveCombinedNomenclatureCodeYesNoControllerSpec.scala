@@ -75,7 +75,7 @@ class RemoveCombinedNomenclatureCodeYesNoControllerSpec extends SpecBase with Ap
         val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), "code")
 
         setExistingUserAnswers(userAnswers)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeCombinedNomenclatureCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -94,7 +94,7 @@ class RemoveCombinedNomenclatureCodeYesNoControllerSpec extends SpecBase with Ap
 
     "when no submitted" - {
       "must redirect to house consignment summary and not remove departureTransportMeans at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), "3")
 
         setExistingUserAnswers(userAnswers)

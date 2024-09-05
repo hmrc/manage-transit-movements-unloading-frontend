@@ -42,7 +42,7 @@ object MessageId {
         .bind(key, value)
         .fold(
           Left(_),
-          fromMessageIdValue _ andThen {
+          fromMessageIdValue andThen {
             case Some(messageId) => Right(messageId)
             case x               => Left(s"Invalid MessageId. The MessageId must be > 0, instead got $x")
           }

@@ -25,8 +25,7 @@ import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
   invalidKey: String,
-  requiredKey: String,
-  args: Seq[String] = Seq.empty
+  requiredKey: String
 ) extends Formatter[LocalDate]
     with Formatters {
 

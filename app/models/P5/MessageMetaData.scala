@@ -30,6 +30,6 @@ object MessageMetaData {
       (__ \ "received").read[LocalDateTime] and
         (__ \ "type").read[ArrivalMessageType] and
         (__ \ "id").read[String]
-    )(MessageMetaData.apply _)
+    )(MessageMetaData.apply)
   }
 }

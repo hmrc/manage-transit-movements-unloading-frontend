@@ -161,7 +161,7 @@ object UserAnswers {
         (__ \ "ie043Data").read[CC043CType](sensitiveFormats.cc043cReads) and
         (__ \ "data").read[JsObject](sensitiveFormats.jsObjectReads) and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
-    )(UserAnswers.apply _)
+    )(UserAnswers.apply)
 
   implicit def writes(implicit sensitiveFormats: SensitiveFormats): OWrites[UserAnswers] =
     writes(SensitiveWrites(sensitiveFormats))
@@ -177,7 +177,9 @@ object UserAnswers {
         (__ \ "ie043Data").write[CC043CType](sensitiveWrites.cc043cTypeWrites) and
         (__ \ "data").write[JsObject](sensitiveWrites.jsObjectWrites) and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
-    )(unlift(UserAnswers.unapply))
+    )(
+      ua => Tuple.fromProductTyped(ua)
+    )
 
   implicit def format(implicit sensitiveFormats: SensitiveFormats): Format[UserAnswers] =
     Format(reads, writes)

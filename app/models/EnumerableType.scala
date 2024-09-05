@@ -22,8 +22,9 @@ trait EnumerableType[T] extends Enumerable.Implicits {
 
   implicit def enumerable: Enumerable[T] =
     Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
+      values
+        .map(
+          v => v.toString -> v
+        ) *
     )
 }

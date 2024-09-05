@@ -47,10 +47,10 @@ class SealIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(requiredError: String, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+  private def form(requiredError: String, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Form[String] =
     formProvider(requiredError, otherSealIdentificationNumbers(equipmentIndex, sealIndex))
 
-  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
     (0 until numberOfSeals)
       .filterNot(_ == sealIndex.position)
@@ -96,7 +96,7 @@ class SealIdentificationNumberController @Inject() (
     value: String,
     equipmentIndex: Index,
     sealIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{InsetText => HInsetText}
 @import viewModels.components.InputTextViewModel
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.Heading
@@ -24,7 +24,7 @@
 @(text: String)
 
 @govukInsetText(
-    InsetText(
+    HInsetText(
         content = Text(text)
     )
 )

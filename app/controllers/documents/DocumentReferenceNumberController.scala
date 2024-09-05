@@ -76,7 +76,7 @@ class DocumentReferenceNumberController @Inject() (
     mode: Mode,
     value: String,
     documentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

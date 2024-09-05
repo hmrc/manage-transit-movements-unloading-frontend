@@ -17,6 +17,7 @@
 @import views.html.components.{Button, Heading}
 @import config.FrontendAppConfig
 @import viewModels.UnloadingGuidanceViewModel
+@import controllers.routes.{NewAuthYesNoController => NewAuthController}
 
 @this(
     mainTemplate: MainTemplate,
@@ -26,7 +27,7 @@
     config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String,mode:Mode,  viewModel: UnloadingGuidanceViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages(viewModel.title),
@@ -48,7 +49,7 @@
 
     @viewModel.para3.map{ para3Value =>
         <p class="govuk-body">@messages(para3Value.preLinkText)
-            <a id="download1" class="govuk-link" href=@NewAuthYesNoController.onPageLoad(arrivalId, mode)>
+            <a id="download1" class="govuk-link" href=@NewAuthController.onPageLoad(arrivalId, mode)>
                 @messages(para3Value.linkText)
             </a>@messages(para3Value.postLinkText)
         </p>

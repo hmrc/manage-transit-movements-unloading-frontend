@@ -33,8 +33,8 @@ class ItemAnswersHelper(
     page = ItemPage(equipmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.consignment.item",
-    args = Seq(itemIndex.display, equipmentIndex.display): _*,
     id = Some(s"change-consignment-item-details-${equipmentIndex.display}-${itemIndex.display}"),
-    call = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode, CheckMode))
+    call = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode, CheckMode)),
+    args = Seq(itemIndex.display, equipmentIndex.display) *
   )
 }

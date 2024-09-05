@@ -75,7 +75,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
           .setNotRemoved(ItemSection(houseConsignmentIndex, itemIndex))
 
         setExistingUserAnswers(userAnswers)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeConsignmentItemRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -101,7 +101,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "when no submitted" - {
       "must redirect to cross check page and not remove consignment item at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
           .setSequenceNumber(ItemSection(houseConsignmentIndex, itemIndex), 1)

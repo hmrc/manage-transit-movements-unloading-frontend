@@ -95,7 +95,7 @@ class AdditionalReferenceTypeController @Inject() (
     value: AdditionalReferenceType,
     additionalReferenceIndex: Index,
     mode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceTypePage(additionalReferenceIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

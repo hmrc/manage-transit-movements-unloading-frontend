@@ -133,7 +133,7 @@ class IdentificationController @Inject() (
     transportMeansIndex: Index,
     houseConsignmentMode: Mode,
     transportMeansMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

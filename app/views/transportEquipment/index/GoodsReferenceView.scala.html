@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[GoodsReference], arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, mrn: MovementReferenceNumber, goodsReferences: Seq[GoodsReference], equipmentMode: Mode, goodsReferenceMode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[GoodsReference], arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, mrn: MovementReferenceNumber, goodsReferences: Seq[GoodsReference], equipmentMode: Mode, goodsReferenceMode: Mode)(implicit request: Request[?], messages: Messages)
 
 @paragraphs = {
     @messages("transport.equipment.selectItems.paragraph").toParagraph

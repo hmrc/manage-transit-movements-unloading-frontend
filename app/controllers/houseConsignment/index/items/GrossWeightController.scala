@@ -93,7 +93,7 @@ class GrossWeightController @Inject() (
     itemIndex: Index,
     houseConsignmentMode: Mode,
     itemMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage(houseConsignmentIndex, itemIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

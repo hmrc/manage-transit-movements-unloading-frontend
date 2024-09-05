@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, documentIndex: Index, mode: Mode, document: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, documentIndex: Index, mode: Mode, document: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("document.removeDocumentYesNo.title"),

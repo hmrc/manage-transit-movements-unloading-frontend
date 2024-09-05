@@ -23,7 +23,7 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
   val maxValue: BigDecimal = BigDecimal("10000000000000000")
 
   def bigDecimalField(
-    form: Form[_],
+    form: Form[?],
     fieldName: String,
     invalidCharactersError: FormError,
     invalidFormatError: FormError,

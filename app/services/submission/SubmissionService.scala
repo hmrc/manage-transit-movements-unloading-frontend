@@ -74,7 +74,7 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC044CType]
   }
 
-  def attributes: Map[String, DataRecord[_]] =
+  def attributes: Map[String, DataRecord[?]] =
     Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =

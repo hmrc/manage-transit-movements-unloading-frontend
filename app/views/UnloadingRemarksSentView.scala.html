@@ -25,7 +25,7 @@
     govukPanel: GovukPanel
 )
 
-@(mrn: String, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: String, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("unloadingRemarksSent.title"),

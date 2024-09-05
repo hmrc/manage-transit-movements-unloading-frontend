@@ -97,7 +97,7 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
               .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
 
             setExistingUserAnswers(userAnswers)
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
             val request = FakeRequest(POST, removePackageTypeYesNoRoute)
               .withFormUrlEncodedBody(("value", "true"))
@@ -130,7 +130,7 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
               .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
 
             setExistingUserAnswers(userAnswers)
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
             val request = FakeRequest(POST, removePackageTypeYesNoRoute)
               .withFormUrlEncodedBody(("value", "false"))

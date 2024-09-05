@@ -95,7 +95,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, additionalReferenceNumberRoute)
         .withFormUrlEncodedBody(("value", "test string"))

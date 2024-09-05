@@ -95,7 +95,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
     itemIndex: Index,
     houseConsignmentMode: Mode,
     itemMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

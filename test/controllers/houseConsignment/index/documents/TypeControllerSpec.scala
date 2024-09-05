@@ -112,7 +112,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         "must redirect to the next page when valid data is submitted" in {
 
           when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any(), any())(any())).thenReturn(Future.successful(transportDocumentList))
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document1)
           setExistingUserAnswers(userAnswers)
@@ -220,7 +220,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         "must redirect to the next page when valid data is submitted" in {
 
           when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(supportingDocumentList))
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document3)
           setExistingUserAnswers(userAnswers)
@@ -379,7 +379,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       "must redirect to the next page when valid data is submitted" in {
 
         when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(transportDocumentList))
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), document1)
         setExistingUserAnswers(userAnswers)

@@ -95,15 +95,15 @@ class ContainerIdentificationNumberController @Inject() (
           )
     }
 
-  private def form(requiredError: String, equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+  private def form(requiredError: String, equipmentIndex: Index)(implicit request: DataRequest[?]): Form[String] =
     formProvider(requiredError, otherContainerIdentificationNumbers(equipmentIndex))
 
-  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfEquipments = request.userAnswers.get(TransportEquipmentListSection).length
     (0 until numberOfEquipments)
       .map(Index(_))
       .filterNot(_ == equipmentIndex)
-      .map(ContainerIdentificationNumberPage)
+      .map(ContainerIdentificationNumberPage.apply)
       .flatMap(request.userAnswers.get(_))
   }
 

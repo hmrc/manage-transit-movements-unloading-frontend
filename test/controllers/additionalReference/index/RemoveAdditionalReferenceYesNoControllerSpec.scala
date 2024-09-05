@@ -94,7 +94,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
     }
     "when yes submitted" - {
       "must redirect to add another Additional Reference and remove AdditionalReference at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setSequenceNumber(AdditionalReferenceSection(additionalReferenceIndex), 1)
           .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
@@ -126,7 +126,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
     "when no submitted" - {
       "must redirect to add another Additional Reference and not remove AdditionalReference at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setSequenceNumber(AdditionalReferenceSection(additionalReferenceIndex), 1)
@@ -168,7 +168,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), additionalReferenceNumber)
 
       setExistingUserAnswers(userAnswers)
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, removeAdditionalReferenceRoute)
         .withFormUrlEncodedBody(("value", "true"))

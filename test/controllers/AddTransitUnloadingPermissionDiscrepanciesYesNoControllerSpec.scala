@@ -100,7 +100,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -173,7 +173,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       when(mockTransformer.transform(any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterTransformation))
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
         .withFormUrlEncodedBody(("value", "false"))

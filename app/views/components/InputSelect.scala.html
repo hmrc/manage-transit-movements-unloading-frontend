@@ -40,7 +40,7 @@
         hint = hint.map(x => Hint(content = Text(x))),
         items = SelectItem(value = Some(""), text = placeholder) +: selectItems,
         errorMessage = field.error.map { e =>
-            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
+            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args *)))
         }
     )
     .withFormField(field)
