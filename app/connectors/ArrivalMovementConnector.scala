@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.ArrivalId
 import models.P5.Messages
 import play.api.http.HeaderNames._
@@ -28,13 +28,19 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.{Node, XML}
 
-class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) {
+class ArrivalMovementConnector @Inject() (
+  config: FrontendAppConfig,
+  http: HttpClientV2,
+  phaseConfig: PhaseConfig
+) {
+
+  private val version = phaseConfig.values.apiVersion
 
   def getMessageMetaData(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Messages] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .get(url)
-      .setHeader(ACCEPT -> "application/vnd.hmrc.2.0+json")
+      .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+json")
       .execute[Messages]
   }
 
@@ -42,7 +48,7 @@ class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpC
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId/body"
     http
       .get(url)
-      .setHeader(ACCEPT -> "application/vnd.hmrc.2.0+xml")
+      .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+xml")
       .execute[HttpResponse]
       .map(_.body)
       .map(XML.loadString)
