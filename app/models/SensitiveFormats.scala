@@ -22,11 +22,12 @@ import scalaxb.`package`.fromXML
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
+import generated.Generated_CC043CTypeFormat
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.XML
 
-class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter with Decrypter) {
+class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter & Decrypter) {
 
   val jsObjectReads: Reads[JsObject] =
     JsonEncryption.sensitiveDecrypter(SensitiveString.apply).map(_.decrypt) orElse

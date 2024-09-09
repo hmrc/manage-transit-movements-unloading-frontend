@@ -75,7 +75,7 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
         val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), "3")
 
         setExistingUserAnswers(userAnswers)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeCommodityCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -94,7 +94,7 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "when no submitted" - {
       "must redirect to house consignment summary and not remove departureTransportMeans at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), "3")
 
         setExistingUserAnswers(userAnswers)

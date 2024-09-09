@@ -42,9 +42,9 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
   def pageWithMoreItemsAllowed(h1Args: Any*)(h2Args: Any*): Unit =
     "page with more items allowed" - {
 
-      behave like pageWithTitle(doc, s"$prefix.singular", h1Args: _*)
+      behave like pageWithTitle(doc, s"$prefix.singular", h1Args *)
 
-      behave like pageWithHeading(doc, s"$prefix.singular", h1Args: _*)
+      behave like pageWithHeading(doc, s"$prefix.singular", h1Args *)
 
       behave like pageWithListWithActions(doc, listItems)
 
@@ -57,15 +57,15 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
       val doc = parseView(applyMaxedOutView)
 
-      behave like pageWithTitle(doc, s"$prefix.plural", args: _*)
+      behave like pageWithTitle(doc, s"$prefix.plural", args *)
 
-      behave like pageWithHeading(doc, s"$prefix.plural", args: _*)
+      behave like pageWithHeading(doc, s"$prefix.plural", args *)
 
       behave like pageWithListWithActions(doc, maxedOutListItems)
 
       behave like pageWithoutRadioItems(doc)
 
-      behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label", messageArgs: _*))
+      behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label", messageArgs *))
     }
 
   // scalastyle:off method.length

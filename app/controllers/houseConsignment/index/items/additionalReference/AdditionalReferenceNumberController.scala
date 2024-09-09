@@ -115,7 +115,7 @@ class AdditionalReferenceNumberController @Inject() (
     houseConsignmentMode: Mode,
     itemMode: Mode,
     additionalReferenceMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(
         request.userAnswers.set(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)

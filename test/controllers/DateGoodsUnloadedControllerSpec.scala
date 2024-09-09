@@ -96,7 +96,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect on to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep).success.value
 
@@ -132,7 +132,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
       val request = FakeRequest(POST, dateGoodsUnloadedRoute)
-        .withFormUrlEncodedBody(badSubmission.toSeq: _*)
+        .withFormUrlEncodedBody(badSubmission.toSeq *)
 
       val boundForm = form.bind(badSubmission)
 
@@ -157,7 +157,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
         "value.year"  -> invalidDate.getYear.toString
       )
       val request = FakeRequest(POST, dateGoodsUnloadedRoute)
-        .withFormUrlEncodedBody(badSubmission.toSeq: _*)
+        .withFormUrlEncodedBody(badSubmission.toSeq *)
 
       val boundForm = form.bind(badSubmission)
 

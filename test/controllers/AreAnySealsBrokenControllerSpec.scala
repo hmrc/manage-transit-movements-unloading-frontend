@@ -91,7 +91,7 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

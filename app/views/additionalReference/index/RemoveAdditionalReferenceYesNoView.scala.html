@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, referenceIndex: Index, additionalReference: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, referenceIndex: Index, additionalReference: Option[String], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("additionalReference.index.removeAdditionalReferenceYesNo.title", referenceIndex.display),

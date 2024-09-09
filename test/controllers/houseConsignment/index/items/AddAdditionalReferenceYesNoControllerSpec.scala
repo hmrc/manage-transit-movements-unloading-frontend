@@ -92,7 +92,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, addAdditionalReferenceYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

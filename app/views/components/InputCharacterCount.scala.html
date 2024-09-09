@@ -42,7 +42,7 @@
         maxLength = Some(maxLength),
         hint = hint.map(x => Hint(content = HtmlContent(messages(x)))),
         errorMessage = field.error.map { e =>
-            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
+            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args *)))
         }
     )
     .withFormField(field)

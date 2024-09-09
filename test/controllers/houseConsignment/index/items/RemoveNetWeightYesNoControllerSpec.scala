@@ -76,7 +76,7 @@ class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
 
         setExistingUserAnswers(userAnswers)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeNetWeightRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -95,7 +95,7 @@ class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "when no submitted" - {
       "must redirect to house consignment summary and not remove netWeight at specified index" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers.setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
 
         setExistingUserAnswers(userAnswers)

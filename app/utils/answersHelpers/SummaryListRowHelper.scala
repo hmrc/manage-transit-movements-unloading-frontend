@@ -88,7 +88,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
     args: Any*
   ): SummaryListRow =
     SummaryListRow(
-      key = messages(s"$prefix", args: _*).toKey,
+      key = messages(s"$prefix", args *).toKey,
       value = Value(answer),
       actions = call.map {
         x =>
@@ -97,7 +97,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
               ActionItem(
                 content = messages("site.edit").toText,
                 href = x.url,
-                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args *)),
                 attributes = id.fold[Map[String, String]](Map.empty)(
                   id => Map("id" -> id)
                 )
@@ -116,11 +116,11 @@ class SummaryListRowHelper(implicit messages: Messages) {
   ): SummaryListRow =
     buildSimpleRow(
       prefix = prefix,
-      label = messages(s"$prefix", args: _*),
+      label = messages(s"$prefix", args *),
       answer = answer,
       id = id,
       call = Some(call),
-      args = args: _*
+      args = args *
     )
 
   protected def buildRowWithNoChangeLink(
@@ -130,7 +130,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
   ): SummaryListRow =
     buildSimpleRow(
       prefix = prefix,
-      label = messages(s"$prefix", args: _*),
+      label = messages(s"$prefix", args *),
       answer = answer,
       id = None,
       call = None
@@ -154,7 +154,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
               ActionItem(
                 content = messages("site.edit").toText,
                 href = route.url,
-                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args *)),
                 attributes = id.fold[Map[String, String]](Map.empty)(
                   id => Map("id" -> id)
                 )
@@ -173,7 +173,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
     args: Any*
   ): SummaryListRow =
     SummaryListRow(
-      key = messages(s"$prefix", args: _*).toKey,
+      key = messages(s"$prefix", args *).toKey,
       value = Value(answer),
       actions = Some(
         Actions(items =
@@ -181,13 +181,13 @@ class SummaryListRowHelper(implicit messages: Messages) {
             ActionItem(
               content = messages("site.edit").toText,
               href = changeCall.url,
-              visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+              visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args *)),
               attributes = Map("id" -> s"change-$id")
             ),
             ActionItem(
               content = messages("site.delete").toText,
               href = removeCall.url,
-              visuallyHiddenText = Some(messages(s"$prefix.remove.hidden", args: _*)),
+              visuallyHiddenText = Some(messages(s"$prefix.remove.hidden", args *)),
               attributes = Map("id" -> s"remove-$id")
             )
           )

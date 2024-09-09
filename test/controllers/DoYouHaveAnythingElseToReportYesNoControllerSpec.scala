@@ -87,7 +87,7 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

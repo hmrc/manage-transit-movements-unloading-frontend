@@ -68,7 +68,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
     "must redirect to the next page" - {
       "when yes is submitted" in {
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setSequenceNumber(SealSection(equipmentIndex, sealIndex), BigInt(1))
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
@@ -93,7 +93,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       }
 
       "when no is submitted" in {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(SealSection(equipmentIndex, sealIndex), Json.obj())
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)

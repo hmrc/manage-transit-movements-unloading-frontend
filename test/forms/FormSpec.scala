@@ -21,7 +21,7 @@ import play.api.data.{Form, FormError}
 
 trait FormSpec extends SpecBase {
 
-  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) =
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]) =
     form
       .bind(data)
       .fold(
@@ -29,7 +29,7 @@ trait FormSpec extends SpecBase {
           for (error <- expectedErrors) formWithErrors.errors must contain(FormError(error.key, error.message, error.args))
           formWithErrors.errors.size mustBe expectedErrors.size
         },
-        form => fail("Expected a validation error when binding the form, but it was bound successfully.")
+        _ => fail("Expected a validation error when binding the form, but it was bound successfully.")
       )
 
   def error(key: String, value: String, args: Any*) = Seq(FormError(key, value, args))

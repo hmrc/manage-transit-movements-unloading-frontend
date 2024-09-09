@@ -37,9 +37,10 @@ object ArrivalStatus extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[ArrivalStatus] =
     Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
+      values
+        .map(
+          v => v.toString -> v
+        ) *
     )
 
   implicit val reads: Reads[ArrivalStatus] =

@@ -42,7 +42,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           answer = formatAnswer(answer),
           id = id,
           call = call,
-          args = args: _*
+          args = args *
         )
     }
 
@@ -64,7 +64,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           id = id,
           changeCall = change,
           removeCall = remove,
-          args = args: _*
+          args = args *
         )
     }).getOrElse(
       buildRow(
@@ -88,7 +88,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           answer = formatAnswer(answer),
           id = None,
           call = None,
-          args = args: _*
+          args = args *
         )
     }
 }

@@ -43,7 +43,7 @@ class DocumentAnswersHelper(
         page = TypePage(houseConsignmentIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.document.type",
-        args = Seq(documentIndex.display): _*,
+        args = Seq(documentIndex.display),
         id = Some(s"change-document-type-${documentIndex.display}"),
         call = Some(routes.TypeController.onPageLoad(userAnswers.id, CheckMode, CheckMode, houseConsignmentIndex, documentIndex))
       )
@@ -61,7 +61,7 @@ class DocumentAnswersHelper(
         page = DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.document.referenceNumber",
-        args = Seq(documentIndex.display): _*,
+        args = Seq(documentIndex.display),
         id = Some(s"change-document-reference-number-${documentIndex.display}"),
         call = Some(routes.ReferenceNumberController.onPageLoad(userAnswers.id, CheckMode, CheckMode, houseConsignmentIndex, documentIndex))
       )
@@ -79,7 +79,7 @@ class DocumentAnswersHelper(
         page = AdditionalInformationPage(houseConsignmentIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.document.additionalInformation",
-        args = Seq(documentIndex.display): _*,
+        args = Seq(documentIndex.display),
         id = Some(s"change-document-additional-information-${documentIndex.display}"),
         call = Some(routes.AdditionalInformationController.onPageLoad(userAnswers.id, CheckMode, CheckMode, houseConsignmentIndex, documentIndex))
       )

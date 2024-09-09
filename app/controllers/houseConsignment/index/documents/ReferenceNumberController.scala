@@ -47,10 +47,10 @@ class ReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(requiredError: String, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+  private def form(requiredError: String, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[?]): Form[String] =
     formProvider(requiredError, houseConsignmentIndex, otherDocumentReferenceNumbers(houseConsignmentIndex, documentIndex))
 
-  private def otherDocumentReferenceNumbers(houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherDocumentReferenceNumbers(houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberDocuments = request.userAnswers.get(DocumentsSection(houseConsignmentIndex)).length
     (0 until numberDocuments)
       .filterNot(_ == documentIndex.position)
@@ -105,7 +105,7 @@ class ReferenceNumberController @Inject() (
     value: String,
     houseConsignmentIndex: Index,
     documentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

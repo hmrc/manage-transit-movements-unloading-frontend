@@ -33,7 +33,7 @@
     button: Button
 )
 
-@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, additionalReferences: Seq[AdditionalReferenceType], viewModel: AdditionalReferenceTypeViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, additionalReferences: Seq[AdditionalReferenceType], viewModel: AdditionalReferenceTypeViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

@@ -95,7 +95,7 @@ class TypeController @Inject() (
     mode: Mode,
     value: DocumentType,
     documentIndex: Index
-  )(implicit request: DataRequest[_]): Future[Result] =
+  )(implicit request: DataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

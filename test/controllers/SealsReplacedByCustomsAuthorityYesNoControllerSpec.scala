@@ -87,7 +87,7 @@ class SealsReplacedByCustomsAuthorityYesNoControllerSpec extends SpecBase with A
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, sealsReplacedByCustomsAuthorityYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

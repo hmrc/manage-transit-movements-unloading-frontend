@@ -100,7 +100,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
         .withFormUrlEncodedBody(("value", "false"))
@@ -171,7 +171,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       when(mockTransformer.transform(any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterTransformation))
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

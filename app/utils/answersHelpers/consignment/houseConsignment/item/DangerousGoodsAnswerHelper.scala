@@ -35,8 +35,8 @@ class DangerousGoodsAnswerHelper(
       page = DangerousGoodsPage(houseConsignmentIndex, itemIndex, dangerousGoodsIndex),
       formatAnswer = formatAsText,
       prefix = "unloadingFindings.dangerousGoods.unNumber",
-      args = Seq(dangerousGoodsIndex.display, itemIndex.display): _*,
       id = Some(s"change-unNumber-${itemIndex.display}-${dangerousGoodsIndex.display}"),
-      call = None
+      call = None,
+      args = Seq(dangerousGoodsIndex.display, itemIndex.display) *
     )
 }

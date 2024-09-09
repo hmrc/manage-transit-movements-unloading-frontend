@@ -109,7 +109,7 @@ class AdditionalReferenceTypeController @Inject() (
     additionalReferenceIndex: Index,
     houseConsignmentMode: Mode,
     additionalReferenceMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(
         request.userAnswers.set(HouseConsignmentAdditionalReferenceTypePage(houseConsignmentIndex, additionalReferenceIndex), value)

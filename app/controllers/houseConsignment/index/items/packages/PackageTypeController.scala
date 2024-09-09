@@ -138,7 +138,7 @@ class PackageTypeController @Inject() (
     houseConsignmentMode: Mode,
     itemMode: Mode,
     packageMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

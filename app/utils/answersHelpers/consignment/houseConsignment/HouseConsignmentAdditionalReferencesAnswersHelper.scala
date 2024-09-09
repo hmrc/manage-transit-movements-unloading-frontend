@@ -37,7 +37,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelper(
     prefix = "unloadingFindings.houseConsignment.additionalReference.type",
     id = Some(s"change-additional-reference-type-${additionalReferenceIndex.display}"),
     call = Some(routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, additionalReferenceIndex)),
-    args = Seq(additionalReferenceIndex.display): _*
+    args = Seq(additionalReferenceIndex.display) *
   )
 
   def referenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -46,6 +46,6 @@ class HouseConsignmentAdditionalReferencesAnswersHelper(
     prefix = "unloadingFindings.houseConsignment.additionalReference.number",
     id = Some(s"change-additional-reference-number-${additionalReferenceIndex.display}"),
     call = Some(routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, additionalReferenceIndex)),
-    args = Seq(additionalReferenceIndex.display): _*
+    args = Seq(additionalReferenceIndex.display) *
   )
 }

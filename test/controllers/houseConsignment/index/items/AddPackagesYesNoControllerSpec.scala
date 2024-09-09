@@ -92,7 +92,7 @@ class AddPackagesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, addPackagesYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

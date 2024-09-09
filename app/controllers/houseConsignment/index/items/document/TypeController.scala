@@ -151,7 +151,7 @@ class TypeController @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index,
     documentIndex: Index
-  )(implicit request: DataRequest[_]): Future[Result] =
+  )(implicit request: DataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(houseConsignmentIndex, itemIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

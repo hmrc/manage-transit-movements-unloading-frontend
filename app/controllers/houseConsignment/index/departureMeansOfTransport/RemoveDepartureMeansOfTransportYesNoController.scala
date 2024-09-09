@@ -17,7 +17,6 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import controllers.actions._
-import controllers.houseConsignment.index.departureMeansOfTransport.routes
 import forms.YesNoFormProvider
 import models.removable.TransportMeans
 import models.{ArrivalId, Index, Mode, UserAnswers}

@@ -67,10 +67,9 @@ trait Mappings extends Formatters with Constraints {
 
   protected def localDate(
     invalidKey: String,
-    requiredKey: String,
-    args: Seq[String] = Seq.empty
+    requiredKey: String
   ): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, requiredKey, args))
+    of(new LocalDateFormatter(invalidKey, requiredKey))
 
   protected def selectable[T <: Selectable](
     selectableList: SelectableList[T],

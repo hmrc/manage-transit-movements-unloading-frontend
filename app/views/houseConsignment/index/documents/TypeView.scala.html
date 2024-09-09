@@ -32,7 +32,7 @@
     button: Button
 )
 
-@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, documentMode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, documentMode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[?], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,

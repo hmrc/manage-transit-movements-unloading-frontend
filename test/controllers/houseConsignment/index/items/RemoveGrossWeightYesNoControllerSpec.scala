@@ -76,7 +76,7 @@ class RemoveGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultM
         val userAnswers             = emptyUserAnswers.setValue(GrossWeightPage(houseConsignmentIndex, itemIndex), grossWeight)
 
         setExistingUserAnswers(userAnswers)
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, removeGrossWeightRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -96,7 +96,7 @@ class RemoveGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultM
     "when no submitted" - {
       "must redirect to house consignment summary and not remove departureTransportMeans at specified index" in {
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
         val int: Int                = arbitrary[Int].sample.value
         val grossWeight: BigDecimal = BigDecimal(int)
         val userAnswers             = emptyUserAnswers.setValue(GrossWeightPage(houseConsignmentIndex, itemIndex), grossWeight)

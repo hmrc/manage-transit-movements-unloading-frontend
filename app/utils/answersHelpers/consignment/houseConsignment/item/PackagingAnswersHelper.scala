@@ -31,26 +31,26 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     page = PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsPackage,
     prefix = "unloadingFindings.rowHeadings.item.packageType",
-    args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-type-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode))
+    call = Some(routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)),
+    args = Seq(packageIndex.display, itemIndex.display) *
   )
 
   private[houseConsignment] def packageMarksRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageMarks",
-    args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-mark-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(routes.PackageShippingMarkController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode))
+    call = Some(routes.PackageShippingMarkController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)),
+    args = Seq(packageIndex.display, itemIndex.display) *
   )
 
   private[houseConsignment] def packageCountRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
     page = NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageCount",
-    args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-count-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(routes.NumberOfPackagesController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode))
+    call = Some(routes.NumberOfPackagesController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)),
+    args = Seq(packageIndex.display, itemIndex.display) *
   )
 }

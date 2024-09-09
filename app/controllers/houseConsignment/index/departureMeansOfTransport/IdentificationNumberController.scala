@@ -116,7 +116,7 @@ class IdentificationNumberController @Inject() (
     houseConsignmentMode: Mode,
     transportMeansMode: Mode,
     value: String
-  )(implicit request: DataRequest[_]): Future[Result] =
+  )(implicit request: DataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

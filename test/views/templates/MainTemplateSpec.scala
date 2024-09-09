@@ -68,7 +68,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
           val doc = Jsoup.parse(view.toString())
 
           val link = getElementBySelector(doc, ".hmrc-report-technical-issue")
-          getElementHref(link) must fullyMatch regex "http:\\/\\/localhost:9250\\/contact\\/report-technical-problem\\?newTab=.*"
+          getElementHref(link) must fullyMatch regex "http:\\/\\/localhost:9250\\/contact\\/report-technical-problem\\?.*"
           link.text() mustBe "Is this page not working properly? (opens in new tab)"
       }
     }

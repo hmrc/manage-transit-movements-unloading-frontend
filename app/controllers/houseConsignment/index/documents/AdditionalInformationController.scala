@@ -79,7 +79,7 @@ class AdditionalInformationController @Inject() (
     value: String,
     houseConsignmentIndex: Index,
     documentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalInformationPage(houseConsignmentIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

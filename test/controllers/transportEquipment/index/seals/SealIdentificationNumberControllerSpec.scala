@@ -105,7 +105,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, sealIdentificationNumberRoute)
         .withFormUrlEncodedBody(("value", "testString"))

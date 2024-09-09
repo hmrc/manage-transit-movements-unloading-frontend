@@ -121,7 +121,7 @@ class PackageShippingMarkController @Inject() (
     houseConsignmentMode: Mode,
     itemMode: Mode,
     packageMode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

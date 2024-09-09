@@ -118,7 +118,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

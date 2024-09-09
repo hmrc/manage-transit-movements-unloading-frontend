@@ -88,7 +88,7 @@ class IdentificationController @Inject() (
     value: TransportMeansIdentification,
     transportMeansIndex: Index,
     mode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage(transportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

@@ -25,7 +25,7 @@
     config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CannotSendUnloadingRemarksViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CannotSendUnloadingRemarksViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("cannotSendUnloadingRemarks.title"),

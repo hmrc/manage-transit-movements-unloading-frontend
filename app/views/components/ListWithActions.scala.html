@@ -15,6 +15,7 @@
  *@
 
 @import viewModels.ListItem
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.{ListWithActions => HListWithActions}
 
 @this(hmrcListWithActions: HmrcListWithActions)
 
@@ -24,7 +25,7 @@
 
 <div class="govuk-form-group">
     @hmrcListWithActions(
-        ListWithActions(
+        HListWithActions(
             items = listItems map (
                 listItem =>
                     ListWithActionsItem(

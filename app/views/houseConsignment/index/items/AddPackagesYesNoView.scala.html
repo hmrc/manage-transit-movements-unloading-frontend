@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.item.addPackagesYesNo.title"),

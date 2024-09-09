@@ -106,7 +106,7 @@ class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, referenceNumberRoute)
         .withFormUrlEncodedBody(("value", "testString"))

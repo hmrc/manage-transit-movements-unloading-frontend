@@ -23,6 +23,7 @@ import org.mongodb.scala.model._
 import services.DateTimeService
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import org.mongodb.scala._
 
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
@@ -78,7 +79,7 @@ object SessionRepository {
   def indexes(appConfig: FrontendAppConfig): Seq[IndexModel] = {
     val userAnswersLastUpdatedIndex: IndexModel = IndexModel(
       keys = Indexes.ascending("lastUpdated"),
-      indexOptions = IndexOptions().name("user-answers-last-updated-index").expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
+      indexOptions = IndexOptions().name("user-answers-last-updated-index").expireAfter(appConfig.cacheTtl.asInstanceOf[Number].longValue, TimeUnit.SECONDS)
     )
 
     val idAndEoriNumberCompoundIndex: IndexModel = IndexModel(

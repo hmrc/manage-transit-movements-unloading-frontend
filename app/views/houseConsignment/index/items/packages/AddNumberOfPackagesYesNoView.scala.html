@@ -28,7 +28,7 @@
     insetText: InsetText
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, packageIndex: Index, packageType: String, houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, packageIndex: Index, packageType: String, houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.items.packages.addNumberOfPackagesYesNo.title"),
