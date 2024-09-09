@@ -31,32 +31,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: ArrivalMovementConnector) {
 
-  private def getMessageMetaData(
-    arrivalId: ArrivalId
-  )(
-    f: MessageMetaData => Boolean
-  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
+  private def getMessages(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[List[MessageMetaData]] =
     arrivalMovementConnector
       .getMessageMetaData(arrivalId)
-      .map(
+      .map {
         _.messages
-          .filter(f)
           .sortBy(_.received)
           .reverse
-          .headOption
-      )
+      }
 
   private def getMessageMetaData(
     arrivalId: ArrivalId,
     messageType: ArrivalMessageType
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
-    getMessageMetaData(arrivalId) {
-      _.messageType == messageType
-    }
+    getMessages(arrivalId).map(_.find(_.messageType == messageType))
 
-  def getMessageHead(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
-    getMessageMetaData(arrivalId) {
-      _ => true
+  def canSubmitUnloadingRemarks(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    getMessages(arrivalId).map {
+      _.map(_.messageType) match {
+        case UnloadingPermission :: _                                  => true
+        case RejectionFromOfficeOfDestination :: UnloadingRemarks :: _ => true
+        case _                                                         => false
+      }
     }
 
   def getIE043(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC043CType]] =

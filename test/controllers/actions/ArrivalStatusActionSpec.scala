@@ -19,19 +19,15 @@ package controllers.actions
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.EoriNumber
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{ArrivalMessageType, MessageMetaData}
 import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -42,6 +38,9 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with Gene
 
   "ArrivalStatusAction" - {
     "must return None when an unloading permission is available" in {
+
+      when(mockUnloadingPermissionMessageService.canSubmitUnloadingRemarks(any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
       val checkArrivalStatusProvider = new CheckArrivalStatusProvider(mockUnloadingPermissionMessageService)
 
@@ -54,9 +53,8 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with Gene
 
     "must return 303 and redirect to CannotSendUnloadingRemarks when no unloading permission is available" in {
 
-      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+      when(mockUnloadingPermissionMessageService.canSubmitUnloadingRemarks(any())(any(), any()))
+        .thenReturn(Future.successful(false))
 
       val checkArrivalStatusProvider = new CheckArrivalStatusProvider(mockUnloadingPermissionMessageService)
 

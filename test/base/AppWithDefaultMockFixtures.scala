@@ -18,8 +18,6 @@ package base
 
 import config.{PostTransitionModule, TransitionModule}
 import controllers.actions._
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5._
 import models.{Mode, UserAnswers}
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
@@ -36,7 +34,6 @@ import play.api.mvc.Call
 import repositories.SessionRepository
 import services.P5.UnloadingPermissionMessageService
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
@@ -47,8 +44,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     reset(mockDataRetrievalActionProvider)
     reset(mockUnloadingPermissionMessageService)
 
-    when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-      .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, "foo/bar"))))
+    when(mockUnloadingPermissionMessageService.canSubmitUnloadingRemarks(any())(any(), any()))
+      .thenReturn(Future.successful(true))
 
     when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
   }

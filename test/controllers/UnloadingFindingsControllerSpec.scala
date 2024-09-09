@@ -19,8 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.NormalMode
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.MessageMetaData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,9 +29,6 @@ import play.api.test.Helpers._
 import viewModels.UnloadingFindingsViewModel
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 import views.html.UnloadingFindingsView
-
-import java.time.LocalDateTime
-import scala.concurrent.Future
 
 class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -50,11 +45,6 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(
-        mockUnloadingPermissionMessageService
-          .getMessageHead(any())(any(), any())
-      )
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       setExistingUserAnswers(emptyUserAnswers)
 
