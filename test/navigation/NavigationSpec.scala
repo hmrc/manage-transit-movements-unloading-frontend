@@ -62,12 +62,12 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
 
       "must go from LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
-        "to NewAuthYesNoPage when answer is Yes" in {
+        "to CannotUseRevisedUnloadingProcedurePage when answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
           navigator
             .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.NewAuthYesNoController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
         }
 
         "to CheckYourAnswersPage when the answer is No" in {
@@ -537,12 +537,12 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
 
       "must go from LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
-        "to NewAuthYesNoPage when answer is Yes" in {
+        "to CannotUseRevisedUnloadingProcedurePage when answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
           navigator
             .nextPage(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.NewAuthYesNoController.onPageLoad(userAnswers.id, NormalMode))
+            .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
         }
 
         "to CheckYourAnswersPage when the answer is No" in {

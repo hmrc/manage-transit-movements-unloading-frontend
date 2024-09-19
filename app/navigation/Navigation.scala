@@ -123,7 +123,7 @@ class Navigation extends Navigator {
   private def largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua: UserAnswers): Option[Call] =
     ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage).map {
       case true =>
-        routes.NewAuthYesNoController.onPageLoad(ua.id, NormalMode)
+        routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(ua.id)
       case false =>
         routes.CheckYourAnswersController.onPageLoad(ua.id)
     }
