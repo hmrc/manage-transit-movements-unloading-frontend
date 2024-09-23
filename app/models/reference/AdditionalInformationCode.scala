@@ -30,8 +30,6 @@ object AdditionalInformationCode {
 
   implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
 
-  implicit val order: Order[AdditionalInformationCode] = (x: AdditionalInformationCode, y: AdditionalInformationCode) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[AdditionalInformationCode] = (x: AdditionalInformationCode, y: AdditionalInformationCode) => (x, y).compareBy(_.code)
 
 }

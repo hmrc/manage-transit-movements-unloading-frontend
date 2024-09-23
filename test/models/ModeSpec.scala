@@ -21,6 +21,7 @@ import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsString, Json}
 
 class ModeSpec extends AnyFreeSpec with Matchers {
+
   "NormalMode" - {
     val mode: Mode = NormalMode
     "convert to string" in {

@@ -31,7 +31,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new AdditionalReferenceNumberViewModelProvider()
-      val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      val result = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
 
       result.title mustBe "What is the additional reference number?"
       result.heading mustBe "What is the additional reference number?"

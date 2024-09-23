@@ -29,7 +29,5 @@ case class Incident(code: String, description: String) extends Selectable {
 object Incident {
   implicit val format: OFormat[Incident] = Json.format[Incident]
 
-  implicit val order: Order[Incident] = (x: Incident, y: Incident) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[Incident] = (x: Incident, y: Incident) => (x, y).compareBy(_.code)
 }

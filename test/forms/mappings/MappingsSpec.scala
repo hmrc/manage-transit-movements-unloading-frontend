@@ -46,7 +46,7 @@ object MappingsSpec {
         values.toSeq
           .map(
             v => v.toString -> v
-          ) *
+          )*
       )
   }
 }

@@ -153,10 +153,10 @@ class DocumentsTransformer @Inject() (
       td <- Future.sequence(transportDocumentsWithDescription)
       pd <- Future.sequence(previousDocumentsWithDescription)
       documents = sd ++ td ++ pd
-      userAnswers <- documents.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+      userAnswers <- documents.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (document, i)) =>
           acc.flatMap(pipeline(document, Index(i)))
-      })
+      }
     } yield userAnswers
   }
 }

@@ -104,10 +104,10 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     }
 
     Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (additionalReference, i)) =>
           acc.flatMap(pipeline(additionalReference, Index(i)))
-      })
+      }
     }
   }
 }

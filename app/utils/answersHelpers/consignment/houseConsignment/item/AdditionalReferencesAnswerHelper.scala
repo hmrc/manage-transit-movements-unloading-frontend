@@ -41,7 +41,7 @@ class AdditionalReferencesAnswerHelper(
       routes.AdditionalReferenceTypeController
         .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
     ),
-    args = Seq(itemIndex.display, additionalReferenceIndex.display) *
+    args = Seq(itemIndex.display, additionalReferenceIndex.display)*
   )
 
   def referenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -53,6 +53,6 @@ class AdditionalReferencesAnswerHelper(
       routes.AdditionalReferenceNumberController
         .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
     ),
-    args = Seq(itemIndex.display, additionalReferenceIndex.display) *
+    args = Seq(itemIndex.display, additionalReferenceIndex.display)*
   )
 }

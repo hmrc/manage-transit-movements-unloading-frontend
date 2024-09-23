@@ -82,10 +82,9 @@ class ConsignorTransformer @Inject() (
       case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
         referenceDataConnector.getCountry(country).flatMap {
           countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] = {
+            val pipeline: UserAnswers => Future[UserAnswers] =
               set(HouseCountryPage(hcIndex), countryVal) andThen
                 set(ConsignorAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
-            }
             pipeline(userAnswers)
         }
 

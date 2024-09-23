@@ -48,7 +48,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
   private val formProvider                                                 = new SelectableFormProvider()
   private val mode                                                         = NormalMode
-  private val form                                                         = formProvider(mode, "additionalReference.index.additionalReferenceType", additionalReferenceList)
+  private val form = formProvider(mode, "additionalReference.index.additionalReferenceType", additionalReferenceList)
 
   private lazy val additionalReferenceRoute =
     routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, mode, additionalReferenceIndex).url

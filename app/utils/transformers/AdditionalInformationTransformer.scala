@@ -90,10 +90,10 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     }
 
     Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (additionalInformation, i)) =>
           acc.flatMap(pipeline(additionalInformation, Index(i)))
-      })
+      }
     }
   }
 }

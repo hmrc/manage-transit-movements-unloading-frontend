@@ -25,6 +25,6 @@ trait EnumerableType[T] extends Enumerable.Implicits {
       values
         .map(
           v => v.toString -> v
-        ) *
+        )*
     )
 }

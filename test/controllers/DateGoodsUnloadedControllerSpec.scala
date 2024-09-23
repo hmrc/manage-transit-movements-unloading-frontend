@@ -132,7 +132,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
       val request = FakeRequest(POST, dateGoodsUnloadedRoute)
-        .withFormUrlEncodedBody(badSubmission.toSeq *)
+        .withFormUrlEncodedBody(badSubmission.toSeq*)
 
       val boundForm = form.bind(badSubmission)
 
@@ -157,7 +157,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
         "value.year"  -> invalidDate.getYear.toString
       )
       val request = FakeRequest(POST, dateGoodsUnloadedRoute)
-        .withFormUrlEncodedBody(badSubmission.toSeq *)
+        .withFormUrlEncodedBody(badSubmission.toSeq*)
 
       val boundForm = form.bind(badSubmission)
 

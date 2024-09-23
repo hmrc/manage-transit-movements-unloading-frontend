@@ -27,11 +27,14 @@ trait DiscrepancyQuestionPage[A, B, C] extends QuestionPage[A] {
 
   def valueInIE043(ie043: B, sequenceNumber: Option[BigInt]): Option[C]
 
-  /** @param f converts from A (type in user answers) to C (type in IE043)
-    * @param reads reads the value from user answers
-    * @return a reads of a defined `Option` if there is a discrepancy and an undefined `Option` if there is not
+  /** @param f
+    *   converts from A (type in user answers) to C (type in IE043)
+    * @param reads
+    *   reads the value from user answers
+    * @return
+    *   a reads of a defined `Option` if there is a discrepancy and an undefined `Option` if there is not
     */
-  def readNullable(f: A => C, pathNodes: Int = 1)(implicit reads: Reads[A]): B => Reads[Option[C]] = ie043 => {
+  def readNullable(f: A => C, pathNodes: Int = 1)(implicit reads: Reads[A]): B => Reads[Option[C]] = ie043 =>
     for {
       sequenceNumber   <- (__ \ SequenceNumber).readNullable[BigInt]
       userAnswersValue <- path.take(pathNodes).readNullableSafe[A].map(_.map(f))
@@ -49,5 +52,4 @@ trait DiscrepancyQuestionPage[A, B, C] extends QuestionPage[A] {
           None
       }
     }
-  }
 }

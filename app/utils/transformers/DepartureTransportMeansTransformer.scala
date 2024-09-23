@@ -88,10 +88,10 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
     }
 
     Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (dtm, i)) =>
           acc.flatMap(pipeline(dtm, Index(i)))
-      })
+      }
     }
   }
 }

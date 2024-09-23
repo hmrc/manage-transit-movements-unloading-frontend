@@ -31,7 +31,7 @@ class AdditionalReferenceTypeViewModelSpec extends SpecBase with ScalaCheckPrope
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new AdditionalReferenceTypeViewModelProvider()
-      val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      val result = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
 
       result.title mustBe "What type of additional reference do you want to add?"
       result.heading mustBe "What type of additional reference do you want to add?"
