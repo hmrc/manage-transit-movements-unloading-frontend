@@ -30,6 +30,6 @@ class SelectableFormProvider @Inject() extends Mappings {
     messages: Messages
   ): Form[T] =
     Form(
-      "value" -> selectable[T](selectableList, messages(s"$prefix.$mode.error.required", args *), args)
+      "value" -> selectable[T](selectableList, messages(s"$prefix.$mode.error.required", args*), args)
     )
 }

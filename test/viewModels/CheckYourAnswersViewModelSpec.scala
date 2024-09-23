@@ -60,6 +60,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     }
 
   }
+
   "comments section" - {
 
     "must render 1 rows if add comments false" in {

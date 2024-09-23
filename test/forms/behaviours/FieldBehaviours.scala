@@ -49,10 +49,10 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
 
       forAll(validDataGenerator -> "validDataItem") {
         (dataItem: String) =>
-          val dataItemWithSpaces = dataItem.foldLeft("")({
+          val dataItemWithSpaces = dataItem.foldLeft("") {
             case (acc, c) =>
               acc + " " + c.toString + " "
-          })
+          }
           dataItemWithSpaces must not be dataItem
           val result = form.bind(Map(fieldName -> dataItemWithSpaces))
           result.value.value mustBe dataItem

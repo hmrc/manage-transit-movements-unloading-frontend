@@ -29,11 +29,11 @@ import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAddit
 import pages.houseConsignment.index.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import pages.houseConsignment.index.items.{
+  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
+  ConsigneeNamePage => ItemConsigneeNamePage,
   GrossWeightPage,
   ItemDescriptionPage,
-  NetWeightPage,
-  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
-  ConsigneeNamePage => ItemConsigneeNamePage
+  NetWeightPage
 }
 import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites

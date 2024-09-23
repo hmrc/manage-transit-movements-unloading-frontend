@@ -68,7 +68,7 @@ class ConsignmentAnswersHelper(
       text = messages("departureTransportMeans.addRemove")
     )
 
-  private val houseConsignmentAddRemoveLink: Option[Link] = {
+  private val houseConsignmentAddRemoveLink: Option[Link] =
     phaseConfig.phase match {
       case Phase.Transition =>
         None
@@ -81,7 +81,6 @@ class ConsignmentAnswersHelper(
           )
         )
     }
-  }
 
   def headerSection: Section = StaticSection(
     rows = Seq(

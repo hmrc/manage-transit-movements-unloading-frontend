@@ -45,21 +45,20 @@ class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConne
       }
 
       Future.sequence(packageTypeRefLookups).flatMap {
-        _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
           case (acc, (TempPackaging(underlying, typeValue), i)) =>
             val packageIndex: Index = Index(i)
             acc.flatMap {
               userAnswers =>
-                val pipeline: UserAnswers => Future[UserAnswers] = {
+                val pipeline: UserAnswers => Future[UserAnswers] =
                   setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), underlying.sequenceNumber) andThen
                     set(PackageTypePage(hcIndex, itemIndex, packageIndex), typeValue) andThen
                     set(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), underlying.numberOfPackages) andThen
                     set(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), underlying.shippingMarks)
-                }
 
                 pipeline(userAnswers)
             }
-        })
+        }
       }
     }
 }

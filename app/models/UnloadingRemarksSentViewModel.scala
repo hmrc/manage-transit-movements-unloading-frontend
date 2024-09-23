@@ -26,6 +26,6 @@ case class UnloadingRemarksSentViewModel(customsOffice: CustomsOffice, customsOf
     case CustomsOffice(_, name, _, Some(phone)) if name.nonEmpty && phone.isEmpty  => messages("unloadingRemarksSent.telephoneNotAvailable", name)
     case CustomsOffice(_, name, _, None) if name.nonEmpty                          => messages("unloadingRemarksSent.telephoneNotAvailable", name)
     case CustomsOffice(id, "", _, Some(phone)) if phone.nonEmpty                   => messages("unloadingRemarksSent.teleAvailAndOfficeNameNotAvail", id, phone)
-    case _                                                                         => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", customsOfficeId)
+    case _ => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", customsOfficeId)
   }
 }

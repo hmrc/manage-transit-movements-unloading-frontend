@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(seals: Seq[SealType04], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
-    seals.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+    seals.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
       case (acc, (SealType04(sequenceNumber, identifier), i)) =>
         acc.flatMap {
           userAnswers =>
@@ -38,5 +38,5 @@ class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTra
 
             pipeline(userAnswers)
         }
-    })
+    }
 }

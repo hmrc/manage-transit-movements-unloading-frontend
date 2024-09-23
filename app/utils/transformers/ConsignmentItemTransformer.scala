@@ -37,7 +37,7 @@ class ConsignmentItemTransformer @Inject() (
     extends PageTransformer {
 
   def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+    consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
       case (acc, (consignmentItem, i)) =>
         acc.flatMap {
           userAnswers =>
@@ -61,5 +61,5 @@ class ConsignmentItemTransformer @Inject() (
                 additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
             pipeline(userAnswers)
         }
-    })
+    }
 }

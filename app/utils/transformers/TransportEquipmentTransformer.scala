@@ -31,19 +31,18 @@ class TransportEquipmentTransformer @Inject() (
     extends PageTransformer {
 
   def transform(transportEquipment: Seq[TransportEquipmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+    transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
       case (acc, (TransportEquipmentType05(sequenceNumber, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
         acc.flatMap {
           userAnswers =>
             val equipmentIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] = {
+            val pipeline: UserAnswers => Future[UserAnswers] =
               setSequenceNumber(TransportEquipmentSection(equipmentIndex), sequenceNumber) andThen
                 set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
                 sealsTransformer.transform(seals, equipmentIndex) andThen
                 goodsReferencesTransformer.transform(goodsReferences, equipmentIndex)
-            }
 
             pipeline(userAnswers)
         }
-    })
+    }
 }

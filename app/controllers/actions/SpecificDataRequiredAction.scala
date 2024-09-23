@@ -36,7 +36,7 @@ class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContex
   )(implicit rds: Reads[T1]): ActionRefiner[
     DataRequest,
     SpecificDataRequestProvider1[T1]#SpecificDataRequest
-  ] = new SpecificDataRequiredAction1(pages *)
+  ] = new SpecificDataRequiredAction1(pages*)
 
   override def getSecond[T1, T2](
     page: Gettable[T2]
@@ -50,7 +50,7 @@ trait SpecificDataRequiredActionProvider {
 
   def apply[T1](
     pages: Gettable[T1]*
-  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(pages *)
+  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(pages*)
 
   def getFirst[T1](
     pages: Gettable[T1]*
@@ -100,7 +100,7 @@ class SpecificDataRequiredAction1[T1](
   override protected def refine[A](
     request: DataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
-    getPage(request.userAnswers, pages *) {
+    getPage(request.userAnswers, pages*) {
       value =>
         new SpecificDataRequestProvider1[T1].SpecificDataRequest(
           request = request,

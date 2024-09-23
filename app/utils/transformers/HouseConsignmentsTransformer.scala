@@ -39,7 +39,7 @@ class HouseConsignmentsTransformer @Inject() (
 
   def transform(houseConsignments: Seq[HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     houseConsignments.zipWithIndex
-      .foldLeft(Future.successful(userAnswers))({
+      .foldLeft(Future.successful(userAnswers)) {
         case (acc, (houseConsignment, i)) =>
           acc.flatMap {
             userAnswers =>
@@ -63,7 +63,7 @@ class HouseConsignmentsTransformer @Inject() (
                   transformCountryOfDestination(houseConsignment.countryOfDestination, hcIndex)
               pipeline(userAnswers)
           }
-      })
+      }
 
   private def transformSecurityIndicatorFromExportDeclaration(securityIndicatorFromExportDeclaration: Option[String], hcIndex: Index)(implicit
     hc: HeaderCarrier

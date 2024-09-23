@@ -18,7 +18,7 @@ package navigation
 
 import models.{Mode, UserAnswers}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
-import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation.houseConsignment.index.items.{DocumentNavigator => ItemDocumentNavigator, HouseConsignmentItemNavigator, PackagesNavigator}
 import navigation.houseConsignment.index.{HouseConsignmentDocumentNavigator, HouseConsignmentNavigator}
 import pages._
 import play.api.mvc.Call

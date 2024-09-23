@@ -23,6 +23,7 @@ import Identification._
 import org.scalacheck.Gen
 
 class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
   "Identification" - {
 
     "must convert into correct Identification type when xmlValue applied" - {

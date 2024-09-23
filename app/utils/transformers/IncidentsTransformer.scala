@@ -50,7 +50,7 @@ class IncidentsTransformer @Inject() (
     }
 
     Future.sequence(incidentRefLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (TempIncident(underlying, typeValue), i)) =>
           val incidentIndex: Index = Index(i)
           acc.flatMap {
@@ -65,7 +65,7 @@ class IncidentsTransformer @Inject() (
 
               pipeline(userAnswers)
           }
-      })
+      }
     }
   }
 }
