@@ -29,6 +29,7 @@ import viewModels.ListItem
 import viewModels.houseConsignment.index.documents.AddAnotherHouseConsignmentDocumentViewModel.AddAnotherHouseConsignmentDocumentViewModelProvider
 
 class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new AddAnotherHouseConsignmentDocumentViewModelProvider()

@@ -41,9 +41,7 @@ object CustomsOffice {
         (__ \ "phoneNumber").readNullable[String]
     )(CustomsOffice.apply)
 
-  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => {
-    (x, y).compareBy(_.name, _.id)
-  }
+  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => (x, y).compareBy(_.name, _.id)
 
   implicit val listReads: Reads[List[CustomsOffice]] = {
 

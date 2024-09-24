@@ -101,6 +101,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   }
 
   object FakeHouseConsignmentNavigators {
+
     import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
     import navigation.houseConsignment.index._
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
@@ -132,6 +133,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   }
 
   object FakeConsignmentItemNavigators {
+
     import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
     import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
     import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider

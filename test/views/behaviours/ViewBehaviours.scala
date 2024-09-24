@@ -109,7 +109,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   def pageWithTitle(args: Any*): Unit =
     "must render title" in {
       val messageKey = s"$prefix.title"
-      checkTitle(messages(messageKey, args *))
+      checkTitle(messages(messageKey, args*))
       assert(messages.isDefinedAt(messageKey))
     }
 
@@ -117,7 +117,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render title" in {
       val title      = doc.title()
       val messageKey = s"$prefix.title"
-      title mustBe s"${messages(messageKey, args *)} - Arrival notifications - Manage your transit movements - GOV.UK"
+      title mustBe s"${messages(messageKey, args*)} - Arrival notifications - Manage your transit movements - GOV.UK"
       assert(messages.isDefinedAt(messageKey))
     }
 
@@ -134,7 +134,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   def pageWithHeading(args: Any*): Unit =
     "must render heading" in {
       val messageKey = s"$prefix.heading"
-      checkHeading(messages(messageKey, args *))
+      checkHeading(messages(messageKey, args*))
       assert(messages.isDefinedAt(messageKey))
     }
 
@@ -142,7 +142,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render heading" in {
       val heading    = getElementByTag(doc, "h1")
       val messageKey = s"$prefix.heading"
-      assertElementIncludesText(heading, messages(messageKey, args *))
+      assertElementIncludesText(heading, messages(messageKey, args*))
       assert(messages.isDefinedAt(messageKey))
     }
 

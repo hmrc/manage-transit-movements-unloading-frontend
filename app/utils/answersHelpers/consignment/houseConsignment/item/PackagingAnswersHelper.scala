@@ -33,7 +33,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     prefix = "unloadingFindings.rowHeadings.item.packageType",
     id = Some(s"change-package-type-${itemIndex.display}-${packageIndex.display}"),
     call = Some(routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)),
-    args = Seq(packageIndex.display, itemIndex.display) *
+    args = Seq(packageIndex.display, itemIndex.display)*
   )
 
   private[houseConsignment] def packageMarksRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -42,7 +42,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     prefix = "unloadingFindings.rowHeadings.item.packageMarks",
     id = Some(s"change-package-mark-${itemIndex.display}-${packageIndex.display}"),
     call = Some(routes.PackageShippingMarkController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)),
-    args = Seq(packageIndex.display, itemIndex.display) *
+    args = Seq(packageIndex.display, itemIndex.display)*
   )
 
   private[houseConsignment] def packageCountRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
@@ -51,6 +51,6 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     prefix = "unloadingFindings.rowHeadings.item.packageCount",
     id = Some(s"change-package-count-${itemIndex.display}-${packageIndex.display}"),
     call = Some(routes.NumberOfPackagesController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)),
-    args = Seq(packageIndex.display, itemIndex.display) *
+    args = Seq(packageIndex.display, itemIndex.display)*
   )
 }
