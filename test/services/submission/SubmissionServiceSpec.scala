@@ -842,25 +842,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         forAll(arbitrary[CUSTOM_ConsignmentType05]) {
           consignment =>
             val departureTransportMeans = Seq(
-              DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType02(
                 sequenceNumber = 1,
                 typeOfIdentification = Some("originalTypeOfIdentification1"),
                 identificationNumber = Some("originalIdentificationNumber1"),
                 nationality = Some("originalNationality1")
               ),
-              DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType02(
                 sequenceNumber = 2,
                 typeOfIdentification = Some("originalTypeOfIdentification2"),
                 identificationNumber = Some("originalIdentificationNumber2"),
                 nationality = Some("originalNationality2")
               ),
-              DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType02(
                 sequenceNumber = 3,
                 typeOfIdentification = Some("originalTypeOfIdentification3"),
                 identificationNumber = Some("originalIdentificationNumber3"),
                 nationality = Some("originalNationality3")
               ),
-              DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType02(
                 sequenceNumber = 4,
                 typeOfIdentification = Some("originalTypeOfIdentification4"),
                 identificationNumber = Some("originalIdentificationNumber4"),
@@ -941,13 +941,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         forAll(arbitrary[CUSTOM_ConsignmentType05]) {
           consignment =>
             val departureTransportMeans = Seq(
-              DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType02(
                 sequenceNumber = 1,
                 typeOfIdentification = Some("originalTypeOfIdentification1"),
                 identificationNumber = Some("originalIdentificationNumber1"),
                 nationality = Some("originalNationality1")
               ),
-              DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType02(
                 sequenceNumber = 2,
                 typeOfIdentification = Some("originalTypeOfIdentification2"),
                 identificationNumber = Some("originalIdentificationNumber2"),
@@ -2011,21 +2011,21 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val consignmentItems = Seq(
               CUSTOM_ConsignmentItemType04(
-                goodsItemNumber = "1",
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = CUSTOM_CommodityType08(
                   descriptionOfGoods = "originalDescriptionOfGoods1"
                 )
               ),
-              ConsignmentItemType04(
-                goodsItemNumber = "2",
+              CUSTOM_ConsignmentItemType04(
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
                 Commodity = CUSTOM_CommodityType08(
                   descriptionOfGoods = "originalDescriptionOfGoods2"
                 )
               ),
-              ConsignmentItemType04(
-                goodsItemNumber = "3",
+              CUSTOM_ConsignmentItemType04(
+                goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
                 Commodity = CUSTOM_CommodityType08(
                   descriptionOfGoods = "originalDescriptionOfGoods3"
@@ -2065,8 +2065,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.ConsignmentItem
 
             result mustBe Seq(
-              CUSTOM_ConsignmentItemType05(
-                goodsItemNumber = "1",
+              ConsignmentItemType05(
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = Some(
                   CommodityType03(
@@ -2074,12 +2074,12 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   )
                 )
               ),
-              CUSTOM_ConsignmentItemType05(
-                goodsItemNumber = "2",
+              ConsignmentItemType05(
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2
               ),
-              CUSTOM_ConsignmentItemType05(
-                goodsItemNumber = "4",
+              ConsignmentItemType05(
+                goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
                 Commodity = Some(
                   CommodityType03(
@@ -2096,16 +2096,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           houseConsignment =>
             val consignmentItems = Seq(
               CUSTOM_ConsignmentItemType04(
-                goodsItemNumber = "1",
+                goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CommodityType08(
+                Commodity = CUSTOM_CommodityType08(
                   descriptionOfGoods = "originalDescriptionOfGoods1"
                 )
               ),
               CUSTOM_ConsignmentItemType04(
-                goodsItemNumber = "2",
+                goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CommodityType08(
+                Commodity = CUSTOM_CommodityType08(
                   descriptionOfGoods = "originalDescriptionOfGoods2"
                 )
               )
@@ -2164,7 +2164,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               ),
               DangerousGoods = Nil,
               GoodsMeasure = Some(
-                GoodsMeasureType03(
+                CUSTOM_GoodsMeasureType03(
                   grossMass = Some(100),
                   netMass = Some(50)
                 )
@@ -2211,7 +2211,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       "when there are no discrepancies" in {
         forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
           consignmentItem =>
-            val commodity = CommodityType08(
+            val commodity = CUSTOM_CommodityType08(
               descriptionOfGoods = "originalDescriptionOfGoods",
               cusCode = Some("originalCusCode"),
               CommodityCode = Some(
@@ -2222,7 +2222,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               ),
               DangerousGoods = Nil,
               GoodsMeasure = Some(
-                GoodsMeasureType03(
+                CUSTOM_GoodsMeasureType03(
                   grossMass = Some(100),
                   netMass = Some(50)
                 )

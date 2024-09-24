@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment.replacementMeansOfTransport
 
-import generated.{ConsignmentType05, IncidentType04, Number0, TranshipmentType02}
+import generated.{CUSTOM_ConsignmentType05, IncidentType04, Number0, TranshipmentType02}
 import models.reference.{Country, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
@@ -38,7 +38,7 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
         s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04], arbitrary[TransportMeansIdentification]) {
             (transhipment, incident, identification) =>
-              val consignment: ConsignmentType05 = ConsignmentType05(
+              val consignment = CUSTOM_ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Transhipment = Some(transhipment)))
               )
@@ -70,7 +70,7 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
         s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04]) {
             (transhipment, incident) =>
-              val consignment: ConsignmentType05 = ConsignmentType05(
+              val consignment = CUSTOM_ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Transhipment = Some(transhipment)))
               )
@@ -101,7 +101,7 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
         s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04], arbitrary[Country]) {
             (transhipment, incident, country) =>
-              val consignment: ConsignmentType05 = ConsignmentType05(
+              val consignment = CUSTOM_ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Transhipment = Some(transhipment)))
               )

@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.ConsignmentItemType04
+import generated.CUSTOM_ConsignmentItemType04
 import generators.Generators
 import models.Index
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -75,7 +75,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
   }
 
   "must transform data" in {
-    forAll(arbitrary[Seq[ConsignmentItemType04]]) {
+    forAll(arbitrary[Seq[CUSTOM_ConsignmentItemType04]]) {
       consignmentItems =>
         consignmentItems.zipWithIndex.map {
           case (_, i) =>

@@ -560,7 +560,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)),
           Address = Some(addressType18)
         )
-        val consignment: ConsignmentType05 = ConsignmentType05(
+        val consignment = CUSTOM_ConsignmentType05(
           containerIndicator = Number0,
           Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType, TransportEquipment = Seq(arbitraryTransport)))
         )

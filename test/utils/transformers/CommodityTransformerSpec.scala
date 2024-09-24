@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.CommodityType08
+import generated.CUSTOM_CommodityType08
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -55,7 +55,7 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   }
 
   "must transform data" in {
-    forAll(arbitrary[CommodityType08]) {
+    forAll(arbitrary[CUSTOM_CommodityType08]) {
       commodity =>
         when(mockGoodsMeasureTransformer.transform(any(), any(), any()))
           .thenReturn {

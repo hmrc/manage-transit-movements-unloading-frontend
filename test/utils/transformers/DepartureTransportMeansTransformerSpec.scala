@@ -18,7 +18,7 @@ package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generated.DepartureTransportMeansType02
+import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
 import generators.Generators
 import models.Index
 import models.reference.{Country, TransportMeansIdentification}
@@ -49,20 +49,20 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     reset(mockReferenceDataConnector)
   }
 
-  private def DepartureTransportMeansType02Gen(implicit a: Arbitrary[DepartureTransportMeansType02]): Gen[Seq[DepartureTransportMeansType02]] =
-    listWithMaxLength[DepartureTransportMeansType02]()(a)
-      .map {
-        _.distinctBy(_.typeOfIdentification)
-          .distinctBy(_.nationality)
-      }
-
   "must transform data" - {
     "when consignment level" - {
       import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
       import pages.sections.TransportMeansSection
 
+      def departureTransportMeansGen(implicit a: Arbitrary[CUSTOM_DepartureTransportMeansType02]): Gen[Seq[CUSTOM_DepartureTransportMeansType02]] =
+        listWithMaxLength[CUSTOM_DepartureTransportMeansType02]()(a)
+          .map {
+            _.distinctBy(_.typeOfIdentification)
+              .distinctBy(_.nationality)
+          }
+
       "when values defined" in {
-        forAll(DepartureTransportMeansType02Gen(arbitraryCUSTOM_DepartureTransportMeansType02AllDefined)) {
+        forAll(departureTransportMeansGen(arbitraryCUSTOM_DepartureTransportMeansType02AllDefined)) {
           departureTransportMeans =>
             beforeEach()
 
@@ -92,7 +92,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       }
 
       "when no values defined" in {
-        forAll(DepartureTransportMeansType02Gen(arbitraryCUSTOM_DepartureTransportMeansType02NoneDefined)) {
+        forAll(departureTransportMeansGen(arbitraryCUSTOM_DepartureTransportMeansType02NoneDefined)) {
           departureTransportMeans =>
             beforeEach()
 
@@ -115,25 +115,32 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       import pages.houseConsignment.index.departureMeansOfTransport._
       import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
-      forAll(DepartureTransportMeansType02Gen(arbitraryCUSTOM_DepartureTransportMeansType02AllDefined)) {
+      def departureTransportMeansGen(implicit a: Arbitrary[DepartureTransportMeansType02]): Gen[Seq[DepartureTransportMeansType02]] =
+        listWithMaxLength[DepartureTransportMeansType02]()(a)
+          .map {
+            _.distinctBy(_.typeOfIdentification)
+              .distinctBy(_.nationality)
+          }
+
+      forAll(departureTransportMeansGen(arbitraryDepartureTransportMeansType02)) {
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
               when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(any())(any(), any()))
-                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification.value, i.toString)))
+                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, i.toString)))
 
               when(mockReferenceDataConnector.getCountry(any())(any(), any()))
-                .thenReturn(Future.successful(Country(dtm.nationality.value, i.toString)))
+                .thenReturn(Future.successful(Country(dtm.nationality, i.toString)))
 
               val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
 
               val dtmIndex = Index(i)
 
               result.getSequenceNumber(TransportMeansSection(hcIndex, dtmIndex)) mustBe dtm.sequenceNumber
-              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).code mustBe dtm.typeOfIdentification.value
+              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).code mustBe dtm.typeOfIdentification
               result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).description mustBe i.toString
-              result.getValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber.value
-              result.getValue(CountryPage(hcIndex, dtmIndex)).code mustBe dtm.nationality.value
+              result.getValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
+              result.getValue(CountryPage(hcIndex, dtmIndex)).code mustBe dtm.nationality
               result.getValue(CountryPage(hcIndex, dtmIndex)).description mustBe i.toString
           }
       }

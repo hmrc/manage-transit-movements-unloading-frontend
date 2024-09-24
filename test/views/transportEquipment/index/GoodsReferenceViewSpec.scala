@@ -17,7 +17,7 @@
 package views.transportEquipment.index
 
 import forms.SelectableFormProvider
-import generated.{CC043CType, ConsignmentType05, GoodsReferenceType02, TransportEquipmentType05}
+import generated._
 import models.reference.GoodsReference
 import models.{Index, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -34,8 +34,8 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[GoodsReference] {
 
   val ie043Answers: CC043CType = emptyUserAnswers.ie043Data.copy(Consignment =
     Some(
-      ConsignmentType05(
-        TransportEquipment = Seq(TransportEquipmentType05("1", None, 0, Nil, Seq(GoodsReferenceType02("1", 123)))),
+      CUSTOM_ConsignmentType05(
+        TransportEquipment = Seq(TransportEquipmentType05(1, None, 0, Nil, Seq(GoodsReferenceType02(1, 123)))),
         containerIndicator = arbitraryFlag.arbitrary.sample.get
       )
     )

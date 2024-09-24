@@ -210,7 +210,7 @@ trait MessagesModelGenerators {
       )
     }
 
-  implicit lazy val arbitraryHouseConsignmentType04: arbitrary[CUSTOM_HouseConsignmentType04] =
+  implicit lazy val arbitraryCUSTOM_HouseConsignmentType04: Arbitrary[CUSTOM_HouseConsignmentType04] =
     Arbitrary {
       for {
         sequenceNumber          <- positiveBigInts
@@ -218,9 +218,9 @@ trait MessagesModelGenerators {
         consignor               <- Gen.option(arbitrary[ConsignorType06])
         consignee               <- Gen.option(arbitrary[ConsigneeType04])
         departureTransportMeans <- arbitrary[Seq[DepartureTransportMeansType02]]
-        consignmentItems        <- arbitrary[Seq[ConsignmentItemType04]]
+        consignmentItems        <- arbitrary[Seq[CUSTOM_ConsignmentItemType04]]
         securityIndicator       <- Gen.some(nonEmptyString)
-      } yield HouseConsignmentType04(
+      } yield CUSTOM_HouseConsignmentType04(
         sequenceNumber = sequenceNumber,
         countryOfDestination = Some("GB"),
         grossMass = grossMass,
