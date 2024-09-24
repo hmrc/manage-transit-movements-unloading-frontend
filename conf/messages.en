@@ -1372,3 +1372,9 @@ largeUnsealedGoodsRecordDiscrepanciesYesNo.heading = Were there any discrepancie
 largeUnsealedGoodsRecordDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 largeUnsealedGoodsRecordDiscrepanciesYesNo.yes = Yes - this means you must select no to using the revised unloading procedure and report the discrepancies
 largeUnsealedGoodsRecordDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission
+
+cannotUseRevisedUnloadingProcedure.title = You cannot use the revised unloading procedure
+cannotUseRevisedUnloadingProcedure.heading = You cannot use the revised unloading procedure
+cannotUseRevisedUnloadingProcedure.paragraph = Due to the discrepancies between the transit movement and unloading permission, you must:
+cannotUseRevisedUnloadingProcedure.bullet1 = select no to using the revised unloading procedure
+cannotUseRevisedUnloadingProcedure.bullet2 = report the discrepancies
