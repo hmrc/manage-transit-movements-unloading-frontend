@@ -36,8 +36,8 @@ import viewModels.houseConsignment.index.departureTransportMeans.{
   IdentificationNumberViewModel => HCIdentificationNumberViewModel
 }
 import viewModels.houseConsignment.index.documents.{
-  ReferenceNumberViewModel,
-  AddAnotherHouseConsignmentDocumentViewModel => DocumentsAddAnotherHouseConsignmentDocumentViewModel
+  AddAnotherHouseConsignmentDocumentViewModel => DocumentsAddAnotherHouseConsignmentDocumentViewModel,
+  ReferenceNumberViewModel
 }
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
@@ -55,14 +55,14 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageTypeViewModel
 }
 import viewModels.houseConsignment.index.items.{
+  document => hcItemViewModel,
   AddAnotherItemViewModel,
   CombinedNomenclatureCodeViewModel,
   CommodityCodeViewModel,
   CustomsUnionAndStatisticsCodeViewModel,
   DescriptionViewModel,
   GrossWeightViewModel,
-  NetWeightViewModel,
-  document => hcItemViewModel
+  NetWeightViewModel
 }
 import viewModels.houseConsignment.index.{documents => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}

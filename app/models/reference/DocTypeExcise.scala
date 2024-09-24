@@ -24,7 +24,5 @@ case class DocTypeExcise(activeFrom: String, code: String, state: String, descri
 object DocTypeExcise {
   implicit val format: OFormat[DocTypeExcise] = Json.format[DocTypeExcise]
 
-  implicit val order: Order[DocTypeExcise] = (x: DocTypeExcise, y: DocTypeExcise) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[DocTypeExcise] = (x: DocTypeExcise, y: DocTypeExcise) => (x, y).compareBy(_.code)
 }

@@ -32,7 +32,5 @@ case class CUSCode(code: String) extends Selectable {
 object CUSCode {
   implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
 
-  implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => (x, y).compareBy(_.code)
 }

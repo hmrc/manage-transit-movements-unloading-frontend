@@ -78,10 +78,9 @@ class ConsigneeTransformer @Inject() (
       case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
         referenceDataConnector.getCountry(country).flatMap {
           countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] = {
+            val pipeline: UserAnswers => Future[UserAnswers] =
               set(ConsigneeCountryPage(hcIndex), countryVal) andThen
                 set(ConsigneeAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
-            }
             pipeline(userAnswers)
         }
 
@@ -110,10 +109,9 @@ class ConsigneeTransformer @Inject() (
       case Some(AddressType09(streetAndNumber, postcode, city, country)) =>
         referenceDataConnector.getCountry(country).flatMap {
           countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] = {
+            val pipeline: UserAnswers => Future[UserAnswers] =
               set(ItemConsigneeCountryPage(hcIndex, itemIndex), countryVal) andThen
                 set(ItemConsigneeAddressPage(hcIndex, itemIndex), DynamicAddress(streetAndNumber, city, postcode))
-            }
             pipeline(userAnswers)
         }
 

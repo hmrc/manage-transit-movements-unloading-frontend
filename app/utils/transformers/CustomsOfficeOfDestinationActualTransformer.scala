@@ -30,8 +30,7 @@ class CustomsOfficeOfDestinationActualTransformer @Inject() (referenceDataServic
 
   def transform(customsOfficeOfDestination: CustomsOfficeOfDestinationActualType03)(implicit
     hc: HeaderCarrier
-  ): Future[UserAnswers] => Future[UserAnswers] = userAnswers => {
-
+  ): Future[UserAnswers] => Future[UserAnswers] = userAnswers =>
     referenceDataService.getCustomsOfficeByCode(customsOfficeOfDestination.referenceNumber) flatMap {
       customsOffice =>
         val pipeline: UserAnswers => Future[UserAnswers] =
@@ -39,5 +38,4 @@ class CustomsOfficeOfDestinationActualTransformer @Inject() (referenceDataServic
 
         pipeline(userAnswers)
     }
-  }
 }

@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DangerousGoodsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(dangerousGoods: Seq[DangerousGoodsType01], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
-    dangerousGoods.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+    dangerousGoods.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
       case (acc, (DangerousGoodsType01(sequenceNumber, unNumber), i)) =>
         acc.flatMap {
           userAnswers =>
@@ -38,5 +38,5 @@ class DangerousGoodsTransformer @Inject() (implicit ec: ExecutionContext) extend
 
             pipeline(userAnswers)
         }
-    })
+    }
 }
