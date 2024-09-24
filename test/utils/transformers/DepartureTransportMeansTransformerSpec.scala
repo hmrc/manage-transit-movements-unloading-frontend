@@ -62,7 +62,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       import pages.sections.TransportMeansSection
 
       "when values defined" in {
-        forAll(DepartureTransportMeansType02Gen(arbitraryDepartureTransportMeansType02AllDefined)) {
+        forAll(DepartureTransportMeansType02Gen(arbitraryCUSTOM_DepartureTransportMeansType02AllDefined)) {
           departureTransportMeans =>
             beforeEach()
 
@@ -92,7 +92,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       }
 
       "when no values defined" in {
-        forAll(DepartureTransportMeansType02Gen(arbitraryDepartureTransportMeansType02NoneDefined)) {
+        forAll(DepartureTransportMeansType02Gen(arbitraryCUSTOM_DepartureTransportMeansType02NoneDefined)) {
           departureTransportMeans =>
             beforeEach()
 
@@ -115,7 +115,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       import pages.houseConsignment.index.departureMeansOfTransport._
       import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
-      forAll(DepartureTransportMeansType02Gen(arbitraryDepartureTransportMeansType02AllDefined)) {
+      forAll(DepartureTransportMeansType02Gen(arbitraryCUSTOM_DepartureTransportMeansType02AllDefined)) {
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>

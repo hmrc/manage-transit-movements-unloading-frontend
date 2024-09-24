@@ -30,7 +30,7 @@ object Document {
 
   def apply(document: SupportingDocumentType02, documentType: DocumentType): SupportingDocument =
     SupportingDocument(
-      sequenceNumber = BigInt(document.sequenceNumber),
+      sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
         `type` = Support,
         code = documentType.code,
@@ -42,7 +42,7 @@ object Document {
 
   def apply(document: TransportDocumentType02, documentType: DocumentType): TransportDocument =
     TransportDocument(
-      sequenceNumber = BigInt(document.sequenceNumber),
+      sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
         `type` = Transport,
         code = documentType.code,
@@ -53,7 +53,7 @@ object Document {
 
   def apply(document: PreviousDocumentType06, documentType: DocumentType): PreviousDocument =
     PreviousDocument(
-      sequenceNumber = BigInt(document.sequenceNumber),
+      sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
         `type` = Previous,
         code = documentType.code,
@@ -65,7 +65,7 @@ object Document {
 
   def apply(document: PreviousDocumentType04, documentType: DocumentType): PreviousDocument =
     PreviousDocument(
-      sequenceNumber = BigInt(document.sequenceNumber),
+      sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
         `type` = Previous,
         code = documentType.code,

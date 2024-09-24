@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.ConsignmentItemType04
+import generated.CUSTOM_ConsignmentItemType04
 import models._
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage}
 import pages.sections.ItemSection
@@ -36,30 +36,31 @@ class ConsignmentItemTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (consignmentItem, i)) =>
-        acc.flatMap {
-          userAnswers =>
-            val itemIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
-                set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
-                set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
-                countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
-                commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
-                packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
-                documentsTransformer.transform(
-                  consignmentItem.SupportingDocument,
-                  consignmentItem.TransportDocument,
-                  consignmentItem.PreviousDocument.toPreviousDocumentType06,
-                  hcIndex,
-                  itemIndex
-                ) andThen
-                additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
-                consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
-                additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
-            pipeline(userAnswers)
-        }
-    })
+  def transform(consignmentItems: Seq[CUSTOM_ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        case (acc, (consignmentItem, i)) =>
+          acc.flatMap {
+            userAnswers =>
+              val itemIndex: Index = Index(i)
+              val pipeline: UserAnswers => Future[UserAnswers] =
+                setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
+                  set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
+                  set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
+                  countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
+                  commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+                  packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
+                  documentsTransformer.transform(
+                    consignmentItem.SupportingDocument,
+                    consignmentItem.TransportDocument,
+                    consignmentItem.PreviousDocument.toPreviousDocumentType06,
+                    hcIndex,
+                    itemIndex
+                  ) andThen
+                  additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
+                  consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
+                  additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
+              pipeline(userAnswers)
+          }
+      })
 }

@@ -17,7 +17,7 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.DepartureTransportMeansType02
+import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,6 +29,32 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   ec: ExecutionContext
 ) extends PageTransformer {
 
+  private case class GenericDepartureTransportMeans(
+    sequenceNumber: BigInt,
+    typeOfIdentification: Option[String],
+    identificationNumber: Option[String],
+    nationality: Option[String]
+  )
+
+  private object GenericDepartureTransportMeans {
+
+    def apply(dtm: DepartureTransportMeansType02): GenericDepartureTransportMeans =
+      new GenericDepartureTransportMeans(
+        sequenceNumber = dtm.sequenceNumber,
+        typeOfIdentification = Some(dtm.typeOfIdentification),
+        identificationNumber = Some(dtm.identificationNumber),
+        nationality = Some(dtm.nationality)
+      )
+
+    def apply(dtm: CUSTOM_DepartureTransportMeansType02): GenericDepartureTransportMeans =
+      new GenericDepartureTransportMeans(
+        sequenceNumber = dtm.sequenceNumber,
+        typeOfIdentification = dtm.typeOfIdentification,
+        identificationNumber = dtm.identificationNumber,
+        nationality = dtm.nationality
+      )
+  }
+
   private case class TempDepartureTransportMeans[T](
     underlying: T,
     typeOfIdentification: Option[TransportMeansIdentification],
@@ -36,12 +62,12 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   )
 
   def transform(
-    departureTransportMeans: Seq[DepartureTransportMeansType02]
+    departureTransportMeans: Seq[CUSTOM_DepartureTransportMeansType02]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.departureMeansOfTransport._
     import pages.sections.TransportMeansSection
 
-    genericTransform(departureTransportMeans) {
+    genericTransform(departureTransportMeans.map(GenericDepartureTransportMeans(_))) {
       case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
         setSequenceNumber(TransportMeansSection(index), underlying.sequenceNumber) andThen
           set(TransportMeansIdentificationPage(index), typeOfIdentification) andThen
@@ -57,7 +83,7 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
     import pages.houseConsignment.index.departureMeansOfTransport._
     import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
-    genericTransform(departureTransportMeans) {
+    genericTransform(departureTransportMeans.map(GenericDepartureTransportMeans(_))) {
       case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
         setSequenceNumber(TransportMeansSection(hcIndex, index), underlying.sequenceNumber) andThen
           set(TransportMeansIdentificationPage(hcIndex, index), typeOfIdentification) andThen
@@ -67,9 +93,9 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   }
 
   private def genericTransform(
-    departureTransportMeans: Seq[DepartureTransportMeansType02]
+    departureTransportMeans: Seq[GenericDepartureTransportMeans]
   )(
-    pipeline: (TempDepartureTransportMeans[DepartureTransportMeansType02], Index) => UserAnswers => Future[UserAnswers]
+    pipeline: (TempDepartureTransportMeans[GenericDepartureTransportMeans], Index) => UserAnswers => Future[UserAnswers]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
     lazy val referenceDataLookups = departureTransportMeans.map {
       dtm =>

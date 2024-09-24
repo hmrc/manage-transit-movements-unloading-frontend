@@ -104,7 +104,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   "must transform data" - {
     "when consignment defined" in {
-      forAll(arbitrary[ConsignmentType05]) {
+      forAll(arbitrary[CUSTOM_ConsignmentType05]) {
         consignment =>
           when(mockConsignorTransformer.transform(any())(any()))
             .thenReturn {

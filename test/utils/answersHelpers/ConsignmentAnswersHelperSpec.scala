@@ -83,7 +83,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return no section" - {
         "when consignor is undefined" in {
-          forAll(arbitrary[ConsignmentType05]) {
+          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
             consignment =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -103,7 +103,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return section" - {
         "when consignor is defined" in {
-          forAll(arbitrary[ConsignmentType05], arbitrary[ConsignorType05]) {
+          forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[ConsignorType05]) {
             (consignment, consignor) =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -128,7 +128,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return no section" - {
         "when consignee is undefined" in {
-          forAll(arbitrary[ConsignmentType05]) {
+          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
             consignment =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -148,7 +148,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return section" - {
         "when consignee is defined" in {
-          forAll(arbitrary[ConsignmentType05], arbitrary[ConsigneeType04]) {
+          forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[ConsigneeType04]) {
             (consignment, consignee) =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
