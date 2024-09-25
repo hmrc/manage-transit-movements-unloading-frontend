@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.GoodsMeasureType03
+import generated.CUSTOM_GoodsMeasureType03
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -29,7 +29,7 @@ class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   "must transform data" - {
     "when goods measure defined" in {
-      forAll(arbitrary[GoodsMeasureType03]) {
+      forAll(arbitrary[CUSTOM_GoodsMeasureType03]) {
         goodsMeasure =>
           val result = transformer.transform(Some(goodsMeasure), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 

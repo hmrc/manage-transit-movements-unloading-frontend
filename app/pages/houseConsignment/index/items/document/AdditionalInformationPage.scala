@@ -32,7 +32,7 @@ case class AdditionalInformationPage(houseConsignmentIndex: Index, itemIndex: In
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
+        x => sequenceNumber.contains(x.sequenceNumber)
       }
       .flatMap(_.complementOfInformation)
 }

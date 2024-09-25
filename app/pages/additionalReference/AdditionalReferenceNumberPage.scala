@@ -31,7 +31,7 @@ case class AdditionalReferenceNumberPage(referenceIndex: Index) extends Discrepa
   override def valueInIE043(ie043: Seq[AdditionalReferenceType03], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
+        x => sequenceNumber.contains(x.sequenceNumber)
       }
       .flatMap(_.referenceNumber)
 }

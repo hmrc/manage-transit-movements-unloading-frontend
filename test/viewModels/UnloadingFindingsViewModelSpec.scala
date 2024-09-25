@@ -17,7 +17,7 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{AddressType10, CC043CType, ConsignmentType05, HolderOfTheTransitProcedureType06, Number0}
+import generated._
 import generators.Generators
 import models.reference._
 import models.{Index, SecurityType, UserAnswers}
@@ -176,7 +176,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                ConsignmentType05(
+                CUSTOM_ConsignmentType05(
                   containerIndicator = arbitraryFlag.arbitrary.sample.get,
                   inlandModeOfTransport = Some("Mode")
                 )
@@ -198,7 +198,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                ConsignmentType05(
+                CUSTOM_ConsignmentType05(
                   containerIndicator = arbitraryFlag.arbitrary.sample.get,
                   inlandModeOfTransport = None
                 )

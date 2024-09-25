@@ -18,7 +18,7 @@ package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generated.ConsignmentType05
+import generated.CUSTOM_ConsignmentType05
 import generators.Generators
 import models.reference.Country
 import models.reference.TransportMode.InlandMode
@@ -104,7 +104,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   "must transform data" - {
     "when consignment defined" in {
-      forAll(arbitrary[ConsignmentType05]) {
+      forAll(arbitrary[CUSTOM_ConsignmentType05]) {
         consignment =>
           when(mockConsignorTransformer.transform(any())(any()))
             .thenReturn {

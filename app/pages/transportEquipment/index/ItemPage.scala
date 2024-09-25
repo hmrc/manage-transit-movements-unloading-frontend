@@ -31,7 +31,7 @@ case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends Discrepancy
   override def valueInIE043(ie043: Seq[GoodsReferenceType02], sequenceNumber: Option[BigInt]): Option[BigInt] =
     ie043
       .find {
-        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
+        x => sequenceNumber.contains(x.sequenceNumber)
       }
       .map(_.declarationGoodsItemNumber)
 }

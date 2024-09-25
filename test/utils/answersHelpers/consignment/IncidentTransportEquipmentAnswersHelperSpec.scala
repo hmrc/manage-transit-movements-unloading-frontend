@@ -57,7 +57,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
     "transportEquipmentSeals" - {
       "must generate row for each seal" in {
-        val seals = Seq(SealType04("1", "Seal1"), SealType04("2", "Seal2"))
+        val seals = Seq(SealType04(1, "Seal1"), SealType04(2, "Seal2"))
 
         forAll(arbitrary[TransportEquipmentType07].map(_.copy(Seal = seals))) {
           transportEquipment =>
@@ -82,7 +82,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
     "itemNumber" - {
       "must generate row for item" in {
-        val goodsReferences = Seq(GoodsReferenceType01("1", 123), GoodsReferenceType01("2", 234))
+        val goodsReferences = Seq(GoodsReferenceType01(1, 123), GoodsReferenceType01(2, 234))
 
         forAll(arbitrary[TransportEquipmentType07].map(_.copy(GoodsReference = goodsReferences))) {
           transportEquipment =>

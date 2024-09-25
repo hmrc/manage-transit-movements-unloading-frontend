@@ -80,17 +80,11 @@ class SubmissionService @Inject() (
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
-      messagE_1Sequence2 = MESSAGE_1Sequence(
-        messageRecipient = s"NTA.${officeOfDestination.take(2)}",
-        preparationDateAndTime = dateTimeService.currentDateTime,
-        messageIdentification = messageIdentificationService.randomIdentifier
-      ),
-      messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = CC044C
-      ),
-      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-        correlationIdentifier = None
-      )
+      messageRecipient = s"NTA.${officeOfDestination.take(2)}",
+      preparationDateAndTime = dateTimeService.currentDateTime,
+      messageIdentification = messageIdentificationService.randomIdentifier,
+      messageType = CC044C,
+      correlationIdentifier = None
     )
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
@@ -141,7 +135,7 @@ class SubmissionService @Inject() (
     }
   }
 
-  def consignmentReads(ie043: Option[ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
+  def consignmentReads(ie043: Option[CUSTOM_ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
     import pages.sections._
     import pages.sections.additionalReference.AdditionalReferencesSection
     import pages.sections.documents.DocumentsSection
@@ -227,7 +221,7 @@ class SubmissionService @Inject() (
           )
       }
 
-    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber.toString())
+    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber)
     lazy val seals              = transportEquipment.getList(_.Seal)
     lazy val goodsReferences    = transportEquipment.getList(_.GoodsReference)
 
@@ -266,7 +260,7 @@ class SubmissionService @Inject() (
   // scalastyle:on method.length
 
   private def consignmentDepartureTransportMeansReads(
-    ie043: Seq[DepartureTransportMeansType02]
+    ie043: Seq[CUSTOM_DepartureTransportMeansType02]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
     import pages.departureMeansOfTransport._
 
@@ -408,7 +402,7 @@ class SubmissionService @Inject() (
   }
 
   def houseConsignmentReads(
-    ie043: Seq[HouseConsignmentType04]
+    ie043: Seq[CUSTOM_HouseConsignmentType04]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[HouseConsignmentType05]] = {
     import pages.houseConsignment.index._
     import pages.sections.ItemsSection
@@ -416,7 +410,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.departureTransportMeans._
     import pages.sections.houseConsignment.index.documents._
 
-    lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber.toString())
+    lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber)
     lazy val departureTransportMeans = houseConsignment.getList(_.DepartureTransportMeans)
     lazy val supportingDocuments     = houseConsignment.getList(_.SupportingDocument)
     lazy val transportDocuments      = houseConsignment.getList(_.TransportDocument)
@@ -610,7 +604,7 @@ class SubmissionService @Inject() (
 
   // scalastyle:off method.length
   def consignmentItemReads(
-    ie043: Seq[ConsignmentItemType04]
+    ie043: Seq[CUSTOM_ConsignmentItemType04]
   )(
     houseConsignmentIndex: Index
   )(itemIndex: Index, sequenceNumber: BigInt): Reads[Option[ConsignmentItemType05]] = {
@@ -619,7 +613,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.items.additionalReference._
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
-    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber.toString())
+    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
     lazy val commodity            = consignmentItem.map(_.Commodity)
     lazy val packaging            = consignmentItem.getList(_.Packaging)
     lazy val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
@@ -673,7 +667,7 @@ class SubmissionService @Inject() (
 
   // scalastyle:off method.length
   private def consignmentItemCommodityReads(
-    ie043: Option[CommodityType08]
+    ie043: Option[CUSTOM_CommodityType08]
   )(
     houseConsignmentIndex: Index,
     itemIndex: Index
@@ -695,7 +689,7 @@ class SubmissionService @Inject() (
           )
       }
 
-    def goodsMeasureReads(ie043: Option[GoodsMeasureType03]): Reads[Option[GoodsMeasureType04]] =
+    def goodsMeasureReads(ie043: Option[CUSTOM_GoodsMeasureType03]): Reads[Option[GoodsMeasureType04]] =
       for {
         grossMass <- GrossWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
         netMass   <- NetWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)

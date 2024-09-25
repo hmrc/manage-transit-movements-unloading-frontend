@@ -36,7 +36,7 @@ case class AdditionalReferenceTypePage(houseConsignmentIndex: Index, itemIndex: 
   override def valueInIE043(ie043: Seq[AdditionalReferenceType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
-        x => sequenceNumber.contains(BigInt(x.sequenceNumber))
+        x => sequenceNumber.contains(x.sequenceNumber)
       }
       .map(_.typeValue)
 }

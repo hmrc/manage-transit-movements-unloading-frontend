@@ -108,7 +108,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "to can seals be read page when seals exist in transport equipment" in {
           val transportEquipment = arbitrary[TransportEquipmentType05].retryUntil(_.Seal.nonEmpty).sample.value
 
-          val consignment = arbitrary[ConsignmentType05].sample.value.copy(
+          val consignment = arbitrary[CUSTOM_ConsignmentType05].sample.value.copy(
             TransportEquipment = Seq(transportEquipment),
             Incident = Nil
           )
@@ -127,7 +127,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val incident = arbitrary[IncidentType04].sample.value.copy(TransportEquipment = Seq(transportEquipment))
 
-          val consignment = arbitrary[ConsignmentType05].sample.value.copy(
+          val consignment = arbitrary[CUSTOM_ConsignmentType05].sample.value.copy(
             TransportEquipment = Nil,
             Incident = Seq(incident)
           )

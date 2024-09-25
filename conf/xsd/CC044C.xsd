@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://ncts.dgtaxud.ec" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" targetNamespace="http://ncts.dgtaxud.ec" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="51.8.2" vc:minVersion="1.1">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://ncts.dgtaxud.ec" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" targetNamespace="http://ncts.dgtaxud.ec" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="51.8.6" vc:minVersion="1.1">
   <!--================================================================================-->
-  <!--===== IE043: E_ULD_PER                                                                -->
-  <!--===== UNLOADING PERMISSION                                                            -->
+  <!--===== IE044: E_ULD_REM                                                                -->
+  <!--===== UNLOADING REMARKS                                                               -->
   <!--===== NCTS P5 Phase Definition                                                        -->
-  <!--===== XSD Version 51.8.2                                                              -->
+  <!--===== XSD Version 51.8.6                                                              -->
   <!--================================================================================-->
   <!--================================================================================-->
   <!--===== Includes                                                                        -->
@@ -14,14 +14,14 @@
   <!--================================================================================-->
   <!--===== Root Element                                                                    -->
   <!--================================================================================-->
-  <xs:element name="CC043C" type="CC043CType" />
+  <xs:element name="CC044C" type="CC044CType" />
   <!--================================================================================-->
   <!--===== Root Element Content                                                            -->
   <!--================================================================================-->
-  <xs:complexType name="CC043CType">
+  <xs:complexType name="CC044CType">
     <xs:sequence>
       <xs:group ref="MESSAGE" />
-      <xs:element name="TransitOperation" type="TransitOperationType14">
+      <xs:element name="TransitOperation" type="TransitOperationType15">
         <xs:annotation>
           <xs:documentation>
             <description value="TRANSIT OPERATION" />
@@ -37,15 +37,7 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="HolderOfTheTransitProcedure" minOccurs="0" type="HolderOfTheTransitProcedureType06">
-        <xs:annotation>
-          <xs:documentation>
-            <description value="HOLDER OF THE TRANSIT PROCEDURE" />
-            <optionality value="D" />
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="TraderAtDestination" type="TraderAtDestinationType03">
+      <xs:element name="TraderAtDestination" type="TraderAtDestinationType02">
         <xs:annotation>
           <xs:documentation>
             <description value="TRADER AT DESTINATION" />
@@ -53,19 +45,19 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="CTLControl" minOccurs="0" type="CTLControlType">
+      <xs:element name="UnloadingRemark" type="UnloadingRemarkType">
         <xs:annotation>
           <xs:documentation>
-            <description value="CTL_CONTROL" />
-            <optionality value="O" />
+            <description value="UNLOADING REMARK" />
+            <optionality value="R" />
           </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="Consignment" minOccurs="0" type="ConsignmentType05">
+      <xs:element name="Consignment" minOccurs="0" type="ConsignmentType06">
         <xs:annotation>
           <xs:documentation>
             <description value="CONSIGNMENT" />
-            <optionality value="D" />
+            <optionality value="O" />
           </xs:documentation>
         </xs:annotation>
       </xs:element>
