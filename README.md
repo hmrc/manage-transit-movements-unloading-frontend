@@ -56,27 +56,27 @@ Examples:
    
    I am *changing* a house consignment by *changing* a consignment item by *changing* an additional reference
    
-   So my URL would follow the strcuture of: `.../change-house-consignment/:houseConsignmentIndex/change-item/:itemIndex/change-additional-reference/:additionalReferenceIndex/...`
+   So my URL would follow the structure of: `.../change-house-consignment/:houseConsignmentIndex/change-item/:itemIndex/change-additional-reference/:additionalReferenceIndex/...`
 2. Adding an additional reference to a consignment item:
    
    I am *changing* a house consignment by *changing* a consignment item by *adding* an additional reference
    
-   So my URL would follow the strcuture of: `.../change-house-consignment/:houseConsignmentIndex/change-item/:itemIndex/additional-reference/:additionalReferenceIndex/...`
+   So my URL would follow the structure of: `.../change-house-consignment/:houseConsignmentIndex/change-item/:itemIndex/additional-reference/:additionalReferenceIndex/...`
 3. Adding an additional reference while adding a consignment item:
    
    I am *changing* a house consignment by *adding* a consignment item and *adding* an additional reference
    
-   So my URL would follow the strcuture of: `.../change-house-consignment/:houseConsignmentIndex/item/:itemIndex/additional-reference/:additionalReferenceIndex/...`
+   So my URL would follow the structure of: `.../change-house-consignment/:houseConsignmentIndex/item/:itemIndex/additional-reference/:additionalReferenceIndex/...`
 4. Adding an additional reference while adding a consignment item while adding a house consignment:
    
    I am *adding* a house consignment and *adding* a consignment item and *adding* an additional reference
    
-   So my URL would follow the strcuture of: `.../house-consignment/:houseConsignmentIndex/item/:itemIndex/additional-reference/:additionalReferenceIndex/...`
+   So my URL would follow the structure of: `.../house-consignment/:houseConsignmentIndex/item/:itemIndex/additional-reference/:additionalReferenceIndex/...`
 5. Removing an additional reference from a consignment item:
    
    I am *changing* a house consignment by *changing* a consignment item by *removing* an additional reference
    
-   So my URL would follow the strcuture of: `.../change-house-consignment/:houseConsignmentIndex/change-item/:itemIndex/additional-reference/:additionalReferenceIndex/remove`
+   So my URL would follow the structure of: `.../change-house-consignment/:houseConsignmentIndex/change-item/:itemIndex/additional-reference/:additionalReferenceIndex/remove`
 
 These modes help us navigate the user to the relevant 'check your answers' page after they have made their various additions, amendments, or removals.
 
