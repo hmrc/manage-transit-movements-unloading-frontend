@@ -20,13 +20,12 @@ import controllers.routes
 import models.{ArrivalId, Mode}
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import play.twirl.api.Html
+import viewModels.OtherThingsToReportViewModel.AdditionalHtml
 
 case class OtherThingsToReportViewModel(
   title: String,
   heading: String,
-  hint: Option[String],
-  additionalHtml: Option[Html],
+  additionalHtml: Option[AdditionalHtml],
   requiredError: String,
   maxLengthError: String,
   invalidError: String,
@@ -34,6 +33,25 @@ case class OtherThingsToReportViewModel(
 )
 
 object OtherThingsToReportViewModel {
+
+  case class AdditionalHtml(
+    paragraph1: String,
+    paragraph2: String,
+    linkText: String,
+    linkHref: Call,
+    paragraph3: String
+  )
+
+  object AdditionalHtml {
+
+    def apply(prefix: String, arrivalId: ArrivalId, mode: Mode)(implicit messages: Messages): AdditionalHtml = new AdditionalHtml(
+      paragraph1 = messages(s"$prefix.paragraph1"),
+      paragraph2 = messages(s"$prefix.paragraph2"),
+      linkText = messages(s"$prefix.link"),
+      linkHref = controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, mode),
+      paragraph3 = messages(s"$prefix.paragraph3")
+    )
+  }
 
   class OtherThingsToReportViewModelProvider {
 
@@ -52,25 +70,12 @@ object OtherThingsToReportViewModel {
         "otherThingsToReport.oldAuth"
       }
 
-      val hint = Option.when(newAuth)(messages(s"$prefix.hint"))
-
-      val additionalHtml = Option.when(newAuth) {
-        s"""
-          |<p class="govuk-body">${messages(s"$prefix.paragraph1")}</p>
-          |<p class="govuk-body">${messages(s"$prefix.paragraph2")}
-          |    <a id="link" class="govuk-link" href=${routes.NewAuthYesNoController.onSubmit(arrivalId, mode)}>
-          |        ${messages(s"$prefix.link")}
-          |    </a>.
-          |    ${messages(s"$prefix.paragraph3")}
-          |</p>
-          |""".stripMargin
-      }
+      val additionalHtml = Option.when(newAuth)(AdditionalHtml(prefix, arrivalId, mode))
 
       new OtherThingsToReportViewModel(
         title = messages(s"$prefix.title"),
         heading = messages(s"$prefix.heading"),
-        hint = hint,
-        additionalHtml = additionalHtml.map(Html(_)),
+        additionalHtml = additionalHtml,
         requiredError = messages(s"$prefix.error.required"),
         maxLengthError = messages(s"$prefix.error.length"),
         invalidError = messages(s"$prefix.error.invalid"),

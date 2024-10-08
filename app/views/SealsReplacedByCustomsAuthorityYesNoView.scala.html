@@ -20,11 +20,11 @@
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
-errorSummary: ErrorSummary,
-button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[?], messages: Messages)
@@ -34,20 +34,21 @@ button: Button
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @formHelper(action = controllers.routes.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
-        @formHelper(action = controllers.routes.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("sealsReplacedByCustomsAuthorityYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("sealsReplacedByCustomsAuthorityYesNo.paragraph").toParagraph
+                additionalHtml = Seq(
+                    messages("sealsReplacedByCustomsAuthorityYesNo.paragraph1"),
+                    messages("sealsReplacedByCustomsAuthorityYesNo.paragraph2")
+                ).toHtml
             )
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }

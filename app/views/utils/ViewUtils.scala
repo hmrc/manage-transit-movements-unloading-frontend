@@ -19,10 +19,10 @@ package views.utils
 import forms.mappings.LocalDateFormatter
 import play.api.data.FormError
 import play.api.i18n.Messages
-import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.implicits._
+import play.twirl.api.{Html, HtmlFormat}
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorLink
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
@@ -100,6 +100,10 @@ object ViewUtils {
 
   implicit class StringImplicits(string: String) {
     def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+  }
+
+  implicit class StringsImplicits(strings: Seq[String]) {
+    def toHtml: Html = HtmlFormat.fill(strings.map(_.toParagraph))
   }
 
   implicit class DateInputImplicits(dateInput: DateInput)(implicit messages: Messages) extends RichDateInputSupport {

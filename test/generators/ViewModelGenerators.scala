@@ -675,16 +675,25 @@ trait ViewModelGenerators {
     } yield CombinedNomenclatureCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
-  implicit lazy val otherThingsToReportViewModel: Arbitrary[OtherThingsToReportViewModel] = Arbitrary {
+  implicit lazy val arbitraryOtherThingsToReportViewModel: Arbitrary[OtherThingsToReportViewModel] = Arbitrary {
     for {
       title          <- nonEmptyString
       heading        <- nonEmptyString
-      hint           <- Gen.option(nonEmptyString)
-      additionalHtml <- Gen.const(None)
+      additionalHtml <- Gen.option(arbitrary[OtherThingsToReportViewModel.AdditionalHtml])
       requiredError  <- nonEmptyString
       maxLengthError <- nonEmptyString
       invalidError   <- nonEmptyString
       onSubmitCall   <- arbitrary[Call]
-    } yield OtherThingsToReportViewModel(title, heading, hint, additionalHtml, requiredError, maxLengthError, invalidError, onSubmitCall)
+    } yield OtherThingsToReportViewModel(title, heading, additionalHtml, requiredError, maxLengthError, invalidError, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryOtherThingsToReportAdditionalHtml: Arbitrary[OtherThingsToReportViewModel.AdditionalHtml] = Arbitrary {
+    for {
+      paragraph1 <- nonEmptyString
+      paragraph2 <- nonEmptyString
+      linkText   <- nonEmptyString
+      linkHref   <- arbitrary[Call]
+      paragraph3 <- nonEmptyString
+    } yield OtherThingsToReportViewModel.AdditionalHtml(paragraph1, paragraph2, linkText, linkHref, paragraph3)
   }
 }

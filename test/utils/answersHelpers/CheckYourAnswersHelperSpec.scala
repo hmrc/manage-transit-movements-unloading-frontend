@@ -184,7 +184,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Have any seals been replaced by a customs authority?".toText),
+              key = Key("Has the external seal been replaced by a customs authority?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -192,7 +192,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if any seals been replaced by a customs authority"),
+                      visuallyHiddenText = Some("if the external seal has been replaced by a customs authority"),
                       attributes = Map("id" -> "change-seals-replaced-customs-yes-no")
                     )
                   )
@@ -209,7 +209,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Have any seals been replaced by a customs authority?".toText),
+              key = Key("Has the external seal been replaced by a customs authority?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -217,7 +217,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if any seals been replaced by a customs authority"),
+                      visuallyHiddenText = Some("if the external seal has been replaced by a customs authority"),
                       attributes = Map("id" -> "change-seals-replaced-customs-yes-no")
                     )
                   )
