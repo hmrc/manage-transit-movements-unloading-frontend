@@ -676,6 +676,19 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           }
         }
       }
+
+      "must not return a row" - {
+        "when not a revised procedure and SealsReplacedByCustomsAuthorityYesNoPage unpopulated" in {
+
+          val answers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+
+          val helper = new CheckYourAnswersHelper(answers)
+          val result = helper.report
+
+          result mustBe None
+        }
+      }
     }
   }
 }
