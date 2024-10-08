@@ -262,6 +262,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithList(listClass: String, expectedListItems: String*): Unit =
+    pageWithList(doc, listClass, expectedListItems*)
+
+  def pageWithList(doc: Document, listClass: String, expectedListItems: String*): Unit =
     "must render list" in {
       val list      = getElementByClass(doc, listClass)
       val listItems = list.getElementsByTag("li")

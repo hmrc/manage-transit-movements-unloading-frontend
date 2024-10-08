@@ -671,7 +671,14 @@ checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo = Were t
 checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
-checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+checkYourAnswers.paragraph1 = By sending this, you are confirming that these details are correct to the best of your knowledge.
+checkYourAnswers.paragraph2 = By sending this, you are confirming:
+checkYourAnswers.bullet1 = these details are correct to the best of your knowledge
+checkYourAnswers.bullet2 = you performed visual checks of the goods
+checkYourAnswers.bullet3 = there were no discrepancies between the transit and unloading permission
+checkYourAnswers.bullet4 = you did not unload the goods
+checkYourAnswers.bullet5 = you did not check the goods
+checkYourAnswers.bullet6 = there was no evidence of discrepancies between the transit and unloading permission
 checkYourAnswers.link = Back to discrepancies between the transit and unloading permission
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
