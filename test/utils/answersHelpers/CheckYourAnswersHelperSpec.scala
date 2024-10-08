@@ -575,35 +575,107 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
     }
 
     "report" - {
-      "must return row" in {
+      "must return row" - {
+        "when not a revised procedure" in {
 
-        forAll(Gen.alphaNumStr) {
-          report =>
-            val answers = emptyUserAnswers.setValue(OtherThingsToReportPage, report)
-            val helper  = new CheckYourAnswersHelper(answers)
-            val result  = helper.report
+          forAll(Gen.alphaNumStr) {
+            report =>
+              val answers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
+                .setValue(OtherThingsToReportPage, report)
 
-            result mustBe Some(
-              SummaryListRow(
-                key = Key("What do you want to report?".toText),
-                value = Value(s"$report".toText),
-                actions = Some(
-                  Actions(
-                    items = List(
-                      ActionItem(
-                        content = "Change".toText,
-                        href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
-                        visuallyHiddenText = Some("what you want to report"),
-                        attributes = Map("id" -> "change-report")
+              val helper = new CheckYourAnswersHelper(answers)
+              val result = helper.report
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("What do you want to report?".toText),
+                  value = Value(s"$report".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
+                          visuallyHiddenText = Some("what you want to report"),
+                          attributes = Map("id" -> "change-report")
+                        )
                       )
                     )
                   )
                 )
               )
-            )
+          }
+        }
+
+        "when a revised procedure" - {
+          "and seal replaced" in {
+
+            forAll(Gen.alphaNumStr) {
+              report =>
+                val answers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, true)
+                  .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+                  .setValue(OtherThingsToReportPage, report)
+
+                val helper = new CheckYourAnswersHelper(answers)
+                val result = helper.report
+
+                result mustBe Some(
+                  SummaryListRow(
+                    key = Key("Identification number for replacement external seal".toText),
+                    value = Value(s"$report".toText),
+                    actions = Some(
+                      Actions(
+                        items = List(
+                          ActionItem(
+                            content = "Change".toText,
+                            href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
+                            visuallyHiddenText = Some("identification number for replacement external seal"),
+                            attributes = Map("id" -> "change-report")
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+            }
+          }
+
+          "and seal not replaced" in {
+
+            forAll(Gen.alphaNumStr) {
+              report =>
+                val answers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, true)
+                  .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
+                  .setValue(OtherThingsToReportPage, report)
+
+                val helper = new CheckYourAnswersHelper(answers)
+                val result = helper.report
+
+                result mustBe Some(
+                  SummaryListRow(
+                    key = Key("Identification number for external seal".toText),
+                    value = Value(s"$report".toText),
+                    actions = Some(
+                      Actions(
+                        items = List(
+                          ActionItem(
+                            content = "Change".toText,
+                            href = routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode).url,
+                            visuallyHiddenText = Some("identification number for external seal"),
+                            attributes = Map("id" -> "change-report")
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+            }
+          }
         }
       }
     }
-
   }
 }

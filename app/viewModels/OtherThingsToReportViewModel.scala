@@ -17,7 +17,7 @@
 package viewModels
 
 import controllers.routes
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, Procedure, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import viewModels.OtherThingsToReportViewModel.AdditionalHtml
@@ -56,21 +56,14 @@ object OtherThingsToReportViewModel {
   class OtherThingsToReportViewModelProvider {
 
     def apply(
+      userAnswers: UserAnswers,
       arrivalId: ArrivalId,
       mode: Mode,
-      newAuth: Boolean,
-      sealsReplaced: Option[Boolean]
+      revised: Boolean
     )(implicit messages: Messages): OtherThingsToReportViewModel = {
-      val prefix = if (newAuth) {
-        sealsReplaced match {
-          case Some(true) => "otherThingsToReport.newAuthAndSealsReplaced"
-          case _          => "otherThingsToReport.newAuth"
-        }
-      } else {
-        "otherThingsToReport.oldAuth"
-      }
+      val prefix = Procedure(userAnswers, revised).prefix
 
-      val additionalHtml = Option.when(newAuth)(AdditionalHtml(prefix, arrivalId, mode))
+      val additionalHtml = Option.when(revised)(AdditionalHtml(prefix, arrivalId, mode))
 
       new OtherThingsToReportViewModel(
         title = messages(s"$prefix.title"),
