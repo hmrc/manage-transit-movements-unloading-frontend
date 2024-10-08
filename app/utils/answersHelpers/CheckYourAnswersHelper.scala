@@ -16,10 +16,10 @@
 
 package utils.answersHelpers
 
-import models.{CheckMode, UnloadingType, UserAnswers}
-import pages._
+import models.{CheckMode, Procedure, UnloadingType, UserAnswers}
+import pages.*
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
 import java.time.LocalDate
 
@@ -117,7 +117,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def report: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = OtherThingsToReportPage,
     formatAnswer = formatAsText,
-    prefix = "checkYourAnswers.rowHeadings.report",
+    prefix = s"checkYourAnswers.rowHeadings.${Procedure(userAnswers).prefix}",
     id = Some("change-report"),
     call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
   )

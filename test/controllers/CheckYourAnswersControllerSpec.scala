@@ -19,14 +19,15 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.AuditType.UnloadingRemarks
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.submission.{AuditService, SubmissionService}
 import uk.gov.hmrc.http.HttpResponse
 import viewModels.CheckYourAnswersViewModel
@@ -66,9 +67,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val sections = arbitraryStaticSections.arbitrary.sample.value
-
-      val checkYourAnswersViewModel = CheckYourAnswersViewModel(sections, false)
+      val checkYourAnswersViewModel = arbitrary[CheckYourAnswersViewModel].sample.value
 
       when(mockCheckYourAnswersViewModelProvider.apply(any())(any()))
         .thenReturn(checkYourAnswersViewModel)

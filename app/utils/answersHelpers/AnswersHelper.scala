@@ -30,7 +30,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
     formatAnswer: T => Content,
-    prefix: String,
+    prefix: => String,
     id: Option[String],
     call: Option[Call],
     args: Any*

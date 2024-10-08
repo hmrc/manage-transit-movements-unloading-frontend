@@ -43,7 +43,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   override val prefix: String = "unloadingGuidance.notNewAuth"
 
-  behave like pageWithTitle(false, true)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 

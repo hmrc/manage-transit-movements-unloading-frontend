@@ -33,6 +33,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
       val unloadedDate = arbitrary[LocalDate].sample.value
       val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
         .setValue(DateGoodsUnloadedPage, unloadedDate)
         .setValue(CanSealsBeReadPage, true)
         .setValue(AreAnySealsBrokenPage, true)
@@ -43,11 +44,12 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val result            = viewModelProvider.apply(userAnswers)
 
       result.sections.length mustBe 2
-      result.sections.head.rows.size mustBe 3
+      result.sections.head.rows.size mustBe 4
     }
 
     "must render LargeUnsealedGoodsRecordDiscrepanciesYesNoPage row when false" in {
       val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
         .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
@@ -56,7 +58,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val result            = viewModelProvider.apply(userAnswers)
 
       result.sections.length mustBe 2
-      result.sections.head.rows.size mustBe 1
+      result.sections.head.rows.size mustBe 2
     }
 
   }
@@ -66,6 +68,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 1 rows if add comments false" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
         .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
@@ -76,13 +79,14 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 1
 
-      result.sections(1).sectionTitle.value mustBe "Transit and unloading permission discrepancies"
+      result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
 
     }
 
     "must render 2 rows if add comments true" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
         .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
         .setValue(UnloadingCommentsPage, "Test")
 
@@ -94,7 +98,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 2
 
-      result.sections(1).sectionTitle.value mustBe "Transit and unloading permission discrepancies"
+      result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
 
     }
 
@@ -206,8 +210,10 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     }
 
     "new auth must be false when NewAuthPageYesNo is true" in {
+      val replaced = arbitrary[Boolean].sample.value
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
 
       setExistingUserAnswers(userAnswers)
 

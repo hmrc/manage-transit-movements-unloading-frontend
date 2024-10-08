@@ -29,7 +29,7 @@ class DoYouHaveAnythingElseToReportYesNoViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "doYouHaveAnythingElseToReportYesNo"
 
-  behave like pageWithTitle("Do you have anything else to report?")
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 

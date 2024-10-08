@@ -23,7 +23,7 @@ import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import viewModels.OtherThingsToReportViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.OtherThingsToReportView
@@ -42,6 +42,7 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
   override val prefix: String = Gen
     .oneOf(
       "otherThingsToReport.oldAuth",
+      "otherThingsToReport.newAuth",
       "otherThingsToReport.newAuthAndSealsReplaced"
     )
     .sample
@@ -59,50 +60,47 @@ class OtherThingsToReportViewSpec extends CharacterCountViewBehaviours with Gene
 
   behave like pageWithSubmitButton("Continue")
 
-  private val hint = nonEmptyString.sample.value
+  "when using revised unloading procedure" - {
 
-  "oldAuth (without hint)" - {
-    val viewModelOldAuth = viewModel.copy(hint = None)
-    val doc = parseView(
-      injector
-        .instanceOf[OtherThingsToReportView]
-        .apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelOldAuth)(fakeRequest, messages)
-    )
-
-    behave like pageWithoutHint(doc, hint)
-  }
-
-  "newAuth (with hint and additionalHtml)" - {
-
-    val additionalHtml = s"""
-                  |<p class="govuk-body">paragraph1</p>
-                  |<p class="govuk-body">paragraph2
-                  |    <a id="link" class="govuk-link" href="url">
-                  |        link
-                  |    </a>.
-                  |    paragraph3
-                  |</p>
-                  |""".stripMargin
-
-    val viewModelNewAuth = viewModel.copy(hint = Some(hint), additionalHtml = Some(additionalHtml).map(Html(_)))
+    val additionalHtml   = arbitrary[OtherThingsToReportViewModel.AdditionalHtml].sample.value
+    val viewModelNewAuth = viewModel.copy(additionalHtml = Some(additionalHtml))
 
     val doc = parseView(
       injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
     )
 
-    behave like pageWithContent(doc, "p", "paragraph1")
+    behave like pageWithContent(doc, "p", additionalHtml.paragraph1)
 
-    behave like pageWithPartialContent(doc, "p", "paragraph2")
+    behave like pageWithPartialContent(doc, "p", additionalHtml.paragraph2)
 
     behave like pageWithLink(
       doc = doc,
       id = "link",
-      expectedText = "link",
-      expectedHref = "url"
+      expectedText = additionalHtml.linkText,
+      expectedHref = additionalHtml.linkHref.url
     )
 
-    behave like pageWithPartialContent(doc, "p", "paragraph3")
+    behave like pageWithPartialContent(doc, "p", additionalHtml.paragraph3)
+  }
 
-    behave like pageWithHint(doc, hint)
+  "when not using revised unloading procedure" - {
+
+    val additionalHtml   = arbitrary[OtherThingsToReportViewModel.AdditionalHtml].sample.value
+    val viewModelNewAuth = viewModel.copy(additionalHtml = None)
+
+    val doc = parseView(
+      injector.instanceOf[OtherThingsToReportView].apply(form, mrn, arrivalId, otherThingsToReportLength, NormalMode, viewModelNewAuth)(fakeRequest, messages)
+    )
+
+    behave like pageWithoutContent(doc, "p", additionalHtml.paragraph1)
+
+    behave like pageWithoutContent(doc, "p", additionalHtml.paragraph2)
+
+    behave like pageWithoutLink(
+      doc = doc,
+      id = "link"
+    )
+
+    behave like pageWithoutContent(doc, "p", additionalHtml.paragraph3)
   }
 }
