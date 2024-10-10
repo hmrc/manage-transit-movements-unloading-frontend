@@ -17,10 +17,14 @@
 package connectors
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.ArrivalId
+import models.{ArrivalId, Bytes}
 import models.P5.Messages
-import play.api.http.HeaderNames._
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
+import play.api.Logging
+import play.api.http.HeaderNames.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
@@ -32,7 +36,8 @@ class ArrivalMovementConnector @Inject() (
   config: FrontendAppConfig,
   http: HttpClientV2,
   phaseConfig: PhaseConfig
-) {
+)(implicit mat: Materializer)
+    extends Logging {
 
   private val version = phaseConfig.values.apiVersion
 
@@ -45,12 +50,23 @@ class ArrivalMovementConnector @Inject() (
   }
 
   def getMessage(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {
+
+    def getBody(source: Source[ByteString, ?]): Future[String] =
+      source
+        .runReduce(_ ++ _)
+        .map {
+          byteString =>
+            logger.info(s"[$arrivalId][$messageId] Size: ${Bytes(byteString.length)}")
+            byteString.utf8String
+        }
+
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId/body"
     http
       .get(url)
       .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+xml")
       .execute[HttpResponse]
-      .map(_.body)
+      .map(_.bodyAsSource)
+      .flatMap(getBody)
       .map(XML.loadString)
   }
 }
