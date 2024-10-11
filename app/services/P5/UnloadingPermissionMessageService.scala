@@ -18,9 +18,9 @@ package services.P5
 
 import cats.data.OptionT
 import connectors.ArrivalMovementConnector
-import generated._
-import models.ArrivalId
-import models.P5.ArrivalMessageType._
+import generated.*
+import models.{ArrivalId, MessageStatus}
+import models.P5.ArrivalMessageType.*
 import models.P5.{ArrivalMessageType, MessageMetaData}
 import scalaxb.XMLFormat
 import scalaxb.`package`.fromXML
@@ -36,6 +36,7 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
       .getMessageMetaData(arrivalId)
       .map {
         _.messages
+          .filterNot(_.status == MessageStatus.Failed)
           .sortBy(_.received)
           .reverse
       }

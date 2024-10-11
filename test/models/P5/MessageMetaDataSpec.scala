@@ -18,12 +18,13 @@ package models.P5
 
 import base.SpecBase
 import generators.Generators
+import models.MessageStatus
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import org.scalacheck.Arbitrary.arbitrary
 
 class MessageMetaDataSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -47,7 +48,8 @@ class MessageMetaDataSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
                |   "id":"634982098f02f00a",
                |   "arrivalId":"63498209a2d89ad8",
                |   "received":"2022-11-10T15:32:51.459Z",
-               |   "type": "${messageType.toString}"
+               |   "type": "${messageType.toString}",
+               |   "status" : "Success"
                |}
                |""".stripMargin
           )
@@ -55,7 +57,8 @@ class MessageMetaDataSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           val expectedResult = MessageMetaData(
             LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
             messageType,
-            "634982098f02f00a"
+            "634982098f02f00a",
+            MessageStatus.Success
           )
 
           val result: MessageMetaData = json.validate[MessageMetaData].asOpt.value

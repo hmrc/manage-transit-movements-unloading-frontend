@@ -18,10 +18,11 @@ package services.P5
 
 import base.SpecBase
 import connectors.ArrivalMovementConnector
-import generated._
+import generated.*
 import generators.Generators
-import models.P5.ArrivalMessageType._
-import models.P5._
+import models.MessageStatus
+import models.P5.*
+import models.P5.ArrivalMessageType.*
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -41,11 +42,11 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
     reset(mockConnector)
   }
 
-  private val unloadingPermission1 = MessageMetaData(LocalDateTime.now(), UnloadingPermission, "path1/url")
-  private val unloadingPermission2 = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path2/url")
-  private val unloadingPermission3 = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingPermission, "path3/url")
-  private val arrivalNotification  = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path4/url")
-  private val unloadingRemarks1    = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingRemarks, "path5/url")
+  private val unloadingPermission1 = MessageMetaData(LocalDateTime.now(), UnloadingPermission, "path1/url", MessageStatus.Success)
+  private val unloadingPermission2 = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path2/url", MessageStatus.Success)
+  private val unloadingPermission3 = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingPermission, "path3/url", MessageStatus.Success)
+  private val arrivalNotification  = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path4/url", MessageStatus.Success)
+  private val unloadingRemarks1    = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingRemarks, "path5/url", MessageStatus.Success)
 
   "UnloadingPermissionMessageService" - {
 
@@ -54,8 +55,8 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
       "must return true" - {
 
         "when head message is an IE043" in {
-          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
-          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url", MessageStatus.Success)
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
 
           val messageMetaData = Messages(
             List(
@@ -70,10 +71,10 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         }
 
         "when head message is a rejection after an IE044" in {
-          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
-          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
-          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url")
-          val ie057 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url")
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url", MessageStatus.Success)
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
+          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Success)
+          val ie057 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url", MessageStatus.Success)
 
           val messageMetaData = Messages(
             List(
@@ -90,12 +91,12 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         }
 
         "when head message is another rejection after an IE044" in {
-          val ie007   = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
-          val ie043   = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
-          val ie044_1 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url")
-          val ie057_1 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url")
-          val ie044_2 = MessageMetaData(LocalDateTime.now().plusDays(4), UnloadingRemarks, "path/url")
-          val ie057_2 = MessageMetaData(LocalDateTime.now().plusDays(5), RejectionFromOfficeOfDestination, "path/url")
+          val ie007   = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url", MessageStatus.Success)
+          val ie043   = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
+          val ie044_1 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Success)
+          val ie057_1 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url", MessageStatus.Success)
+          val ie044_2 = MessageMetaData(LocalDateTime.now().plusDays(4), UnloadingRemarks, "path/url", MessageStatus.Success)
+          val ie057_2 = MessageMetaData(LocalDateTime.now().plusDays(5), RejectionFromOfficeOfDestination, "path/url", MessageStatus.Success)
 
           val messageMetaData = Messages(
             List(
@@ -112,13 +113,31 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
           service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
         }
+
+        "when head message is an IE044 with status Failed" in {
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url", MessageStatus.Success)
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
+          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Failed)
+
+          val messageMetaData = Messages(
+            List(
+              ie007,
+              ie043,
+              ie044
+            )
+          )
+
+          when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+        }
       }
 
       "must return false" - {
         "when head message is an IE044" in {
-          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
-          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url")
-          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url")
+          val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url", MessageStatus.Success)
+          val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
+          val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Success)
 
           val messageMetaData = Messages(
             List(
