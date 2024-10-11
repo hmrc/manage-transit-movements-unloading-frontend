@@ -16,9 +16,10 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.P5._
+import models.MessageStatus
+import models.P5.*
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import java.time.LocalDateTime
@@ -53,7 +54,8 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
           |      },
           |      "id": "634982098f02f00a",
           |      "received": "2022-11-10T15:32:51.459Z",
-          |      "type": "IE007"
+          |      "type": "IE007",
+          |      "status": "Success"
           |    }
           |  ]
           |}
@@ -73,7 +75,8 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
             MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
               ArrivalMessageType.ArrivalNotification,
-              "634982098f02f00a"
+              "634982098f02f00a",
+              MessageStatus.Success
             )
           )
         )
