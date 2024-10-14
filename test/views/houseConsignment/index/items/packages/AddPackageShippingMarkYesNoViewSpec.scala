@@ -43,6 +43,8 @@ class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithHint("Adding a shipping mark is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

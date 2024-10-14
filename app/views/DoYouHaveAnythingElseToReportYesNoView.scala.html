@@ -44,7 +44,8 @@ button: Button
                 heading = messages("doYouHaveAnythingElseToReportYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("doYouHaveAnythingElseToReportYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("doYouHaveAnythingElseToReportYesNo.hint")))
         )
 
 

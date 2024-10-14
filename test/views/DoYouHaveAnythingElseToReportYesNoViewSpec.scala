@@ -39,5 +39,7 @@ class DoYouHaveAnythingElseToReportYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This can be anything else you want to tell us about the transit movement.")
 
+  behave like pageWithHint("Adding further comments is optional.")
+
   behave like pageWithRadioItems()
 }

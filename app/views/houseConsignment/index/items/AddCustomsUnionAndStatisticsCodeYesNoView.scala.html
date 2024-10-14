@@ -46,7 +46,8 @@
                 heading = messages("houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

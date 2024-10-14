@@ -41,6 +41,8 @@ class AddGrossWeightYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
 
+  behave like pageWithHint("Adding the gross weight is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

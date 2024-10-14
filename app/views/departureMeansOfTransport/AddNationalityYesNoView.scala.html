@@ -43,10 +43,9 @@ button: Button
             yesNoType = OrdinaryYesNo(
                 heading = messages("departureMeansOfTransport.addNationalityYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString))
-            )
+            ),
+            hint = Some(Text(messages("departureMeansOfTransport.addNationalityYesNo.hint")))
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }

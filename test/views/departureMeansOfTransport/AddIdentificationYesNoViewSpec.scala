@@ -39,6 +39,8 @@ class AddIdentificationYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
 
+  behave like pageWithHint("Adding the type of identification is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

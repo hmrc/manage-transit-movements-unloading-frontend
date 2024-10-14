@@ -44,7 +44,8 @@
             yesNoType = OrdinaryYesNo(
                 heading = messages("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-            )
+            ),
+            hint = Some(Text(messages("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
