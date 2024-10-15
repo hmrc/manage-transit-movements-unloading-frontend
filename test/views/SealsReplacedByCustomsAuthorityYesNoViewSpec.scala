@@ -22,14 +22,14 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.SealsReplacedByCustomsAuthorityYesNoView
 
-class SealsReplacedByCustomsAuthorityYesNoSpec extends YesNoViewBehaviours {
+class SealsReplacedByCustomsAuthorityYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[SealsReplacedByCustomsAuthorityYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "sealsReplacedByCustomsAuthorityYesNo"
 
-  behave like pageWithTitle("Have any seals been replaced by a customs authority?")
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
@@ -39,7 +39,12 @@ class SealsReplacedByCustomsAuthorityYesNoSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent(
     "p",
-    "This could have happened during routine checks or following an incident."
+    "This means the seal on the outside of the container or freight vehicle."
+  )
+
+  behave like pageWithContent(
+    "p",
+    "It could have been replaced during routine checks or following an incident."
   )
 
   behave like pageWithRadioItems()

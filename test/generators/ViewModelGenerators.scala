@@ -23,25 +23,25 @@ import play.api.data.FormError
 import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
-import viewModels.departureTransportMeans._
+import viewModels.departureTransportMeans.*
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel
-import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
+import viewModels.houseConsignment.index.additionalReference.AdditionalReferenceTypeViewModel as HCAdditionalReferenceTypeViewModel
 import viewModels.houseConsignment.index.departureTransportMeans.{
   HouseConsignmentCountryViewModel,
-  IdentificationNumberViewModel => HCIdentificationNumberViewModel
+  IdentificationNumberViewModel as HCIdentificationNumberViewModel
 }
 import viewModels.houseConsignment.index.documents.{
-  AddAnotherHouseConsignmentDocumentViewModel => DocumentsAddAnotherHouseConsignmentDocumentViewModel,
+  AddAnotherHouseConsignmentDocumentViewModel as DocumentsAddAnotherHouseConsignmentDocumentViewModel,
   ReferenceNumberViewModel
 }
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
-  AdditionalReferenceTypeViewModel => AdditionalReferenceTypeItemViewModel
+  AdditionalReferenceTypeViewModel as AdditionalReferenceTypeItemViewModel
 }
 import viewModels.houseConsignment.index.items.document.{
   AddAnotherHouseConsignmentDocumentViewModel,
@@ -55,7 +55,7 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageTypeViewModel
 }
 import viewModels.houseConsignment.index.items.{
-  document => hcItemViewModel,
+  document as hcItemViewModel,
   AddAnotherItemViewModel,
   CombinedNomenclatureCodeViewModel,
   CommodityCodeViewModel,
@@ -64,12 +64,12 @@ import viewModels.houseConsignment.index.items.{
   GrossWeightViewModel,
   NetWeightViewModel
 }
-import viewModels.houseConsignment.index.{documents => hcViewModel}
+import viewModels.houseConsignment.index.documents as hcViewModel
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
-import viewModels.{ListItem, OtherThingsToReportViewModel, UnloadingFindingsViewModel}
+import viewModels.{CheckYourAnswersViewModel, ListItem, OtherThingsToReportViewModel, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -675,16 +675,33 @@ trait ViewModelGenerators {
     } yield CombinedNomenclatureCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
-  implicit lazy val otherThingsToReportViewModel: Arbitrary[OtherThingsToReportViewModel] = Arbitrary {
+  implicit lazy val arbitraryOtherThingsToReportViewModel: Arbitrary[OtherThingsToReportViewModel] = Arbitrary {
     for {
       title          <- nonEmptyString
       heading        <- nonEmptyString
-      hint           <- Gen.option(nonEmptyString)
-      additionalHtml <- Gen.const(None)
+      additionalHtml <- Gen.option(arbitrary[OtherThingsToReportViewModel.AdditionalHtml])
       requiredError  <- nonEmptyString
       maxLengthError <- nonEmptyString
       invalidError   <- nonEmptyString
       onSubmitCall   <- arbitrary[Call]
-    } yield OtherThingsToReportViewModel(title, heading, hint, additionalHtml, requiredError, maxLengthError, invalidError, onSubmitCall)
+    } yield OtherThingsToReportViewModel(title, heading, additionalHtml, requiredError, maxLengthError, invalidError, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryOtherThingsToReportAdditionalHtml: Arbitrary[OtherThingsToReportViewModel.AdditionalHtml] = Arbitrary {
+    for {
+      paragraph1 <- nonEmptyString
+      paragraph2 <- nonEmptyString
+      linkText   <- nonEmptyString
+      linkHref   <- arbitrary[Call]
+      paragraph3 <- nonEmptyString
+    } yield OtherThingsToReportViewModel.AdditionalHtml(paragraph1, paragraph2, linkText, linkHref, paragraph3)
+  }
+
+  implicit lazy val arbitraryCheckYourAnswersViewModel: Arbitrary[CheckYourAnswersViewModel] = Arbitrary {
+    for {
+      sections              <- listWithMaxLength[StaticSection]()
+      showDiscrepanciesLink <- arbitrary[Boolean]
+      goodsTooLarge         <- Gen.option(arbitrary[Boolean])
+    } yield CheckYourAnswersViewModel(sections, showDiscrepanciesLink, goodsTooLarge)
   }
 }
