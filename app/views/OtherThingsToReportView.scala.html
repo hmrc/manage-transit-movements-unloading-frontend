@@ -18,6 +18,7 @@
 @import viewModels.components.InputCharacterCountViewModel
 @import viewModels.components.InputCharacterCountViewModel._
 @import viewModels.OtherThingsToReportViewModel
+@import viewModels.OtherThingsToReportViewModel.AdditionalHtml
 @import views.html.components.{Button, ErrorSummary, Heading, InputCharacterCount, InputYesNo}
 
 @this(
@@ -31,6 +32,11 @@
 )
 
 @(form: Form[_],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode, viewModel: OtherThingsToReportViewModel)(implicit request: Request[?], messages: Messages)
+
+@html(value: AdditionalHtml) = {
+    <p class="govuk-body">@value.paragraph1</p>
+    <p class="govuk-body">@value.paragraph2 <a id="link" class="govuk-link" href=@value.linkHref>@messages(value.linkText)</a>. @value.paragraph3</p>
+}
 
 @mainTemplate(
     title = messages(viewModel.title),
@@ -46,9 +52,8 @@
             inputCharacterCountType = InputCharacterCountViewModel.apply(
                 heading = messages(viewModel.heading),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = viewModel.additionalHtml
+                additionalHtml = viewModel.additionalHtml.map(html(_))
             ),
-            hint = viewModel.hint,
             maxLength = maxLength
         )
 

@@ -17,7 +17,7 @@
 package viewModels
 
 import models.UserAnswers
-import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, NewAuthYesNoPage}
+import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -25,7 +25,11 @@ import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
-case class CheckYourAnswersViewModel(sections: Seq[Section], showDiscrepanciesLink: Boolean)
+case class CheckYourAnswersViewModel(
+  sections: Seq[Section],
+  showDiscrepanciesLink: Boolean,
+  goodsTooLarge: Option[Boolean]
+)
 
 object CheckYourAnswersViewModel {
 
@@ -70,7 +74,8 @@ object CheckYourAnswersViewModel {
 
       new CheckYourAnswersViewModel(
         Seq(headerSection, commentsSection),
-        discrepanciesPresent
+        discrepanciesPresent,
+        userAnswers.get(GoodsTooLargeForContainerYesNoPage)
       )
     }
   }

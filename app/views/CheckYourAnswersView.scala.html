@@ -41,8 +41,28 @@
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.sendRemarks")</h2>
 
-    <p class="govuk-body">@messages("checkYourAnswers.paragraph")</p>
-
+    @viewModel.goodsTooLarge match {
+        case None => {
+            <p class="govuk-body">@messages("checkYourAnswers.paragraph1")</p>
+        }
+        case Some(true) => {
+            <p class="govuk-body">@messages("checkYourAnswers.paragraph2")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("checkYourAnswers.bullet1")</li>
+                <li>@messages("checkYourAnswers.bullet2")</li>
+                <li>@messages("checkYourAnswers.bullet3")</li>
+            </ul>
+        }
+        case Some(false) => {
+            <p class="govuk-body">@messages("checkYourAnswers.paragraph2")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("checkYourAnswers.bullet1")</li>
+                <li>@messages("checkYourAnswers.bullet4")</li>
+                <li>@messages("checkYourAnswers.bullet5")</li>
+                <li>@messages("checkYourAnswers.bullet6")</li>
+            </ul>
+        }
+    }
 
     @formHelper(action = routes.CheckYourAnswersController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"), messageKey = messages("site.confirmAndSend"))

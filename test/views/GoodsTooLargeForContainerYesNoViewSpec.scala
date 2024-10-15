@@ -29,7 +29,7 @@ class GoodsTooLargeForContainerYesNoViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "goodsTooLargeForContainerYesNo"
 
-  behave like pageWithTitle("Are the goods too large to fit into a container?")
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 

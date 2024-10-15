@@ -74,7 +74,6 @@ checkYourAnswers.heading = Check your answers
 viewLink = View
 
 checkYourAnswers.seals.subHeading = Check official customs seals
-checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
 
 checkYourAnswers.confirmation.heading = Now send your unloading remarks
 checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
@@ -118,7 +117,6 @@ unloadingGuidance.para3.postLinkText = You will then need to unload the goods an
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?
 dateGoodsUnloaded.hint = For example, 15 08 2022.
-dateGoodsUnloaded.checkYourAnswersLabel = When were the goods unloaded?
 dateGoodsUnloaded.error.required.all = Enter the date the goods were unloaded
 dateGoodsUnloaded.error.required.multiple = The date must include a {0} and {1}
 dateGoodsUnloaded.error.required = The date must include a {0}
@@ -146,7 +144,6 @@ departureMeansOfTransport.identificationNumber.CheckMode.title = What is the ide
 departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification for the new vehicle?
 departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification for this vehicle
 departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification for the new departure means of transport
 departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
@@ -157,7 +154,6 @@ departureMeansOfTransport.country.NormalMode.title = What country is this vehicl
 departureMeansOfTransport.country.CheckMode.title = What country is the new departure means of transport registered to?
 departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
 departureMeansOfTransport.country.CheckMode.heading = What country is the new departure means of transport registered to?
-departureMeansOfTransport.country.checkYourAnswersLabel = What country is the new departure means of transport registered to?
 departureMeansOfTransport.country.NormalMode.error.required = Select the country the vehicle is registered to
 departureMeansOfTransport.country.CheckMode.error.required = Select the country the new departure means of transport is registered to
 departureMeansOfTransport.country.placeholder = Select a country
@@ -227,7 +223,6 @@ transportEquipment.index.seal.identificationNumber.CheckMode.title = What is the
 transportEquipment.index.seal.identificationNumber.NormalMode.heading = What is the seal identification number?
 transportEquipment.index.seal.identificationNumber.CheckMode.heading = What is the new seal identification number?
 transportEquipment.index.seal.identificationNumber.hint = This can be up to 20 characters long and include both letters and numbers.
-transportEquipment.index.seal.identificationNumber.checkYourAnswersLabel = What is the new seal identification number?
 transportEquipment.index.seal.identificationNumber.NormalMode.error.required = Enter the seal identification number
 transportEquipment.index.seal.identificationNumber.CheckMode.error.required = Enter the new seal identification number
 transportEquipment.index.seal.identificationNumber.error.length = The identification number must be 20 characters or less
@@ -236,7 +231,6 @@ transportEquipment.index.seal.identificationNumber.error.duplicate = This identi
 
 newContainerIdentificationNumber.title = What is the new container identification number?
 newContainerIdentificationNumber.heading = What is the new container identification number?
-newContainerIdentificationNumber.checkYourAnswersLabel = What is the new container identification number?
 newContainerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers.
 newContainerIdentificationNumber.error.required = Enter the new container identification number
 newContainerIdentificationNumber.error.length = The identification number must be 17 characters or less
@@ -275,48 +269,37 @@ unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
 
-changeVehicle.reference.checkYourAnswersLabel = Identification
 changeVehicle.reference.change.hidden = identification
 
-changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
 
 changeSeal.title = Official customs seals
-changeSeal.sealList.checkYourAnswersLabel = Official customs seal {0}
 changeSeal.sealList.change.hidden = official customs seal {0} {1}
 changeSeal.sealList.remove.hidden = official customs seal {0} {1}
 
 changeItems.title = Items
 
-changeItems.GrossWeight.checkYourAnswersLabel = Total gross weight in kilograms
 changeItems.GrossWeight.change.hidden = total gross weight in kilograms
 
-changeItems.totalNumberOfItems.checkYourAnswersLabel = Total number of items
 changeItems.totalNumberOfItems.change.hidden = total number of items
 
-changeItems.totalNumberOfPackages.checkYourAnswersLabel = Total number of packages
 changeItems.totalNumberOfPackages.change.hidden = total number of packages
 
-changeItems.dateGoodsUnloaded.checkYourAnswersLabel = Unloading date
 changeItems.dateGoodsUnloaded.change.hidden = unloading date
 
-changeItem.itemList.checkYourAnswersLabel = Item {0}
 changeItem.itemList.change.hidden = Item {0}
 
-changeItems.comments.checkYourAnswersLabel = Comments
 changeItems.comments.change.hidden = comments
 changeItems.comments.remove.hidden = comments
 
 canSealsBeRead.title = Are all the seal identification numbers or marks readable?
 canSealsBeRead.heading = Are all the seal identification numbers or marks readable?
-canSealsBeRead.checkYourAnswersLabel = Are all the seal identification numbers or marks readable?
 canSealsBeRead.error.required = Select yes if all the seal identification numbers and marks are readable
 canSealsBeRead.change.hidden = if all the seal identification numbers or marks are readable
 
 unloadingType.title = Have you fully or partially unloaded the goods?
 unloadingType.heading = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
-unloadingType.checkYourAnswersLabel = Are any of the seals broken?
 unloadingType.1 = Fully unloaded
 unloadingType.0 = Partially unloaded
 unloadingType.NormalMode.error.required = Select whether you have fully or partially unloaded the goods
@@ -325,7 +308,6 @@ unloadingType.checkYourAnswers.change.hidden = whether you fully or partially un
 
 areAnySealsBroken.title = Are any of the seals broken?
 areAnySealsBroken.heading = Are any of the seals broken?
-areAnySealsBroken.checkYourAnswersLabel = Are any of the seals broken?
 areAnySealsBroken.error.required = Select yes if any of the seals are broken
 areAnySealsBroken.change.hidden = if any of the seals are broken
 
@@ -355,51 +337,46 @@ doYouHaveAnythingElseToReportYesNo.error.required = Select yes if you have anyth
 
 unloadingComments.title = Enter your comments
 unloadingComments.heading = Enter your comments
-unloadingComments.checkYourAnswersLabel = What comments do you want to add?
 unloadingComments.error.required = Enter your comments
 unloadingComments.error.length = Your comments must be 512 characters or less
 unloadingComments.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 otherThingsToReport.oldAuth.title = What do you want to report?
-otherThingsToReport.newAuth.title = Enter all the original seal identification numbers
-otherThingsToReport.newAuthAndSealsReplaced.title = Enter all the seal identification numbers
 otherThingsToReport.oldAuth.heading = What do you want to report?
-otherThingsToReport.newAuth.heading = Enter all the original seal identification numbers
-otherThingsToReport.newAuthAndSealsReplaced.heading = Enter all the seal identification numbers
-otherThingsToReport.newAuthAndSealsReplaced.paragraph1 = Only enter original seals affixed by an authorised consignor or replacement seals from a customs authority.
-otherThingsToReport.newAuthAndSealsReplaced.paragraph2 = If any seals are broken, you must
-otherThingsToReport.newAuthAndSealsReplaced.link = select no to using the revised unloading procedure
-otherThingsToReport.newAuthAndSealsReplaced.paragraph3 = You will then need to unload the goods and report any discrepancies.
-otherThingsToReport.newAuthAndSealsReplaced.hint = Each seal can be up to 20 characters long and include both letters and numbers.
-otherThingsToReport.newAuth.paragraph1 = Only enter original seals affixed by an authorised consignor.
-otherThingsToReport.newAuth.paragraph2 = If any seals are broken, you must
+otherThingsToReport.oldAuth.error.required = Enter what you want to report
+otherThingsToReport.oldAuth.error.length = Your report must be 512 characters or less
+otherThingsToReport.oldAuth.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+otherThingsToReport.newAuth.title = What is the identification number for the external seal?
+otherThingsToReport.newAuth.heading = What is the identification number for the external seal?
+otherThingsToReport.newAuth.paragraph1 = Only enter an original seal affixed by an authorised consignor.
+otherThingsToReport.newAuth.paragraph2 = If this seal is broken, you must
 otherThingsToReport.newAuth.link = select no to using the revised unloading procedure
 otherThingsToReport.newAuth.paragraph3 = You will then need to unload the goods and report any discrepancies.
-otherThingsToReport.newAuth.hint = Each seal can be up to 20 characters long and include both letters and numbers.
-otherThingsToReport.oldAuth.error.required = Enter what you want to report
-otherThingsToReport.newAuthAndSealsReplaced.error.required = Enter all the seal identification numbers
-otherThingsToReport.newAuth.error.required = Enter all the original seal identification numbers
-otherThingsToReport.oldAuth.error.length = Your report must be 512 characters or less
-otherThingsToReport.newAuthAndSealsReplaced.error.length = The identification numbers must be 512 characters or less
-otherThingsToReport.newAuth.error.length = The identification numbers must be 512 characters or less
-otherThingsToReport.oldAuth.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
-otherThingsToReport.newAuthAndSealsReplaced.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
-otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
-otherThingsToReport.newAuth.error.invalid = The identification numbers must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.newAuth.error.length = The identification number must be 512 characters or less
+otherThingsToReport.newAuth.error.invalid = The identification number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+otherThingsToReport.newAuth.error.required = Enter the identification number for the external seal
+
+otherThingsToReport.newAuthAndSealsReplaced.title = What is the identification number for the replacement external seal?
+otherThingsToReport.newAuthAndSealsReplaced.heading = What is the identification number for the replacement external seal?
+otherThingsToReport.newAuthAndSealsReplaced.paragraph1 = Only enter a replacement seal affixed by a customs authority.
+otherThingsToReport.newAuthAndSealsReplaced.paragraph2 = If this seal is broken, you must
+otherThingsToReport.newAuthAndSealsReplaced.link = select no to using the revised unloading procedure
+otherThingsToReport.newAuthAndSealsReplaced.paragraph3 = You will then need to unload the goods and report any discrepancies.
+otherThingsToReport.newAuthAndSealsReplaced.error.required = Enter the identification number for the replacement external seal
+otherThingsToReport.newAuthAndSealsReplaced.error.length = The identification number must be 512 characters or less
+otherThingsToReport.newAuthAndSealsReplaced.error.invalid = The identification number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
-confirmRemoveComments.checkYourAnswersLabel = Are you sure you want to remove your comments?
 confirmRemoveComments.error.required = Select yes if you want to remove your comments
 
 confirmRemoveSeal.title = Are you sure you want to remove seal {0}?
 confirmRemoveSeal.heading = Are you sure you want to remove seal {0}?
-confirmRemoveSeal.checkYourAnswersLabel = Are you sure you want to remove seal {0}?
 confirmRemoveSeal.error.required = Select yes if you want to remove seal {0}
 
 totalNumberOfItems.title = What is the new total number of items?
 totalNumberOfItems.heading = What is the new total number of items?
-totalNumberOfItems.checkYourAnswersLabel = What is the new total number of items?
 totalNumberOfItems.error.nonNumeric = Enter the new total number of items using numbers
 totalNumberOfItems.error.required = Enter the new total number of items
 totalNumberOfItems.error.wholeNumber = = Total number of items must only include numbers 0 to 9
@@ -407,15 +384,14 @@ totalNumberOfItems.error.outOfRange = Total number of items must be 99999 or les
 totalNumberOfItems.change.hidden = the new total number of items
 
 houseConsignment.index.item.numberOfPackages.CheckMode.title = How many of this package are you using for item {0} in house consignment {1}?
-houseConsignment.index.item.numberOfPackages.NormalMode.title= How many of this package are you using?
+houseConsignment.index.item.numberOfPackages.NormalMode.title = How many of this package are you using?
 houseConsignment.index.item.numberOfPackages.CheckMode.heading = How many of this package are you using for item {0} in house consignment {1}?
 houseConsignment.index.item.numberOfPackages.NormalMode.heading = How many of this package are you using?
-houseConsignment.index.item.numberOfPackages.CheckMode.error.required=  Enter the quantity of the package type
-houseConsignment.index.item.numberOfPackages.CheckMode.error.nonNumeric= The quantity of the package type must only include numbers 0 to 9
+houseConsignment.index.item.numberOfPackages.CheckMode.error.required = Enter the quantity of the package type
+houseConsignment.index.item.numberOfPackages.CheckMode.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
 houseConsignment.index.item.numberOfPackages.CheckMode.error.required = Enter the quantity of the package type you are using for item {0} in house consignment {1}
-houseConsignment.index.item.numberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
 houseConsignment.index.item.numberOfPackages.CheckMode.error.maximum = The quantity of the package type must be 99,999,999 or less
-houseConsignment.index.item.numberOfPackages.change.CL182 = The quantity of the package type must be 1 or more
+houseConsignment.index.item.numberOfPackages.change.negative = The quantity of the package type must be 1 or more
 houseConsignment.index.item.numberOfPackages.change.hidden = Enter the quantity of the package type
 
 unloadingRemarksRejection.title = There is a problem with these unloading remarks
@@ -676,7 +652,7 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
-checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
+checkYourAnswers.subsections.additionalComments = Transit movement and unloading permission discrepancies
 checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit movement and unloading permission?
 checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
 checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
@@ -685,13 +661,24 @@ checkYourAnswers.rowHeadings.additionalComments = Comments
 checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
 checkYourAnswers.rowHeadings.addReportYesNo = Do you have anything else to report?
 checkYourAnswers.rowHeadings.addReportYesNo.change.hidden = if you have anything to report
-checkYourAnswers.rowHeadings.report = What do you want to report?
-checkYourAnswers.rowHeadings.report.change.hidden = what you want to report
+checkYourAnswers.rowHeadings.otherThingsToReport.oldAuth = What do you want to report?
+checkYourAnswers.rowHeadings.otherThingsToReport.oldAuth.change.hidden = what you want to report
+checkYourAnswers.rowHeadings.otherThingsToReport.newAuthAndSealsReplaced = Identification number for replacement external seal
+checkYourAnswers.rowHeadings.otherThingsToReport.newAuthAndSealsReplaced.change.hidden = identification number for replacement external seal
+checkYourAnswers.rowHeadings.otherThingsToReport.newAuth = Identification number for external seal
+checkYourAnswers.rowHeadings.otherThingsToReport.newAuth.change.hidden = identification number for external seal
 checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo = Were there any discrepancies between the transit movement and unloading permission?
 checkYourAnswers.rowHeadings.largeUnsealedGoodsRecordDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
-checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+checkYourAnswers.paragraph1 = By sending this, you are confirming that these details are correct to the best of your knowledge.
+checkYourAnswers.paragraph2 = By sending this, you are confirming:
+checkYourAnswers.bullet1 = these details are correct to the best of your knowledge
+checkYourAnswers.bullet2 = you performed visual checks of the goods
+checkYourAnswers.bullet3 = there were no discrepancies between the transit and unloading permission
+checkYourAnswers.bullet4 = you did not unload the goods
+checkYourAnswers.bullet5 = you did not check the goods
+checkYourAnswers.bullet6 = there was no evidence of discrepancies between the transit and unloading permission
 checkYourAnswers.link = Back to discrepancies between the transit and unloading permission
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
@@ -822,7 +809,6 @@ document.referenceNumber.CheckMode.title = What is the document’s new referenc
 document.referenceNumber.NormalMode.heading = What is the document’s reference number?
 document.referenceNumber.CheckMode.heading = What is the document’s new reference number?
 document.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
-document.referenceNumber.checkYourAnswersLabel = What is the new document reference number?
 document.referenceNumber.NormalMode.error.required = Enter the document’s reference number
 document.referenceNumber.CheckMode.error.required = Enter the document’s new reference number
 document.referenceNumber.error.length = The reference number must be 70 characters or less
@@ -1245,7 +1231,6 @@ houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.
 houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
 houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-houseConsignment.index.departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification for the new vehicle?
 houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification for this vehicle
 houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification for the new departure means of transport in house consignment {0}
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
@@ -1360,12 +1345,13 @@ goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too 
 goodsTooLargeForContainerYesNo.checkYourAnswers.change.hidden = if the goods are too large to fit into a container
 goodsTooLargeForContainerYesNo.checkYourAnswers = Are the goods too large to fit into a container?
 
-sealsReplacedByCustomsAuthorityYesNo.title = Have any seals been replaced by a customs authority?
-sealsReplacedByCustomsAuthorityYesNo.heading = Have any seals been replaced by a customs authority?
-sealsReplacedByCustomsAuthorityYesNo.paragraph = This could have happened during routine checks or following an incident.
-sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if any seals have been replaced by a customs authority
-sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers.change.hidden = if any seals been replaced by a customs authority
-sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers = Have any seals been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.title = Has the external seal been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.heading = Has the external seal been replaced by a customs authority?
+sealsReplacedByCustomsAuthorityYesNo.paragraph1 = This means the seal on the outside of the container or freight vehicle.
+sealsReplacedByCustomsAuthorityYesNo.paragraph2 = It could have been replaced during routine checks or following an incident.
+sealsReplacedByCustomsAuthorityYesNo.error.required = Select yes if the external seal has been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers.change.hidden = if the external seal has been replaced by a customs authority
+sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers = Has the external seal been replaced by a customs authority?
 
 largeUnsealedGoodsRecordDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
 largeUnsealedGoodsRecordDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
