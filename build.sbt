@@ -62,9 +62,7 @@ lazy val microservice = (project in file("."))
     Concat.groups := Seq(
       "javascripts/application.js" -> group(Seq("javascripts/ctc.js"))
     ),
-    uglifyCompressOptions      := Seq("unused=false", "dead_code=false", "warnings=false"),
-    Assets / pipelineStages    := Seq(digest, concat, uglify),
-    uglify / includeFilter  := GlobFilter("application.js"),
+    Assets / pipelineStages    := Seq(digest, concat),
     ThisBuild / useSuperShell := false
   )
   .settings(
