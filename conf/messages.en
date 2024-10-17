@@ -176,6 +176,7 @@ departureMeansOfTransport.addIdentificationYesNo.hint = Adding the type of ident
 
 departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification for this vehicle?
 departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.hint = Adding identification is optional.
 departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification for this vehicle
 
 departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
@@ -957,6 +958,7 @@ additionalReference.index.additionalReferenceType.placeholder = Select an additi
 
 additionalReference.index.additionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.additionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+additionalReference.index.additionalReferenceNumberYesNo.hint = Adding an additional reference number is optional.
 additionalReference.index.additionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 unloadingFindings.grossMass = Gross weight

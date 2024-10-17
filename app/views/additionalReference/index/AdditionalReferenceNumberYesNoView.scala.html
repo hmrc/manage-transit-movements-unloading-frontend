@@ -44,7 +44,8 @@ button: Button
             yesNoType = OrdinaryYesNo(
                 heading = messages("additionalReference.index.additionalReferenceNumberYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-            )
+            ),
+            hint = Some(Text(messages("additionalReference.index.additionalReferenceNumberYesNo.hint")))
         )
 
 
