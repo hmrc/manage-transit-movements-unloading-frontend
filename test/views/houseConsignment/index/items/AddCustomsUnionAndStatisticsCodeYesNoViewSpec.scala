@@ -41,6 +41,8 @@ class AddCustomsUnionAndStatisticsCodeYesNoViewSpec extends YesNoViewBehaviours 
 
   behave like pageWithContent("p", "This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.")
 
+  behave like pageWithHint("Adding a Customs Union and Statistics (CUS) code is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

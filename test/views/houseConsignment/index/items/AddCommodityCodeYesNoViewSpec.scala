@@ -41,6 +41,8 @@ class AddCommodityCodeYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is an internationally recognised reference number used to identify the specific product in transit.")
 
+  behave like pageWithHint("Adding a commodity code is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

@@ -44,7 +44,8 @@ button: Button
                 heading = messages("departureMeansOfTransport.addIdentificationYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("departureMeansOfTransport.addIdentificationYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("departureMeansOfTransport.addIdentificationYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

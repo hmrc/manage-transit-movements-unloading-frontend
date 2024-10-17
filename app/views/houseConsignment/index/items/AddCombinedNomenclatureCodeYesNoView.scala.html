@@ -45,7 +45,8 @@
                 heading = messages("houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("houseConsignment.item.addCombinedNomenclatureCodeYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

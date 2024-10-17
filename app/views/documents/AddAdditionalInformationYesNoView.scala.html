@@ -44,10 +44,9 @@ button: Button
                 heading = messages("document.addAdditionalInformationYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("document.addAdditionalInformationYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("document.addAdditionalInformationYesNo.hint")))
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }

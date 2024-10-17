@@ -39,6 +39,8 @@ class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading(hcIndex)
 
+  behave like pageWithHint("Adding an additional reference is optional.")
+
   behave like pageWithRadioItems(args = Seq(hcIndex.display))
 
   behave like pageWithSubmitButton("Continue")

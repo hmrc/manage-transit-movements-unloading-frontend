@@ -41,6 +41,8 @@ class AddNetWeightYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This is the weight of the item’s goods, excluding all packaging.")
 
+  behave like pageWithHint("Adding the net weight is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

@@ -172,13 +172,16 @@ departureMeansOfTransport.addIdentificationYesNo.title = Do you want to add the 
 departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add the type of identification for the departure means of transport?
 departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
 departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+departureMeansOfTransport.addIdentificationYesNo.hint = Adding the type of identification is optional.
 
 departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification for this vehicle?
 departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.hint = Adding identification is optional.
 departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification for this vehicle
 
 departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.hint = Adding the registered country is optional.
 departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
 departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport
@@ -328,11 +331,13 @@ addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if t
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
 addCommentsYesNo.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
+addCommentsYesNo.hint = Adding comments is optional.
 addCommentsYesNo.error.required = Select yes if you want to add any comments
 
 doYouHaveAnythingElseToReportYesNo.title = Do you have anything else to report?
 doYouHaveAnythingElseToReportYesNo.heading = Do you have anything else to report?
 doYouHaveAnythingElseToReportYesNo.paragraph = This can be anything else you want to tell us about the transit movement.
+doYouHaveAnythingElseToReportYesNo.hint = Adding further comments is optional.
 doYouHaveAnythingElseToReportYesNo.error.required = Select yes if you have anything to report
 
 unloadingComments.title = Enter your comments
@@ -830,6 +835,7 @@ document.removeDocumentYesNo.error.required = Select yes if you want to remove t
 document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+document.addAdditionalInformationYesNo.hint = Adding additional information is optional.
 document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
 document.addAnotherDocument.empty.title = You have added 0 document to all items
@@ -859,6 +865,7 @@ houseConsignment.index.items.document.referenceNumber.error.invalidCharacters = 
 houseConsignment.index.items.document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
 houseConsignment.index.items.document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
 houseConsignment.index.items.document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+houseConsignment.index.items.document.addAdditionalInformationYesNo.hint = Adding additional information is optional.
 houseConsignment.index.items.document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
 houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {1} in house consignment {2}
@@ -951,6 +958,7 @@ additionalReference.index.additionalReferenceType.placeholder = Select an additi
 
 additionalReference.index.additionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.additionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+additionalReference.index.additionalReferenceNumberYesNo.hint = Adding an additional reference number is optional.
 additionalReference.index.additionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 unloadingFindings.grossMass = Gross weight
@@ -1087,15 +1095,18 @@ additionalReference.index.removeAdditionalReferenceYesNo.error.required = Select
 
 houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.hint = Adding an additional reference number is optional.
 houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
+houseConsignment.index.items.packages.addPackageShippingMarkYesNo.hint = Adding a shipping mark is optional.
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
 
 houseConsignment.index.items.packages.addNumberOfPackagesYesNo.title = Do you want to add the quantity of this package?
 houseConsignment.index.items.packages.addNumberOfPackagesYesNo.heading = Do you want to add the quantity of this package?
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.hint = Adding the quantity is optional.
 houseConsignment.index.items.packages.addNumberOfPackagesYesNo.error.required = Select yes if you want to add the quantity of the package type
 
 houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sure you want to remove this package from item {1} in house consignment {0}?
@@ -1117,6 +1128,7 @@ houseConsignment.item.addGrossWeightYesNo.title = Do you want to add the item’
 houseConsignment.item.addGrossWeightYesNo.heading = Do you want to add the item’s gross weight?
 houseConsignment.item.addGrossWeightYesNo.error.required = Select yes if you want to add the item’s gross weight
 houseConsignment.item.addGrossWeightYesNo.paragraph = This is the combined weight of the item’s goods and packaging.
+houseConsignment.item.addGrossWeightYesNo.hint = Adding the gross weight is optional.
 
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
@@ -1126,19 +1138,23 @@ houseConsignment.item.addNetWeightYesNo.title = Do you want to add the item’s 
 houseConsignment.item.addNetWeightYesNo.heading = Do you want to add the item’s net weight?
 houseConsignment.item.addNetWeightYesNo.error.required = Select yes if you want to add the item’s net weight
 houseConsignment.item.addNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.
+houseConsignment.item.addNetWeightYesNo.hint = Adding the net weight is optional.
 
 houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.title = Do you want to add a Customs Union and Statistics (CUS) code for the item?
 houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.heading = Do you want to add a Customs Union and Statistics (CUS) code for the item?
 houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code for the item
 houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.paragraph = This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.
+houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.hint = Adding a Customs Union and Statistics (CUS) code is optional.
 
 houseConsignment.item.addPackagesYesNo.title = Do you want to add a package for the item?
 houseConsignment.item.addPackagesYesNo.heading = Do you want to add a package for the item?
 houseConsignment.item.addPackagesYesNo.error.required = Select yes if you want to add a package for the item
 houseConsignment.item.addPackagesYesNo.paragraph = This means the packaging used to store and protect the item during transit.
+houseConsignment.item.addPackagesYesNo.hint = Adding a package is optional.
 
 houseConsignment.item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for the item?
 houseConsignment.item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for the item?
+houseConsignment.item.addAdditionalReferenceYesNo.hint = Adding an additional reference is optional.
 houseConsignment.item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for the item
 
 houseConsignment.addItemYesNo.title = Do you want to add an item for house consignment {0}?
@@ -1167,11 +1183,13 @@ houseConsignment.item.addCommodityCodeYesNo.title = Do you want to add a commodi
 houseConsignment.item.addCommodityCodeYesNo.heading = Do you want to add a commodity code for the item?
 houseConsignment.item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code for the item
 houseConsignment.item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
+houseConsignment.item.addCommodityCodeYesNo.hint = Adding a commodity code is optional.
 
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code for the item?
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code for the item?
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
+houseConsignment.item.addCombinedNomenclatureCodeYesNo.hint = Adding a combined nomenclature code is optional.
 
 houseConsignment.index.grossWeight.NormalMode.title = What is the gross weight of house consignment {0}?
 houseConsignment.index.grossWeight.CheckMode.title = What is the new gross weight of house consignment {0}?
@@ -1192,10 +1210,12 @@ houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight m
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.hint = Adding an additional reference number is optional.
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional number reference?
 
 houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for house consignment {0}?
 houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for house consignment {0}?
+houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.hint = Adding an additional reference is optional.
 houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for house consignment {0}
 
 houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
@@ -1282,6 +1302,7 @@ houseConsignment.index.documents.addDocumentsYesNo.error.required = Select yes i
 houseConsignment.index.documents.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
 houseConsignment.index.documents.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
 houseConsignment.index.documents.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+houseConsignment.index.documents.addAdditionalInformationYesNo.hint = Adding additional information is optional.
 houseConsignment.index.documents.addAdditionalInformationYesNo.error.required  = Select yes if you want to add any additional information for this document
 
 houseConsignment.index.documents.removeDocumentYesNo.title = Are you sure you want to remove this document from all items in house consignment {0}?

@@ -41,6 +41,8 @@ class AddPackagesYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This means the packaging used to store and protect the item during transit.")
 
+  behave like pageWithHint("Adding a package is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

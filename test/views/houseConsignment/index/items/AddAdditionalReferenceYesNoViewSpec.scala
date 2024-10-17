@@ -39,6 +39,8 @@ class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithHint("Adding an additional reference is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

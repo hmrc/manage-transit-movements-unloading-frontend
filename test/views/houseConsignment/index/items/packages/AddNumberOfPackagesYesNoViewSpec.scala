@@ -46,6 +46,8 @@ class AddNumberOfPackagesYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithInsetText(packageType.toString)
 
+  behave like pageWithHint("Adding the quantity is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

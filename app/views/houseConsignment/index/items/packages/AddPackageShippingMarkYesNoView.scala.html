@@ -41,11 +41,12 @@
 
         @inputYesNo(
             field = form("value"),
-                yesNoType = YesNoWithAdditionalHtml(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("houseConsignment.index.items.packages.addPackageShippingMarkYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("houseConsignment.index.items.packages.addPackageShippingMarkYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

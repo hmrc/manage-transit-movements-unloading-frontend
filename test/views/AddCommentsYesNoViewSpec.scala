@@ -39,6 +39,8 @@ class AddCommentsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This can be anything else you want to tell us about the discrepancies you spotted when unloading.")
 
+  behave like pageWithHint("Adding comments is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
