@@ -45,7 +45,7 @@ lazy val microservice = (project in file("."))
       ".*scalaxb.*",
       ".*generated.*"
     ).mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 85,
+    ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq(
