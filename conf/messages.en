@@ -1,11 +1,3 @@
-date.day.capitalized = Day
-date.month.capitalized = Month
-date.year.capitalized = Year
-
-date.day    = day
-date.month  = month
-date.year   = year
-
 site.delete = Remove
 site.edit = Change
 site.delete.hidden = Remove {0}

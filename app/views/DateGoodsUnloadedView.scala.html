@@ -39,7 +39,7 @@
         @formHelper(action = controllers.routes.DateGoodsUnloadedController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputDate(
-            form = form,
+            field = form("value"),
             dateType = OrdinaryDateInput(
                 heading = messages("dateGoodsUnloaded.heading"),
                 caption = Some(messages("site.caption", mrn.toString))

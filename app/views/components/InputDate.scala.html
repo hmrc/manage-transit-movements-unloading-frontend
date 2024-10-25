@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichDateInput
 @import views.utils.ViewUtils._
 @import viewModels.components.InputDateViewModel.OrdinaryDateInput
 @import viewModels.components.InputDateViewModel.DateInputWithAdditionalHtml
 @import viewModels.components.InputDateViewModel
 @import views.html.components.Heading
-@import java.time.LocalDate
 
 @this(
         govukDateInput: GovukDateInput,
@@ -27,8 +27,7 @@
 )
 
 @(
-        form: Form[LocalDate],
-        fieldId: String = "value",
+        field: Field,
         dateType: InputDateViewModel,
         hint: Option[String] = None
 )(implicit messages: Messages)
@@ -36,33 +35,9 @@
 @dateInput = @{
     DateInput(
         fieldset = None,
-        id = form(s"${fieldId}").id,
-        items = Seq(
-            InputItem(
-                classes = s"govuk-input--width-2 ${errorClass(form(fieldId).errors, "day")}",
-                name = s"${fieldId}.day",
-                label = Some(messages("date.day.capitalized")),
-                value = form(s"${fieldId}.day").value,
-                id = s"${fieldId}_day"
-            ),
-            InputItem(
-                classes = s"govuk-input--width-2 ${errorClass(form(fieldId).errors, "month")}",
-                name = s"${fieldId}.month",
-                label = Some(messages("date.month.capitalized")),
-                value = form(s"${fieldId}.month").value,
-                id = s"${fieldId}_month"
-            ),
-            InputItem(
-                classes = s"govuk-input--width-4 ${errorClass(form(fieldId).errors, "year")}",
-                name = s"${fieldId}.year",
-                label = Some(messages("date.year.capitalized")),
-                value = form(s"${fieldId}.year").value,
-                id = s"${fieldId}_year"
-            )
-        ),
-        hint = hint.map(hint => Hint(content = Text(messages(hint)))),
-        errorMessage = form(fieldId).error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args *))))
-    )
+        id = field.id,
+        hint = hint.map(hint => Hint(content = Text(messages(hint))))
+    ).withDayMonthYearWithErrorAsHtml(field)
 }
 
 @dateType match {
