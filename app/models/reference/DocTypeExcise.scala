@@ -19,7 +19,7 @@ package models.reference
 import cats.Order
 import play.api.libs.json.{Json, OFormat}
 
-case class DocTypeExcise(activeFrom: String, code: String, state: String, description: String)
+case class DocTypeExcise(code: String, description: String)
 
 object DocTypeExcise {
   implicit val format: OFormat[DocTypeExcise] = Json.format[DocTypeExcise]

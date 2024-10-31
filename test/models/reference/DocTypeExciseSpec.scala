@@ -27,14 +27,12 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
   "Country" - {
 
     "must serialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-        (activeFrom, code, state, description) =>
-          val docTypeExcise = DocTypeExcise(activeFrom, code, state, description)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val docTypeExcise = DocTypeExcise(code, description)
           Json.toJson(docTypeExcise) mustBe Json.parse(s"""
               |{
-              |  "activeFrom": "$activeFrom",
               |  "code": "$code",
-              |  "state": "$state",
               |  "description": "$description"
               |}
               |""".stripMargin)
@@ -42,15 +40,13 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
     }
 
     "must deserialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-        (activeFrom, code, state, description) =>
-          val docTypeExcise = DocTypeExcise(activeFrom, code, state, description)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val docTypeExcise = DocTypeExcise(code, description)
           Json
             .parse(s"""
               |{
-              |  "activeFrom": "$activeFrom",
               |  "code": "$code",
-              |  "state": "$state",
               |  "description": "$description"
               |}
               |""".stripMargin)

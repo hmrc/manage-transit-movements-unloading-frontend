@@ -1,4 +1,5 @@
-import sbt._
+import play.sbt.PlayImport.ehcache
+import sbt.*
 
 object AppDependencies {
 
@@ -14,7 +15,8 @@ object AppDependencies {
     "org.typelevel"        %% "cats-core"                               % "2.12.0",
     "uk.gov.hmrc"          %% "play-frontend-hmrc-play-30"              % "10.13.0",
     "uk.gov.hmrc"          %% "crypto-json-play-30"                     % "8.1.0",
-    "javax.xml.bind"        % "jaxb-api"                                % "2.3.1"
+    "javax.xml.bind"        % "jaxb-api"                                % "2.3.1",
+    ehcache
   )
 
   val test: Seq[ModuleID] = Seq(

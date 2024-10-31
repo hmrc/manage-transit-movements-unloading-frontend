@@ -41,7 +41,9 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
   def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
     connector
       .getCUSCode(cusCode)
-      .map(_.toSeq.nonEmpty)
+      .map(
+        _ => true
+      )
       .recover {
         case _: NoReferenceDataFoundException => false
       }

@@ -18,17 +18,12 @@ package utils
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
-import scala.util.Try
 
 package object transformers {
 
   final val SequenceNumber             = "sequenceNumber"
   final val Removed                    = "removed"
   final val DeclarationGoodsItemNumber = "declarationGoodsItemNumber"
-
-  implicit class TryOps[A](tryValue: Try[A]) {
-    def asFuture: Future[A] = Future.fromTry(tryValue)
-  }
 
   implicit class OptionMethods[A](value: Option[A]) {
 

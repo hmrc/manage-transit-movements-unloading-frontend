@@ -36,15 +36,27 @@ class AdditionalReferencesServiceSpec extends SpecBase with BeforeAndAfterEach w
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new AdditionalReferencesService(mockRefDataConnector)
 
-  private val additionalReference1: AdditionalReferenceType = AdditionalReferenceType("Y015", "The rough diamonds are contained in tamper-resistant containers")
-  private val additionalReference2: AdditionalReferenceType = AdditionalReferenceType("C658", "Consignor / exporter (AEO certificate number)")
+  private val additionalReference1 = AdditionalReferenceType(
+    "Y015",
+    "The rough diamonds are contained in tamper-resistant containers"
+  )
 
-  private val additionalReference3: AdditionalReferenceType =
-    AdditionalReferenceType("Y016", "Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009")
+  private val additionalReference2 = AdditionalReferenceType(
+    "C658",
+    "Consignor / exporter (AEO certificate number)"
+  )
+
+  private val additionalReference3 = AdditionalReferenceType(
+    "Y016",
+    "Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009"
+  )
+
   private val additionalReferences = NonEmptySet.of(additionalReference2, additionalReference1, additionalReference3)
 
-  private val docTypeExcise =
-    DocTypeExcise(activeFrom = "2024-01-01", code = "C651", state = "valid", description = "AAD - Administrative Accompanying Document (EMCS)")
+  private val docTypeExcise = DocTypeExcise(
+    "C651",
+    "AAD - Administrative Accompanying Document (EMCS)"
+  )
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
