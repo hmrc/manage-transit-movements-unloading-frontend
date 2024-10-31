@@ -17,10 +17,10 @@
 package base
 
 import config.{PostTransitionModule, TransitionModule}
-import controllers.actions._
+import controllers.actions.*
 import models.{Mode, UserAnswers}
+import navigation.*
 import navigation.SealNavigator.SealNavigatorProvider
-import navigation._
 import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -28,6 +28,7 @@ import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
 import play.api.Application
+import play.api.cache.AsyncCacheApi
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
@@ -102,8 +103,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   object FakeHouseConsignmentNavigators {
 
+    import navigation.houseConsignment.index.*
     import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
-    import navigation.houseConsignment.index._
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 
@@ -134,11 +135,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   object FakeConsignmentItemNavigators {
 
+    import navigation.houseConsignment.index.items.*
     import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
     import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
     import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
     import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
-    import navigation.houseConsignment.index.items._
 
     val fakeConsignmentItemNavigatorProvider: HouseConsignmentItemNavigatorProvider = new HouseConsignmentItemNavigatorProvider {
       override def apply(houseConsignmentMode: Mode): HouseConsignmentItemNavigator = new FakeHouseConsignmentItemNavigator(onwardRoute, houseConsignmentMode)
@@ -174,7 +175,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
-        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
+        bind[AsyncCacheApi].to[FakeAsyncCacheApi]
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =

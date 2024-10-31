@@ -33,13 +33,15 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import java.net.URL
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.*
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
+@Singleton
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2, cache: AsyncCacheApi) extends Logging {
 
+  // https://www.playframework.com/documentation/2.6.x/ScalaCache#Accessing-the-Cache-API
   private def get[T: ClassTag](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[NonEmptySet[T]]): Future[T] =
     cache.getOrElseUpdate[T](url.toString, config.asyncCacheApiExpiration.seconds) {
       http

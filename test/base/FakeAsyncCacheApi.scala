@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package itbase
+package base
 
 import org.apache.pekko.Done
 import play.api.cache.*
