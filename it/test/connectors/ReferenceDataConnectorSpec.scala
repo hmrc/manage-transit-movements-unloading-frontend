@@ -38,21 +38,18 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   private val baseUrl = "customs-reference-data/test-only"
 
-  private val asyncCacheApi = app.injector.instanceOf[AsyncCacheApi]
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .configure(conf = "microservice.services.customs-reference-data.port" -> server.port())
 
+  private lazy val asyncCacheApi: AsyncCacheApi      = app.injector.instanceOf[AsyncCacheApi]
+  private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     asyncCacheApi.removeAll().futureValue
   }
-
-  private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
-  private val code                                   = "GB00001"
-  private val countryCode                            = "GB"
 
   "Reference Data" - {
 
@@ -135,7 +132,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCustomsOffice" - {
-      val url = s"/$baseUrl/lists/CustomsOffices?data.id=$code"
+      val code = "GB00001"
+      val url  = s"/$baseUrl/lists/CustomsOffices?data.id=$code"
 
       "should handle a 200 response" in {
         server.stubFor(
@@ -186,7 +184,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCountryByCode" - {
-      val url = s"/$baseUrl/lists/CountryCodesFullList?data.code=$countryCode"
+      val countryCode = "GB"
+      val url         = s"/$baseUrl/lists/CountryCodesFullList?data.code=$countryCode"
 
       "should handle a 200 response" in {
 

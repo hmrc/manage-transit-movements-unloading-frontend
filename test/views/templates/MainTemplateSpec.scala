@@ -16,7 +16,7 @@
 
 package views.templates
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
 import generators.Generators
 import models.ArrivalId
@@ -24,19 +24,19 @@ import org.jsoup.Jsoup
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.assertions.ViewSpecAssertions
 import views.html.templates.MainTemplate
 
-class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckPropertyChecks with Generators {
+class MainTemplateSpec extends SpecBase with AppWithDefaultMockFixtures with ViewSpecAssertions with ScalaCheckPropertyChecks with Generators {
 
   implicit private lazy val request: FakeRequest[AnyContent] = FakeRequest("GET", "/foo")
 
   "when not in trader test" - {
-    val app = new GuiceApplicationBuilder()
+    val app = super
+      .guiceApplicationBuilder()
       .configure("trader-test.enabled" -> false)
       .build()
 
@@ -75,7 +75,8 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
   }
 
   "when in trader test" - {
-    val app = new GuiceApplicationBuilder()
+    val app = super
+      .guiceApplicationBuilder()
       .configure("trader-test.enabled" -> true)
       .build()
 
