@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-// HolderOfTheTransitProcedure is read only data. Fetch country only to be able to display t with description in Cross Check
+// HolderOfTheTransitProcedure is read only data. Fetch country only to be able to display with description on cross-check page
 class HolderOfTheTransitProcedureTransformer @Inject() (referenceDataConnector: ReferenceDataService)(implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(holderOfTheTransitProcedureOption: Option[HolderOfTheTransitProcedureType06])(implicit
@@ -36,7 +36,7 @@ class HolderOfTheTransitProcedureTransformer @Inject() (referenceDataConnector: 
         referenceDataConnector
           .getCountryByCode(holderOfTheTransitProcedure.Address.country)
           .flatMap(
-            country => userAnswers.set(CountryPage, country).asFuture
+            country => set(CountryPage, country).apply(userAnswers)
           )
       case None =>
         Future.successful(userAnswers)

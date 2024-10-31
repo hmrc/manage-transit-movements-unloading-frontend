@@ -17,17 +17,19 @@
 package connectors
 
 import cats.data.NonEmptySet
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import connectors.ReferenceDataConnectorSpec._
-import itbase.{ItSpecBase, WireMockServerHandler}
+import connectors.ReferenceDataConnectorSpec.*
+import itbase.{FakeAsyncCacheApi, ItSpecBase, WireMockServerHandler}
 import models.DocType.{Previous, Support, Transport}
 import models.SecurityType
-import models.reference._
-import TransportMode.{BorderMode, InlandMode}
+import models.reference.*
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.cache.AsyncCacheApi
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,6 +43,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     super
       .guiceApplicationBuilder()
       .configure(conf = "microservice.services.customs-reference-data.port" -> server.port())
+      .overrides(bind[AsyncCacheApi].to[FakeAsyncCacheApi])
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
   private val code                                   = "GB00001"
@@ -51,7 +54,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getCountries" - {
       val url = s"/$baseUrl/lists/CountryCodesFullList"
 
-      "should handle a 200 response for countries" in {
+      "should handle a 200 response" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(countryListResponseJson))
@@ -69,7 +72,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getCountries())
       }
 
-      "should handle client and server errors for countries" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getCountries())
       }
     }
@@ -78,7 +81,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       val code = "GB"
       val url  = s"/$baseUrl/lists/CountryCodesFullList?data.code=$code"
 
-      "should handle a 200 response for countries" in {
+      "should handle a 200 response" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(countryResponseJson))
@@ -93,7 +96,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getCountry(code))
       }
 
-      "should handle client and server errors for countries" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getCountry(code))
       }
     }
@@ -102,7 +105,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       val code = "GB"
       val url  = s"/$baseUrl/lists/DeclarationTypeSecurity?data.code=$code"
 
-      "should handle a 200 response for countries" in {
+      "should handle a 200 response" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(securityTypeResponseJson))
@@ -117,7 +120,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getSecurityType(code))
       }
 
-      "should handle client and server errors for countries" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getSecurityType(code))
       }
     }
@@ -125,7 +128,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getCustomsOffice" - {
       val url = s"/$baseUrl/lists/CustomsOffices?data.id=$code"
 
-      "should handle a 200 response for customs office with code end point with valid phone number" in {
+      "should handle a 200 response" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(customsOfficeResponseJsonWithPhone))
@@ -136,22 +139,11 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         connector.getCustomsOffice(code).futureValue mustBe expectedResult
       }
 
-      "should handle a 200 response for customs office with code end point with no phone number" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(customsOfficeResponseJsonWithOutPhone))
-        )
-
-        val expectedResult = CustomsOffice("ID1", "NAME001", "GB", None)
-
-        connector.getCustomsOffice(code).futureValue mustBe expectedResult
-      }
-
       "should throw a NoReferenceDataFoundException for an empty response" in {
         checkNoReferenceDataFoundResponse(url, connector.getCustomsOffice(code))
       }
 
-      "should handle client and server errors for customs office end point" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getCustomsOffice(code))
       }
     }
@@ -166,11 +158,17 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             .willReturn(okJson(cusCodeResponseJson))
         )
 
-        val expectedResult: NonEmptySet[CUSCode] = NonEmptySet.of(
-          CUSCode(cusCode)
-        )
+        val expectedResult: CUSCode = CUSCode(cusCode)
 
         connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCUSCode(cusCode))
+      }
+
+      "should handle client and server errors" in {
+        checkErrorResponse(url, connector.getCUSCode(cusCode))
       }
     }
 
@@ -201,7 +199,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getPackageTypes" - {
       val url = s"/$baseUrl/lists/KindOfPackages"
 
-      "should handle a 200 response for countries" in {
+      "should handle a 200 response" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(packageListResponseJson))
@@ -219,7 +217,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getPackageTypes)
       }
 
-      "should handle client and server errors for countries" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getPackageTypes)
       }
     }
@@ -243,7 +241,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getSupportingDocument(typeValue))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getSupportingDocument(typeValue))
       }
     }
@@ -268,7 +266,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getPreviousDocument(typeValue))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getPreviousDocument(typeValue))
       }
     }
@@ -294,7 +292,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferences())
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getAdditionalReferences())
       }
     }
@@ -318,7 +316,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getPackageType(documentType))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getPackageType(documentType))
       }
     }
@@ -342,7 +340,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getIncidentType(code))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getIncidentType(code))
       }
     }
@@ -366,7 +364,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferenceType(documentType))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getAdditionalReferenceType(documentType))
       }
     }
@@ -390,7 +388,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getAdditionalInformationCode(code))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getAdditionalInformationCode(code))
       }
     }
@@ -414,7 +412,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getQualifierOfIdentificationIncident(qualifier))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getQualifierOfIdentificationIncident(qualifier))
       }
     }
@@ -438,7 +436,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getTransportDocument(typeValue))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getTransportDocument(typeValue))
       }
     }
@@ -464,7 +462,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getTransportDocuments())
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getTransportDocuments())
       }
     }
@@ -490,7 +488,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getSupportingDocuments())
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getSupportingDocuments())
       }
     }
@@ -544,7 +542,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode])
         }
 
-        "must return an exception when an error response is returned" in {
+        "should handle client and server errors" in {
           checkErrorResponse(url, connector.getTransportModeCodes[InlandMode])
         }
       }
@@ -599,7 +597,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode])
         }
 
-        "must return an exception when an error response is returned" in {
+        "should handle client and server errors" in {
           checkErrorResponse(url, connector.getTransportModeCodes[BorderMode])
         }
       }
@@ -650,7 +648,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getTransportModeCode(code))
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getTransportModeCode(code))
       }
 
@@ -677,7 +675,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkNoReferenceDataFoundResponse(url, connector.getPreviousDocuments())
       }
 
-      "must return an exception when an error response is returned" in {
+      "should handle client and server errors" in {
         checkErrorResponse(url, connector.getPreviousDocuments())
       }
     }
