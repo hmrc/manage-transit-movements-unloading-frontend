@@ -75,7 +75,7 @@ object ViewUtils {
         formError =>
           val args = LocalDateFormatter.fieldKeys
           val arg  = formError.args.find(args.contains).getOrElse(args.head).toString
-          val key  = s"#${formError.key}_$arg"
+          val key  = s"#${formError.key}.$arg"
           ErrorLink(href = Some(key), content = messages(formError.message, formError.args*).toText)
       }
   }
