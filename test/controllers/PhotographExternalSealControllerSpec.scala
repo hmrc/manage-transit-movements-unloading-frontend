@@ -23,6 +23,9 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import org.mockito.Mockito._
+import play.api.inject.bind
+import services.DateTimeService
 import views.html.PhotographExternalSealView
 
 import java.time.Year
@@ -30,13 +33,25 @@ import java.time.Year
 class PhotographExternalSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
   private val mode = NormalMode
 
-  private val expiryYear = Year.now().getValue + 3
+  private val mockDateTimeService: DateTimeService = mock[DateTimeService]
+
+  private val expiryYear = Year.of(2023: Int).getValue
 
   lazy val photographExternalSealRoute: String = controllers.routes.PhotographExternalSealController.onPageLoad(arrivalId).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[DateTimeService].toInstance(mockDateTimeService)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(mockDateTimeService)
+    when(mockDateTimeService.expiryYear).thenReturn(expiryYear)
+  }
 
   "PhotographExternalSealController" - {
 

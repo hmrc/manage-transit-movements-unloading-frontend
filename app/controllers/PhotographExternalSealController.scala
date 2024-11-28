@@ -20,21 +20,22 @@ import controllers.actions.*
 import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PhotographExternalSealView
 
-import java.time.Year
 import javax.inject.Inject
 
 class PhotographExternalSealController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
+  dateTimeService: DateTimeService,
   view: PhotographExternalSealView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  private val expiryYear = Year.now().getValue + 3
+  private lazy val expiryYear = dateTimeService.expiryYear
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     actions
