@@ -1377,3 +1377,8 @@ cannotUseRevisedUnloadingProcedure.heading = You cannot use the revised unloadin
 cannotUseRevisedUnloadingProcedure.paragraph = Due to the discrepancies between the transit movement and unloading permission, you must:
 cannotUseRevisedUnloadingProcedure.bullet1 = select no to using the revised unloading procedure
 cannotUseRevisedUnloadingProcedure.bullet2 = report the discrepancies
+
+photographExternalSeal.title = Take a photograph of the external seal before it is broken
+photographExternalSeal.heading = Take a photograph of the external seal before it is broken
+photographExternalSeal.paragraph1 = This is for evidence that the seal on the outside of the container or freight vehicle has been checked.
+photographExternalSeal.paragraph2 = You must keep the photograph in your records until at least 1 January {0}.
