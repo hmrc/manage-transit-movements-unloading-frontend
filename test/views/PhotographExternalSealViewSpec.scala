@@ -25,7 +25,7 @@ import java.time.Year
 
 class PhotographExternalSealViewSpec extends ViewBehaviours {
 
-  private val expiryYear = Year.of(2023: Int).getValue
+  private val expiryYear = 2023
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[PhotographExternalSealView].apply(mrn, arrivalId, NormalMode, expiryYear)(fakeRequest, messages)

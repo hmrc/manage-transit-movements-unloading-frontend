@@ -35,7 +35,7 @@ class PhotographExternalSealControllerSpec extends SpecBase with AppWithDefaultM
 
   private val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
-  private val expiryYear = Year.of(2023: Int).getValue
+  private val expiryYear = 2023
 
   lazy val photographExternalSealRoute: String = controllers.routes.PhotographExternalSealController.onPageLoad(arrivalId).url
 
