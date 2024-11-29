@@ -1377,3 +1377,13 @@ cannotUseRevisedUnloadingProcedure.heading = You cannot use the revised unloadin
 cannotUseRevisedUnloadingProcedure.paragraph = Due to the discrepancies between the transit movement and unloading permission, you must:
 cannotUseRevisedUnloadingProcedure.bullet1 = select no to using the revised unloading procedure
 cannotUseRevisedUnloadingProcedure.bullet2 = report the discrepancies
+
+revisedUnloadingProcedureConditionsYesNo.title = Conditions for using the revised unloading procedure
+revisedUnloadingProcedureConditionsYesNo.heading = Conditions for using the revised unloading procedure
+revisedUnloadingProcedureConditionsYesNo.label = Does the movement meet all these conditions?
+revisedUnloadingProcedureConditionsYesNo.paragraph = You can only use the revised unloading procedure if:
+revisedUnloadingProcedureConditionsYesNo.bullet1 = there are no discrepancies between the transit movement and unloading permission
+revisedUnloadingProcedureConditionsYesNo.bullet2 = there are no broken seals or they are not applicable, like goods on flatbed trucks or vehicles driven to their destination
+revisedUnloadingProcedureConditionsYesNo.bullet3 = the movement started in an authorised consignor location
+revisedUnloadingProcedureConditionsYesNo.bullet4 = all items have the same office of destination
+revisedUnloadingProcedureConditionsYesNo.error.required = Select yes if the movement meets all the conditions for using the revised unloading procedure

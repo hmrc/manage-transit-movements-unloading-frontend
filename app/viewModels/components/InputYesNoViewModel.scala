@@ -39,6 +39,14 @@ object InputYesNoViewModel {
     additionalHtml: Option[Html] = None
   ) extends InputYesNoViewModel
 
+  case class YesNoWithStatementHeading(
+    heading: String,
+    legend: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputYesNoViewModel
+      with AdditionalHtmlViewModel
+
   def apply(
     heading: String,
     caption: Option[String],
