@@ -44,9 +44,9 @@
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @errorSummary(form.errors)
 
-        @formHelper(action = controllers.routes.RevisedUnloadingProcedureConditionsYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.RevisedUnloadingProcedureConditionsYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
