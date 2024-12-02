@@ -16,14 +16,17 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.YesNoFormProvider
+import models.requests.DataRequest
 import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
 import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.transformers.IE043Transformer
 import views.html.NewAuthYesNoView
@@ -31,17 +34,41 @@ import views.html.NewAuthYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+trait NewAuthYesNoSubmission {
+  val sessionRepository: SessionRepository
+  val dataTransformer: IE043Transformer
+
+  def submitNewAuth(request: DataRequest[AnyContent], formBindResult: Boolean, redirectCall: UserAnswers => Call)(implicit
+    headerCarrier: HeaderCarrier,
+    ec: ExecutionContext
+  ) = {
+    val userAnswersF: Future[UserAnswers] =
+      if (request.userAnswers.hasAnswerChanged(NewAuthYesNoPage, formBindResult) && formBindResult) {
+        request.userAnswers.wipeAndTransform(dataTransformer.transform(_))
+      } else {
+        Future.successful(request.userAnswers)
+      }
+
+    for {
+      userAnswers    <- userAnswersF
+      updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, formBindResult))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(redirectCall(updatedAnswers))
+  }
+}
+
 class NewAuthYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
+  override val sessionRepository: SessionRepository,
   navigator: Navigation,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NewAuthYesNoView,
-  dataTransformer: IE043Transformer
+  override val dataTransformer: IE043Transformer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
+    with NewAuthYesNoSubmission
     with I18nSupport {
 
   private val form = formProvider("newAuthYesNo")
@@ -62,20 +89,7 @@ class NewAuthYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value => {
-            val userAnswersF: Future[UserAnswers] =
-              if (request.userAnswers.hasAnswerChanged(NewAuthYesNoPage, value) && value) {
-                request.userAnswers.wipeAndTransform(dataTransformer.transform(_))
-              } else {
-                Future.successful(request.userAnswers)
-              }
-
-            for {
-              userAnswers    <- userAnswersF
-              updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
-          }
+          value => submitNewAuth(request, value, updatedAnswers => navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
         )
   }
 }

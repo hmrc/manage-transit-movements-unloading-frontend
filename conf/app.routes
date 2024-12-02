@@ -122,3 +122,6 @@ GET        /:arrivalId/revised-unloading-procedure-conditions                   
 POST       /:arrivalId/revised-unloading-procedure-conditions                                                        controllers.RevisedUnloadingProcedureConditionsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-revised-unloading-procedure-conditions                                                 controllers.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-revised-unloading-procedure-conditions                                                 controllers.RevisedUnloadingProcedureConditionsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
+GET        /:arrivalId/revised-unloading-procedure-conditions-not-met                                                      controllers.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/revised-unloading-procedure-conditions-not-met                                                      controllers.RevisedUnloadingProcedureUnmetConditionsController.onSubmit(arrivalId: ArrivalId)
