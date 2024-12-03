@@ -20,6 +20,7 @@ import controllers.actions.*
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.NewAuthYesNoSubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
@@ -32,7 +33,8 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
   view: RevisedUnloadingProcedureUnmetConditionsView,
-  service: NewAuthYesNoSubmissionService
+  service: NewAuthYesNoSubmissionService,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -47,6 +49,9 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.submitNewAuth(false, request.userAnswers, _ => controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+        for {
+          updatedAnswers <- service.updateUserAnswers(false, request.userAnswers)
+          _              <- sessionRepository.set(updatedAnswers)
+        } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
     }
 }

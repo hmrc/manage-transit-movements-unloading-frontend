@@ -32,60 +32,54 @@ import scala.util.Success
 class NewAuthYesNoSubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val mockTransformer               = mock[IE043Transformer]
-  private val service                       = new NewAuthYesNoSubmissionService(mockSessionRepository, mockTransformer)
+  private val service                       = new NewAuthYesNoSubmissionService(mockTransformer)
   implicit private val ec: ExecutionContext = ExecutionContext.global
 
-  val redirectCall       = mock[UserAnswers => Call]
   val userAnswers        = mock[UserAnswers]
   val transformedAnswers = mock[UserAnswers]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(redirectCall)
     reset(userAnswers)
     reset(transformedAnswers)
   }
 
-  "call transformer and session repository when the answer changes to true" in {
-    when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, true)).thenReturn(true)
-    when(userAnswers.wipeAndTransform(any())).thenReturn(Future.successful(transformedAnswers))
-    when(transformedAnswers.set(NewAuthYesNoPage, true)).thenReturn(Success(userAnswers))
-    when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-    when(redirectCall(any())).thenReturn(Call("GET", "/some-url"))
+  "NewAuthYesNoSubmissionService should" - {
+    "call transformer and update UserAnswers when the answer changes to true" in {
+      when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, true)).thenReturn(true)
+      when(userAnswers.wipeAndTransform(any())).thenReturn(Future.successful(transformedAnswers))
+      when(transformedAnswers.set(NewAuthYesNoPage, true)).thenReturn(Success(transformedAnswers))
 
-    service.submitNewAuth(true, userAnswers, redirectCall).map {
-      result =>
-        verify(mockTransformer).transform(any())
-        verify(mockSessionRepository).set(userAnswers)
-        result mustBe Redirect(Call("GET", "/some-url"))
+      service.updateUserAnswers(true, userAnswers).map {
+        result =>
+          verify(mockTransformer).transform(any())
+          verify(userAnswers).wipeAndTransform(any())
+          result mustBe transformedAnswers
+      }
     }
-  }
 
-  "not call transformer when the answer does not change" in {
-    when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, false)).thenReturn(false)
-    when(userAnswers.set(NewAuthYesNoPage, false)).thenReturn(Success(userAnswers))
-    when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-    when(redirectCall(any())).thenReturn(Call("GET", "/some-url"))
+    "not call transformer and only update UserAnswers when the answer has not changed" in {
+      when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, false)).thenReturn(false)
+      when(userAnswers.set(NewAuthYesNoPage, false)).thenReturn(Success(userAnswers))
 
-    service.submitNewAuth(false, userAnswers, redirectCall).map {
-      result =>
-        verify(mockTransformer, never()).transform(any())
-        verify(mockSessionRepository).set(userAnswers)
-        result mustBe Results.Redirect(Call("GET", "/some-url"))
+      service.updateUserAnswers(false, userAnswers).map {
+        result =>
+          verify(mockTransformer, never()).transform(any())
+          verify(userAnswers, never()).wipeAndTransform(any())
+          result mustBe userAnswers
+      }
     }
-  }
 
-  "update answer and not transform data when answer changes to false" in {
-    when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, false)).thenReturn(true)
-    when(userAnswers.set(NewAuthYesNoPage, false)).thenReturn(Success(userAnswers))
-    when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-    when(redirectCall(any())).thenReturn(Call("GET", "/some-url"))
+    "not call transformer but update UserAnswers when the answer changes to false" in {
+      when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, false)).thenReturn(true)
+      when(userAnswers.set(NewAuthYesNoPage, false)).thenReturn(Success(userAnswers))
 
-    service.submitNewAuth(false, userAnswers, redirectCall).map {
-      result =>
-        verify(mockTransformer, never()).transform(any())
-        verify(mockSessionRepository).set(userAnswers)
-        result mustBe Results.Redirect(Call("GET", "/some-url"))
+      service.updateUserAnswers(false, userAnswers).map {
+        result =>
+          verify(mockTransformer, never()).transform(any())
+          verify(userAnswers, never()).wipeAndTransform(any())
+          result mustBe userAnswers
+      }
     }
   }
 }

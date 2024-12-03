@@ -23,6 +23,7 @@ import navigation.Navigation
 import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.NewAuthYesNoSubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.NewAuthYesNoView
@@ -30,14 +31,14 @@ import views.html.NewAuthYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NewAuthYesNoController @Inject() (
-  override val messagesApi: MessagesApi,
-  navigator: Navigation,
-  actions: Actions,
-  formProvider: YesNoFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: NewAuthYesNoView,
-  service: NewAuthYesNoSubmissionService
+class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
+                                        navigator: Navigation,
+                                        actions: Actions,
+                                        formProvider: YesNoFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        view: NewAuthYesNoView,
+                                        service: NewAuthYesNoSubmissionService,
+                                        sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -60,7 +61,11 @@ class NewAuthYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value => service.submitNewAuth(value, request.userAnswers, updatedAnswers => navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
+          value =>
+            for {
+              updatedAnswers <- service.updateUserAnswers(value, request.userAnswers)
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
         )
   }
 }

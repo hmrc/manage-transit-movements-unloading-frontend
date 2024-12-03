@@ -18,21 +18,18 @@ package services
 
 import models.UserAnswers
 import pages.NewAuthYesNoPage
-import play.api.mvc.Call
-import play.api.mvc.Results.Redirect
-import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformers.IE043Transformer
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NewAuthYesNoSubmissionService @Inject() (sessionRepository: SessionRepository, dataTransformer: IE043Transformer) {
+class NewAuthYesNoSubmissionService @Inject() (dataTransformer: IE043Transformer) {
 
-  def submitNewAuth(value: Boolean, userAnswers: UserAnswers, redirectCall: UserAnswers => Call)(implicit
+  def updateUserAnswers(value: Boolean, userAnswers: UserAnswers)(implicit
     headerCarrier: HeaderCarrier,
     ec: ExecutionContext
-  ) = {
+  ): Future[UserAnswers] = {
     val userAnswersF: Future[UserAnswers] =
       if (userAnswers.hasAnswerChanged(NewAuthYesNoPage, value) && value) {
         userAnswers.wipeAndTransform(dataTransformer.transform(_))
@@ -43,7 +40,6 @@ class NewAuthYesNoSubmissionService @Inject() (sessionRepository: SessionReposit
     for {
       userAnswers    <- userAnswersF
       updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(redirectCall(updatedAnswers))
+    } yield updatedAnswers
   }
 }
