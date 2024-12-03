@@ -1382,3 +1382,13 @@ photographExternalSeal.title = Take a photograph of the external seal before it 
 photographExternalSeal.heading = Take a photograph of the external seal before it is broken
 photographExternalSeal.paragraph1 = This is for evidence that the seal on the outside of the container or freight vehicle has been checked.
 photographExternalSeal.paragraph2 = You must keep the photograph in your records until at least 1 January {0}.
+
+revisedUnloadingProcedureConditionsYesNo.title = Conditions for using the revised unloading procedure
+revisedUnloadingProcedureConditionsYesNo.heading = Conditions for using the revised unloading procedure
+revisedUnloadingProcedureConditionsYesNo.label = Does the movement meet all these conditions?
+revisedUnloadingProcedureConditionsYesNo.paragraph = You can only use the revised unloading procedure if:
+revisedUnloadingProcedureConditionsYesNo.bullet1 = there are no discrepancies between the transit movement and unloading permission
+revisedUnloadingProcedureConditionsYesNo.bullet2 = there are no broken seals or they are not applicable, like goods on flatbed trucks or vehicles driven to their destination
+revisedUnloadingProcedureConditionsYesNo.bullet3 = the movement started in an authorised consignor location
+revisedUnloadingProcedureConditionsYesNo.bullet4 = all items have the same office of destination
+revisedUnloadingProcedureConditionsYesNo.error.required = Select yes if the movement meets all the conditions for using the revised unloading procedure

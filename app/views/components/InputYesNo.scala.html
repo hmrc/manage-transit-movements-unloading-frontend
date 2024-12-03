@@ -72,4 +72,9 @@
             ).withLegend(legend, true)
         )
     }
+    case x @ YesNoWithStatementHeading(heading, legend, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukRadios(radios.withLegend(legend, true))
+    }
 }

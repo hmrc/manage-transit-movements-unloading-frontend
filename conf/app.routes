@@ -117,3 +117,8 @@ POST       /:arrivalId/cannot-use-revised-unloading-procedure                   
 
 GET        /:arrivalId/photograph-external-seal                                                                      controllers.PhotographExternalSealController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/photograph-external-seal                                                                      controllers.PhotographExternalSealController.onSubmit(arrivalId: ArrivalId)
+
+GET        /:arrivalId/revised-unloading-procedure-conditions                                                        controllers.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/revised-unloading-procedure-conditions                                                        controllers.RevisedUnloadingProcedureConditionsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-revised-unloading-procedure-conditions                                                 controllers.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-revised-unloading-procedure-conditions                                                 controllers.RevisedUnloadingProcedureConditionsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)

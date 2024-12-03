@@ -21,8 +21,6 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.PhotographExternalSealView
 
-import java.time.Year
-
 class PhotographExternalSealViewSpec extends ViewBehaviours {
 
   private val expiryYear = 2023

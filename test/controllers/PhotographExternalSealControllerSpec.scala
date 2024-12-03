@@ -28,8 +28,6 @@ import play.api.inject.bind
 import services.DateTimeService
 import views.html.PhotographExternalSealView
 
-import java.time.Year
-
 class PhotographExternalSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
   private val mode = NormalMode
 
