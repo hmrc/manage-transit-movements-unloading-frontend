@@ -20,7 +20,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
 
-class RevisedUnloadingProcedureUnavailableViewSpec extends ViewBehaviours {
+class RevisedUnloadingProcedureUnmetConditionsViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[RevisedUnloadingProcedureUnmetConditionsView].apply(mrn, arrivalId)(fakeRequest, messages)

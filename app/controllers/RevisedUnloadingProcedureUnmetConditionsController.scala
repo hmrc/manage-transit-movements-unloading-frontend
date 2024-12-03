@@ -17,32 +17,25 @@
 package controllers
 
 import controllers.actions.*
-import forms.YesNoFormProvider
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.NewAuthYesNoSubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.transformers.IE043Transformer
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   override val messagesApi: MessagesApi,
-  override val sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
-  formProvider: YesNoFormProvider,
   view: RevisedUnloadingProcedureUnmetConditionsView,
-  override val dataTransformer: IE043Transformer
+  service: NewAuthYesNoSubmissionService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with NewAuthYesNoSubmission
     with I18nSupport {
-
-  private val form = formProvider("newAuthYesNo")
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     actions
@@ -54,11 +47,6 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        form
-          .bind(Map("value" -> "false"))
-          .fold(
-            _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())),
-            value => submitNewAuth(request, value, _ => controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
-          )
+        service.submitNewAuth(false, _ => controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
     }
 }
