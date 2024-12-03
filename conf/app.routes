@@ -114,3 +114,6 @@ POST       /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloadin
 
 GET        /:arrivalId/cannot-use-revised-unloading-procedure                                                        controllers.CannotUseRevisedUnloadingProcedureController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/cannot-use-revised-unloading-procedure                                                        controllers.CannotUseRevisedUnloadingProcedureController.onSubmit(arrivalId: ArrivalId)
+
+GET        /:arrivalId/photograph-external-seal                                                                      controllers.PhotographExternalSealController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/photograph-external-seal                                                                      controllers.PhotographExternalSealController.onSubmit(arrivalId: ArrivalId)
