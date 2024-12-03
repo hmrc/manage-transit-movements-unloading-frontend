@@ -60,7 +60,7 @@ class NewAuthYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value => service.submitNewAuth(value, updatedAnswers => navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
+          value => service.submitNewAuth(value, request.userAnswers, updatedAnswers => navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
         )
   }
 }

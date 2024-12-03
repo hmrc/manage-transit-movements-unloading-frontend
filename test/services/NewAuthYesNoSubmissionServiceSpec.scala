@@ -36,27 +36,24 @@ class NewAuthYesNoSubmissionServiceSpec extends SpecBase with AppWithDefaultMock
   implicit private val ec: ExecutionContext = ExecutionContext.global
 
   val redirectCall       = mock[UserAnswers => Call]
-  val mockRequest        = mock[DataRequest[AnyContent]]
   val userAnswers        = mock[UserAnswers]
   val transformedAnswers = mock[UserAnswers]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(redirectCall)
-    reset(mockRequest)
     reset(userAnswers)
     reset(transformedAnswers)
   }
 
   "call transformer and session repository when the answer changes to true" in {
-    when(mockRequest.userAnswers).thenReturn(userAnswers)
     when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, true)).thenReturn(true)
     when(userAnswers.wipeAndTransform(any())).thenReturn(Future.successful(transformedAnswers))
     when(transformedAnswers.set(NewAuthYesNoPage, true)).thenReturn(Success(userAnswers))
     when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
     when(redirectCall(any())).thenReturn(Call("GET", "/some-url"))
 
-    service.submitNewAuth(true, redirectCall)(mockRequest, hc, ec).map {
+    service.submitNewAuth(true, userAnswers, redirectCall).map {
       result =>
         verify(mockTransformer).transform(any())
         verify(mockSessionRepository).set(userAnswers)
@@ -65,13 +62,12 @@ class NewAuthYesNoSubmissionServiceSpec extends SpecBase with AppWithDefaultMock
   }
 
   "not call transformer when the answer does not change" in {
-    when(mockRequest.userAnswers).thenReturn(userAnswers)
     when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, false)).thenReturn(false)
     when(userAnswers.set(NewAuthYesNoPage, false)).thenReturn(Success(userAnswers))
     when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
     when(redirectCall(any())).thenReturn(Call("GET", "/some-url"))
 
-    service.submitNewAuth(false, redirectCall)(mockRequest, hc, ec).map {
+    service.submitNewAuth(false, userAnswers, redirectCall).map {
       result =>
         verify(mockTransformer, never()).transform(any())
         verify(mockSessionRepository).set(userAnswers)
@@ -80,13 +76,12 @@ class NewAuthYesNoSubmissionServiceSpec extends SpecBase with AppWithDefaultMock
   }
 
   "update answer and not transform data when answer changes to false" in {
-    when(mockRequest.userAnswers).thenReturn(userAnswers)
     when(userAnswers.hasAnswerChanged(NewAuthYesNoPage, false)).thenReturn(true)
     when(userAnswers.set(NewAuthYesNoPage, false)).thenReturn(Success(userAnswers))
     when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
     when(redirectCall(any())).thenReturn(Call("GET", "/some-url"))
 
-    service.submitNewAuth(false, redirectCall)(mockRequest, hc, ec).map {
+    service.submitNewAuth(false, userAnswers, redirectCall).map {
       result =>
         verify(mockTransformer, never()).transform(any())
         verify(mockSessionRepository).set(userAnswers)

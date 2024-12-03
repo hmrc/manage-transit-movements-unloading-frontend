@@ -47,6 +47,6 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.submitNewAuth(false, _ => controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+        service.submitNewAuth(false, request.userAnswers, _ => controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
     }
 }
