@@ -34,6 +34,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val unloadedDate = arbitrary[LocalDate].sample.value
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, false)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
         .setValue(DateGoodsUnloadedPage, unloadedDate)
         .setValue(CanSealsBeReadPage, true)
         .setValue(AreAnySealsBrokenPage, true)
@@ -44,7 +45,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val result            = viewModelProvider.apply(userAnswers)
 
       result.sections.length mustBe 2
-      result.sections.head.rows.size mustBe 4
+      result.sections.head.rows.size mustBe 5
     }
 
     "must render LargeUnsealedGoodsRecordDiscrepanciesYesNoPage row when false" in {

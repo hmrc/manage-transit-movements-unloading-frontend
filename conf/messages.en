@@ -1392,3 +1392,5 @@ revisedUnloadingProcedureConditionsYesNo.bullet2 = there are no broken seals or 
 revisedUnloadingProcedureConditionsYesNo.bullet3 = the movement started in an authorised consignor location
 revisedUnloadingProcedureConditionsYesNo.bullet4 = all items have the same office of destination
 revisedUnloadingProcedureConditionsYesNo.error.required = Select yes if the movement meets all the conditions for using the revised unloading procedure
+revisedUnloadingProcedureConditionsYesNo.checkYourAnswers.change.hidden = if the movement meets the conditions for using the revised unloading procedure
+revisedUnloadingProcedureConditionsYesNo.checkYourAnswers = Does the movement meet the conditions for using the revised unloading procedure?
