@@ -690,5 +690,60 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
       }
     }
+
+    "revisedUnloadingProcedureConditionsYesNo" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.revisedUnloadingProcedureConditionsYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Does the movement meet the conditions for using the revised unloading procedure?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if the movement meets the conditions for using the revised unloading procedure"),
+                      attributes = Map("id" -> "change-revised-unloading-procedure-conditions-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.revisedUnloadingProcedureConditionsYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Does the movement meet the conditions for using the revised unloading procedure?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if the movement meets the conditions for using the revised unloading procedure"),
+                      attributes = Map("id" -> "change-revised-unloading-procedure-conditions-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
   }
 }

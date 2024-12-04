@@ -44,6 +44,7 @@ object CheckYourAnswersViewModel {
       val headerSection = StaticSection(
         rows = Seq(
           helper.newProcedure,
+          helper.revisedUnloadingProcedureConditionsYesNo,
           helper.goodsTooLarge,
           helper.largeUnsealedGoodsRecordDiscrepanciesYesNo,
           helper.unloadingType,
