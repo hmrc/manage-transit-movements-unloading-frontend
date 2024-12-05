@@ -18,10 +18,11 @@ package controllers
 
 import controllers.actions.*
 import models.ArrivalId
+import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.NewAuthYesNoSubmissionService
+import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
 
@@ -33,7 +34,7 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
   view: RevisedUnloadingProcedureUnmetConditionsView,
-  service: NewAuthYesNoSubmissionService,
+  service: UsersAnswersService,
   sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -50,7 +51,7 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
     actions.requireData(arrivalId).async {
       implicit request =>
         for {
-          updatedAnswers <- service.updateUserAnswers(false, request.userAnswers)
+          updatedAnswers <- service.updateUserAnswers(page = NewAuthYesNoPage, value = false, wipeAndTransformIfAnswerChanged = false, request.userAnswers)
           _              <- sessionRepository.set(updatedAnswers)
         } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
     }

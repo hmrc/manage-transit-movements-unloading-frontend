@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.YesNoFormProvider
 import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
@@ -25,6 +25,7 @@ import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.transformers.IE043Transformer
 import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
@@ -40,7 +41,8 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddTransitUnloadingPermissionDiscrepanciesYesNoView,
-  dataTransformer: IE043Transformer
+  dataTransformer: IE043Transformer,
+  userAnswersService: UsersAnswersService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -68,7 +70,8 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
               if (value) {
                 Future.successful(request.userAnswers)
               } else {
-                request.userAnswers.retainAndTransform(OtherQuestionsSection)(dataTransformer.transform(_))
+                Future.successful(request.userAnswers)
+                userAnswersService.retainAndTransform(request.userAnswers, OtherQuestionsSection)(dataTransformer.transform(_))
               }
 
             for {

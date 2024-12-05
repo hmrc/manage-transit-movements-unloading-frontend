@@ -18,15 +18,14 @@ package models
 
 import generated.CC043CType
 import models.SensitiveFormats.SensitiveWrites
-import pages._
+import pages.*
 import pages.sections.Section
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import utils.transformers.{DeclarationGoodsItemNumber, Removed, SequenceNumber}
 
 import java.time.Instant
-import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -74,23 +73,6 @@ final case class UserAnswers(
       d =>
         copy(data = d)
     }
-  }
-
-  def retainAndTransform[A](
-    page: QuestionPage[A]
-  )(
-    block: UserAnswers => Future[UserAnswers]
-  )(implicit rds: Reads[A], writes: Writes[A], ec: ExecutionContext): Future[UserAnswers] =
-    for {
-      transformedAnswers <- wipeAndTransform(block)
-      updatedAnswers <- Future.fromTry {
-        this.get(page).fold(Try(transformedAnswers))(transformedAnswers.set(page, _))
-      }
-    } yield updatedAnswers
-
-  def wipeAndTransform(block: UserAnswers => Future[UserAnswers]): Future[UserAnswers] = {
-    val wipedAnswers = this.copy(data = Json.obj())
-    block(wipedAnswers)
   }
 
   def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
@@ -151,7 +133,7 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  import play.api.libs.functional.syntax._
+  import play.api.libs.functional.syntax.*
 
   implicit def reads(implicit sensitiveFormats: SensitiveFormats): Reads[UserAnswers] =
     (

@@ -29,24 +29,23 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.NewAuthYesNoSubmissionService
+import services.UsersAnswersService
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
 
 import java.time.Instant
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private lazy val revisedUnloadingProcedureUnmet: String = controllers.routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(arrivalId).url
-  private val mockService                                 = mock[NewAuthYesNoSubmissionService]
-  implicit private val ec: ExecutionContext               = ExecutionContext.global
+  private val mockService                                 = mock[UsersAnswersService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[NewAuthYesNoSubmissionService].toInstance(mockService)
+        bind[UsersAnswersService].toInstance(mockService)
       )
 
   override def beforeEach(): Unit = {
@@ -102,7 +101,7 @@ class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase wi
       )
       setExistingUserAnswers(userAnswers)
       val request = FakeRequest(POST, revisedUnloadingProcedureUnmet)
-      when(mockService.updateUserAnswers(any(), any())(any(), any())).thenReturn(Future.successful(updatedUserAnswer))
+      when(mockService.updateUserAnswers(any(), any(), any(), any())(any(), any(), any(), any())).thenReturn(Future.successful(updatedUserAnswer))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(app, request).value

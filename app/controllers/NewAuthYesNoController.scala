@@ -24,7 +24,7 @@ import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.NewAuthYesNoSubmissionService
+import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.NewAuthYesNoView
 
@@ -37,7 +37,7 @@ class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
                                         formProvider: YesNoFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: NewAuthYesNoView,
-                                        service: NewAuthYesNoSubmissionService,
+                                        usersAnswersService: UsersAnswersService,
                                         sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -63,8 +63,9 @@ class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- service.updateUserAnswers(value, request.userAnswers)
-              _              <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <- usersAnswersService
+                .updateUserAnswers(page = NewAuthYesNoPage, value = value, wipeAndTransformIfAnswerChanged = value, request.userAnswers)
+              _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
         )
   }
