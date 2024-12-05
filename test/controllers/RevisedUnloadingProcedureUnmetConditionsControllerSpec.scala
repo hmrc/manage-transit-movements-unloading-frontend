@@ -101,7 +101,7 @@ class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase wi
       )
       setExistingUserAnswers(userAnswers)
       val request = FakeRequest(POST, revisedUnloadingProcedureUnmet)
-      when(mockService.updateUserAnswers(any(), any(), any())(any(), any(), any(), any())).thenReturn(Future.successful(updatedUserAnswer))
+      when(mockService.updateUserAnswers(any(), any(), any())(any(), any())).thenReturn(Future.successful(updatedUserAnswer))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(app, request).value

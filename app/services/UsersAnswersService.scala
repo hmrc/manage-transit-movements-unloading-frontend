@@ -44,8 +44,6 @@ class UsersAnswersService @Inject() (dataTransformer: IE043Transformer) {
   }
 
   def updateUserAnswers(page: QuestionPage[Boolean], value: Boolean, userAnswers: UserAnswers)(implicit
-    rds: Reads[Boolean],
-    writes: Writes[Boolean],
     headerCarrier: HeaderCarrier,
     ec: ExecutionContext
   ): Future[UserAnswers] = {
