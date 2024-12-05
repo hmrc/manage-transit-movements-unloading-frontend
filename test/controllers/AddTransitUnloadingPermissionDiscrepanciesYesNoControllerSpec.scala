@@ -21,14 +21,15 @@ import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigation
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.UsersAnswersService
 import utils.transformers.IE043Transformer
 import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
@@ -45,18 +46,21 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
     controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode).url
 
   private val mockTransformer = mock[IE043Transformer]
+  private val mockService     = mock[UsersAnswersService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[IE043Transformer].toInstance(mockTransformer)
+        bind[IE043Transformer].toInstance(mockTransformer),
+        bind[UsersAnswersService].toInstance(mockService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockTransformer)
+    reset(mockService)
   }
 
   "AddTransitUnloadingPermissionDiscrepanciesYesNoPage Controller" - {
@@ -132,12 +136,6 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
            |""".stripMargin)
         .as[JsObject]
 
-      val jsonAfterWipe = Json
-        .parse(s"""
-             |{}
-             |""".stripMargin)
-        .as[JsObject]
-
       val jsonAfterTransformation = Json
         .parse(s"""
            |{
@@ -164,14 +162,13 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       val now                            = Instant.now()
       val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterWipe           = emptyUserAnswers.copy(data = jsonAfterWipe, lastUpdated = now)
       val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
       val userAnswersAfterEverything     = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockTransformer.transform(any())(any(), any()))
-        .thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockService.retainAndTransform(any(), any())(any())(any(), any(), any())).thenReturn(Future.successful(userAnswersAfterEverything))
+      when(mockTransformer.transform(any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
@@ -183,8 +180,6 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      verify(mockTransformer).transform(eqTo(userAnswersAfterWipe))(any(), any())
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())

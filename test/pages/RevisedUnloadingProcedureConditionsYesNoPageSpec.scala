@@ -16,7 +16,6 @@
 
 package pages
 
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class RevisedUnloadingProcedureConditionsYesNoPageSpec extends PageBehaviours {
