@@ -64,7 +64,7 @@ class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
           value =>
             for {
               updatedAnswers <- usersAnswersService
-                .updateUserAnswers(page = NewAuthYesNoPage, value = value, wipeAndTransformIfAnswerChanged = value, request.userAnswers)
+                .updateUserAnswers(page = NewAuthYesNoPage, value = value, request.userAnswers)
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
         )

@@ -43,14 +43,14 @@ class UsersAnswersService @Inject() (dataTransformer: IE043Transformer) {
     block(wipedAnswers)
   }
 
-  def updateUserAnswers[A](page: QuestionPage[A], value: A, wipeAndTransformIfAnswerChanged: Boolean, userAnswers: UserAnswers)(implicit
-    rds: Reads[A],
-    writes: Writes[A],
+  def updateUserAnswers(page: QuestionPage[Boolean], value: Boolean, userAnswers: UserAnswers)(implicit
+    rds: Reads[Boolean],
+    writes: Writes[Boolean],
     headerCarrier: HeaderCarrier,
     ec: ExecutionContext
   ): Future[UserAnswers] = {
     val userAnswersF: Future[UserAnswers] =
-      if (userAnswers.hasAnswerChanged(page, value) && wipeAndTransformIfAnswerChanged) {
+      if (userAnswers.hasAnswerChanged(page, value) && value) {
         wipeAndTransform(userAnswers, dataTransformer.transform(_))
       } else {
         Future.successful(userAnswers)

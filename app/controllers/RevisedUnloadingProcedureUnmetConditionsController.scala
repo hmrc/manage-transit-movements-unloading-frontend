@@ -51,7 +51,7 @@ class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
     actions.requireData(arrivalId).async {
       implicit request =>
         for {
-          updatedAnswers <- service.updateUserAnswers(page = NewAuthYesNoPage, value = false, wipeAndTransformIfAnswerChanged = false, request.userAnswers)
+          updatedAnswers <- service.updateUserAnswers(page = NewAuthYesNoPage, value = false, request.userAnswers)
           _              <- sessionRepository.set(updatedAnswers)
         } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
     }
