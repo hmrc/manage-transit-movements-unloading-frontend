@@ -399,6 +399,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           }
         }
       }
+
+      "when cannotUseRevisedUnloadingProcedure" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+
+        val reads  = service.unloadingRemarkReads(userAnswers)
+        val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+        result mustBe UnloadingRemarkType(
+          conform = Number0,
+          unloadingCompletion = Number1,
+          unloadingDate = XMLCalendar("2020-01-01"),
+          stateOfSeals = None,
+          unloadingRemark = None
+        )
+      }
     }
   }
 

@@ -16,11 +16,8 @@
 
 package pages
 
-import models.UserAnswers
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
-
-import scala.util.Try
 
 case object LargeUnsealedGoodsRecordDiscrepanciesYesNoPage extends QuestionPage[Boolean] {
 
