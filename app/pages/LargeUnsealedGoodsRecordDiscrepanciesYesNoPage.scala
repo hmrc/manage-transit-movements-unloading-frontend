@@ -27,12 +27,4 @@ case object LargeUnsealedGoodsRecordDiscrepanciesYesNoPage extends QuestionPage[
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "largeUnsealedGoodsRecordDiscrepancies"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(true) =>
-        userAnswers.remove(NewAuthYesNoPage)
-      case _ =>
-        super.cleanup(value, userAnswers)
-    }
 }

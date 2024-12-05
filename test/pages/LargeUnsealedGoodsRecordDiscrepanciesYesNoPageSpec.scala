@@ -28,31 +28,5 @@ class LargeUnsealedGoodsRecordDiscrepanciesYesNoPageSpec extends PageBehaviours 
     beSettable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
 
     beRemovable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-
-    "cleanup" - {
-      "must cleanup when yes selected" in {
-        forAll(arbitrary[Boolean]) {
-          bool =>
-            val userAnswers = emptyUserAnswers
-              .setValue(NewAuthYesNoPage, bool)
-
-            val result = userAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
-
-            result.get(NewAuthYesNoPage) must not be defined
-        }
-      }
-
-      "must not cleanup when no selected" in {
-        forAll(arbitrary[Boolean]) {
-          bool =>
-            val userAnswers = emptyUserAnswers
-              .setValue(NewAuthYesNoPage, bool)
-
-            val result = userAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
-
-            result.get(NewAuthYesNoPage) mustBe defined
-        }
-      }
-    }
   }
 }
