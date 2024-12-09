@@ -16,7 +16,7 @@
 
 package models
 
-import generated.{Flag, Number1}
+import generated.{Flag, Number0, Number1}
 
 import scala.language.implicitConversions
 
@@ -28,6 +28,10 @@ case object UnloadingSubmissionValues {
 
   case object Conform extends UnloadingSubmissionValues {
     val value: Flag = Number1
+  }
+
+  case object NotConform extends UnloadingSubmissionValues {
+    val value: Flag = Number0
   }
 
   case object FullyUnloaded extends UnloadingSubmissionValues {
