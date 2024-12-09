@@ -130,4 +130,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
+  def revisedUnloadingProcedureConditionsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = RevisedUnloadingProcedureConditionsYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "revisedUnloadingProcedureConditionsYesNo.checkYourAnswers",
+    id = Some("change-revised-unloading-procedure-conditions-yes-no"),
+    call = Some(controllers.routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
 }
