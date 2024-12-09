@@ -1394,3 +1394,8 @@ revisedUnloadingProcedureConditionsYesNo.bullet4 = all items have the same offic
 revisedUnloadingProcedureConditionsYesNo.error.required = Select yes if the movement meets all the conditions for using the revised unloading procedure
 revisedUnloadingProcedureConditionsYesNo.checkYourAnswers.change.hidden = if the movement meets the conditions for using the revised unloading procedure
 revisedUnloadingProcedureConditionsYesNo.checkYourAnswers = Does the movement meet the conditions for using the revised unloading procedure?
+
+revisedUnloadingProcedureUnmetConditions.title = You cannot use the revised unloading procedure
+revisedUnloadingProcedureUnmetConditions.heading = You cannot use the revised unloading procedure
+revisedUnloadingProcedureUnmetConditions.paragraph1 = This is because the movement does not meet all conditions for using it.
+revisedUnloadingProcedureUnmetConditions.paragraph2 = You must continue your unloading remarks without using the revised unloading procedure.

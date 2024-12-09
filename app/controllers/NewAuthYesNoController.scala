@@ -16,30 +16,29 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode, UserAnswers}
+import models.{ArrivalId, Mode}
 import navigation.Navigation
 import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.transformers.IE043Transformer
 import views.html.NewAuthYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NewAuthYesNoController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  navigator: Navigation,
-  actions: Actions,
-  formProvider: YesNoFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: NewAuthYesNoView,
-  dataTransformer: IE043Transformer
+class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
+                                        navigator: Navigation,
+                                        actions: Actions,
+                                        formProvider: YesNoFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        view: NewAuthYesNoView,
+                                        usersAnswersService: UsersAnswersService,
+                                        sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -62,20 +61,12 @@ class NewAuthYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value => {
-            val userAnswersF: Future[UserAnswers] =
-              if (request.userAnswers.hasAnswerChanged(NewAuthYesNoPage, value) && value) {
-                request.userAnswers.wipeAndTransform(dataTransformer.transform(_))
-              } else {
-                Future.successful(request.userAnswers)
-              }
-
+          value =>
             for {
-              userAnswers    <- userAnswersF
-              updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <- usersAnswersService
+                .updateUserAnswers(page = NewAuthYesNoPage, value = value, request.userAnswers)
+              _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
-          }
         )
   }
 }

@@ -21,15 +21,15 @@ import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigation
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import pages.NewAuthYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import utils.transformers.IE043Transformer
+import play.api.test.Helpers.*
+import services.UsersAnswersService
 import views.html.NewAuthYesNoView
 
 import java.time.Instant
@@ -40,15 +40,14 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("newAuthYesNo")
   private val mode         = NormalMode
+  private val mockService  = mock[UsersAnswersService]
 
   private lazy val newAuthYesNoRoute =
     controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, mode).url
 
-  private val mockTransformer = mock[IE043Transformer]
-
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTransformer)
+    reset(mockService)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -56,7 +55,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[IE043Transformer].toInstance(mockTransformer)
+        bind[UsersAnswersService].toInstance(mockService)
       )
 
   "NewAuthYesNo Controller" - {
@@ -97,23 +96,6 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
-
-      val request = FakeRequest(POST, newAuthYesNoRoute)
-        .withFormUrlEncodedBody(("value", "false"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
-    }
-
-    "must drop discrepancies, re-transform data and redirect to the next page when Yes is submitted" in {
-
       val jsonBeforeEverything = Json
         .parse(s"""
              |{
@@ -131,12 +113,6 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
              |""".stripMargin)
         .as[JsObject]
 
-      val jsonAfterWipe = Json
-        .parse(s"""
-             |{}
-             |""".stripMargin)
-        .as[JsObject]
-
       val jsonAfterTransformation = Json
         .parse(s"""
              |{
@@ -147,29 +123,13 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
              |""".stripMargin)
         .as[JsObject]
 
-      val jsonAfterEverything = Json
-        .parse(s"""
-             |{
-             |  "someDummyTransformedData" : {
-             |    "foo" : "bar"
-             |  },
-             |  "otherQuestions" : {
-             |    "newAuthYesNo" : true
-             |  }
-             |}
-             |""".stripMargin)
-        .as[JsObject]
-
       val now                            = Instant.now()
       val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterWipe           = emptyUserAnswers.copy(data = jsonAfterWipe, lastUpdated = now)
       val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
-      val userAnswersAfterEverything     = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockTransformer.transform(any())(any(), any()))
-        .thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockService.updateUserAnswers(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
@@ -182,18 +142,17 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      verify(mockTransformer).transform(eqTo(userAnswersAfterWipe))(any(), any())
-
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+      userAnswersCaptor.getValue mustBe userAnswersAfterTransformation
     }
 
-    "must redirect to the next page when Yes is re-submitted" in {
+    "must redirect to the next page when user answer is submitted" in {
 
       val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
 
       setExistingUserAnswers(userAnswers)
+      when(mockService.updateUserAnswers(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswers))
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -203,42 +162,6 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      verifyNoInteractions(mockTransformer)
-    }
-
-    "must redirect to the next page when No is submitted" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, newAuthYesNoRoute)
-        .withFormUrlEncodedBody(("value", "false"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
-
-      verifyNoInteractions(mockTransformer)
-    }
-
-    "must redirect to the next page when No is re-submitted" in {
-
-      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(POST, newAuthYesNoRoute)
-        .withFormUrlEncodedBody(("value", "false"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
-
-      verifyNoInteractions(mockTransformer)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
