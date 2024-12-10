@@ -1,4 +1,4 @@
-import play.sbt.PlayImport.ehcache
+import play.sbt.PlayImport.caffeine
 import sbt.*
 
 object AppDependencies {
@@ -16,7 +16,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-frontend-hmrc-play-30"              % "11.2.0",
     "uk.gov.hmrc"          %% "crypto-json-play-30"                     % "8.1.0",
     "javax.xml.bind"        % "jaxb-api"                                % "2.3.1",
-    ehcache
+    caffeine
   )
 
   val test: Seq[ModuleID] = Seq(
