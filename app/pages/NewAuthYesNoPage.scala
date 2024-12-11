@@ -36,6 +36,7 @@ case object NewAuthYesNoPage extends QuestionPage[Boolean] {
           .flatMap(_.remove(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage))
           .flatMap(_.remove(SealsReplacedByCustomsAuthorityYesNoPage))
           .flatMap(_.remove(OtherThingsToReportPage))
+          .flatMap(_.remove(RevisedUnloadingProcedureConditionsYesNoPage))
       case _ =>
         super.cleanup(value, userAnswers)
     }

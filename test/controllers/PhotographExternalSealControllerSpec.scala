@@ -19,12 +19,12 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.NormalMode
+import org.mockito.Mockito.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import org.mockito.Mockito._
-import play.api.inject.bind
 import services.DateTimeService
 import views.html.PhotographExternalSealView
 
@@ -91,7 +91,9 @@ class PhotographExternalSealControllerSpec extends SpecBase with AppWithDefaultM
       val result = route(app, request).value
 
       status(result) `mustEqual` SEE_OTHER
-      redirectLocation(result).value `mustEqual` "#" // TODO Update with appropriate route
+      redirectLocation(result).value `mustEqual` controllers.routes.SealsReplacedByCustomsAuthorityYesNoController
+        .onPageLoad(arrivalId, mode)
+        .url
     }
   }
 }

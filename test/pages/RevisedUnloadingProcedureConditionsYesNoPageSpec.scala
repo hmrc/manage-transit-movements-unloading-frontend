@@ -16,6 +16,7 @@
 
 package pages
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class RevisedUnloadingProcedureConditionsYesNoPageSpec extends PageBehaviours {
@@ -28,6 +29,42 @@ class RevisedUnloadingProcedureConditionsYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](RevisedUnloadingProcedureConditionsYesNoPage)
 
-    // TODO ADD cleanup test
+    "cleanup" - {
+      "must cleanup when no selected" in {
+        forAll(arbitrary[Boolean], arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
+          (goodsTooLarge, anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(GoodsTooLargeForContainerYesNoPage, goodsTooLarge)
+              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+            val result = userAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
+            result.get(GoodsTooLargeForContainerYesNoPage) must not be defined
+            result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) must not be defined
+            result.get(SealsReplacedByCustomsAuthorityYesNoPage) must not be defined
+            result.get(OtherThingsToReportPage) must not be defined
+        }
+      }
+
+      "must not cleanup when yes selected" in {
+        forAll(arbitrary[Boolean], arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
+          (goodsTooLarge, anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(GoodsTooLargeForContainerYesNoPage, goodsTooLarge)
+              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
+
+            val result = userAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+
+            result.get(GoodsTooLargeForContainerYesNoPage) mustBe defined
+            result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe defined
+            result.get(SealsReplacedByCustomsAuthorityYesNoPage) mustBe defined
+            result.get(OtherThingsToReportPage) mustBe defined
+        }
+      }
+    }
   }
 }
