@@ -44,12 +44,12 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
 
       "must go from NewAuthYesNoPage" - {
-        "to GoodsTooLargeForContainerYesNoPage when answer is Yes" in {
+        "to RevisedUnloadingProcedureConditionsYesNoPage when answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
           navigator
             .nextPage(NewAuthYesNoPage, mode, userAnswers)
-            .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, mode))
         }
 
         "to UnloadingGuidancePage when the answer is No" in {
@@ -200,6 +200,28 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
+        "to unloading finding page when seals are broken NewAuthYesNoPage is false" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, true)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+        }
+
+        "to unloading finding page when seals are not broken LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is false" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+        }
+
         "to unloading findings page when seals are present but broken" in {
 
           val userAnswers = emptyUserAnswers
@@ -297,6 +319,24 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .nextPage(UnknownPage, mode, answers)
               .mustBe(routes.ErrorController.technicalDifficulties())
         }
+      }
+
+      "to GoodsTooLargeForContainerYesNo page when RevisedUnloadingProcedureConditionsYesNoPage is true" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+
+        navigator
+          .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+          .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+      }
+
+      "to RevisedUnloadingProcedureUnmetConditions page when RevisedUnloadingProcedureConditionsYesNoPage is false" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
+        navigator
+          .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+          .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
       }
     }
 

@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.*
 import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PhotographExternalSealView
@@ -46,6 +46,6 @@ class PhotographExternalSealController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.requireData(arrivalId) {
-      Redirect(Call("GET", "#")) // TODO update with correct route
+      Redirect(routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode))
     }
 }

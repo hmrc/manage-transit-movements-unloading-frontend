@@ -74,7 +74,7 @@ class UnloadingGuidanceController @Inject() (
             (goodsTooLarge, revisedUnloadingProcedureConditionsYesNo) match {
               case (_, Some(false)) => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
               case (Some(true), _)  => routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode)
-              case (Some(false), _) => routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode)
+              case (Some(false), _) => routes.PhotographExternalSealController.onPageLoad(arrivalId)
               case (None, _)        => routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode)
             }
           } else {

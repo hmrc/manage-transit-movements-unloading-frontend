@@ -118,7 +118,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(userAnswers.id, NormalMode).url
+          routes.PhotographExternalSealController.onPageLoad(userAnswers.id).url
       }
     }
 

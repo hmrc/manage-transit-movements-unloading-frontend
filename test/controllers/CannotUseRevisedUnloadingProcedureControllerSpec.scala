@@ -17,6 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated.{CUSTOM_ConsignmentType05, Number0, SealType04, TransportEquipmentType05}
 import generators.Generators
 import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -65,16 +66,46 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
       redirectLocation(result).value `mustEqual` routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to NewAuthYesNo page" in {
+    "must redirect to CanSealsBeRead page if number of ie043 seals is not zero" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(
+        emptyUserAnswers.copy(ie043Data =
+          basicIe043.copy(Consignment =
+            Some(
+              CUSTOM_ConsignmentType05(containerIndicator = Number0,
+                                       TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 1, Seal = Seq(SealType04(1, "1"))))
+              )
+            )
+          )
+        )
+      )
 
       val request = FakeRequest(POST, cannotUseRevisedUnloadingProcedureRoute)
 
       val result = route(app, request).value
 
       status(result) `mustEqual` SEE_OTHER
-      redirectLocation(result).value `mustEqual` controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode).url
+      redirectLocation(result).value `mustEqual` controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
+    }
+
+    "must redirect to UnloadingFindings page if number of ie043 seals is zero" in {
+
+      setExistingUserAnswers(
+        emptyUserAnswers.copy(ie043Data =
+          basicIe043.copy(Consignment =
+            Some(
+              CUSTOM_ConsignmentType05(containerIndicator = Number0, TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 0)))
+            )
+          )
+        )
+      )
+
+      val request = FakeRequest(POST, cannotUseRevisedUnloadingProcedureRoute)
+
+      val result = route(app, request).value
+
+      status(result) `mustEqual` SEE_OTHER
+      redirectLocation(result).value `mustEqual` controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
     }
 
   }
