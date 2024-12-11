@@ -22,11 +22,11 @@ import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import viewModels.{Para3, UnloadingGuidanceViewModel}
 import views.html.UnloadingGuidanceView
@@ -146,6 +146,26 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
         val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, false)
+
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(POST, unloadingGuidanceRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.UnloadingTypeController.onPageLoad(userAnswers.id, NormalMode).url
+      }
+    }
+
+    "must redirect to UnloadingTypeController" - {
+      "when RevisedUnloadingProcedureConditions is false" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
 
         setExistingUserAnswers(userAnswers)
 

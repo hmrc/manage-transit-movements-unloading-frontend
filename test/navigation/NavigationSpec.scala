@@ -306,30 +306,13 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "must go from NewAuthYesNoPage" - {
         "when answer is Yes" - {
-          "and are goods too large is answered" - {
-            "to CYA" in {
-              forAll(arbitrary[Boolean]) {
-                bool =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(GoodsTooLargeForContainerYesNoPage, bool)
-                    .setValue(NewAuthYesNoPage, true)
+          "to revisedUnloadingProcedureConditions page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
 
-                  navigator
-                    .nextPage(NewAuthYesNoPage, mode, userAnswers)
-                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
-              }
-            }
-          }
-
-          "and are goods too large is unanswered" - {
-            "to are goods too large in NormalMode" in {
-              val userAnswers = emptyUserAnswers
-                .setValue(NewAuthYesNoPage, true)
-
-              navigator
-                .nextPage(NewAuthYesNoPage, mode, userAnswers)
-                .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, NormalMode))
-            }
+            navigator
+              .nextPage(NewAuthYesNoPage, mode, userAnswers)
+              .mustBe(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, NormalMode))
           }
         }
 
@@ -358,6 +341,30 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 .nextPage(NewAuthYesNoPage, mode, userAnswers)
                 .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
             }
+          }
+        }
+      }
+
+      "must go from RevisedUnloadingProcedureConditionsYesNoPage" - {
+        "when answer is Yes" - {
+          "to GoodsTooLargeForContainerYesNo page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+
+            navigator
+              .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+              .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, NormalMode))
+          }
+        }
+
+        "when answer is No" - {
+          "to RevisedUnloadingProcedureUnmetConditionsController" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
+            navigator
+              .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+              .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
           }
         }
       }

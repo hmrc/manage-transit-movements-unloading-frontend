@@ -45,6 +45,7 @@ class Navigation extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua, CheckMode)
+    case RevisedUnloadingProcedureConditionsYesNoPage        => ua => revisedUnloadingProcedureConditionsYesNoNavigation(ua, CheckMode)
     case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsCheckNavigation(ua)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, CheckMode)
     case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, CheckMode)
@@ -68,12 +69,7 @@ class Navigation extends Navigator {
       case CheckMode =>
         ua.get(NewAuthYesNoPage).map {
           case true =>
-            ua.get(GoodsTooLargeForContainerYesNoPage)
-              .fold {
-                routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
-              } {
-                _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
-              }
+            routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(ua.id, NormalMode)
           case false =>
             ua.get(UnloadingTypePage)
               .fold {
@@ -81,6 +77,18 @@ class Navigation extends Navigator {
               } {
                 _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
               }
+        }
+    }
+
+  private def revisedUnloadingProcedureConditionsYesNoNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
+    mode match {
+      case NormalMode => Some(Call("Get", "#")) // Update with Normal mode Navigation
+      case CheckMode =>
+        ua.get(RevisedUnloadingProcedureConditionsYesNoPage).map {
+          case true =>
+            routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
+          case false =>
+            routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(ua.id)
         }
     }
 

@@ -16,10 +16,10 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
-import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.P5.UnloadingPermissionMessageService
@@ -66,20 +66,21 @@ class UnloadingGuidanceController @Inject() (
       .requireData(arrivalId)
       .andThen(getMandatoryPage(NewAuthYesNoPage)) {
         implicit request =>
-          val newAuth: Boolean                    = request.arg
-          lazy val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+          val newAuth: Boolean                                               = request.arg
+          lazy val goodsTooLarge: Option[Boolean]                            = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+          lazy val revisedUnloadingProcedureConditionsYesNo: Option[Boolean] = request.userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage)
 
-          if (newAuth) {
-            goodsTooLarge match {
-              case Some(true) =>
-                Redirect(routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
-              case Some(false) =>
-                Redirect(routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode))
-              case None =>
-                Redirect(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode))
+          val redirectRoute = if (newAuth) {
+            (goodsTooLarge, revisedUnloadingProcedureConditionsYesNo) match {
+              case (_, Some(false)) => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
+              case (Some(true), _)  => routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode)
+              case (Some(false), _) => routes.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId, NormalMode)
+              case (None, _)        => routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode)
             }
           } else {
-            Redirect(routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
+            routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
           }
+
+          Redirect(redirectRoute)
       }
 }
