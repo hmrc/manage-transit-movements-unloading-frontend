@@ -84,8 +84,7 @@ trait SpecificDataRequiredAction extends Logging {
         }
     }
 
-    val resultOrR = rec(pages.toList)
-    Future.successful(resultOrR)
+    Future.successful(rec(pages.toList))
   }
 }
 
