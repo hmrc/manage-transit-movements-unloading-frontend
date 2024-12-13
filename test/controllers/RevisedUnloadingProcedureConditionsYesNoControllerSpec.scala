@@ -20,9 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigation
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import pages.RevisedUnloadingProcedureConditionsYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -129,7 +128,7 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.updateUserAnswers(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
@@ -141,16 +140,12 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue mustBe userAnswersAfterTransformation
     }
 
     "must redirect to the next page when user answer is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)
-      when(mockService.updateUserAnswers(any(), any(), any())(any(), any())).thenReturn(Future.successful(emptyUserAnswers))
+      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(emptyUserAnswers))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 

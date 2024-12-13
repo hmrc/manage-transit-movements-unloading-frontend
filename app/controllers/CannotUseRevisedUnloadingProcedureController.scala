@@ -52,7 +52,7 @@ class CannotUseRevisedUnloadingProcedureController @Inject() (
       implicit request =>
         if (request.userAnswers.ie043Data.sealsExist) {
           for {
-            updatedAnswers <- service.updateUserAnswers(page = NewAuthYesNoPage, value = false, request.userAnswers)
+            updatedAnswers <- service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = false, request.userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode))
         } else {

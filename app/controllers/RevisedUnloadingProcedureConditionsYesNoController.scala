@@ -24,7 +24,6 @@ import pages.RevisedUnloadingProcedureConditionsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RevisedUnloadingProcedureConditionsYesNoView
 
@@ -37,7 +36,6 @@ class RevisedUnloadingProcedureConditionsYesNoController @Inject() (
   navigator: Navigation,
   actions: Actions,
   formProvider: YesNoFormProvider,
-  usersAnswersService: UsersAnswersService,
   val controllerComponents: MessagesControllerComponents,
   view: RevisedUnloadingProcedureConditionsYesNoView
 )(implicit ec: ExecutionContext)
@@ -64,9 +62,8 @@ class RevisedUnloadingProcedureConditionsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- usersAnswersService
-                .updateUserAnswers(page = RevisedUnloadingProcedureConditionsYesNoPage, value = value, request.userAnswers)
-              _ <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(RevisedUnloadingProcedureConditionsYesNoPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, updatedAnswers))
         )
   }

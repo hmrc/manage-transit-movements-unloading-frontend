@@ -43,7 +43,7 @@ class UsersAnswersService @Inject() (dataTransformer: IE043Transformer) {
     block(wipedAnswers)
   }
 
-  def updateUserAnswers(page: QuestionPage[Boolean], value: Boolean, userAnswers: UserAnswers)(implicit
+  def updateConditionalAndWipe(page: QuestionPage[Boolean], value: Boolean, userAnswers: UserAnswers)(implicit
     headerCarrier: HeaderCarrier,
     ec: ExecutionContext
   ): Future[UserAnswers] = {
