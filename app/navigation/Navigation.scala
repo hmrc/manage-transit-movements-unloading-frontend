@@ -126,8 +126,8 @@ class Navigation extends Navigator {
     }
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
-    ua.get(NewAuthYesNoPage) match
-      case Some(false) => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    (ua.get(DidUserChooseNewProcedurePage), ua.get(NewAuthYesNoPage)) match
+      case (Some(true), Some(false)) => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
       case _ =>
         StateOfSeals(ua).value match {
           case Some(true) =>

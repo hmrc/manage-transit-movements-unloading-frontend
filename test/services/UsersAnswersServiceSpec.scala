@@ -22,7 +22,7 @@ import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.*
 import pages.NewAuthYesNoPage
 import pages.sections.OtherQuestionsSection
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsBoolean, JsObject, JsTrue, Json}
 import utils.transformers.IE043Transformer
 
 import java.time.Instant
@@ -45,6 +45,7 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
     .parse(s"""
          |{
          |  "otherQuestions" : {
+         |    "userChoseNewProcedure" : true,
          |    "foo" : "bar"
          |  },
          |  "someDummyTransformedData" : {
@@ -61,6 +62,7 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
     .parse(s"""
          |{
          |  "otherQuestions" : {
+         |    "userChoseNewProcedure" : true,
          |    "foo" : "bar"
          |  }
          |}
@@ -118,7 +120,9 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "updateConditionalAndWipe" - {
-      "wipe and transform data when the value has changed and value is true" in {
+      "wipe everything but DidUserChooseNewProcedurePage and transform data when the value has changed and value is true" in {
+        println(JsTrue)
+        println(JsBoolean(true))
         when(dataTransformer.transform(any())(any(), any()))
           .thenReturn(Future.successful(userAnswersAfterTransformation))
 
@@ -127,7 +131,7 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
         whenReady(result) {
           updatedAnswers =>
             verify(dataTransformer).transform(eqTo(userAnswersAfterWipe))(any(), any())
-            updatedAnswers.data mustBe transformedData ++ Json.obj("otherQuestions" -> Json.obj("newAuthYesNo" -> true))
+            updatedAnswers.data mustBe transformedData ++ Json.obj("otherQuestions" -> Json.obj("userChoseNewProcedure" -> true, "newAuthYesNo" -> true))
         }
       }
 

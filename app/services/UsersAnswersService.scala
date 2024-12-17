@@ -17,7 +17,7 @@
 package services
 
 import models.UserAnswers
-import pages.QuestionPage
+import pages.{DidUserChooseNewProcedurePage, QuestionPage}
 import play.api.libs.json.{Json, Reads, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformers.IE043Transformer
@@ -49,7 +49,8 @@ class UsersAnswersService @Inject() (dataTransformer: IE043Transformer) {
   ): Future[UserAnswers] = {
     val userAnswersF: Future[UserAnswers] =
       if (userAnswers.hasAnswerChanged(page, value) && value) {
-        wipeAndTransform(userAnswers, dataTransformer.transform(_))
+        // keep DidUserChooseNewProcedurePage not to lose user's original new procedure answer
+        retainAndTransform(userAnswers, DidUserChooseNewProcedurePage)(dataTransformer.transform(_))
       } else {
         Future.successful(userAnswers)
       }
