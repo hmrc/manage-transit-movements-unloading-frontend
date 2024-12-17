@@ -1343,17 +1343,13 @@ houseConsignment.prefix = House consignment {0}
 newAuthYesNo.title = Do you want to use the revised unloading procedure?
 newAuthYesNo.heading = Do you want to use the revised unloading procedure?
 newAuthYesNo.paragraph = This allows you to make unloading remarks without physically unloading the goods.
-newAuthYesNo.hint = You can only use the revised unloading procedure if:
-newAuthYesNo.bullet1 = all items have the same office of destination
-newAuthYesNo.bullet2 = there are no broken seals
-newAuthYesNo.bullet3 = there are no discrepancies between the transit movement and unloading permission
 newAuthYesNo.error.required = Select yes if you want to use the revised unloading procedure
 newAuthYesNo.checkYourAnswers.change.hidden = if you want to use the revised unloading procedure
 newAuthYesNo.checkYourAnswers = Do you want to use the revised unloading procedure?
 
 goodsTooLargeForContainerYesNo.title = Are the goods too large to fit into a container?
 goodsTooLargeForContainerYesNo.heading = Are the goods too large to fit into a container?
-goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails.
+goodsTooLargeForContainerYesNo.paragraph = These could be goods on flatbed trucks or vehicles that were driven to their destination, like motorised cranes or boats with sails.
 goodsTooLargeForContainerYesNo.error.required = Select yes if the goods are too large to fit into a container
 goodsTooLargeForContainerYesNo.checkYourAnswers.change.hidden = if the goods are too large to fit into a container
 goodsTooLargeForContainerYesNo.checkYourAnswers = Are the goods too large to fit into a container?
@@ -1369,14 +1365,12 @@ sealsReplacedByCustomsAuthorityYesNo.checkYourAnswers = Has the external seal be
 largeUnsealedGoodsRecordDiscrepanciesYesNo.title = Were there any discrepancies between the transit movement and unloading permission?
 largeUnsealedGoodsRecordDiscrepanciesYesNo.heading = Were there any discrepancies between the transit movement and unloading permission?
 largeUnsealedGoodsRecordDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-largeUnsealedGoodsRecordDiscrepanciesYesNo.yes = Yes - this means you must select no to using the revised unloading procedure and report the discrepancies
 largeUnsealedGoodsRecordDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission
 
 cannotUseRevisedUnloadingProcedure.title = You cannot use the revised unloading procedure
 cannotUseRevisedUnloadingProcedure.heading = You cannot use the revised unloading procedure
-cannotUseRevisedUnloadingProcedure.paragraph = Due to the discrepancies between the transit movement and unloading permission, you must:
-cannotUseRevisedUnloadingProcedure.bullet1 = select no to using the revised unloading procedure
-cannotUseRevisedUnloadingProcedure.bullet2 = report the discrepancies
+cannotUseRevisedUnloadingProcedure.paragraph1 = This is due to the discrepancies between the transit movement and unloading permission.
+cannotUseRevisedUnloadingProcedure.paragraph2 = Continue with your unloading remarks and report the discrepancies.
 
 photographExternalSeal.title = Take a photograph of the external seal before it is broken
 photographExternalSeal.heading = Take a photograph of the external seal before it is broken

@@ -36,13 +36,9 @@ class CannotUseRevisedUnloadingProcedureViewSpec extends ViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "Due to the discrepancies between the transit movement and unloading permission, you must:")
+  behave like pageWithContent("p", "This is due to the discrepancies between the transit movement and unloading permission.")
 
-  behave like pageWithList(
-    "govuk-list--bullet",
-    "select no to using the revised unloading procedure",
-    "report the discrepancies"
-  )
+  behave like pageWithContent("p", "Continue with your unloading remarks and report the discrepancies.")
 
   behave like pageWithSubmitButton("Continue")
 }

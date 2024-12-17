@@ -39,20 +39,6 @@ class NewAuthYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This allows you to make unloading remarks without physically unloading the goods.")
 
-  behave like pageWithHint(
-    "You can only use the revised unloading procedure if: " +
-      "all items have the same office of destination " +
-      "there are no broken seals " +
-      "there are no discrepancies between the transit movement and unloading permission"
-  )
-
-  behave like pageWithList(
-    "govuk-list--bullet",
-    "all items have the same office of destination",
-    "there are no broken seals",
-    "there are no discrepancies between the transit movement and unloading permission"
-  )
-
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
