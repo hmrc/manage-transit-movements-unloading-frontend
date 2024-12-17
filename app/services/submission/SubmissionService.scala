@@ -129,9 +129,22 @@ class SubmissionService @Inject() (
         unloadingRemark = unloadingRemark
       )
 
+    lazy val cannotUseRevisedUnloadingProcedureReads: Reads[UnloadingRemarkType] =
+      UnloadingRemarkType(
+        conform = NotConform,
+        unloadingCompletion = FullyUnloaded,
+        unloadingDate = dateTimeService.currentDateTime.toLocalDate,
+        stateOfSeals = None,
+        unloadingRemark = None
+      )
+
     NewAuthYesNoPage.path.read[Boolean].flatMap {
-      case true  => revisedProcedureReads
-      case false => unrevisedProcedureReads
+      case true => revisedProcedureReads
+      case false =>
+        LargeUnsealedGoodsRecordDiscrepanciesYesNoPage.path.readNullable[Boolean].flatMap {
+          case Some(true) => cannotUseRevisedUnloadingProcedureReads
+          case _          => unrevisedProcedureReads
+        }
     }
   }
 
