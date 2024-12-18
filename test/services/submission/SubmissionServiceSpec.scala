@@ -139,7 +139,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must create unloading remark" - {
       "when RevisedUnloadingPermission is true" - {
         "and seals exist" - {
-          "at consignment level" in {
+          "revised procedure route" in {
             forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
               (consignment, transportEquipment, seal) =>
                 val ie043Data = basicIe043
@@ -157,6 +157,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
                 val userAnswers = emptyUserAnswers
                   .setValue(NewAuthYesNoPage, true)
+                  .setValue(UnloadingCommentsPage, "comments")
                   .copy(ie043Data = ie043Data)
 
                 val reads  = service.unloadingRemarkReads(userAnswers)
@@ -167,7 +168,84 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   unloadingCompletion = Number1,
                   unloadingDate = XMLCalendar("2020-01-01"),
                   stateOfSeals = Some(Number1),
-                  unloadingRemark = None
+                  unloadingRemark = Some("comments")
+                )
+            }
+          }
+
+          "unrevised procedure route" in {
+            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+              (consignment, transportEquipment, seal) =>
+                val ie043Data = basicIe043
+                  .copy(
+                    Consignment = Some(
+                      consignment.copy(
+                        TransportEquipment = Seq(
+                          transportEquipment.copy(
+                            Seal = Seq(seal)
+                          )
+                        )
+                      )
+                    )
+                  )
+
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(DidUserChooseNewProcedurePage, false)
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020, 1, 1))
+                  .setValue(CanSealsBeReadPage, true)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+                  .setValue(UnloadingCommentsPage, "comments")
+                  .copy(ie043Data = ie043Data)
+
+                val reads  = service.unloadingRemarkReads(userAnswers)
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number1),
+                  unloadingRemark = Some("comments")
+                )
+            }
+          }
+
+          "cannot use revised unloading procedure route" in {
+            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+              (consignment, transportEquipment, seal) =>
+                val ie043Data = basicIe043
+                  .copy(
+                    Consignment = Some(
+                      consignment.copy(
+                        TransportEquipment = Seq(
+                          transportEquipment.copy(
+                            Seal = Seq(seal)
+                          )
+                        )
+                      )
+                    )
+                  )
+
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(DidUserChooseNewProcedurePage, true)
+                  .setValue(CanSealsBeReadPage, true)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(UnloadingCommentsPage, "comments")
+                  .copy(ie043Data = ie043Data)
+
+                val reads  = service.unloadingRemarkReads(userAnswers)
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number1),
+                  unloadingRemark = Some("comments")
                 )
             }
           }
