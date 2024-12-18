@@ -20,7 +20,7 @@ import controllers.actions.*
 import forms.YesNoFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigation
-import pages.NewAuthYesNoPage
+import pages.{DidUserChooseNewProcedurePage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -63,10 +63,14 @@ class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- usersAnswersService
-                .updateUserAnswers(page = NewAuthYesNoPage, value = value, request.userAnswers)
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
+              // DidUserChooseNewProcedurePage is similar to NewAuthYesNoPage to determine if the user chooses new procedure
+              // For navigation we need to know how the user journey starts
+              // However we cannot use NewAuthYesNoPage for this purpose as in some cases it's updated programmatically
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DidUserChooseNewProcedurePage, value))
+              updatedAndTransformedAnswers <- usersAnswersService
+                .updateConditionalAndWipe(page = NewAuthYesNoPage, value = value, updatedAnswers)
+              _ <- sessionRepository.set(updatedAndTransformedAnswers)
+            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAndTransformedAnswers))
         )
   }
 }

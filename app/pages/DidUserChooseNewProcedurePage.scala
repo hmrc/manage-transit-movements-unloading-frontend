@@ -16,16 +16,16 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import pages.sections.OtherQuestionsSection
+import play.api.libs.json.JsPath
 
-class LargeUnsealedGoodsRecordDiscrepanciesYesNoPageSpec extends PageBehaviours {
+// This is similar to NewAuthYesNoPage to determine if the user chooses new procedure
+// For navigation we need to know how the user journey starts
+// However we cannot use NewAuthYesNoPage for this purpose as in some cases it's updated programmatically
+case object DidUserChooseNewProcedurePage extends QuestionPage[Boolean] {
 
-  "LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
-    beRetrievable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+  override def toString: String = "userChoseNewProcedure"
 
-    beSettable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-
-    beRemovable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-  }
 }

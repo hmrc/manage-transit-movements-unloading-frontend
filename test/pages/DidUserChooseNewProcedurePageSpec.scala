@@ -18,14 +18,15 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class LargeUnsealedGoodsRecordDiscrepanciesYesNoPageSpec extends PageBehaviours {
+class DidUserChooseNewProcedurePageSpec extends PageBehaviours {
 
-  "LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
+  "DidUserChooseNewProcedurePage" - {
 
-    beRetrievable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+    beRetrievable[Boolean](DidUserChooseNewProcedurePage)
 
-    beSettable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+    beSettable[Boolean](DidUserChooseNewProcedurePage)
 
-    beRemovable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+    beRemovable[Boolean](DidUserChooseNewProcedurePage)
+
   }
 }

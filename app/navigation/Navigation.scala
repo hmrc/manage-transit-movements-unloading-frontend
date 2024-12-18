@@ -19,7 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import controllers.routes
 import models.{CheckMode, Mode, NormalMode, RichCC043CType, StateOfSeals, UserAnswers}
-import pages._
+import pages.*
 import play.api.mvc.Call
 
 @Singleton
@@ -40,11 +40,13 @@ class Navigation extends Navigator {
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, NormalMode)
     case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, NormalMode)
+    case RevisedUnloadingProcedureConditionsYesNoPage        => ua => revisedUnloadingProcedureConditionsYesNoNavigation(ua)
   }
   // scalastyle:on cyclomatic.complexity
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua, CheckMode)
+    case RevisedUnloadingProcedureConditionsYesNoPage        => ua => revisedUnloadingProcedureConditionsYesNoNavigation(ua)
     case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsCheckNavigation(ua)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, CheckMode)
     case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, CheckMode)
@@ -61,19 +63,14 @@ class Navigation extends Navigator {
       case NormalMode =>
         ua.get(NewAuthYesNoPage).map {
           case true =>
-            routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
+            routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(ua.id, NormalMode)
           case false =>
             routes.UnloadingGuidanceController.onPageLoad(ua.id)
         }
       case CheckMode =>
         ua.get(NewAuthYesNoPage).map {
           case true =>
-            ua.get(GoodsTooLargeForContainerYesNoPage)
-              .fold {
-                routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
-              } {
-                _ => routes.CheckYourAnswersController.onPageLoad(ua.id)
-              }
+            routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(ua.id, NormalMode)
           case false =>
             ua.get(UnloadingTypePage)
               .fold {
@@ -129,12 +126,15 @@ class Navigation extends Navigator {
     }
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
-    StateOfSeals(ua).value match {
-      case Some(true) =>
-        Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+    (ua.get(DidUserChooseNewProcedurePage), ua.get(NewAuthYesNoPage)) match
+      case (Some(true), Some(false)) => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
       case _ =>
-        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-    }
+        StateOfSeals(ua).value match {
+          case Some(true) =>
+            Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+          case _ =>
+            Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        }
 
   private def stateOfSealsCheckNavigation(ua: UserAnswers): Option[Call] =
     StateOfSeals(ua).value match {
@@ -186,5 +186,13 @@ class Navigation extends Navigator {
       Some(routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
     } else {
       Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+    }
+
+  private def revisedUnloadingProcedureConditionsYesNoNavigation(ua: UserAnswers): Option[Call] =
+    ua.get(RevisedUnloadingProcedureConditionsYesNoPage).map {
+      case true =>
+        routes.GoodsTooLargeForContainerYesNoController.onPageLoad(ua.id, NormalMode)
+      case false =>
+        routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(ua.id)
     }
 }

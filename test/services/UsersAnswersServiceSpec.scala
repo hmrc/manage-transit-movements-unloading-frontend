@@ -22,7 +22,7 @@ import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.*
 import pages.NewAuthYesNoPage
 import pages.sections.OtherQuestionsSection
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsBoolean, JsObject, JsTrue, Json}
 import utils.transformers.IE043Transformer
 
 import java.time.Instant
@@ -45,6 +45,7 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
     .parse(s"""
          |{
          |  "otherQuestions" : {
+         |    "userChoseNewProcedure" : true,
          |    "foo" : "bar"
          |  },
          |  "someDummyTransformedData" : {
@@ -61,6 +62,7 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
     .parse(s"""
          |{
          |  "otherQuestions" : {
+         |    "userChoseNewProcedure" : true,
          |    "foo" : "bar"
          |  }
          |}
@@ -117,24 +119,26 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
       }
     }
 
-    "updateUserAnswers" - {
-      "wipe and transform data when the value has changed and value is true" in {
+    "updateConditionalAndWipe" - {
+      "wipe everything but DidUserChooseNewProcedurePage and transform data when the value has changed and value is true" in {
+        println(JsTrue)
+        println(JsBoolean(true))
         when(dataTransformer.transform(any())(any(), any()))
           .thenReturn(Future.successful(userAnswersAfterTransformation))
 
-        val result = service.updateUserAnswers(page = NewAuthYesNoPage, value = true, userAnswersBeforeEverything)
+        val result = service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = true, userAnswersBeforeEverything)
 
         whenReady(result) {
           updatedAnswers =>
             verify(dataTransformer).transform(eqTo(userAnswersAfterWipe))(any(), any())
-            updatedAnswers.data mustBe transformedData ++ Json.obj("otherQuestions" -> Json.obj("newAuthYesNo" -> true))
+            updatedAnswers.data mustBe transformedData ++ Json.obj("otherQuestions" -> Json.obj("userChoseNewProcedure" -> true, "newAuthYesNo" -> true))
         }
       }
 
       "update but do not wipe or transform data when the value has not changed" in {
         val unchangedUserAnswers = emptyUserAnswers.copy(data = Json.obj("otherQuestions" -> Json.obj("newAuthYesNo" -> false)))
 
-        val result = service.updateUserAnswers(page = NewAuthYesNoPage, value = false, unchangedUserAnswers)
+        val result = service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = false, unchangedUserAnswers)
 
         whenReady(result) {
           updatedAnswers =>
@@ -147,7 +151,7 @@ class UsersAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
         val initialUserAnswers = emptyUserAnswers.copy(data = Json.obj("otherQuestions" -> Json.obj("newAuthYesNo" -> true)), lastUpdated = now)
         val updatedUserAnswers = emptyUserAnswers.copy(data = Json.obj("otherQuestions" -> Json.obj("newAuthYesNo" -> false)), lastUpdated = now)
 
-        val result = service.updateUserAnswers(page = NewAuthYesNoPage, value = false, initialUserAnswers)
+        val result = service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = false, initialUserAnswers)
 
         whenReady(result) {
           updatedAnswers =>

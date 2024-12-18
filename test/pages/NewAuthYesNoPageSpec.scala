@@ -49,13 +49,14 @@ class NewAuthYesNoPageSpec extends PageBehaviours {
       }
 
       "must not cleanup when yes selected" in {
-        forAll(arbitrary[Boolean], arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
-          (goodsTooLarge, anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
+        forAll(arbitrary[Boolean], arbitrary[Boolean], arbitrary[Boolean], nonEmptyString, arbitrary[Boolean]) {
+          (goodsTooLarge, anyDiscrepancies, sealsReplaced, otherThingsToReport, revisedUnloadingProcedureConditions) =>
             val userAnswers = emptyUserAnswers
               .setValue(GoodsTooLargeForContainerYesNoPage, goodsTooLarge)
               .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
               .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
               .setValue(OtherThingsToReportPage, otherThingsToReport)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
 
             val result = userAnswers.setValue(NewAuthYesNoPage, true)
 
@@ -63,6 +64,7 @@ class NewAuthYesNoPageSpec extends PageBehaviours {
             result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe defined
             result.get(SealsReplacedByCustomsAuthorityYesNoPage) mustBe defined
             result.get(OtherThingsToReportPage) mustBe defined
+            result.get(RevisedUnloadingProcedureConditionsYesNoPage) mustBe defined
         }
       }
     }
