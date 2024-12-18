@@ -402,6 +402,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       "when cannotUseRevisedUnloadingProcedure" in {
         val userAnswers = emptyUserAnswers
+          .setValue(DidUserChooseNewProcedurePage, true)
           .setValue(NewAuthYesNoPage, false)
           .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)

@@ -141,7 +141,7 @@ class SubmissionService @Inject() (
     NewAuthYesNoPage.path.read[Boolean].flatMap {
       case true => revisedProcedureReads
       case false =>
-        LargeUnsealedGoodsRecordDiscrepanciesYesNoPage.path.readNullable[Boolean].flatMap {
+        DidUserChooseNewProcedurePage.path.readNullable[Boolean].flatMap {
           case Some(true) => cannotUseRevisedUnloadingProcedureReads
           case _          => unrevisedProcedureReads
         }
