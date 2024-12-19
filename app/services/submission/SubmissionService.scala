@@ -17,8 +17,8 @@
 package services.submission
 
 import connectors.ApiConnector
-import generated._
-import models.UnloadingSubmissionValues._
+import generated.*
+import models.UnloadingSubmissionValues.*
 import models.{ArrivalId, DocType, EoriNumber, Index, RichCC043CType, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
@@ -100,15 +100,17 @@ class SubmissionService @Inject() (
   }
 
   def unloadingRemarkReads(userAnswers: UserAnswers): Reads[UnloadingRemarkType] = {
-    import pages._
+    import pages.*
 
     lazy val revisedProcedureReads: Reads[UnloadingRemarkType] =
-      UnloadingRemarkType(
+      for {
+        unloadingRemark <- UnloadingCommentsPage.path.readNullable[String]
+      } yield UnloadingRemarkType(
         conform = Conform,
         unloadingCompletion = FullyUnloaded,
         unloadingDate = dateTimeService.currentDateTime.toLocalDate,
         stateOfSeals = Option.when(userAnswers.ie043Data.sealsExist)(PresentAndNotDamaged),
-        unloadingRemark = None
+        unloadingRemark = unloadingRemark
       )
 
     lazy val unrevisedProcedureReads: Reads[UnloadingRemarkType] =
@@ -130,12 +132,15 @@ class SubmissionService @Inject() (
       )
 
     lazy val cannotUseRevisedUnloadingProcedureReads: Reads[UnloadingRemarkType] =
-      UnloadingRemarkType(
+      for {
+        stateOfSeals    <- __.read[StateOfSeals].map(_.value)
+        unloadingRemark <- UnloadingCommentsPage.path.readNullable[String]
+      } yield UnloadingRemarkType(
         conform = NotConform,
         unloadingCompletion = FullyUnloaded,
         unloadingDate = dateTimeService.currentDateTime.toLocalDate,
-        stateOfSeals = None,
-        unloadingRemark = None
+        stateOfSeals = stateOfSeals,
+        unloadingRemark = unloadingRemark
       )
 
     NewAuthYesNoPage.path.read[Boolean].flatMap {
@@ -149,7 +154,7 @@ class SubmissionService @Inject() (
   }
 
   def consignmentReads(ie043: Option[CUSTOM_ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
-    import pages.sections._
+    import pages.sections.*
     import pages.sections.additionalReference.AdditionalReferencesSection
     import pages.sections.documents.DocumentsSection
 
@@ -193,8 +198,8 @@ class SubmissionService @Inject() (
     import pages.ContainerIdentificationNumberPage
     import pages.sections.SealsSection
     import pages.sections.transport.equipment.ItemsSection
-    import pages.transportEquipment.index._
-    import pages.transportEquipment.index.seals._
+    import pages.transportEquipment.index.*
+    import pages.transportEquipment.index.seals.*
 
     def sealReads(
       ie043: Seq[SealType04]
@@ -275,7 +280,7 @@ class SubmissionService @Inject() (
   private def consignmentDepartureTransportMeansReads(
     ie043: Seq[CUSTOM_DepartureTransportMeansType02]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
-    import pages.departureMeansOfTransport._
+    import pages.departureMeansOfTransport.*
 
     for {
       removed              <- (__ \ Removed).readNullable[Boolean]
@@ -309,7 +314,7 @@ class SubmissionService @Inject() (
   private def consignmentSupportingDocumentReads(
     ie043: Seq[SupportingDocumentType02]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
-    import pages.documents._
+    import pages.documents.*
 
     (TypePage(index).path.last \ "type").read[DocType].flatMap {
       case DocType.Support =>
@@ -348,7 +353,7 @@ class SubmissionService @Inject() (
   private def consignmentTransportDocumentReads(
     ie043: Seq[TransportDocumentType02]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
-    import pages.documents._
+    import pages.documents.*
 
     (TypePage(index).path.last \ "type").read[DocType].flatMap {
       case DocType.Transport =>
@@ -385,7 +390,7 @@ class SubmissionService @Inject() (
   private def consignmentAdditionalReferenceReads(
     ie043: Seq[AdditionalReferenceType03]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
-    import pages.additionalReference._
+    import pages.additionalReference.*
 
     for {
       removed         <- (__ \ Removed).readNullable[Boolean]
@@ -417,11 +422,11 @@ class SubmissionService @Inject() (
   def houseConsignmentReads(
     ie043: Seq[CUSTOM_HouseConsignmentType04]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[HouseConsignmentType05]] = {
-    import pages.houseConsignment.index._
+    import pages.houseConsignment.index.*
     import pages.sections.ItemsSection
-    import pages.sections.houseConsignment.index.additionalReference._
-    import pages.sections.houseConsignment.index.departureTransportMeans._
-    import pages.sections.houseConsignment.index.documents._
+    import pages.sections.houseConsignment.index.additionalReference.*
+    import pages.sections.houseConsignment.index.departureTransportMeans.*
+    import pages.sections.houseConsignment.index.documents.*
 
     lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber)
     lazy val departureTransportMeans = houseConsignment.getList(_.DepartureTransportMeans)
@@ -470,7 +475,7 @@ class SubmissionService @Inject() (
   )(
     houseConsignmentIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
-    import pages.houseConsignment.index.departureMeansOfTransport._
+    import pages.houseConsignment.index.departureMeansOfTransport.*
 
     for {
       removed              <- (__ \ Removed).readNullable[Boolean]
@@ -506,7 +511,7 @@ class SubmissionService @Inject() (
   )(
     houseConsignmentIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
-    import pages.houseConsignment.index.documents._
+    import pages.houseConsignment.index.documents.*
 
     (TypePage(houseConsignmentIndex, index).path.last \ "type").read[DocType].flatMap {
       case DocType.Support =>
@@ -547,7 +552,7 @@ class SubmissionService @Inject() (
   )(
     houseConsignmentIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
-    import pages.houseConsignment.index.documents._
+    import pages.houseConsignment.index.documents.*
 
     (TypePage(houseConsignmentIndex, index).path.last \ "type").read[DocType].flatMap {
       case DocType.Transport =>
@@ -586,7 +591,7 @@ class SubmissionService @Inject() (
   )(
     houseConsignmentIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
-    import pages.houseConsignment.index.additionalReference._
+    import pages.houseConsignment.index.additionalReference.*
 
     for {
       removed         <- (__ \ Removed).readNullable[Boolean]
@@ -621,9 +626,9 @@ class SubmissionService @Inject() (
   )(
     houseConsignmentIndex: Index
   )(itemIndex: Index, sequenceNumber: BigInt): Reads[Option[ConsignmentItemType05]] = {
-    import pages.houseConsignment.index.items._
+    import pages.houseConsignment.index.items.*
     import pages.sections.PackagingListSection
-    import pages.sections.houseConsignment.index.items.additionalReference._
+    import pages.sections.houseConsignment.index.items.additionalReference.*
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
     lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
@@ -685,7 +690,7 @@ class SubmissionService @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index
   ): Reads[Option[CommodityType03]] = {
-    import pages.houseConsignment.index.items._
+    import pages.houseConsignment.index.items.*
 
     lazy val commodityCode = ie043.flatMap(_.CommodityCode)
     lazy val goodsMeasure  = ie043.flatMap(_.GoodsMeasure)
@@ -745,7 +750,7 @@ class SubmissionService @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[PackagingType04]] = {
-    import pages.houseConsignment.index.items.packages._
+    import pages.houseConsignment.index.items.packages.*
 
     for {
       removed          <- (__ \ Removed).readNullable[Boolean]
@@ -782,7 +787,7 @@ class SubmissionService @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
-    import pages.houseConsignment.index.items.document._
+    import pages.houseConsignment.index.items.document.*
 
     (TypePage(houseConsignmentIndex, itemIndex, index).path.last \ "type").read[DocType].flatMap {
       case DocType.Support =>
@@ -824,7 +829,7 @@ class SubmissionService @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
-    import pages.houseConsignment.index.items.document._
+    import pages.houseConsignment.index.items.document.*
 
     (TypePage(houseConsignmentIndex, itemIndex, index).path.last \ "type").read[DocType].flatMap {
       case DocType.Transport =>
@@ -864,7 +869,7 @@ class SubmissionService @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index
   )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
-    import pages.houseConsignment.index.items.additionalReference._
+    import pages.houseConsignment.index.items.additionalReference.*
 
     for {
       removed         <- (__ \ Removed).readNullable[Boolean]
