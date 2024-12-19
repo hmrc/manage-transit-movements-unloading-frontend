@@ -33,12 +33,9 @@
 
     @heading(messages("cannotUseRevisedUnloadingProcedure.heading"), Some(messages("site.caption", mrn.toString)))
 
-    <p class="govuk-body">@messages("cannotUseRevisedUnloadingProcedure.paragraph")</p>
+    <p class="govuk-body">@messages("cannotUseRevisedUnloadingProcedure.paragraph1")</p>
 
-    <ul class="govuk-list govuk-list--bullet govuk-hint">
-        <li>@messages("cannotUseRevisedUnloadingProcedure.bullet1")</li>
-        <li>@messages("cannotUseRevisedUnloadingProcedure.bullet2")</li>
-    </ul>
+    <p class="govuk-body">@messages("cannotUseRevisedUnloadingProcedure.paragraph2")</p>
 
     @formHelper(action = controllers.routes.CannotUseRevisedUnloadingProcedureController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))

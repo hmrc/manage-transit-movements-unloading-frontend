@@ -39,7 +39,7 @@ class GoodsTooLargeForContainerYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent(
     "p",
-    "These could be goods on flatbed trucks that are too large to seal. Or vehicles that were driven to their destination, like motorised cranes or boats with sails."
+    "These could be goods on flatbed trucks or vehicles that were driven to their destination, like motorised cranes or boats with sails."
   )
 
   behave like pageWithRadioItems()
