@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.*
 import models.{ArrivalId, NormalMode, RichCC043CType}
-import pages.NewAuthYesNoPage
+import pages.{LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -28,6 +28,7 @@ import views.html.CannotUseRevisedUnloadingProcedureView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class CannotUseRevisedUnloadingProcedureController @Inject() (
   override val messagesApi: MessagesApi,
@@ -56,7 +57,15 @@ class CannotUseRevisedUnloadingProcedureController @Inject() (
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode))
         } else {
-          Future.successful(Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)))
+          for {
+            updatedAnswers <- service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = false, request.userAnswers)
+            answersWithRetianedPage <- Future.fromTry(
+              request.userAnswers
+                .get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+                .fold(Try(updatedAnswers))(updatedAnswers.set(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, _))
+            )
+            _ <- sessionRepository.set(answersWithRetianedPage)
+          } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
     }
 }
