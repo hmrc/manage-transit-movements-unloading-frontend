@@ -19,8 +19,11 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.{CUSTOM_ConsignmentType05, Number0, SealType04, TransportEquipmentType05}
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.verify
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.LargeUnsealedGoodsRecordDiscrepanciesYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -88,16 +91,21 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
       redirectLocation(result).value `mustEqual` controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
     }
 
-    "must redirect to UnloadingFindings page if number of ie043 seals is zero" in {
+    "must redirect to UnloadingFindings page and retain LargeUnsealedGoodsRecordDiscrepanciesYesNoPage if number of ie043 seals is zero" in {
 
       setExistingUserAnswers(
-        emptyUserAnswers.copy(ie043Data =
-          basicIe043.copy(Consignment =
-            Some(
-              CUSTOM_ConsignmentType05(containerIndicator = Number0, TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 0)))
+        emptyUserAnswers
+          .copy(ie043Data =
+            basicIe043.copy(Consignment =
+              Some(
+                CUSTOM_ConsignmentType05(containerIndicator = Number0,
+                                         TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 0))
+                )
+              )
             )
           )
-        )
+          .set(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          .get
       )
 
       val request = FakeRequest(POST, cannotUseRevisedUnloadingProcedureRoute)
@@ -106,6 +114,10 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
 
       status(result) `mustEqual` SEE_OTHER
       redirectLocation(result).value `mustEqual` controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe Some(true)
     }
 
   }
