@@ -93,7 +93,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
   }
 
   "showDiscrepanciesLink" - {
-    "when old auth" - {
+    "when legacy procedure" - {
       "when seals are present & not damaged and AddUnloadingCommentsYesNo page is false" - {
         "must be false" in {
           val userAnswers = emptyUserAnswers
@@ -197,17 +197,36 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
       }
     }
 
-    "new auth" - {
-      "must be false" in {
-        val replaced = arbitrary[Boolean].sample.value
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, true)
-          .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
+    "revised procedure" - {
+      "when not switching to legacy procedure" - {
+        "must be false" in {
+          val replaced = arbitrary[Boolean].sample.value
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
 
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
 
-        result.showDiscrepanciesLink mustBe false
+          result.showDiscrepanciesLink mustBe false
+        }
+      }
+
+      "when switching to legacy procedure" - {
+        "when adding discrepancies" - {
+          "must be true" in {
+            val replaced = arbitrary[Boolean].sample.value
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+            val viewModelProvider = new CheckYourAnswersViewModelProvider()
+            val result            = viewModelProvider.apply(userAnswers)
+
+            result.showDiscrepanciesLink mustBe true
+          }
+        }
       }
     }
   }

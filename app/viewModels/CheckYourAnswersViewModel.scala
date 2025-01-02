@@ -81,12 +81,12 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val discrepanciesPresent =
-        (userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage), userAnswers.get(NewAuthYesNoPage)) match {
-          case (Some(false), _) => false
-          case (_, Some(true))  => false
-          case _                => true
+      val discrepanciesPresent = userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage).getOrElse {
+        userAnswers.get(NewAuthYesNoPage) match {
+          case Some(true) => false
+          case _          => true
         }
+      }
 
       val warning = (
         userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
