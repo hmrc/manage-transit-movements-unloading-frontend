@@ -17,7 +17,6 @@
 package views
 
 import generators.Generators
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
@@ -28,10 +27,10 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
 
   override val prefix: String = "checkYourAnswers"
 
-  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
-
-  val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections, false, None)
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable = {
+    val viewModel = new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, None)
+    injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
+  }
 
   behave like pageWithTitle()
 
@@ -41,25 +40,21 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
 
   behave like pageWithHeading()
 
-  behave like pageWithSummaryLists()
+  behave like pageWithCheckYourAnswers()
+
+  behave like pageWithoutWarningText()
 
   behave like pageWithFormAction(controllers.routes.CheckYourAnswersController.onSubmit(arrivalId).url)
 
   behave like pageWithSubmitButton("Confirm and send")
 
-  "must render section titles when rows are non-empty" - {
-    sections.foreach(_.sectionTitle.map {
-      sectionTitle =>
-        behave like pageWithContent("h2", sectionTitle)
-    })
-  }
+  "must render link for discrepancies when showDiscrepanciesLink is true" - {
 
-  "must render link for discrepancies when AddCommentsYesNoPage is true" - {
-
-    val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections, true, None)
+    val viewModel: CheckYourAnswersViewModel =
+      new CheckYourAnswersViewModel(sections.head, None, sections.tail, true, None)
 
     val view: HtmlFormat.Appendable =
-      injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
+      injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -72,13 +67,13 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
   }
 
   "must render correct content" - {
-    val showDiscrepanciesLink = arbitrary[Boolean].sample.value
 
-    "when GoodsTooLargeForContainerYesNoPage is unpopulated" - {
-      val checkYourAnswersViewModel = new CheckYourAnswersViewModel(sections, showDiscrepanciesLink, None)
+    "when goodsTooLarge is undefined" - {
+      val viewModel =
+        new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, None)
 
       val view: HtmlFormat.Appendable =
-        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
+        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
 
       val doc = parseView(view)
 
@@ -89,11 +84,12 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
       )
     }
 
-    "when GoodsTooLargeForContainerYesNoPage is true" - {
-      val checkYourAnswersViewModel = new CheckYourAnswersViewModel(sections, showDiscrepanciesLink, Some(true))
+    "when goodsTooLarge is defined and true" - {
+      val viewModel =
+        new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, Some(true))
 
       val view: HtmlFormat.Appendable =
-        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
+        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
 
       val doc = parseView(view)
 
@@ -112,11 +108,12 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
       )
     }
 
-    "when GoodsTooLargeForContainerYesNoPage is false" - {
-      val checkYourAnswersViewModel = new CheckYourAnswersViewModel(sections, showDiscrepanciesLink, Some(false))
+    "when goodsTooLarge is defined and false" - {
+      val viewModel =
+        new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, Some(false))
 
       val view: HtmlFormat.Appendable =
-        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
+        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
 
       val doc = parseView(view)
 
@@ -134,6 +131,20 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
         "you did not check the goods",
         "there was no evidence of discrepancies between the transit and unloading permission"
       )
+    }
+
+    "when warning is defined" - {
+      val warning = nonEmptyString.sample.value
+
+      val viewModel =
+        new CheckYourAnswersViewModel(sections.head, Some(warning), sections.tail, false, None)
+
+      val view: HtmlFormat.Appendable =
+        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
+
+      val doc = parseView(view)
+
+      behave like pageWithWarningText(doc, warning)
     }
   }
 }

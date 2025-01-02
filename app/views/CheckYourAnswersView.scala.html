@@ -15,14 +15,15 @@
  *@
 
 @import viewModels.CheckYourAnswersViewModel
-@import views.html.components.{AnswerSections, Button, Heading}
+@import views.html.components.{AnswerSections, Button, Heading, Warning}
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     answerSections: AnswerSections,
     button: Button,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    warning: Warning
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CheckYourAnswersViewModel)(implicit request: Request[?], messages: Messages)
@@ -36,6 +37,10 @@
         heading = messages("checkYourAnswers.heading"),
         caption = Some(messages("site.caption", mrn.toString))
     )
+
+    @answerSections(Seq(viewModel.procedureSection))
+
+    @viewModel.warning.map(warning(_))
 
     @answerSections(viewModel.sections)
 

@@ -22,15 +22,14 @@ import models.{NormalMode, UserAnswers}
 import navigation.Navigation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.mockito.Mockito.{reset, verify, when}
 import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.UsersAnswersService
-import utils.transformers.IE043Transformer
+import services.UserAnswersService
 import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
 import java.time.Instant
@@ -45,21 +44,18 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
   private lazy val addTransitUnloadingPermissionDiscrepanciesYesNoRoute =
     controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode).url
 
-  private val mockTransformer = mock[IE043Transformer]
-  private val mockService     = mock[UsersAnswersService]
+  private val mockService = mock[UserAnswersService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[IE043Transformer].toInstance(mockTransformer),
-        bind[UsersAnswersService].toInstance(mockService)
+        bind[UserAnswersService].toInstance(mockService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTransformer)
     reset(mockService)
   }
 
@@ -114,8 +110,6 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      verifyNoInteractions(mockTransformer)
     }
 
     "must drop discrepancies, re-transform data and redirect to the next page when No is submitted" in {
@@ -136,16 +130,6 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
            |""".stripMargin)
         .as[JsObject]
 
-      val jsonAfterTransformation = Json
-        .parse(s"""
-           |{
-           |  "someDummyTransformedData" : {
-           |    "foo" : "bar"
-           |  }
-           |}
-           |""".stripMargin)
-        .as[JsObject]
-
       val jsonAfterEverything = Json
         .parse(s"""
            |{
@@ -160,15 +144,14 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
            |""".stripMargin)
         .as[JsObject]
 
-      val now                            = Instant.now()
-      val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
-      val userAnswersAfterEverything     = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
+      val now                         = Instant.now()
+      val userAnswersBeforeEverything = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
+      val userAnswersAfterEverything  = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.retainAndTransform(any(), any())(any())(any(), any(), any())).thenReturn(Future.successful(userAnswersAfterEverything))
-      when(mockTransformer.transform(any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterEverything))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 

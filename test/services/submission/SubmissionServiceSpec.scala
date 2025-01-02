@@ -17,9 +17,9 @@
 package services.submission
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated._
+import generated.*
 import generators.Generators
-import models.reference._
+import models.reference.*
 import models.{DocType, Index, UnloadingType, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -134,7 +134,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "unloadingRemarkReads" - {
-    import pages._
+    import pages.*
 
     "must create unloading remark" - {
       "when RevisedUnloadingPermission is true" - {
@@ -191,7 +191,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
                 val userAnswers = emptyUserAnswers
                   .setValue(NewAuthYesNoPage, false)
-                  .setValue(DidUserChooseNewProcedurePage, false)
                   .setValue(UnloadingTypePage, UnloadingType.Fully)
                   .setValue(DateGoodsUnloadedPage, LocalDate.of(2020, 1, 1))
                   .setValue(CanSealsBeReadPage, true)
@@ -230,8 +229,10 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   )
 
                 val userAnswers = emptyUserAnswers
-                  .setValue(NewAuthYesNoPage, false)
-                  .setValue(DidUserChooseNewProcedurePage, true)
+                  .setValue(NewAuthYesNoPage, true)
+                  .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+                  .setValue(GoodsTooLargeForContainerYesNoPage, true)
+                  .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
                   .setValue(CanSealsBeReadPage, true)
                   .setValue(AreAnySealsBrokenPage, false)
                   .setValue(UnloadingCommentsPage, "comments")
@@ -480,8 +481,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       "when cannotUseRevisedUnloadingProcedure" in {
         val userAnswers = emptyUserAnswers
-          .setValue(DidUserChooseNewProcedurePage, true)
-          .setValue(NewAuthYesNoPage, false)
+          .setValue(NewAuthYesNoPage, true)
           .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
           .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
@@ -933,7 +933,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
     "must create departure transport means" - {
       import pages.NewAuthYesNoPage
-      import pages.departureMeansOfTransport._
+      import pages.departureMeansOfTransport.*
       import pages.sections.TransportMeansSection
 
       "when there are discrepancies" in {
@@ -1081,8 +1081,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
     "must create supporting documents" - {
       import pages.NewAuthYesNoPage
-      import pages.documents._
-      import pages.sections.documents._
+      import pages.documents.*
+      import pages.sections.documents.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_ConsignmentType05]) {
@@ -1220,8 +1220,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
     "must create transport documents" - {
       import pages.NewAuthYesNoPage
-      import pages.documents._
-      import pages.sections.documents._
+      import pages.documents.*
+      import pages.sections.documents.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_ConsignmentType05]) {
@@ -1343,7 +1343,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
     "must create additional references" - {
       import pages.NewAuthYesNoPage
-      import pages.additionalReference._
+      import pages.additionalReference.*
       import pages.sections.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {
@@ -1465,7 +1465,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "houseConsignmentReads" - {
-    import pages.houseConsignment.index._
+    import pages.houseConsignment.index.*
     import pages.sections.HouseConsignmentSection
 
     val sequenceNumber = 1
@@ -1521,8 +1521,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create departure transport means" - {
-      import pages.houseConsignment.index.departureMeansOfTransport._
-      import pages.sections.houseConsignment.index.departureTransportMeans._
+      import pages.houseConsignment.index.departureMeansOfTransport.*
+      import pages.sections.houseConsignment.index.departureTransportMeans.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
@@ -1682,8 +1682,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create supporting documents" - {
-      import pages.houseConsignment.index.documents._
-      import pages.sections.houseConsignment.index.documents._
+      import pages.houseConsignment.index.documents.*
+      import pages.sections.houseConsignment.index.documents.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
@@ -1830,8 +1830,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create transport documents" - {
-      import pages.houseConsignment.index.documents._
-      import pages.sections.houseConsignment.index.documents._
+      import pages.houseConsignment.index.documents.*
+      import pages.sections.houseConsignment.index.documents.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
@@ -1962,7 +1962,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create additional references" - {
-      import pages.houseConsignment.index.additionalReference._
+      import pages.houseConsignment.index.additionalReference.*
       import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {
@@ -2101,7 +2101,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create consignment items" - {
-      import pages.houseConsignment.index.items._
+      import pages.houseConsignment.index.items.*
       import pages.sections.ItemSection
 
       "when there are discrepancies" in {
@@ -2238,7 +2238,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "consignmentItemReads" - {
-    import pages.houseConsignment.index.items._
+    import pages.houseConsignment.index.items.*
     import pages.sections.ItemSection
 
     val sequenceNumber = 1
@@ -2351,7 +2351,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create packaging" - {
-      import pages.houseConsignment.index.items.packages._
+      import pages.houseConsignment.index.items.packages.*
       import pages.sections.PackagingSection
 
       "when there are discrepancies" in {
@@ -2498,8 +2498,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create supporting documents" - {
-      import pages.houseConsignment.index.items.document._
-      import pages.sections.houseConsignment.index.items.documents._
+      import pages.houseConsignment.index.items.document.*
+      import pages.sections.houseConsignment.index.items.documents.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
@@ -2646,8 +2646,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create transport documents" - {
-      import pages.houseConsignment.index.items.document._
-      import pages.sections.houseConsignment.index.items.documents._
+      import pages.houseConsignment.index.items.document.*
+      import pages.sections.houseConsignment.index.items.documents.*
 
       "when there are discrepancies" in {
         forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
@@ -2778,7 +2778,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must create additional references" - {
-      import pages.houseConsignment.index.items.additionalReference._
+      import pages.houseConsignment.index.items.additionalReference.*
       import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {

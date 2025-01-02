@@ -135,8 +135,8 @@ trait ViewModelGenerators {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(0, maxSeqLength)
-      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
-      children     <- Gen.containerOf[Seq, AccordionSection](arbitrary[AccordionSection])
+      rows         <- listWithMaxLength[SummaryListRow]()
+      children     <- listWithMaxLength[AccordionSection]()
     } yield StaticSection(sectionTitle, rows, children)
   }
 
@@ -144,7 +144,8 @@ trait ViewModelGenerators {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
-      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+      rows         <- listWithMaxLength[SummaryListRow]()
+      rows         <- listWithMaxLength[SummaryListRow]()
     } yield StaticSection(sectionTitle, rows, Nil)
   }
 
@@ -152,7 +153,7 @@ trait ViewModelGenerators {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
-      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+      rows         <- listWithMaxLength[SummaryListRow]()
     } yield AccordionSection(sectionTitle, rows)
   }
 
@@ -699,9 +700,11 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryCheckYourAnswersViewModel: Arbitrary[CheckYourAnswersViewModel] = Arbitrary {
     for {
+      procedureSection      <- arbitrary[StaticSection]
+      warning               <- Gen.option(nonEmptyString)
       sections              <- listWithMaxLength[StaticSection]()
       showDiscrepanciesLink <- arbitrary[Boolean]
       goodsTooLarge         <- Gen.option(arbitrary[Boolean])
-    } yield CheckYourAnswersViewModel(sections, showDiscrepanciesLink, goodsTooLarge)
+    } yield CheckYourAnswersViewModel(procedureSection, warning, sections, showDiscrepanciesLink, goodsTooLarge)
   }
 }

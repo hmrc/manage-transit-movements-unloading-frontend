@@ -19,24 +19,19 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.{CUSTOM_ConsignmentType05, Number0, SealType04, TransportEquipmentType05}
 import generators.Generators
-import models.{NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.verify
+import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.LargeUnsealedGoodsRecordDiscrepanciesYesNoPage
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.CannotUseRevisedUnloadingProcedureView
 
 class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+
   private val mode = NormalMode
 
-  lazy val cannotUseRevisedUnloadingProcedureRoute: String = controllers.routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(arrivalId).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
+  lazy val cannotUseRevisedUnloadingProcedureRoute: String =
+    routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(arrivalId).url
 
   "CannotUseRevisedUnloadingProcedureController" - {
 
@@ -75,8 +70,15 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
         emptyUserAnswers.copy(ie043Data =
           basicIe043.copy(Consignment =
             Some(
-              CUSTOM_ConsignmentType05(containerIndicator = Number0,
-                                       TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 1, Seal = Seq(SealType04(1, "1"))))
+              CUSTOM_ConsignmentType05(
+                containerIndicator = Number0,
+                TransportEquipment = Seq(
+                  TransportEquipmentType05(
+                    sequenceNumber = 1,
+                    numberOfSeals = 1,
+                    Seal = Seq(SealType04(1, "1"))
+                  )
+                )
               )
             )
           )
@@ -98,14 +100,19 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                CUSTOM_ConsignmentType05(containerIndicator = Number0,
-                                         TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 0))
+                CUSTOM_ConsignmentType05(
+                  containerIndicator = Number0,
+                  TransportEquipment = Seq(
+                    TransportEquipmentType05(
+                      sequenceNumber = 1,
+                      numberOfSeals = 0
+                    )
+                  )
                 )
               )
             )
           )
-          .set(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
-          .get
+          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
       )
 
       val request = FakeRequest(POST, cannotUseRevisedUnloadingProcedureRoute)
@@ -114,10 +121,6 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
 
       status(result) `mustEqual` SEE_OTHER
       redirectLocation(result).value `mustEqual` controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
-
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe Some(true)
     }
 
   }

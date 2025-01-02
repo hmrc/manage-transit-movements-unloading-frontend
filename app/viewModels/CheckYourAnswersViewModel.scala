@@ -17,7 +17,13 @@
 package viewModels
 
 import models.UserAnswers
-import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
+import pages.{
+  AddTransitUnloadingPermissionDiscrepanciesYesNoPage,
+  GoodsTooLargeForContainerYesNoPage,
+  LargeUnsealedGoodsRecordDiscrepanciesYesNoPage,
+  NewAuthYesNoPage,
+  RevisedUnloadingProcedureConditionsYesNoPage
+}
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -26,6 +32,8 @@ import viewModels.sections.Section.StaticSection
 import javax.inject.Inject
 
 case class CheckYourAnswersViewModel(
+  procedureSection: Section,
+  warning: Option[String],
   sections: Seq[Section],
   showDiscrepanciesLink: Boolean,
   goodsTooLarge: Option[Boolean]
@@ -41,12 +49,19 @@ object CheckYourAnswersViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
 
-      val headerSection = StaticSection(
+      val procedureSection = StaticSection(
         rows = Seq(
           helper.newProcedure,
           helper.revisedUnloadingProcedureConditionsYesNo,
           helper.goodsTooLarge,
-          helper.largeUnsealedGoodsRecordDiscrepanciesYesNo,
+          helper.largeUnsealedGoodsRecordDiscrepanciesYesNo
+        ).flatten
+      )
+
+      // warning
+
+      val unloadingSection = StaticSection(
+        rows = Seq(
           helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
@@ -54,7 +69,7 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val commentsSection = StaticSection(
+      val discrepanciesSection = StaticSection(
         sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
         rows = Seq(
           helper.addDiscrepanciesYesNo,
@@ -73,8 +88,18 @@ object CheckYourAnswersViewModel {
           case _                => true
         }
 
+      val warning = (
+        userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
+        userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+      ) match {
+        case (Some(false), _) | (_, Some(true)) => Some(messages("site.warning.procedure"))
+        case _                                  => None
+      }
+
       new CheckYourAnswersViewModel(
-        Seq(headerSection, commentsSection),
+        procedureSection,
+        warning,
+        Seq(unloadingSection, discrepanciesSection),
         discrepanciesPresent,
         userAnswers.get(GoodsTooLargeForContainerYesNoPage)
       )

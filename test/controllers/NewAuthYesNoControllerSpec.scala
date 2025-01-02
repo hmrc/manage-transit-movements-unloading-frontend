@@ -29,7 +29,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.UsersAnswersService
+import services.UserAnswersService
 import views.html.NewAuthYesNoView
 
 import java.time.Instant
@@ -40,7 +40,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("newAuthYesNo")
   private val mode         = NormalMode
-  private val mockService  = mock[UsersAnswersService]
+  private val mockService  = mock[UserAnswersService]
 
   private lazy val newAuthYesNoRoute =
     controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, mode).url
@@ -55,7 +55,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[UsersAnswersService].toInstance(mockService)
+        bind[UserAnswersService].toInstance(mockService)
       )
 
   "NewAuthYesNo Controller" - {
@@ -118,6 +118,9 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
              |{
              |  "someDummyTransformedData" : {
              |    "foo" : "bar"
+             |  },
+             |  "otherQuestions" : {
+             |    "newAuthYesNo" : true
              |  }
              |}
              |""".stripMargin)
@@ -129,7 +132,8 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
@@ -152,7 +156,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
 
       setExistingUserAnswers(userAnswers)
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswers))
+      when(mockService.retainAndTransform(any(), any())(any(), any(), any(), any())).thenReturn(Future.successful(userAnswers))
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))

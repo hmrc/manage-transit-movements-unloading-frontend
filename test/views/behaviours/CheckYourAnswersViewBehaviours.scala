@@ -20,16 +20,18 @@ import generators.Generators
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators {
 
-  lazy val sections: Seq[Section] = Seq(arbitraryStaticSectionNoChildren.arbitrary.sample.value)
+  // need to use arbitraryStaticSectionNoChildren as the summaryLists val does not take children sections into account
+  lazy val sections: Seq[Section] = listWithMaxLength[StaticSection]()(arbitraryStaticSectionNoChildren).sample.value
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
   def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable
 
-  override def summaryLists: Seq[SummaryList] = sections.map(
+  override lazy val summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)
   )
 
@@ -49,7 +51,7 @@ trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Gene
       "must not render section titles when rows and children are empty" - {
         val emptySections = sections.map {
           case x: Section.AccordionSection => x.copy(rows = Nil, children = Nil)
-          case x: Section.StaticSection    => x.copy(rows = Nil)
+          case x: Section.StaticSection    => x.copy(rows = Nil, children = Nil)
         }
         val view = viewWithSections(emptySections)
         val doc  = parseView(view)

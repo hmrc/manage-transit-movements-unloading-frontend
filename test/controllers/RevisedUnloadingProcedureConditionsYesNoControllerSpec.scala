@@ -18,42 +18,33 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import pages.RevisedUnloadingProcedureConditionsYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.UsersAnswersService
 import views.html.RevisedUnloadingProcedureConditionsYesNoView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private lazy val revisedUnloadingProcedureConditionsYesNoRoute =
-    controllers.routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, mode).url
+    routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, mode).url
+
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("revisedUnloadingProcedureConditionsYesNo")
   private val mode         = NormalMode
-  private val mockService  = mock[UsersAnswersService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockService)
-  }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation),
-        bind[UsersAnswersService].toInstance(mockService)
+        bind[Navigation].toInstance(fakeNavigation)
       )
 
   "RevisedUnloadingProcedureConditionsYesNo Controller" - {
@@ -93,59 +84,9 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
-    "must redirect to the next page after transformation when valid data is submitted" in {
-
-      val jsonBeforeEverything = Json
-        .parse(s"""
-             |{
-             |  "otherQuestions" : {
-             |    "foo" : "bar",
-             |    "otherThingsToReport" : "other things"
-             |  },
-             |  "someDummyTransformedData" : {
-             |    "foo" : "bar"
-             |  },
-             |  "someDummyDiscrepancies" : {
-             |    "foo" : "bar"
-             |  }
-             |}
-             |""".stripMargin)
-        .as[JsObject]
-
-      val jsonAfterTransformation = Json
-        .parse(s"""
-             |{
-             |  "someDummyTransformedData" : {
-             |    "foo" : "bar"
-             |  }
-             |}
-             |""".stripMargin)
-        .as[JsObject]
-
-      val now                            = Instant.now()
-      val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
-
-      setExistingUserAnswers(userAnswersBeforeEverything)
-
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
-
-      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
-
-      val request = FakeRequest(POST, revisedUnloadingProcedureConditionsYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
-    }
-
-    "must redirect to the next page when user answer is submitted" in {
+    "must redirect to the next page when valid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(emptyUserAnswers))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 

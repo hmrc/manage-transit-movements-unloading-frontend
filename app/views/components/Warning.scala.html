@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-import pages.sections.OtherQuestionsSection
-import play.api.libs.json.JsPath
+@this(govukWarningText: GovukWarningText)
 
-// This is similar to NewAuthYesNoPage to determine if the user chooses new procedure
-// For navigation we need to know how the user journey starts
-// However we cannot use NewAuthYesNoPage for this purpose as in some cases it's updated programmatically
-case object DidUserChooseNewProcedurePage extends QuestionPage[Boolean] {
+@(text: String)(implicit messages: Messages)
 
-  override def path: JsPath = OtherQuestionsSection.path \ toString
-
-  override def toString: String = "userChoseNewProcedure"
-
-}
+@govukWarningText(
+    WarningText(
+        iconFallbackText = Some(messages("site.warning")),
+        content = Text(text)
+    )
+)

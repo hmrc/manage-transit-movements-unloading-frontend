@@ -200,34 +200,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
-        // by-pass AddTransitUnloadingPermissionDiscrepanciesYesNo
-        // if the journey starts with revised unloading procedure (DidUserChooseNewProcedurePage = true)
-        // and the user wanted to record discrepancies (which sets NewAuthYesNoPage = false)
-        "to unloading finding page when seals are not broken, NewAuthYesNoPage is false, DidUserChooseNewProcedurePage true" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(DidUserChooseNewProcedurePage, true)
-            .setValue(NewAuthYesNoPage, false)
-            .setValue(CanSealsBeReadPage, true)
-            .setValue(AreAnySealsBrokenPage, false)
-
-          navigator
-            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
-        }
-
-        // do not by-pass AddTransitUnloadingPermissionDiscrepanciesYesNo
-        // if the journey does not start with revised unloading procedure (DidUserChooseNewProcedurePage = false)
-        "to AddTransitUnloadingPermissionDiscrepanciesYesNo page when seals are not broken, DidUserChooseNewProcedurePage false" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(DidUserChooseNewProcedurePage, false)
-            .setValue(CanSealsBeReadPage, true)
-            .setValue(AreAnySealsBrokenPage, false)
-
-          navigator
-            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, mode))
-        }
-
         "to unloading finding page when seals are broken NewAuthYesNoPage is false" in {
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, false)

@@ -19,11 +19,11 @@ package views.behaviours
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait SummaryListViewBehaviours extends ViewBehaviours {
 
-  def summaryLists: Seq[SummaryList]
+  lazy val summaryLists: Seq[SummaryList]
 
   // scalastyle:off method.length
   def pageWithSummaryLists(): Unit =
