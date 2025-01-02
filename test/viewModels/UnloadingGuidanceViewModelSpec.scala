@@ -17,6 +17,7 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 
 class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -25,39 +26,69 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     val viewModel = new UnloadingGuidanceViewModelProvider
 
     "return correct text for not newAuth title" in {
-      viewModel.apply(newAuth = false, Some(true)).title mustBe s"unloadingGuidance.notNewAuth.title"
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
+      viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.notNewAuth.title"
     }
+
     "return correct text for not newAuth heading" in {
-      viewModel.apply(newAuth = false, Some(true)).heading mustBe s"unloadingGuidance.notNewAuth.heading"
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
+      viewModel.apply(userAnswers).heading mustBe s"unloadingGuidance.notNewAuth.heading"
     }
 
     "return correct text for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.title"
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+      viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.title"
     }
 
     "return correct text for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, true)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+      viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
     }
 
     "return correct preLinkText for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).preLinkText mustBe Some("unloadingGuidance.preLinkText")
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+      viewModel.apply(userAnswers).preLinkText mustBe Some("unloadingGuidance.preLinkText")
     }
 
     "return correct postLinkText for newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).postLinkText mustBe Some("unloadingGuidance.postLinkText")
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+      viewModel.apply(userAnswers).postLinkText mustBe Some("unloadingGuidance.postLinkText")
     }
 
     "return correct para2 for not newAuth" in {
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(false)).para2 mustBe Some("unloadingGuidance.para2.notNewAuth")
-      viewModel.apply(newAuth = false, goodsTooLarge = Some(true)).para2 mustBe Some("unloadingGuidance.para2.notNewAuth")
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, false)
+      viewModel.apply(userAnswers).para2 mustBe Some("unloadingGuidance.para2.notNewAuth")
     }
 
     "return None when newAuth and goodsTooLarge = false" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(false)).para2 mustBe None
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+      viewModel.apply(userAnswers).para2 mustBe None
     }
 
     "return correct para2 for newAuth and goodsTooLarge = true" in {
-      viewModel.apply(newAuth = true, goodsTooLarge = Some(true)).para2 mustBe Some("unloadingGuidance.para2.newAuth.goodsTooLargeYes")
+      val userAnswers = emptyUserAnswers
+        .setValue(NewAuthYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, true)
+        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+      viewModel.apply(userAnswers).para2 mustBe Some("unloadingGuidance.para2.newAuth.goodsTooLargeYes")
     }
 
   }

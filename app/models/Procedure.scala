@@ -16,34 +16,42 @@
 
 package models
 
-import pages.{NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 
 sealed trait Procedure {
   val prefix: String
+  val revised: Boolean
 }
 
 object Procedure {
 
   case object Unrevised extends Procedure {
-    override val prefix: String = "otherThingsToReport.oldAuth"
+    override val prefix: String   = "otherThingsToReport.oldAuth"
+    override val revised: Boolean = false
   }
 
   case object RevisedAndSealReplaced extends Procedure {
-    override val prefix: String = "otherThingsToReport.newAuthAndSealsReplaced"
+    override val prefix: String   = "otherThingsToReport.newAuthAndSealsReplaced"
+    override val revised: Boolean = true
   }
 
   case object RevisedAndSealNotReplaced extends Procedure {
-    override val prefix: String = "otherThingsToReport.newAuth"
+    override val prefix: String   = "otherThingsToReport.newAuth"
+    override val revised: Boolean = true
   }
 
-  def apply(userAnswers: UserAnswers): Procedure =
-    userAnswers.get(NewAuthYesNoPage) match
-      case Some(value) =>
-        apply(userAnswers, value)
-      case None =>
-        throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure because NewAuthYesNoPage is unpopulated")
+  def apply(userAnswers: UserAnswers): Procedure = {
+    val revised = (
+      userAnswers.get(NewAuthYesNoPage),
+      userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
+      userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+    ) match {
+      case (Some(true), Some(false), _)         => false
+      case (Some(true), Some(true), Some(true)) => false
+      case (Some(value), _, _)                  => value
+      case (None, _, _) => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure because NewAuthYesNoPage is unpopulated")
+    }
 
-  def apply(userAnswers: UserAnswers, revised: Boolean): Procedure =
     if (revised) {
       userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage) match
         case Some(true) =>
@@ -55,4 +63,5 @@ object Procedure {
     } else {
       Unrevised
     }
+  }
 }

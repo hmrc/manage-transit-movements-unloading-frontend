@@ -33,7 +33,7 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
         .setValue(NewAuthYesNoPage, false)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode, revised = false)
+      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode)
 
       result.title mustBe "What do you want to report?"
       result.heading mustBe "What do you want to report?"
@@ -50,7 +50,7 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode, revised = true)
+      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode)
 
       result.title mustBe "What is the identification number for the external seal?"
       result.heading mustBe "What is the identification number for the external seal?"
@@ -75,7 +75,7 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode, revised = true)
+      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode)
 
       result.title mustBe "What is the identification number for the replacement external seal?"
       result.heading mustBe "What is the identification number for the replacement external seal?"

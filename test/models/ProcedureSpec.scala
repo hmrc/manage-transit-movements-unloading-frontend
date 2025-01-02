@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import pages.{NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 
 class ProcedureSpec extends SpecBase {
 
@@ -31,6 +31,35 @@ class ProcedureSpec extends SpecBase {
         val result = Procedure.apply(userAnswers)
 
         result.mustBe(Procedure.Unrevised)
+      }
+    }
+
+    "when switching from revised to legacy procedure" - {
+      "when RevisedUnloadingProcedureConditionsYesNoPage is false" - {
+        "must be unrevised" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
+          val result = Procedure.apply(userAnswers)
+
+          result.mustBe(Procedure.Unrevised)
+        }
+      }
+
+      "when RevisedUnloadingProcedureConditionsYesNoPage is true" - {
+        "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is true" - {
+          "must be unrevised" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+
+            val result = Procedure.apply(userAnswers)
+
+            result.mustBe(Procedure.Unrevised)
+          }
+        }
       }
     }
 

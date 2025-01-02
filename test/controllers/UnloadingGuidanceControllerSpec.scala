@@ -35,13 +35,13 @@ import scala.concurrent.Future
 
 class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
-  lazy val unloadingGuidanceRoute: String               = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
-  val mockViewModel: UnloadingGuidanceViewModelProvider = mock[UnloadingGuidanceViewModelProvider]
+  lazy val unloadingGuidanceRoute: String                       = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  val mockViewModelProvider: UnloadingGuidanceViewModelProvider = mock[UnloadingGuidanceViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[UnloadingGuidanceViewModelProvider].toInstance(mockViewModel))
+      .overrides(bind[UnloadingGuidanceViewModelProvider].toInstance(mockViewModelProvider))
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
@@ -54,19 +54,19 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
       )
 
-      when(mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))
-        .thenReturn(
-          UnloadingGuidanceViewModel(
-            title = "title",
-            heading = "heading",
-            preLinkText = Some("preLinkText"),
-            linkText = "link",
-            postLinkText = Some("postLinkText"),
-            para1 = Some("para1"),
-            para2 = Some("para2"),
-            para3 = Some(Para3.apply("unloadingGuidance"))
-          )
-        )
+      val viewModel = UnloadingGuidanceViewModel(
+        title = "title",
+        heading = "heading",
+        preLinkText = Some("preLinkText"),
+        linkText = "link",
+        postLinkText = Some("postLinkText"),
+        para1 = Some("para1"),
+        para2 = Some("para2"),
+        para3 = Some(Para3.apply("unloadingGuidance"))
+      )
+
+      when(mockViewModelProvider.apply(any()))
+        .thenReturn(viewModel)
 
       val request = FakeRequest(GET, unloadingGuidanceRoute)
 
@@ -76,7 +76,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, mockViewModel.apply(newAuth = false, goodsTooLarge = Some(true)))(
+      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, viewModel)(
         request,
         messages
       ).toString
@@ -87,6 +87,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
         val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
 
         setExistingUserAnswers(userAnswers)
@@ -107,6 +108,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
         val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
           .setValue(GoodsTooLargeForContainerYesNoPage, false)
 
         setExistingUserAnswers(userAnswers)
@@ -119,25 +121,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
         redirectLocation(result).value mustEqual
           routes.PhotographExternalSealController.onPageLoad(userAnswers.id).url
-      }
-    }
-
-    "must redirect to GoodsTooLargeForContainerYesNoController" - {
-      "when NewAuthYesNoPage is true and GoodsTooLargeForContainerYesNoPage is undefined" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, true)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(POST, unloadingGuidanceRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, NormalMode).url
       }
     }
 
@@ -193,35 +176,9 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to Session Expired for a GET if no answer is found for NewAuthYesNoPage" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, unloadingGuidanceRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
     "must redirect to Session Expired for a POST if no existing data is found" in {
 
       setNoExistingUserAnswers()
-
-      val request = FakeRequest(POST, unloadingGuidanceRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to Session Expired for a POST if no answer is found for NewAuthYesNoPage" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, unloadingGuidanceRoute)
 

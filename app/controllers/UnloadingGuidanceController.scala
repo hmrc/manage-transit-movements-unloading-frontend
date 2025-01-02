@@ -36,51 +36,39 @@ class UnloadingGuidanceController @Inject() (
   actions: Actions,
   view: UnloadingGuidanceView,
   unloadingPermission: UnloadingPermissionMessageService,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
-  unloadingGuidanceViewModel: UnloadingGuidanceViewModelProvider
+  viewModelProvider: UnloadingGuidanceViewModelProvider
 )(implicit executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions
-      .requireData(arrivalId)
-      .andThen(getMandatoryPage(NewAuthYesNoPage))
-      .async {
-        implicit request =>
-          val newAuth: Boolean               = request.arg
-          val goodsTooLarge: Option[Boolean] = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
-
-          unloadingPermission
-            .getMessageId(arrivalId, UnloadingPermission)
-            .map {
-              case Some(messageId) =>
-                Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, unloadingGuidanceViewModel.apply(newAuth, goodsTooLarge)))
-              case None =>
-                Redirect(controllers.routes.ErrorController.technicalDifficulties())
-            }
-      }
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        unloadingPermission
+          .getMessageId(arrivalId, UnloadingPermission)
+          .map {
+            case Some(messageId) =>
+              Ok(view(request.userAnswers.mrn, arrivalId, messageId, NormalMode, viewModelProvider.apply(request.userAnswers)))
+            case None =>
+              Redirect(controllers.routes.ErrorController.technicalDifficulties())
+          }
+    }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions
-      .requireData(arrivalId)
-      .andThen(getMandatoryPage(NewAuthYesNoPage)) {
-        implicit request =>
-          val newAuth: Boolean                                               = request.arg
-          lazy val goodsTooLarge: Option[Boolean]                            = request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
-          lazy val revisedUnloadingProcedureConditionsYesNo: Option[Boolean] = request.userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage)
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val redirectRoute = (
+          request.userAnswers.get(NewAuthYesNoPage),
+          request.userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
+          request.userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+        ) match {
+          case (Some(false), _, _)                   => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
+          case (Some(true), Some(false), _)          => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
+          case (Some(true), Some(true), Some(true))  => routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode)
+          case (Some(true), Some(true), Some(false)) => routes.PhotographExternalSealController.onPageLoad(arrivalId)
+          case _                                     => routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode)
+        }
 
-          val redirectRoute = if (newAuth) {
-            (goodsTooLarge, revisedUnloadingProcedureConditionsYesNo) match {
-              case (_, Some(false)) => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
-              case (Some(true), _)  => routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode)
-              case (Some(false), _) => routes.PhotographExternalSealController.onPageLoad(arrivalId)
-              case (None, _)        => routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, NormalMode)
-            }
-          } else {
-            routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
-          }
-
-          Redirect(redirectRoute)
-      }
+        Redirect(redirectRoute)
+    }
 }
