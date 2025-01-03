@@ -145,7 +145,7 @@ class SubmissionService @Inject() (
 
     Procedure(userAnswers) match {
       case Procedure.CannotUseRevised => cannotUseRevisedUnloadingProcedureReads
-      case _: Procedure.Unrevised     => unrevisedProcedureReads
+      case Procedure.Unrevised        => unrevisedProcedureReads
       case _: Procedure.Revised       => revisedProcedureReads
     }
   }

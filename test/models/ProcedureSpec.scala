@@ -30,7 +30,7 @@ class ProcedureSpec extends SpecBase {
 
         val result = Procedure.apply(userAnswers)
 
-        result.mustBe(Procedure.UsingUnrevised)
+        result.mustBe(Procedure.Unrevised)
       }
     }
 

@@ -29,8 +29,6 @@ object OtherThingsToReport {
 
   def apply(userAnswers: UserAnswers, procedure: Procedure): OtherThingsToReport = {
     val prefix = procedure match {
-      case _: Procedure.Unrevised =>
-        "otherThingsToReport.oldAuth"
       case _: Procedure.Revised =>
         userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage) match {
           case Some(true) =>
@@ -40,6 +38,8 @@ object OtherThingsToReport {
           case None =>
             throw new Exception(s"[${userAnswers.id}] - Couldn't determine prefix because SealsReplacedByCustomsAuthorityYesNoPage is unpopulated")
         }
+      case Procedure.Unrevised | Procedure.CannotUseRevised =>
+        "otherThingsToReport.oldAuth"
     }
     OtherThingsToReport(prefix)
   }

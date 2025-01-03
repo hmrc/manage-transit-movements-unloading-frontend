@@ -24,11 +24,13 @@ sealed trait Procedure {
 
 object Procedure {
 
-  sealed trait Unrevised extends Procedure {
+  case object Unrevised extends Procedure {
     override val revised: Boolean = false
   }
 
-  case object UsingUnrevised extends Unrevised
+  case object CannotUseRevised extends Procedure {
+    override val revised: Boolean = false
+  }
 
   sealed trait Revised extends Procedure {
     override val revised: Boolean = true
@@ -37,10 +39,6 @@ object Procedure {
   case object RevisedAndGoodsTooLarge extends Revised
 
   case object RevisedAndGoodsNotTooLarge extends Revised
-
-  case object CannotUseRevised extends Unrevised
-
-  case object UsingRevised extends Revised
 
   def apply(userAnswers: UserAnswers): Procedure =
     (
@@ -55,7 +53,7 @@ object Procedure {
           case _          => RevisedAndGoodsTooLarge
         }
       case (Some(true), Some(true), Some(false)) => RevisedAndGoodsNotTooLarge
-      case (Some(false), _, _)                   => UsingUnrevised
+      case (Some(false), _, _)                   => Unrevised
       case _                                     => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure")
     }
 }
