@@ -24,7 +24,7 @@ class ProcedureSpec extends SpecBase {
   "Procedure" - {
 
     "when not a revised procedure" - {
-      "must be Unrevised" in {
+      "must be UsingUnrevised" in {
         val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, false)
 
@@ -36,7 +36,7 @@ class ProcedureSpec extends SpecBase {
 
     "when switching from revised to legacy procedure" - {
       "when RevisedUnloadingProcedureConditionsYesNoPage is false" - {
-        "must be unrevised" in {
+        "must be CannotUseRevised" in {
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
             .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
@@ -49,7 +49,7 @@ class ProcedureSpec extends SpecBase {
 
       "when RevisedUnloadingProcedureConditionsYesNoPage is true" - {
         "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is true" - {
-          "must be unrevised" in {
+          "must be CannotUseRevised" in {
             val userAnswers = emptyUserAnswers
               .setValue(NewAuthYesNoPage, true)
               .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
@@ -89,6 +89,19 @@ class ProcedureSpec extends SpecBase {
           val result = Procedure.apply(userAnswers)
 
           result.mustBe(Procedure.RevisedAndGoodsNotTooLarge)
+        }
+      }
+
+      "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is unpopulated" - {
+        "must be RevisedAndGoodsTooLarge" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+          val result = Procedure.apply(userAnswers)
+
+          result.mustBe(Procedure.RevisedAndGoodsTooLarge)
         }
       }
 

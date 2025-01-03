@@ -46,14 +46,16 @@ object Procedure {
     (
       userAnswers.get(NewAuthYesNoPage),
       userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
-      userAnswers.get(GoodsTooLargeForContainerYesNoPage),
-      userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+      userAnswers.get(GoodsTooLargeForContainerYesNoPage)
     ) match {
-      case (Some(true), Some(false), _, _)                   => CannotUseRevised
-      case (Some(true), Some(true), Some(true), Some(true))  => CannotUseRevised
-      case (Some(true), Some(true), Some(true), Some(false)) => RevisedAndGoodsTooLarge
-      case (Some(true), Some(true), Some(false), None)       => RevisedAndGoodsNotTooLarge
-      case (Some(false), _, _, _)                            => UsingUnrevised
-      case _                                                 => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure")
+      case (Some(true), Some(false), _) => CannotUseRevised
+      case (Some(true), Some(true), Some(true)) =>
+        userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) match {
+          case Some(true) => CannotUseRevised
+          case _          => RevisedAndGoodsTooLarge
+        }
+      case (Some(true), Some(true), Some(false)) => RevisedAndGoodsNotTooLarge
+      case (Some(false), _, _)                   => UsingUnrevised
+      case _                                     => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure")
     }
 }
