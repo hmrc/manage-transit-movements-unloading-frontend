@@ -16,8 +16,8 @@
 
 package viewModels
 
+import models.Procedure.RevisedAndGoodsTooLarge
 import models.{Procedure, UserAnswers}
-import pages.GoodsTooLargeForContainerYesNoPage
 
 import javax.inject.Inject
 
@@ -30,9 +30,7 @@ case class UnloadingGuidanceViewModel(
   para1: Option[String],
   para2: Option[String],
   para3: Option[Para3]
-) {
-  val prefix = "unloadingGuidance"
-}
+)
 
 case class Para3(preLinkText: String, linkText: String, postLinkText: String)
 
@@ -45,47 +43,50 @@ object UnloadingGuidanceViewModel {
   class UnloadingGuidanceViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers): UnloadingGuidanceViewModel = {
-      val procedure     = Procedure(userAnswers)
-      val revised       = procedure.revised
-      val goodsTooLarge = userAnswers.get(GoodsTooLargeForContainerYesNoPage)
-      val prefix        = "unloadingGuidance"
+      val procedure = Procedure(userAnswers)
+      val prefix    = "unloadingGuidance"
 
-      def dynamicText(text: String): String = (revised, goodsTooLarge) match {
-        case (false, _)          => s"$prefix.notNewAuth.$text"
-        case (true, Some(false)) => s"$prefix.newAuth.goodsTooLargeNo.$text"
-        case _                   => s"$prefix.newAuth.goodsTooLargeYes.$text"
+      def dynamicText(text: String): String = procedure match {
+        case Procedure.RevisedAndGoodsNotTooLarge => s"$prefix.newAuth.goodsTooLargeNo.$text"
+        case Procedure.RevisedAndGoodsTooLarge    => s"$prefix.newAuth.goodsTooLargeYes.$text"
+        case _                                    => s"$prefix.notNewAuth.$text"
       }
+
       val title   = dynamicText("title")
       val heading = dynamicText("heading")
 
-      val preLinkText: Option[String] = (revised, goodsTooLarge) match {
-        case (true, Some(false)) => Some(s"$prefix.preLinkText")
-        case _                   => None
+      val preLinkText: Option[String] = procedure match {
+        case Procedure.RevisedAndGoodsNotTooLarge => Some(s"$prefix.preLinkText")
+        case _                                    => None
       }
 
-      val linkText: String = (revised, goodsTooLarge) match {
-        case (true, Some(false)) => s"$prefix.pdf.midSentence.link"
-        case _                   => s"$prefix.pdf.link"
+      val linkText: String = procedure match {
+        case Procedure.RevisedAndGoodsNotTooLarge => s"$prefix.pdf.midSentence.link"
+        case _                                    => s"$prefix.pdf.link"
       }
 
-      val postLinkText: Option[String] = (revised, goodsTooLarge) match {
-        case (true, Some(false)) => Some(s"$prefix.postLinkText")
-        case _                   => None
+      val postLinkText: Option[String] = procedure match {
+        case Procedure.RevisedAndGoodsNotTooLarge => Some(s"$prefix.postLinkText")
+        case _                                    => None
       }
 
-      val para1: Option[String] = Option.when(revised && goodsTooLarge.contains(true))(s"$prefix.para1")
-
-      val para2: Option[String] = (revised, goodsTooLarge) match {
-        case (false, _)          => Some(s"$prefix.para2.notNewAuth")
-        case (true, Some(false)) => None
-        case _                   => Some(s"$prefix.para2.newAuth.goodsTooLargeYes")
+      val para1: Option[String] = procedure match {
+        case RevisedAndGoodsTooLarge => Some(s"$prefix.para1")
+        case _                       => None
       }
 
-      val para3: Option[Para3] = Option.when(revised && goodsTooLarge.contains(false))(Para3(prefix))
+      val para2: Option[String] = procedure match {
+        case Procedure.RevisedAndGoodsNotTooLarge => None
+        case Procedure.RevisedAndGoodsTooLarge    => Some(s"$prefix.para2.newAuth.goodsTooLargeYes")
+        case _                                    => Some(s"$prefix.para2.notNewAuth")
+      }
+
+      val para3: Option[Para3] = procedure match {
+        case Procedure.RevisedAndGoodsNotTooLarge => Some(Para3(prefix))
+        case _                                    => None
+      }
 
       UnloadingGuidanceViewModel(title, heading, preLinkText, linkText, postLinkText, para1, para2, para3)
-
     }
-
   }
 }

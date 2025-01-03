@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import models.{CheckMode, Procedure, UnloadingType, UserAnswers}
+import models.{CheckMode, OtherThingsToReport, UnloadingType, UserAnswers}
 import pages.*
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
@@ -117,7 +117,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def report: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = OtherThingsToReportPage,
     formatAnswer = formatAsText,
-    prefix = s"checkYourAnswers.rowHeadings.${Procedure(userAnswers).prefix}",
+    prefix = s"checkYourAnswers.rowHeadings.${OtherThingsToReport(userAnswers).prefix}",
     id = Some("change-report"),
     call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
   )

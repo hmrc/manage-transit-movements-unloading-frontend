@@ -157,6 +157,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
                 val userAnswers = emptyUserAnswers
                   .setValue(NewAuthYesNoPage, true)
+                  .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+                  .setValue(GoodsTooLargeForContainerYesNoPage, false)
+                  .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
                   .setValue(UnloadingCommentsPage, "comments")
                   .copy(ie043Data = ie043Data)
 
@@ -273,6 +276,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
                 val userAnswers = emptyUserAnswers
                   .setValue(NewAuthYesNoPage, true)
+                  .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+                  .setValue(GoodsTooLargeForContainerYesNoPage, false)
+                  .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
                   .copy(ie043Data = ie043Data)
 
                 val reads  = service.unloadingRemarkReads(userAnswers)
@@ -295,6 +301,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, false)
+            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
             .copy(ie043Data = ie043Data)
 
           val reads  = service.unloadingRemarkReads(userAnswers)

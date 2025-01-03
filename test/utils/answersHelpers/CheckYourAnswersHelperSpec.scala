@@ -615,6 +615,8 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               report =>
                 val answers = emptyUserAnswers
                   .setValue(NewAuthYesNoPage, true)
+                  .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+                  .setValue(GoodsTooLargeForContainerYesNoPage, false)
                   .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
                   .setValue(OtherThingsToReportPage, report)
 
@@ -648,6 +650,8 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               report =>
                 val answers = emptyUserAnswers
                   .setValue(NewAuthYesNoPage, true)
+                  .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+                  .setValue(GoodsTooLargeForContainerYesNoPage, false)
                   .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
                   .setValue(OtherThingsToReportPage, report)
 

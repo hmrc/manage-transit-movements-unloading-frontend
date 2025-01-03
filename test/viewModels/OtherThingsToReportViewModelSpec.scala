@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.{Mode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 import viewModels.OtherThingsToReportViewModel.{AdditionalHtml, OtherThingsToReportViewModelProvider}
 
 class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -47,6 +47,8 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
     "when newAuth is true and sealsReplaced is false" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
@@ -72,6 +74,8 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
     "when newAuth is true and sealsReplace is true" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()

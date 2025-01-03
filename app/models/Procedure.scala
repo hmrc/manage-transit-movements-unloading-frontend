@@ -19,49 +19,41 @@ package models
 import pages.*
 
 sealed trait Procedure {
-  val prefix: String
   val revised: Boolean
 }
 
 object Procedure {
 
-  case object Unrevised extends Procedure {
-    override val prefix: String   = "otherThingsToReport.oldAuth"
+  sealed trait Unrevised extends Procedure {
     override val revised: Boolean = false
   }
 
-  case object RevisedAndSealReplaced extends Procedure {
-    override val prefix: String   = "otherThingsToReport.newAuthAndSealsReplaced"
+  case object UsingUnrevised extends Unrevised
+
+  sealed trait Revised extends Procedure {
     override val revised: Boolean = true
   }
 
-  case object RevisedAndSealNotReplaced extends Procedure {
-    override val prefix: String   = "otherThingsToReport.newAuth"
-    override val revised: Boolean = true
-  }
+  case object RevisedAndGoodsTooLarge extends Revised
 
-  def apply(userAnswers: UserAnswers): Procedure = {
-    val revised = (
+  case object RevisedAndGoodsNotTooLarge extends Revised
+
+  case object CannotUseRevised extends Unrevised
+
+  case object UsingRevised extends Revised
+
+  def apply(userAnswers: UserAnswers): Procedure =
+    (
       userAnswers.get(NewAuthYesNoPage),
       userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
+      userAnswers.get(GoodsTooLargeForContainerYesNoPage),
       userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
     ) match {
-      case (Some(true), Some(false), _)         => false
-      case (Some(true), Some(true), Some(true)) => false
-      case (Some(value), _, _)                  => value
-      case (None, _, _) => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure because NewAuthYesNoPage is unpopulated")
+      case (Some(true), Some(false), _, _)                   => CannotUseRevised
+      case (Some(true), Some(true), Some(true), Some(true))  => CannotUseRevised
+      case (Some(true), Some(true), Some(true), Some(false)) => RevisedAndGoodsTooLarge
+      case (Some(true), Some(true), Some(false), None)       => RevisedAndGoodsNotTooLarge
+      case (Some(false), _, _, _)                            => UsingUnrevised
+      case _                                                 => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure")
     }
-
-    if (revised) {
-      userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage) match
-        case Some(true) =>
-          RevisedAndSealReplaced
-        case Some(false) =>
-          RevisedAndSealNotReplaced
-        case None =>
-          throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure because SealsReplacedByCustomsAuthorityYesNoPage is unpopulated")
-    } else {
-      Unrevised
-    }
-  }
 }

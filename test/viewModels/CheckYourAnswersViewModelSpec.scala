@@ -203,6 +203,8 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val replaced = arbitrary[Boolean].sample.value
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, false)
             .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
 
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
@@ -218,6 +220,8 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
             val replaced = arbitrary[Boolean].sample.value
             val userAnswers = emptyUserAnswers
               .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, false)
               .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
               .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
@@ -232,46 +236,42 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
   }
 
   "warning" - {
-    "when RevisedUnloadingProcedureConditionsYesNoPage is defined and false" - {
+    "when RevisedUnloadingProcedureConditionsYesNoPage is false" - {
       "must be defined" in {
-        val userAnswers       = emptyUserAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
         result.warning.value mustBe "Based on your answers, you cannot use the revised unloading procedure"
       }
     }
 
-    "when RevisedUnloadingProcedureConditionsYesNoPage is defined and true" - {
-      "must be undefined" in {
-        val userAnswers       = emptyUserAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-        result.warning must not be defined
-      }
-    }
-
-    "when LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is defined and true" - {
+    "when LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is true" - {
       "must be defined" in {
-        val userAnswers       = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
         result.warning.value mustBe "Based on your answers, you cannot use the revised unloading procedure"
       }
     }
 
-    "when LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is defined and false" - {
+    "when LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is false" - {
       "must be undefined" in {
-        val userAnswers       = emptyUserAnswers.setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        result.warning must not be defined
-      }
-    }
-
-    "when RevisedUnloadingProcedureConditionsYesNoPage and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage are undefined" - {
-      "must be undefined" in {
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(emptyUserAnswers)
         result.warning must not be defined
       }
     }
@@ -280,15 +280,23 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
   "goodsTooLarge" - {
     "when GoodsTooLargeForContainerYesNoPage is undefined" - {
       "must be undefined" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(emptyUserAnswers)
+        val result            = viewModelProvider.apply(userAnswers)
         result.goodsTooLarge must not be defined
       }
     }
 
     "when GoodsTooLargeForContainerYesNoPage is defined and true" - {
       "must be defined and true" in {
-        val userAnswers       = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
         result.goodsTooLarge.value mustBe true
@@ -297,7 +305,11 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
 
     "when GoodsTooLargeForContainerYesNoPage is defined and false" - {
       "must be defined and false" in {
-        val userAnswers       = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, false)
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, false)
+
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
         result.goodsTooLarge.value mustBe false

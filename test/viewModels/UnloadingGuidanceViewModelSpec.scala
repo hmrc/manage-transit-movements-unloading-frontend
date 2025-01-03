@@ -17,7 +17,7 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 
 class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -40,6 +40,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return correct text for newAuth and goodsTooLarge = false" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.title"
@@ -48,7 +49,9 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return correct text for newAuth and goodsTooLarge = true" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, true)
+        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
     }
@@ -56,6 +59,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return correct preLinkText for newAuth and goodsTooLarge = false" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).preLinkText mustBe Some("unloadingGuidance.preLinkText")
@@ -64,6 +68,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return correct postLinkText for newAuth and goodsTooLarge = false" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).postLinkText mustBe Some("unloadingGuidance.postLinkText")
@@ -78,6 +83,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return None when newAuth and goodsTooLarge = false" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).para2 mustBe None
@@ -86,7 +92,9 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return correct para2 for newAuth and goodsTooLarge = true" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, true)
+        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).para2 mustBe Some("unloadingGuidance.para2.newAuth.goodsTooLargeYes")
     }

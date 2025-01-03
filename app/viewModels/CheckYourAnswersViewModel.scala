@@ -16,14 +16,8 @@
 
 package viewModels
 
-import models.UserAnswers
-import pages.{
-  AddTransitUnloadingPermissionDiscrepanciesYesNoPage,
-  GoodsTooLargeForContainerYesNoPage,
-  LargeUnsealedGoodsRecordDiscrepanciesYesNoPage,
-  NewAuthYesNoPage,
-  RevisedUnloadingProcedureConditionsYesNoPage
-}
+import models.{Procedure, UserAnswers}
+import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -44,7 +38,7 @@ object CheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel =
     new CheckYourAnswersViewModelProvider()(userAnswers)
 
-  class CheckYourAnswersViewModelProvider @Inject() () {
+  class CheckYourAnswersViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
@@ -57,8 +51,6 @@ object CheckYourAnswersViewModel {
           helper.largeUnsealedGoodsRecordDiscrepanciesYesNo
         ).flatten
       )
-
-      // warning
 
       val unloadingSection = StaticSection(
         rows = Seq(
@@ -88,12 +80,9 @@ object CheckYourAnswersViewModel {
         }
       }
 
-      val warning = (
-        userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
-        userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-      ) match {
-        case (Some(false), _) | (_, Some(true)) => Some(messages("site.warning.procedure"))
-        case _                                  => None
+      val warning = Procedure(userAnswers) match {
+        case Procedure.CannotUseRevised => Some(messages("site.warning.procedure"))
+        case _                          => None
       }
 
       new CheckYourAnswersViewModel(
