@@ -19,8 +19,8 @@ package services
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
-import pages.sections.OtherQuestionsSection
-import play.api.libs.json.{JsObject, Json}
+import pages.QuestionPage
+import play.api.libs.json.{JsObject, JsPath, Json}
 import utils.transformers.IE043Transformer
 
 import java.time.Instant
@@ -32,6 +32,14 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
   private val dataTransformer = mock[IE043Transformer]
   private val service         = new UserAnswersService(dataTransformer)
 
+  private case object FooPage extends QuestionPage[String] {
+    override def path: JsPath = JsPath \ "foo"
+  }
+
+  private case object BarPage extends QuestionPage[String] {
+    override def path: JsPath = JsPath \ "bar"
+  }
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(dataTransformer)
@@ -42,10 +50,8 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
   private val jsonBeforeEverything = Json
     .parse(s"""
          |{
-         |  "otherQuestions" : {
-         |    "userChoseNewProcedure" : true,
-         |    "foo" : "bar"
-         |  },
+         |  "foo" : "fooValue",
+         |  "bar" : "barValue",
          |  "someDummyTransformedData" : {
          |    "foo" : "bar"
          |  },
@@ -78,10 +84,8 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
          |  "someDummyTransformedData" : {
          |    "foo" : "bar"
          |  },
-         |  "otherQuestions" : {
-         |    "userChoseNewProcedure" : true,
-         |    "foo" : "bar"
-         |  }
+         |  "foo" : "fooValue",
+         |  "bar" : "barValue"
          |}
          |""".stripMargin)
     .as[JsObject]
@@ -91,7 +95,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
   private val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
   private val userAnswersAfterRetention      = emptyUserAnswers.copy(data = jsonAfterRetention, lastUpdated = now)
 
-  "UsersAnswersService" - {
+  "UserAnswersService" - {
     "wipeAndTransform" - {
       "wipe all data and apply the transformation block" in {
         val result = service.wipeAndTransform(userAnswersBeforeEverything) {
@@ -110,8 +114,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(dataTransformer.transform(any())(any(), any()))
           .thenReturn(Future.successful(userAnswersAfterTransformation))
 
-        val pageToRetain = OtherQuestionsSection
-        val result       = service.retainAndTransform(userAnswersBeforeEverything, pageToRetain)
+        val result = service.retainAndTransform(userAnswersBeforeEverything, FooPage, BarPage)
 
         whenReady(result) {
           updatedAnswers =>

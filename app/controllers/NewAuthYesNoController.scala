@@ -38,7 +38,7 @@ class NewAuthYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NewAuthYesNoView,
-  usersAnswersService: UserAnswersService,
+  userAnswersService: UserAnswersService,
   sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -64,9 +64,8 @@ class NewAuthYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             val userAnswersF: Future[UserAnswers] =
-              // TODO - remove && value
               if (request.userAnswers.hasAnswerChanged(NewAuthYesNoPage, value) && value) {
-                usersAnswersService.retainAndTransform(request.userAnswers, NewAuthYesNoPage)
+                userAnswersService.retainAndTransform(request.userAnswers, NewAuthYesNoPage)
               } else {
                 Future.successful(request.userAnswers)
               }

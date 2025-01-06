@@ -16,14 +16,15 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.GoodsTooLargeForContainerYesNoPage
+import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.GoodsTooLargeForContainerYesNoView
 
@@ -37,7 +38,8 @@ class GoodsTooLargeForContainerYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: GoodsTooLargeForContainerYesNoView
+  view: GoodsTooLargeForContainerYesNoView,
+  userAnswersService: UserAnswersService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -54,7 +56,6 @@ class GoodsTooLargeForContainerYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
   }
 
-  // TODO - retain and transform when answer changes
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
@@ -62,8 +63,21 @@ class GoodsTooLargeForContainerYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
+            val userAnswersF: Future[UserAnswers] =
+              if (request.userAnswers.hasAnswerChanged(GoodsTooLargeForContainerYesNoPage, value) && !value) {
+                userAnswersService.retainAndTransform(
+                  request.userAnswers,
+                  NewAuthYesNoPage,
+                  RevisedUnloadingProcedureConditionsYesNoPage,
+                  GoodsTooLargeForContainerYesNoPage
+                )
+              } else {
+                Future.successful(request.userAnswers)
+              }
+
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsTooLargeForContainerYesNoPage, value))
+              userAnswers    <- userAnswersF
+              updatedAnswers <- Future.fromTry(userAnswers.set(GoodsTooLargeForContainerYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(GoodsTooLargeForContainerYesNoPage, mode, updatedAnswers))
         )

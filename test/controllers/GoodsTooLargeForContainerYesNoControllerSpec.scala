@@ -18,15 +18,18 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.Navigation
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.GoodsTooLargeForContainerYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.UserAnswersService
 import views.html.GoodsTooLargeForContainerYesNoView
 
 import scala.concurrent.Future
@@ -35,6 +38,9 @@ class GoodsTooLargeForContainerYesNoControllerSpec extends SpecBase with AppWith
 
   private lazy val goodsTooLargeForContainerYesNoRoute =
     controllers.routes.GoodsTooLargeForContainerYesNoController.onPageLoad(arrivalId, mode).url
+
+  private val mockUserAnswersService = mock[UserAnswersService]
+
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("goodsTooLargeForContainerYesNo")
   private val mode         = NormalMode
@@ -43,8 +49,14 @@ class GoodsTooLargeForContainerYesNoControllerSpec extends SpecBase with AppWith
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation)
+        bind[Navigation].toInstance(fakeNavigation),
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersService)
+  }
 
   "GoodsTooLargeForContainerYesNo Controller" - {
 
@@ -83,11 +95,89 @@ class GoodsTooLargeForContainerYesNoControllerSpec extends SpecBase with AppWith
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when no is submitted and answer has changed" in {
+      val jsonBeforeEverything = Json
+        .parse(s"""
+             |{
+             |  "otherQuestions" : {
+             |    "newAuthYesNo" : true,
+             |    "revisedUnloadingProcedureConditionsYesNo" : true,
+             |    "foo" : "bar",
+             |    "otherThingsToReport" : "other things"
+             |  },
+             |  "someDummyTransformedData" : {
+             |    "foo" : "bar"
+             |  },
+             |  "someDummyDiscrepancies" : {
+             |    "foo" : "bar"
+             |  }
+             |}
+             |""".stripMargin)
+        .as[JsObject]
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val jsonAfterTransformation = Json
+        .parse(s"""
+             |{
+             |  "someDummyTransformedData" : {
+             |    "foo" : "bar"
+             |  },
+             |  "otherQuestions" : {
+             |    "newAuthYesNo" : true,
+             |    "revisedUnloadingProcedureConditionsYesNo" : true,
+             |    "goodsTooLargeForContainerYesNo" : false
+             |  }
+             |}
+             |""".stripMargin)
+        .as[JsObject]
+
+      val userAnswers                    = emptyUserAnswers
+      val userAnswersBeforeEverything    = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterTransformation = userAnswers.copy(data = jsonAfterTransformation)
+
+      setExistingUserAnswers(userAnswersBeforeEverything)
+
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
+
+      val request = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustBe userAnswersAfterTransformation
+    }
+
+    "must redirect to the next page when no is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when yes is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -97,6 +187,26 @@ class GoodsTooLargeForContainerYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when yes is submitted" in {
+
+      val userAnswers = emptyUserAnswers
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, goodsTooLargeForContainerYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

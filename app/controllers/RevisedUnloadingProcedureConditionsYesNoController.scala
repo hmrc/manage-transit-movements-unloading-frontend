@@ -18,12 +18,13 @@ package controllers
 
 import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.RevisedUnloadingProcedureConditionsYesNoPage
+import pages.{NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RevisedUnloadingProcedureConditionsYesNoView
 
@@ -37,7 +38,8 @@ class RevisedUnloadingProcedureConditionsYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RevisedUnloadingProcedureConditionsYesNoView
+  view: RevisedUnloadingProcedureConditionsYesNoView,
+  userAnswersService: UserAnswersService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -54,7 +56,6 @@ class RevisedUnloadingProcedureConditionsYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
   }
 
-  // TODO - retain and transform when answer changes
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
@@ -62,8 +63,16 @@ class RevisedUnloadingProcedureConditionsYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
+            val userAnswersF: Future[UserAnswers] =
+              if (request.userAnswers.hasAnswerChanged(RevisedUnloadingProcedureConditionsYesNoPage, value) && value) {
+                userAnswersService.retainAndTransform(request.userAnswers, NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage)
+              } else {
+                Future.successful(request.userAnswers)
+              }
+
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(RevisedUnloadingProcedureConditionsYesNoPage, value))
+              userAnswers    <- userAnswersF
+              updatedAnswers <- Future.fromTry(userAnswers.set(RevisedUnloadingProcedureConditionsYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, updatedAnswers))
         )

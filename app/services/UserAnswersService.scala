@@ -30,14 +30,20 @@ class UserAnswersService @Inject() (dataTransformer: IE043Transformer) {
 
   def retainAndTransform[A](
     userAnswers: UserAnswers,
-    page: QuestionPage[A]
+    pages: QuestionPage[A]*
   )(implicit reads: Reads[A], writes: Writes[A], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] =
     for {
       transformedAnswers <- wipeAndTransform(userAnswers) {
         dataTransformer.transform(_)
       }
-      updatedAnswers <- Future.fromTry {
-        userAnswers.get(page).fold(Try(transformedAnswers))(transformedAnswers.set(page, _))
+      updatedAnswers <- pages.foldLeft(Future.successful(transformedAnswers)) {
+        case (acc, page) =>
+          acc.flatMap {
+            acc =>
+              Future.fromTry {
+                userAnswers.get(page).fold(Try(acc))(acc.set(page, _))
+              }
+          }
       }
     } yield updatedAnswers
 
