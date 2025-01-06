@@ -25,6 +25,9 @@ import play.api.mvc.Call
 @Singleton
 class Navigation extends Navigator {
 
+  // TODO - bypass duplicate page when switching to legacy procedure
+  // (Do you want to record any discrepancies?)
+
   // scalastyle:off cyclomatic.complexity
   override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case NewAuthYesNoPage                                    => ua => newAuthNavigation(ua, NormalMode)

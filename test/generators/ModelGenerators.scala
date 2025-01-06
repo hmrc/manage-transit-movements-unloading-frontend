@@ -246,4 +246,14 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
     }
+
+  implicit lazy val arbitraryProcedure: Arbitrary[Procedure] =
+    Arbitrary {
+      Gen.oneOf(
+        Procedure.Unrevised,
+        Procedure.CannotUseRevised,
+        Procedure.RevisedAndGoodsTooLarge,
+        Procedure.RevisedAndGoodsNotTooLarge
+      )
+    }
 }

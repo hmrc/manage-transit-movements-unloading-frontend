@@ -15,7 +15,7 @@ this.section.is = This notification is
 site.backToSummary = Back to summary
 site.caption = MRN: {0}
 site.warning = Warning
-site.warning.procedure = Based on your answers, you cannot use the revised unloading procedure
+site.warning.procedure = Based on the answers you’ve given us, you cannot use the revised unloading procedure
 
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing

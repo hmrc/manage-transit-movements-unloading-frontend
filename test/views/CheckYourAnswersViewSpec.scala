@@ -17,6 +17,7 @@
 package views
 
 import generators.Generators
+import models.Procedure
 import play.twirl.api.HtmlFormat
 import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
@@ -28,7 +29,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
   override val prefix: String = "checkYourAnswers"
 
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable = {
-    val viewModel = new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, None)
+    val viewModel = new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.Unrevised)
     injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
   }
 
@@ -51,7 +52,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
   "must render link for discrepancies when showDiscrepanciesLink is true" - {
 
     val viewModel: CheckYourAnswersViewModel =
-      new CheckYourAnswersViewModel(sections.head, None, sections.tail, true, None)
+      new CheckYourAnswersViewModel(sections.head, sections.tail, true, Procedure.Unrevised)
 
     val view: HtmlFormat.Appendable =
       injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
@@ -68,14 +69,16 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
 
   "must render correct content" - {
 
-    "when goodsTooLarge is undefined" - {
+    "when procedure is Unrevised" - {
       val viewModel =
-        new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, None)
+        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.Unrevised)
 
       val view: HtmlFormat.Appendable =
         injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
 
       val doc = parseView(view)
+
+      behave like pageWithoutWarningText(doc)
 
       behave like pageWithContent(
         doc,
@@ -84,14 +87,37 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
       )
     }
 
-    "when goodsTooLarge is defined and true" - {
+    "when procedure is CannotUseRevised" - {
       val viewModel =
-        new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, Some(true))
+        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.CannotUseRevised)
 
       val view: HtmlFormat.Appendable =
         injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
 
       val doc = parseView(view)
+
+      behave like pageWithWarningText(
+        doc,
+        "Based on the answers you’ve given us, you cannot use the revised unloading procedure"
+      )
+
+      behave like pageWithContent(
+        doc,
+        "p",
+        "By sending this, you are confirming that these details are correct to the best of your knowledge."
+      )
+    }
+
+    "when procedure is RevisedAndGoodsTooLarge" - {
+      val viewModel =
+        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.RevisedAndGoodsTooLarge)
+
+      val view: HtmlFormat.Appendable =
+        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
+
+      val doc = parseView(view)
+
+      behave like pageWithoutWarningText(doc)
 
       behave like pageWithContent(
         doc,
@@ -108,9 +134,9 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
       )
     }
 
-    "when goodsTooLarge is defined and false" - {
+    "when procedure is RevisedAndGoodsNotTooLarge" - {
       val viewModel =
-        new CheckYourAnswersViewModel(sections.head, None, sections.tail, false, Some(false))
+        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.RevisedAndGoodsNotTooLarge)
 
       val view: HtmlFormat.Appendable =
         injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
@@ -123,6 +149,8 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
         "By sending this, you are confirming:"
       )
 
+      behave like pageWithoutWarningText(doc)
+
       behave like pageWithList(
         doc,
         "govuk-list--bullet",
@@ -131,20 +159,6 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
         "you did not check the goods",
         "there was no evidence of discrepancies between the transit and unloading permission"
       )
-    }
-
-    "when warning is defined" - {
-      val warning = nonEmptyString.sample.value
-
-      val viewModel =
-        new CheckYourAnswersViewModel(sections.head, Some(warning), sections.tail, false, None)
-
-      val view: HtmlFormat.Appendable =
-        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
-
-      val doc = parseView(view)
-
-      behave like pageWithWarningText(doc, warning)
     }
   }
 }

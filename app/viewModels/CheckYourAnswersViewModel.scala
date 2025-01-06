@@ -17,7 +17,7 @@
 package viewModels
 
 import models.{Procedure, UserAnswers}
-import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
+import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -27,10 +27,9 @@ import javax.inject.Inject
 
 case class CheckYourAnswersViewModel(
   procedureSection: Section,
-  warning: Option[String],
   sections: Seq[Section],
   showDiscrepanciesLink: Boolean,
-  goodsTooLarge: Option[Boolean]
+  procedure: Procedure
 )
 
 object CheckYourAnswersViewModel {
@@ -73,24 +72,22 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val discrepanciesPresent = userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage).getOrElse {
-        userAnswers.get(NewAuthYesNoPage) match {
-          case Some(true) => false
-          case _          => true
-        }
-      }
+      val procedure = Procedure(userAnswers)
 
-      val warning = Procedure(userAnswers) match {
-        case Procedure.CannotUseRevised => Some(messages("site.warning.procedure"))
-        case _                          => None
+      val discrepanciesPresent = procedure match {
+        case Procedure.Unrevised | Procedure.CannotUseRevised =>
+          userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
+            case Some(false) => false
+            case _           => true
+          }
+        case _ => false
       }
 
       new CheckYourAnswersViewModel(
         procedureSection,
-        warning,
         Seq(unloadingSection, discrepanciesSection),
         discrepanciesPresent,
-        userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+        procedure
       )
     }
   }

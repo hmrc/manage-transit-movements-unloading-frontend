@@ -16,7 +16,7 @@
 
 package generators
 
-import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode}
+import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode, Procedure}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -35,6 +35,7 @@ import viewModels.houseConsignment.index.departureTransportMeans.{
   HouseConsignmentCountryViewModel,
   IdentificationNumberViewModel as HCIdentificationNumberViewModel
 }
+import viewModels.houseConsignment.index.documents as hcViewModel
 import viewModels.houseConsignment.index.documents.{
   AddAnotherHouseConsignmentDocumentViewModel as DocumentsAddAnotherHouseConsignmentDocumentViewModel,
   ReferenceNumberViewModel
@@ -64,7 +65,6 @@ import viewModels.houseConsignment.index.items.{
   GrossWeightViewModel,
   NetWeightViewModel
 }
-import viewModels.houseConsignment.index.documents as hcViewModel
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -701,10 +701,9 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryCheckYourAnswersViewModel: Arbitrary[CheckYourAnswersViewModel] = Arbitrary {
     for {
       procedureSection      <- arbitrary[StaticSection]
-      warning               <- Gen.option(nonEmptyString)
       sections              <- listWithMaxLength[StaticSection]()
       showDiscrepanciesLink <- arbitrary[Boolean]
-      goodsTooLarge         <- Gen.option(arbitrary[Boolean])
-    } yield CheckYourAnswersViewModel(procedureSection, warning, sections, showDiscrepanciesLink, goodsTooLarge)
+      procedure             <- arbitrary[Procedure]
+    } yield CheckYourAnswersViewModel(procedureSection, sections, showDiscrepanciesLink, procedure)
   }
 }

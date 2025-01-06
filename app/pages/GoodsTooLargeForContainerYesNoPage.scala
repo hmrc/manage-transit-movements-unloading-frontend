@@ -28,6 +28,12 @@ case object GoodsTooLargeForContainerYesNoPage extends QuestionPage[Boolean] {
 
   override def toString: String = "goodsTooLargeForContainerYesNo"
 
+  // TODO - update
+  // Change from Yes to No
+  // We should remove:
+  //  the two seals questions
+  //  Do you want to add any comments?
+  //  Do you have anything else to report?
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) =>
