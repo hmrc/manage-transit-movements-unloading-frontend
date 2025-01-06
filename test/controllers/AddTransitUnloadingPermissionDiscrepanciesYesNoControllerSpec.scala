@@ -153,7 +153,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterEverything))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
@@ -217,7 +217,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterEverything))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)

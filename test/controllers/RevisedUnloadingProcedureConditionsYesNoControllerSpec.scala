@@ -134,7 +134,7 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)

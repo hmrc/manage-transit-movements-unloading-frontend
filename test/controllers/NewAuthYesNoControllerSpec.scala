@@ -131,7 +131,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)

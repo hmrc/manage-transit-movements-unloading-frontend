@@ -32,6 +32,18 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
       override def path: JsPath = JsPath \ "foo"
     }
 
+    "getAndCopyTo" - {
+      "must copy value from one user answers to another" in {
+        val json         = JsObject(Map("foo" -> JsString("bar")))
+        val userAnswers1 = emptyUserAnswers.copy(data = json)
+        val userAnswers2 = emptyUserAnswers
+
+        val result = userAnswers1.getAndCopyTo(JsPath \ "foo", userAnswers2)
+
+        result.get.data mustEqual json
+      }
+    }
+
     "get" - {
 
       "must return data when defined" in {

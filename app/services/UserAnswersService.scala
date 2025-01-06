@@ -18,20 +18,19 @@ package services
 
 import models.UserAnswers
 import pages.QuestionPage
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformers.IE043Transformer
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class UserAnswersService @Inject() (dataTransformer: IE043Transformer) {
 
-  def retainAndTransform[A](
+  def retainAndTransform(
     userAnswers: UserAnswers,
-    pages: QuestionPage[A]*
-  )(implicit reads: Reads[A], writes: Writes[A], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] =
+    pages: QuestionPage[?]*
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] =
     for {
       transformedAnswers <- wipeAndTransform(userAnswers) {
         dataTransformer.transform(_)
@@ -41,7 +40,7 @@ class UserAnswersService @Inject() (dataTransformer: IE043Transformer) {
           acc.flatMap {
             acc =>
               Future.fromTry {
-                userAnswers.get(page).fold(Try(acc))(acc.set(page, _))
+                userAnswers.getAndCopyTo(page.path, acc)
               }
           }
       }

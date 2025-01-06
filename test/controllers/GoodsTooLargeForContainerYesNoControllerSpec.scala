@@ -136,7 +136,7 @@ class GoodsTooLargeForContainerYesNoControllerSpec extends SpecBase with AppWith
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
         .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
