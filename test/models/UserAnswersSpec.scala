@@ -42,6 +42,16 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         result.get.data mustEqual json
       }
+
+      "must return unchanged answers when get retrieves nothing" in {
+        val json         = JsObject(Map("foo" -> JsString("bar")))
+        val userAnswers1 = emptyUserAnswers
+        val userAnswers2 = emptyUserAnswers.copy(data = json)
+
+        val result = userAnswers1.getAndCopyTo(JsPath \ "foo", userAnswers2)
+
+        result.get.data mustEqual json
+      }
     }
 
     "get" - {

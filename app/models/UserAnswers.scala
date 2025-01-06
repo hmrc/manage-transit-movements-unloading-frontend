@@ -45,7 +45,7 @@ final case class UserAnswers(
       } yield put
     ) match {
       case JsSuccess(data, _) => Success(to.copy(data = data))
-      case JsError(errors)    => Failure(JsResultException(errors))
+      case JsError(_)         => Success(to)
     }
 
   def get[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
