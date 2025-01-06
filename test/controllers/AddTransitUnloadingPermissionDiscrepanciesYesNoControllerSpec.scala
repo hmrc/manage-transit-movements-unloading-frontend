@@ -22,7 +22,7 @@ import models.{NormalMode, UserAnswers}
 import navigation.Navigation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -44,19 +44,19 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
   private lazy val addTransitUnloadingPermissionDiscrepanciesYesNoRoute =
     controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode).url
 
-  private val mockService = mock[UserAnswersService]
+  private val mockUserAnswersService = mock[UserAnswersService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[UserAnswersService].toInstance(mockService)
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockService)
+    reset(mockUserAnswersService)
   }
 
   "AddTransitUnloadingPermissionDiscrepanciesYesNoPage Controller" - {
@@ -150,7 +150,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(userAnswersAfterEverything))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
@@ -167,6 +167,60 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
       userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+    }
+
+    "must redirect to the next page when no is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when yes is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when yes is submitted" in {
+
+      val userAnswers = emptyUserAnswers
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

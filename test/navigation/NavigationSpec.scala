@@ -18,12 +18,12 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import generated._
+import generated.*
 import generators.Generators
-import models._
+import models.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 
 class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -182,6 +182,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "to add transit unloading permission discrepancies yes/no page when seals are present and not damaged" in {
 
           val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
             .setValue(CanSealsBeReadPage, true)
             .setValue(AreAnySealsBrokenPage, false)
 
@@ -190,16 +191,35 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
         }
 
-        "to unloading findings page when seals are not present" in {
+        "to unloading findings when switched from revised to legacy" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
 
           navigator
-            .nextPage(AreAnySealsBrokenPage, mode, emptyUserAnswers)
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+
+        "to unloading findings page when seals are not present" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
         "to unloading findings page when seals are present but not readable" in {
 
           val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
             .setValue(CanSealsBeReadPage, false)
             .setValue(AreAnySealsBrokenPage, false)
 
@@ -222,6 +242,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "to unloading findings page when seals are present but broken" in {
 
           val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
             .setValue(CanSealsBeReadPage, true)
             .setValue(AreAnySealsBrokenPage, true)
 
@@ -492,6 +513,21 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
                 .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
             }
+          }
+
+          "to CYA when switched from revised to legacy" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+              .setValue(CanSealsBeReadPage, true)
+              .setValue(AreAnySealsBrokenPage, false)
+
+            navigator
+              .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 

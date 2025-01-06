@@ -116,24 +116,34 @@ class Navigation extends Navigator {
     }
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
-    StateOfSeals(ua).value match {
-      case Some(true) =>
-        Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
-      case _ =>
+    Procedure(ua) match {
+      case Procedure.CannotUseRevised =>
         Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+      case _ =>
+        StateOfSeals(ua).value match {
+          case Some(true) =>
+            Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+          case _ =>
+            Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        }
     }
 
   private def stateOfSealsCheckNavigation(ua: UserAnswers): Option[Call] =
-    StateOfSeals(ua).value match {
-      case Some(true) =>
-        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
-          case Some(_) =>
-            Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
-          case None =>
-            Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, CheckMode))
-        }
+    Procedure(ua) match {
+      case Procedure.CannotUseRevised =>
+        Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
       case _ =>
-        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        StateOfSeals(ua).value match {
+          case Some(true) =>
+            ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
+              case Some(_) =>
+                Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+              case None =>
+                Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, CheckMode))
+            }
+          case _ =>
+            Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        }
     }
 
   private def addCommentsNavigation(ua: UserAnswers, mode: Mode): Option[Call] =

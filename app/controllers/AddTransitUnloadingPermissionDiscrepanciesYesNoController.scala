@@ -65,10 +65,10 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value => {
             val userAnswersF: Future[UserAnswers] =
-              if (value) {
-                Future.successful(request.userAnswers)
-              } else {
+              if (request.userAnswers.hasAnswerChanged(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, value) && !value) {
                 userAnswersService.retainAndTransform(request.userAnswers, OtherQuestionsSection)
+              } else {
+                Future.successful(request.userAnswers)
               }
 
             for {
