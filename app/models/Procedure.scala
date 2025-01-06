@@ -29,9 +29,13 @@ object Procedure {
     override val revised: Boolean = false
   }
 
-  case object CannotUseRevised extends Procedure {
+  sealed trait CannotUseRevised extends Procedure {
     override val revised: Boolean = false
   }
+
+  case object CannotUseRevisedDueToConditions extends CannotUseRevised
+
+  case object CannotUseRevisedDueToDiscrepancies extends CannotUseRevised
 
   sealed trait Revised extends Procedure {
     override val revised: Boolean = true
@@ -47,10 +51,10 @@ object Procedure {
       userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
       userAnswers.get(GoodsTooLargeForContainerYesNoPage)
     ) match {
-      case (Some(true), Some(false), _) => CannotUseRevised
+      case (Some(true), Some(false), _) => CannotUseRevisedDueToConditions
       case (Some(true), Some(true), Some(true)) =>
         userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
-          case Some(true) => CannotUseRevised
+          case Some(true) => CannotUseRevisedDueToDiscrepancies
           case _          => RevisedAndGoodsTooLarge
         }
       case (Some(true), Some(true), Some(false)) => RevisedAndGoodsNotTooLarge

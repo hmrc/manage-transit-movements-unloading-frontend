@@ -51,8 +51,8 @@ object CheckYourAnswersViewModel {
           helper.revisedUnloadingProcedureConditionsYesNo,
           helper.goodsTooLarge,
           procedure match {
-            case RevisedAndGoodsTooLarge | CannotUseRevised => helper.addDiscrepanciesYesNo
-            case _                                          => None
+            case RevisedAndGoodsTooLarge | CannotUseRevisedDueToDiscrepancies => helper.addDiscrepanciesYesNo
+            case _                                                            => None
           }
         ).flatten
       )
@@ -70,8 +70,8 @@ object CheckYourAnswersViewModel {
         sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
         rows = Seq(
           procedure match {
-            case RevisedAndGoodsTooLarge | CannotUseRevised => None
-            case _                                          => helper.addDiscrepanciesYesNo
+            case RevisedAndGoodsTooLarge | CannotUseRevisedDueToDiscrepancies => None
+            case _                                                            => helper.addDiscrepanciesYesNo
           },
           helper.addCommentsYesNo,
           helper.additionalComment,
@@ -82,12 +82,13 @@ object CheckYourAnswersViewModel {
       )
 
       val discrepanciesPresent = procedure match {
-        case Procedure.Unrevised | Procedure.CannotUseRevised =>
+        case _: Revised =>
+          false
+        case _ =>
           userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
             case Some(false) => false
             case _           => true
           }
-        case _ => false
       }
 
       new CheckYourAnswersViewModel(

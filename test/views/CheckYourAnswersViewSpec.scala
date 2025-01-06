@@ -87,9 +87,30 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
       )
     }
 
-    "when procedure is CannotUseRevised" - {
+    "when procedure is CannotUseRevisedDueToDiscrepancies" - {
       val viewModel =
-        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.CannotUseRevised)
+        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.CannotUseRevisedDueToDiscrepancies)
+
+      val view: HtmlFormat.Appendable =
+        injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)
+
+      val doc = parseView(view)
+
+      behave like pageWithWarningText(
+        doc,
+        "Based on the answers you’ve given us, you cannot use the revised unloading procedure"
+      )
+
+      behave like pageWithContent(
+        doc,
+        "p",
+        "By sending this, you are confirming that these details are correct to the best of your knowledge."
+      )
+    }
+
+    "when procedure is CannotUseRevisedDueToConditions" - {
+      val viewModel =
+        new CheckYourAnswersViewModel(sections.head, sections.tail, false, Procedure.CannotUseRevisedDueToConditions)
 
       val view: HtmlFormat.Appendable =
         injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, viewModel)(fakeRequest, messages)

@@ -42,7 +42,7 @@
     @answerSections(Seq(viewModel.procedureSection))
 
     @viewModel.procedure match {
-        case CannotUseRevised => {
+        case _: CannotUseRevised => {
             @warning(messages("site.warning.procedure"))
         }
         case _ => {}

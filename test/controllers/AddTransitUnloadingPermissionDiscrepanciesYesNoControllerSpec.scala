@@ -32,7 +32,6 @@ import play.api.test.Helpers.*
 import services.UserAnswersService
 import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -112,13 +111,15 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted" in {
+    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted and on legacy procedure" in {
 
       val jsonBeforeEverything = Json
         .parse(s"""
            |{
            |  "otherQuestions" : {
-           |    "foo" : "bar"
+           |    "newAuthYesNo" : false,
+           |    "canSealsBeRead" : true,
+           |    "areAnySealsBroken" : false
            |  },
            |  "someDummyTransformedData" : {
            |    "foo" : "bar"
@@ -137,16 +138,82 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
            |    "foo" : "bar"
            |  },
            |  "otherQuestions" : {
-           |    "foo" : "bar",
+           |    "newAuthYesNo" : false,
+           |    "canSealsBeRead" : true,
+           |    "areAnySealsBroken" : false,
            |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : false
            |  }
            |}
            |""".stripMargin)
         .as[JsObject]
 
-      val now                         = Instant.now()
-      val userAnswersBeforeEverything = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterEverything  = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
+      val userAnswers                 = emptyUserAnswers
+      val userAnswersBeforeEverything = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterEverything  = userAnswers.copy(data = jsonAfterEverything)
+
+      setExistingUserAnswers(userAnswersBeforeEverything)
+
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterEverything))
+
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+    }
+
+    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted and switched from revised to legacy procedure" in {
+
+      val jsonBeforeEverything = Json
+        .parse(s"""
+           |{
+           |  "otherQuestions" : {
+           |    "newAuthYesNo" : true,
+           |    "revisedUnloadingProcedureConditionsYesNo" : true,
+           |    "goodsTooLargeForContainerYesNo" : true,
+           |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : true,
+           |    "canSealsBeRead" : true,
+           |    "areAnySealsBroken" : false
+           |  },
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  },
+           |  "someDummyDiscrepancies" : {
+           |    "foo" : "bar"
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val jsonAfterEverything = Json
+        .parse(s"""
+           |{
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  },
+           |  "otherQuestions" : {
+           |    "newAuthYesNo" : true,
+           |    "revisedUnloadingProcedureConditionsYesNo" : true,
+           |    "goodsTooLargeForContainerYesNo" : true,
+           |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : false
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val userAnswers                 = emptyUserAnswers
+      val userAnswersBeforeEverything = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterEverything  = userAnswers.copy(data = jsonAfterEverything)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 

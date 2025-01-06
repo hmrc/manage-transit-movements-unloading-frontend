@@ -20,7 +20,7 @@ import controllers.actions.*
 import forms.YesNoFormProvider
 import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.{NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage}
+import pages.*
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

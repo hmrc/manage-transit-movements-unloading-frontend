@@ -18,6 +18,7 @@ package services.submission
 
 import connectors.ApiConnector
 import generated.*
+import models.Procedure.*
 import models.UnloadingSubmissionValues.*
 import models.{ArrivalId, DocType, EoriNumber, Index, Procedure, RichCC043CType, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
@@ -144,9 +145,9 @@ class SubmissionService @Inject() (
       )
 
     Procedure(userAnswers) match {
-      case Procedure.CannotUseRevised => cannotUseRevisedUnloadingProcedureReads
-      case Procedure.Unrevised        => unrevisedProcedureReads
-      case _: Procedure.Revised       => revisedProcedureReads
+      case CannotUseRevisedDueToDiscrepancies          => cannotUseRevisedUnloadingProcedureReads
+      case Unrevised | CannotUseRevisedDueToConditions => unrevisedProcedureReads
+      case _: Revised                                  => revisedProcedureReads
     }
   }
 

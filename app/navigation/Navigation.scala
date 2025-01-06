@@ -19,6 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import controllers.routes
 import models.{CheckMode, Mode, NormalMode, Procedure, RichCC043CType, StateOfSeals, UserAnswers}
+import models.Procedure.*
 import pages.*
 import play.api.mvc.Call
 
@@ -117,7 +118,7 @@ class Navigation extends Navigator {
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
     Procedure(ua) match {
-      case Procedure.CannotUseRevised =>
+      case CannotUseRevisedDueToDiscrepancies =>
         Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
       case _ =>
         StateOfSeals(ua).value match {
@@ -130,7 +131,7 @@ class Navigation extends Navigator {
 
   private def stateOfSealsCheckNavigation(ua: UserAnswers): Option[Call] =
     Procedure(ua) match {
-      case Procedure.CannotUseRevised =>
+      case CannotUseRevisedDueToDiscrepancies =>
         Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
       case _ =>
         StateOfSeals(ua).value match {
@@ -167,9 +168,9 @@ class Navigation extends Navigator {
 
   private def anyDiscrepanciesNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
     Procedure(ua) match {
-      case Procedure.CannotUseRevised =>
+      case CannotUseRevisedDueToDiscrepancies =>
         Some(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(ua.id))
-      case Procedure.RevisedAndGoodsTooLarge =>
+      case RevisedAndGoodsTooLarge =>
         Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
       case _ =>
         ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {

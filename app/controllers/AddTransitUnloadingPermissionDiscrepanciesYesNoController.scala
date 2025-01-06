@@ -18,9 +18,10 @@ package controllers
 
 import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode, UserAnswers}
+import models.Procedure.CannotUseRevisedDueToDiscrepancies
+import models.{ArrivalId, Mode, Procedure, UserAnswers}
 import navigation.Navigation
-import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
+import pages.*
 import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +67,17 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
           value => {
             val userAnswersF: Future[UserAnswers] =
               if (request.userAnswers.hasAnswerChanged(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, value) && !value) {
-                userAnswersService.retainAndTransform(request.userAnswers, OtherQuestionsSection)
+                Procedure(request.userAnswers) match {
+                  case CannotUseRevisedDueToDiscrepancies =>
+                    userAnswersService.retainAndTransform(
+                      request.userAnswers,
+                      NewAuthYesNoPage,
+                      RevisedUnloadingProcedureConditionsYesNoPage,
+                      GoodsTooLargeForContainerYesNoPage
+                    )
+                  case _ =>
+                    userAnswersService.retainAndTransform(request.userAnswers, OtherQuestionsSection)
+                }
               } else {
                 Future.successful(request.userAnswers)
               }

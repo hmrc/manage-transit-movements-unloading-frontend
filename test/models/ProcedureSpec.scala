@@ -43,7 +43,7 @@ class ProcedureSpec extends SpecBase {
 
           val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.CannotUseRevised)
+          result.mustBe(Procedure.CannotUseRevisedDueToConditions)
         }
       }
 
@@ -58,7 +58,7 @@ class ProcedureSpec extends SpecBase {
 
             val result = Procedure.apply(userAnswers)
 
-            result.mustBe(Procedure.CannotUseRevised)
+            result.mustBe(Procedure.CannotUseRevisedDueToDiscrepancies)
           }
         }
       }

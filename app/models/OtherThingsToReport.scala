@@ -16,6 +16,7 @@
 
 package models
 
+import models.Procedure.*
 import pages.*
 
 case class OtherThingsToReport(prefix: String)
@@ -29,7 +30,7 @@ object OtherThingsToReport {
 
   def apply(userAnswers: UserAnswers, procedure: Procedure): OtherThingsToReport = {
     val prefix = procedure match {
-      case _: Procedure.Revised =>
+      case _: Revised =>
         userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage) match {
           case Some(true) =>
             "otherThingsToReport.newAuthAndSealsReplaced"
@@ -38,7 +39,7 @@ object OtherThingsToReport {
           case None =>
             throw new Exception(s"[${userAnswers.id}] - Couldn't determine value because SealsReplacedByCustomsAuthorityYesNoPage is unpopulated")
         }
-      case Procedure.Unrevised | Procedure.CannotUseRevised =>
+      case Unrevised | _: CannotUseRevised =>
         "otherThingsToReport.oldAuth"
     }
     OtherThingsToReport(prefix)

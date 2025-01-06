@@ -16,7 +16,7 @@
 
 package pages
 
-import models.Procedure.CannotUseRevised
+import models.Procedure.CannotUseRevisedDueToDiscrepancies
 import models.{Procedure, StateOfSeals, UserAnswers}
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
@@ -35,8 +35,8 @@ case object AreAnySealsBrokenPage extends QuestionPage[Boolean] {
         super.cleanup(value, userAnswers)
       case _ =>
         Procedure(userAnswers) match {
-          case CannotUseRevised => super.cleanup(value, userAnswers)
-          case _                => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
+          case CannotUseRevisedDueToDiscrepancies => super.cleanup(value, userAnswers)
+          case _                                  => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
         }
     }
 }
