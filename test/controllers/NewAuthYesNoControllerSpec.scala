@@ -22,7 +22,7 @@ import models.{NormalMode, UserAnswers}
 import navigation.Navigation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.NewAuthYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,22 +32,21 @@ import play.api.test.Helpers.*
 import services.UserAnswersService
 import views.html.NewAuthYesNoView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("newAuthYesNo")
-  private val mode         = NormalMode
-  private val mockService  = mock[UserAnswersService]
+  private val formProvider           = new YesNoFormProvider()
+  private val form                   = formProvider("newAuthYesNo")
+  private val mode                   = NormalMode
+  private val mockUserAnswersService = mock[UserAnswersService]
 
   private lazy val newAuthYesNoRoute =
     controllers.routes.NewAuthYesNoController.onPageLoad(arrivalId, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockService)
+    reset(mockUserAnswersService)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -55,7 +54,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[UserAnswersService].toInstance(mockService)
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
       )
 
   "NewAuthYesNo Controller" - {
@@ -95,7 +94,7 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when yes is submitted and answer has changed" in {
       val jsonBeforeEverything = Json
         .parse(s"""
              |{
@@ -126,13 +125,13 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
              |""".stripMargin)
         .as[JsObject]
 
-      val now                            = Instant.now()
-      val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
+      val userAnswers                    = emptyUserAnswers
+      val userAnswersBeforeEverything    = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterTransformation = userAnswers.copy(data = jsonAfterTransformation)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.retainAndTransform(any(), any())(any(), any(), any(), any()))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
@@ -151,12 +150,11 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       userAnswersCaptor.getValue mustBe userAnswersAfterTransformation
     }
 
-    "must redirect to the next page when user answer is submitted" in {
+    "must redirect to the next page when yes is submitted and answer has not changed" in {
 
       val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
 
       setExistingUserAnswers(userAnswers)
-      when(mockService.retainAndTransform(any(), any())(any(), any(), any(), any())).thenReturn(Future.successful(userAnswers))
 
       val request = FakeRequest(POST, newAuthYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -166,6 +164,44 @@ class NewAuthYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when no is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, newAuthYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when no is submitted" in {
+
+      val userAnswers = emptyUserAnswers
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, newAuthYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
