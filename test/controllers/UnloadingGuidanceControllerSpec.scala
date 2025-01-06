@@ -99,7 +99,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(userAnswers.id, NormalMode).url
+          routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, NormalMode).url
       }
     }
 

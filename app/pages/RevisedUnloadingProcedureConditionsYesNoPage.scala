@@ -33,7 +33,7 @@ case object RevisedUnloadingProcedureConditionsYesNoPage extends QuestionPage[Bo
       case Some(false) =>
         userAnswers
           .remove(GoodsTooLargeForContainerYesNoPage)
-          .flatMap(_.remove(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage))
+          .flatMap(_.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage))
           .flatMap(_.remove(SealsReplacedByCustomsAuthorityYesNoPage))
           .flatMap(_.remove(OtherThingsToReportPage))
       case _ =>

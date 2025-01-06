@@ -16,6 +16,7 @@
 
 package viewModels
 
+import models.Procedure.*
 import models.{Procedure, UserAnswers}
 import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.i18n.Messages
@@ -42,12 +43,17 @@ object CheckYourAnswersViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
 
+      val procedure = Procedure(userAnswers)
+
       val procedureSection = StaticSection(
         rows = Seq(
           helper.newProcedure,
           helper.revisedUnloadingProcedureConditionsYesNo,
           helper.goodsTooLarge,
-          helper.largeUnsealedGoodsRecordDiscrepanciesYesNo
+          procedure match {
+            case RevisedAndGoodsTooLarge | CannotUseRevised => helper.addDiscrepanciesYesNo
+            case _                                          => None
+          }
         ).flatten
       )
 
@@ -63,7 +69,10 @@ object CheckYourAnswersViewModel {
       val discrepanciesSection = StaticSection(
         sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
         rows = Seq(
-          helper.addDiscrepanciesYesNo,
+          procedure match {
+            case RevisedAndGoodsTooLarge | CannotUseRevised => None
+            case _                                          => helper.addDiscrepanciesYesNo
+          },
           helper.addCommentsYesNo,
           helper.additionalComment,
           helper.sealsReplaced,
@@ -71,8 +80,6 @@ object CheckYourAnswersViewModel {
           helper.report
         ).flatten
       )
-
-      val procedure = Procedure(userAnswers)
 
       val discrepanciesPresent = procedure match {
         case Procedure.Unrevised | Procedure.CannotUseRevised =>

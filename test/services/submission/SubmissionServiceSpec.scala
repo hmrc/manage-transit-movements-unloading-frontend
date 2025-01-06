@@ -235,7 +235,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                   .setValue(NewAuthYesNoPage, true)
                   .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
                   .setValue(GoodsTooLargeForContainerYesNoPage, true)
-                  .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                   .setValue(CanSealsBeReadPage, true)
                   .setValue(AreAnySealsBrokenPage, false)
                   .setValue(UnloadingCommentsPage, "comments")
@@ -493,7 +493,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           .setValue(NewAuthYesNoPage, true)
           .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
-          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
         val reads  = service.unloadingRemarkReads(userAnswers)
         val result = userAnswers.data.as[UnloadingRemarkType](reads)

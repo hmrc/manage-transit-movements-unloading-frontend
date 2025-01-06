@@ -36,7 +36,7 @@ object OtherThingsToReport {
           case Some(false) =>
             "otherThingsToReport.newAuth"
           case None =>
-            throw new Exception(s"[${userAnswers.id}] - Couldn't determine prefix because SealsReplacedByCustomsAuthorityYesNoPage is unpopulated")
+            throw new Exception(s"[${userAnswers.id}] - Couldn't determine value because SealsReplacedByCustomsAuthorityYesNoPage is unpopulated")
         }
       case Procedure.Unrevised | Procedure.CannotUseRevised =>
         "otherThingsToReport.oldAuth"

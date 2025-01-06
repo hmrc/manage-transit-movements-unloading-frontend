@@ -44,12 +44,12 @@ class OtherThingsToReportSpec extends SpecBase {
           result.prefix.mustBe("otherThingsToReport.oldAuth")
         }
 
-        "when LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is true" in {
+        "when AddTransitUnloadingPermissionDiscrepanciesYesNoPage is true" in {
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
             .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
             .setValue(GoodsTooLargeForContainerYesNoPage, true)
-            .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
           val result = OtherThingsToReport.apply(userAnswers)
 
@@ -86,9 +86,11 @@ class OtherThingsToReportSpec extends SpecBase {
 
     "must throw exception" - {
       "when a revised procedure" - {
-        "and SealsReplacedByCustomsAuthorityYesNoPage is unpopulated" - {
+        "and SealsReplacedByCustomsAuthorityYesNoPage is unpopulated" in {
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, false)
 
           a[Exception].mustBe(thrownBy(OtherThingsToReport.apply(userAnswers)))
         }

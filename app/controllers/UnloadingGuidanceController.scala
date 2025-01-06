@@ -64,7 +64,7 @@ class UnloadingGuidanceController @Inject() (
         ) match {
           case (Some(false), _, _)                   => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
           case (Some(true), Some(false), _)          => routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode)
-          case (Some(true), Some(true), Some(true))  => routes.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode)
+          case (Some(true), Some(true), Some(true))  => routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode)
           case (Some(true), Some(true), Some(false)) => routes.PhotographExternalSealController.onPageLoad(arrivalId)
           case _                                     => routes.NewAuthYesNoController.onPageLoad(arrivalId, NormalMode)
         }

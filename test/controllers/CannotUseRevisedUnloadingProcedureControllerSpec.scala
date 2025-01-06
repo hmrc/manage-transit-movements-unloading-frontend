@@ -21,7 +21,6 @@ import generated.{CUSTOM_ConsignmentType05, Number0, SealType04, TransportEquipm
 import generators.Generators
 import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.LargeUnsealedGoodsRecordDiscrepanciesYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.CannotUseRevisedUnloadingProcedureView
@@ -93,7 +92,7 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
       redirectLocation(result).value `mustEqual` controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
     }
 
-    "must redirect to UnloadingFindings page and retain LargeUnsealedGoodsRecordDiscrepanciesYesNoPage if number of ie043 seals is zero" in {
+    "must redirect to UnloadingFindings page if number of ie043 seals is zero" in {
 
       setExistingUserAnswers(
         emptyUserAnswers
@@ -112,7 +111,6 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
               )
             )
           )
-          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
       )
 
       val request = FakeRequest(POST, cannotUseRevisedUnloadingProcedureRoute)

@@ -48,13 +48,13 @@ class ProcedureSpec extends SpecBase {
       }
 
       "when RevisedUnloadingProcedureConditionsYesNoPage is true" - {
-        "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is true" - {
+        "and AddTransitUnloadingPermissionDiscrepanciesYesNoPage is true" - {
           "must be CannotUseRevised" in {
             val userAnswers = emptyUserAnswers
               .setValue(NewAuthYesNoPage, true)
               .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
               .setValue(GoodsTooLargeForContainerYesNoPage, true)
-              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
             val result = Procedure.apply(userAnswers)
 
@@ -71,7 +71,7 @@ class ProcedureSpec extends SpecBase {
             .setValue(NewAuthYesNoPage, true)
             .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
             .setValue(GoodsTooLargeForContainerYesNoPage, true)
-            .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
           val result = Procedure.apply(userAnswers)
 
@@ -92,7 +92,7 @@ class ProcedureSpec extends SpecBase {
         }
       }
 
-      "and LargeUnsealedGoodsRecordDiscrepanciesYesNoPage is unpopulated" - {
+      "and AddTransitUnloadingPermissionDiscrepanciesYesNoPage is unpopulated" - {
         "must be RevisedAndGoodsTooLarge" in {
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
@@ -103,24 +103,6 @@ class ProcedureSpec extends SpecBase {
 
           result.mustBe(Procedure.RevisedAndGoodsTooLarge)
         }
-      }
-
-      "and GoodsTooLargeForContainerYesNoPage is unpopulated" - {
-        "must throw exception" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
-
-          a[Exception].mustBe(thrownBy(Procedure.apply(userAnswers)))
-        }
-      }
-    }
-
-    "when NewAuthYesNoPage unpopulated" - {
-      "must throw exception" in {
-        val userAnswers = emptyUserAnswers
-
-        a[Exception].mustBe(thrownBy(Procedure.apply(userAnswers)))
       }
     }
   }

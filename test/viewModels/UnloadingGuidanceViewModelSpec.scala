@@ -51,7 +51,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(NewAuthYesNoPage, true)
         .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, true)
-        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
     }
@@ -94,7 +94,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(NewAuthYesNoPage, true)
         .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, true)
-        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
       viewModel.apply(userAnswers).para2 mustBe Some("unloadingGuidance.para2.newAuth.goodsTooLargeYes")
     }

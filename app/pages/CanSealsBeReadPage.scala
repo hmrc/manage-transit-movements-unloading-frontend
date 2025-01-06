@@ -16,7 +16,8 @@
 
 package pages
 
-import models.{StateOfSeals, UserAnswers}
+import models.Procedure.CannotUseRevised
+import models.{Procedure, StateOfSeals, UserAnswers}
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
@@ -30,7 +31,12 @@ case object CanSealsBeReadPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     StateOfSeals(userAnswers).value match {
-      case Some(true) => super.cleanup(value, userAnswers)
-      case _          => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
+      case Some(true) =>
+        super.cleanup(value, userAnswers)
+      case _ =>
+        Procedure(userAnswers) match {
+          case CannotUseRevised => super.cleanup(value, userAnswers)
+          case _                => userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
+        }
     }
 }

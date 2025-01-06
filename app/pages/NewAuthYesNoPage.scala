@@ -34,7 +34,7 @@ case object NewAuthYesNoPage extends QuestionPage[Boolean] {
         userAnswers
           .remove(RevisedUnloadingProcedureConditionsYesNoPage)
           .flatMap(_.remove(GoodsTooLargeForContainerYesNoPage))
-          .flatMap(_.remove(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage))
+          .flatMap(_.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage))
           .flatMap(_.remove(SealsReplacedByCustomsAuthorityYesNoPage))
           .flatMap(_.remove(OtherThingsToReportPage))
       case _ =>

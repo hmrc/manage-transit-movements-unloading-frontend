@@ -18,15 +18,12 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{CheckMode, Mode, NormalMode, RichCC043CType, StateOfSeals, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, Procedure, RichCC043CType, StateOfSeals, UserAnswers}
 import pages.*
 import play.api.mvc.Call
 
 @Singleton
 class Navigation extends Navigator {
-
-  // TODO - bypass duplicate page when switching to legacy procedure
-  // (Do you want to record any discrepancies?)
 
   // scalastyle:off cyclomatic.complexity
   override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -41,7 +38,6 @@ class Navigation extends Navigator {
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, NormalMode)
-    case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, NormalMode)
     case RevisedUnloadingProcedureConditionsYesNoPage        => ua => revisedUnloadingProcedureConditionsYesNoNavigation(ua)
   }
@@ -56,7 +52,6 @@ class Navigation extends Navigator {
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
     case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, CheckMode)
-    case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, CheckMode)
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
@@ -91,7 +86,7 @@ class Navigation extends Navigator {
       case CheckMode =>
         ua.get(GoodsTooLargeForContainerYesNoPage).map {
           case true =>
-            ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+            ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
               .fold {
                 routes.UnloadingGuidanceController.onPageLoad(ua.id)
               } {
@@ -118,14 +113,6 @@ class Navigation extends Navigator {
           } {
             _ => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
           }
-    }
-
-  private def largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua: UserAnswers): Option[Call] =
-    ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage).map {
-      case true =>
-        routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(ua.id)
-      case false =>
-        routes.CheckYourAnswersController.onPageLoad(ua.id)
     }
 
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
@@ -169,15 +156,17 @@ class Navigation extends Navigator {
     }
 
   private def anyDiscrepanciesNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
-    ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
-      case true =>
-        routes.UnloadingFindingsController.onPageLoad(ua.id)
-      case false =>
-        mode match {
-          case NormalMode =>
+    Procedure(ua) match {
+      case Procedure.CannotUseRevised =>
+        Some(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(ua.id))
+      case Procedure.RevisedAndGoodsTooLarge =>
+        Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+      case _ =>
+        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
+          case true =>
+            routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case false =>
             routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, mode)
-          case CheckMode =>
-            routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
     }
 

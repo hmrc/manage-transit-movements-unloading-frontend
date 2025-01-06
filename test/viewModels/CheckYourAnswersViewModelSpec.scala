@@ -33,10 +33,22 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
     "must render rows" - {
       "when legacy procedure" in {
         val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+        val viewModelProvider = new CheckYourAnswersViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+
+        result.procedureSection.sectionTitle must not be defined
+        result.procedureSection.rows.size mustBe 1
+      }
+
+      "when switching from legacy to revised procedure" in {
+        val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, true)
           .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
           .setValue(GoodsTooLargeForContainerYesNoPage, true)
-          .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -47,48 +59,85 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
 
       "when revised procedure" in {
         val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, false)
 
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
         result.procedureSection.sectionTitle must not be defined
-        result.procedureSection.rows.size mustBe 1
+        result.procedureSection.rows.size mustBe 3
       }
     }
   }
 
   "sections" - {
 
-    "must render unloading and discrepancies sections" in {
+    "must render unloading and discrepancies sections" - {
 
-      val date     = arbitrary[LocalDate].sample.value
-      val comments = nonEmptyString.sample.value
-      val report   = nonEmptyString.sample.value
+      "when legacy procedure" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, false)
-        .setValue(UnloadingTypePage, UnloadingType.Fully)
-        .setValue(DateGoodsUnloadedPage, date)
-        .setValue(CanSealsBeReadPage, true)
-        .setValue(AreAnySealsBrokenPage, true)
-        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-        .setValue(AddCommentsYesNoPage, true)
-        .setValue(UnloadingCommentsPage, comments)
-        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-        .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
-        .setValue(OtherThingsToReportPage, report)
+        val date     = arbitrary[LocalDate].sample.value
+        val comments = nonEmptyString.sample.value
+        val report   = nonEmptyString.sample.value
 
-      val viewModelProvider = new CheckYourAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(UnloadingTypePage, UnloadingType.Fully)
+          .setValue(DateGoodsUnloadedPage, date)
+          .setValue(CanSealsBeReadPage, true)
+          .setValue(AreAnySealsBrokenPage, true)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+          .setValue(AddCommentsYesNoPage, true)
+          .setValue(UnloadingCommentsPage, comments)
+          .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+          .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+          .setValue(OtherThingsToReportPage, report)
 
-      result.sections.length mustBe 2
+        val viewModelProvider = new CheckYourAnswersViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
 
-      result.sections.head.sectionTitle must not be defined
-      result.sections.head.rows.size mustBe 4
+        result.sections.length mustBe 2
 
-      result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-      result.sections(1).rows.size mustBe 6
+        result.sections.head.sectionTitle must not be defined
+        result.sections.head.rows.size mustBe 4
+
+        result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
+        result.sections(1).rows.size mustBe 6
+      }
+
+      "when revised procedure" - {
+        "when goods too large" in {
+
+          val comments = nonEmptyString.sample.value
+          val report   = nonEmptyString.sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, true)
+            .setValue(AddCommentsYesNoPage, true)
+            .setValue(UnloadingCommentsPage, comments)
+            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+            .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+            .setValue(OtherThingsToReportPage, report)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.sections.length mustBe 2
+
+          result.sections.head.sectionTitle must not be defined
+          result.sections.head.rows.size mustBe 2
+
+          result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
+          result.sections(1).rows.size mustBe 5
+        }
+      }
     }
   }
 
@@ -222,9 +271,8 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
               .setValue(NewAuthYesNoPage, true)
               .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
               .setValue(GoodsTooLargeForContainerYesNoPage, true)
-              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, true)
-              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
               .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
 
             val viewModelProvider = new CheckYourAnswersViewModelProvider()
             val result            = viewModelProvider.apply(userAnswers)

@@ -25,6 +25,7 @@ sealed trait Procedure {
 object Procedure {
 
   case object Unrevised extends Procedure {
+    // also known as the 'Legacy' procedure
     override val revised: Boolean = false
   }
 
@@ -48,12 +49,11 @@ object Procedure {
     ) match {
       case (Some(true), Some(false), _) => CannotUseRevised
       case (Some(true), Some(true), Some(true)) =>
-        userAnswers.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) match {
+        userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
           case Some(true) => CannotUseRevised
           case _          => RevisedAndGoodsTooLarge
         }
       case (Some(true), Some(true), Some(false)) => RevisedAndGoodsNotTooLarge
-      case (Some(false), _, _)                   => Unrevised
-      case _                                     => throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure")
+      case _                                     => Unrevised
     }
 }
