@@ -40,7 +40,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         val result = userAnswers1.getAndCopyTo(JsPath \ "foo", userAnswers2)
 
-        result.get.data mustEqual json
+        result.data mustEqual json
       }
 
       "must return unchanged answers when get retrieves nothing" in {
@@ -50,7 +50,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         val result = userAnswers1.getAndCopyTo(JsPath \ "foo", userAnswers2)
 
-        result.get.data mustEqual json
+        result.data mustEqual json
       }
     }
 

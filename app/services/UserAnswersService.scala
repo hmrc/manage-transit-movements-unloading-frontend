@@ -35,14 +35,9 @@ class UserAnswersService @Inject() (dataTransformer: IE043Transformer) {
       transformedAnswers <- wipeAndTransform(userAnswers) {
         dataTransformer.transform(_)
       }
-      updatedAnswers <- pages.foldLeft(Future.successful(transformedAnswers)) {
+      updatedAnswers = pages.foldLeft(transformedAnswers) {
         case (acc, page) =>
-          acc.flatMap {
-            acc =>
-              Future.fromTry {
-                userAnswers.getAndCopyTo(page.path, acc)
-              }
-          }
+          userAnswers.getAndCopyTo(page.path, acc)
       }
     } yield updatedAnswers
 
