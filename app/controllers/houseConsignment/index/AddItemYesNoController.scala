@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index
 
-import controllers.actions._
+import controllers.actions.*
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.HouseConsignmentNavigator
-import pages.houseConsignment.index.items.AddItemYesNoPage
+import pages.houseConsignment.index.AddItemYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.AddItemYesNoView
+import views.html.houseConsignment.index.AddItemYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-
-// TODO - move this, page, view and specs to controllers.houseConsignment.index package
 
 class AddItemYesNoController @Inject() (
   override val messagesApi: MessagesApi,

@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.additionalReference
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
@@ -67,7 +67,7 @@ class AddAnotherAdditionalReferenceController @Inject() (
             case false =>
               mode match {
                 case NormalMode =>
-                  Redirect(controllers.houseConsignment.index.items.routes.AddItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+                  Redirect(controllers.houseConsignment.index.routes.AddItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
                 case CheckMode =>
                   Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
               }

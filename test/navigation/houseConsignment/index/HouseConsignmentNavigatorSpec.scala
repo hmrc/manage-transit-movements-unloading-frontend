@@ -18,10 +18,9 @@ package navigation.houseConsignment.index
 
 import base.SpecBase
 import generators.Generators
-import models._
+import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index._
-import pages.houseConsignment.index.items.AddItemYesNoPage
+import pages.houseConsignment.index.*
 
 class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -263,7 +262,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             navigator
               .nextPage(page, mode, userAnswers)
               .mustBe(
-                controllers.houseConsignment.index.items.routes.AddItemYesNoController
+                controllers.houseConsignment.index.routes.AddItemYesNoController
                   .onPageLoad(arrivalId, houseConsignmentIndex, mode)
               )
           }
