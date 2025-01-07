@@ -19,11 +19,10 @@ package navigation.houseConsignment.index
 import com.google.inject.Singleton
 import controllers.houseConsignment
 import controllers.houseConsignment.index.{additionalReference, departureMeansOfTransport, documents, items, routes}
-import models._
+import models.*
 import navigation.Navigator
 import pages.Page
-import pages.houseConsignment.index._
-import pages.houseConsignment.index.items.AddItemYesNoPage
+import pages.houseConsignment.index.{AddItemYesNoPage, *}
 import play.api.mvc.Call
 
 @Singleton
@@ -100,7 +99,7 @@ class HouseConsignmentNavigator extends Navigator {
       case false =>
         houseConsignmentMode match {
           case NormalMode =>
-            items.routes.AddItemYesNoController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+            routes.AddItemYesNoController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
           case CheckMode =>
             controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }

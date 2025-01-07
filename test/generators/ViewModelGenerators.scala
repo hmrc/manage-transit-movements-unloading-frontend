@@ -111,7 +111,7 @@ trait ViewModelGenerators {
       href               <- Gen.alphaNumStr
       visuallyHiddenText <- Gen.option(Gen.alphaNumStr)
       classes            <- Gen.alphaNumStr
-      attributes         <- Gen.const(Map.empty[String, String]) // TODO: Do we need to have valid attributes generated here? Use case?
+      attributes         <- Gen.const(Map.empty[String, String])
     } yield ActionItem(href, content, visuallyHiddenText, classes, attributes)
   }
 

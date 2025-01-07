@@ -30,7 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
@@ -151,7 +151,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual
-              controllers.houseConsignment.index.items.routes.AddItemYesNoController
+              controllers.houseConsignment.index.routes.AddItemYesNoController
                 .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
                 .url
           }
@@ -195,7 +195,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.houseConsignment.index.items.routes.AddItemYesNoController
+          controllers.houseConsignment.index.routes.AddItemYesNoController
             .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
             .url
       }

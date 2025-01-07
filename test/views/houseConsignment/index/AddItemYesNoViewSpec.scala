@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items
+package views.houseConsignment.index
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.AddItemYesNoView
+import views.html.houseConsignment.index.AddItemYesNoView
 
 class AddItemYesNoViewSpec extends YesNoViewBehaviours {
 

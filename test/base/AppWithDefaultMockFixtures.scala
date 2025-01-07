@@ -66,9 +66,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected def setNoExistingUserAnswers(): Unit =
     when(mockDataRetrievalActionProvider.apply(any())) `thenReturn` new FakeDataRetrievalAction(None)
 
-  // TODO - delete?
-  protected def checkArrivalStatus(): Unit = ()
-
   protected val onwardRoute: Call = Call("GET", "/foo")
 
   protected val fakeNavigator: Navigator =

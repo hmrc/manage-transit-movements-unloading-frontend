@@ -70,8 +70,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   "departureMeansOfTransport.identificationNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
@@ -87,8 +85,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      checkArrivalStatus()
-
       val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage(houseConsignmentIndex, index), "answer")
       setExistingUserAnswers(userAnswers)
 
@@ -123,8 +119,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, vehicleIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
@@ -141,8 +135,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
@@ -155,8 +147,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request =

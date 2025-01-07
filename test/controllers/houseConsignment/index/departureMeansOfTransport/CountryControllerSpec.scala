@@ -76,8 +76,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   "departureMeansOfTransportCountry Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -98,8 +96,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      checkArrivalStatus()
-
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(
         Future.successful(countries)
       )
@@ -140,8 +136,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      checkArrivalStatus()
-
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -162,8 +156,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
@@ -176,8 +168,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request =

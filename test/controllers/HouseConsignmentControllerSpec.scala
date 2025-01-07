@@ -43,8 +43,6 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
   "UnloadingFindingsController Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val section = arbitraryStaticSection.arbitrary.sample.value
@@ -67,8 +65,6 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, houseConsignmentRoute)
@@ -81,8 +77,6 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "must redirect back to unloading findings for a POST" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, houseConsignmentRoute)
@@ -95,8 +89,6 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, houseConsignmentRoute)
