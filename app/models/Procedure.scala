@@ -16,43 +16,48 @@
 
 package models
 
-import pages.{NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 
 sealed trait Procedure {
-  val prefix: String
+  val revised: Boolean
 }
 
 object Procedure {
 
   case object Unrevised extends Procedure {
-    override val prefix: String = "otherThingsToReport.oldAuth"
+    // also known as the 'Legacy' procedure
+    override val revised: Boolean = false
   }
 
-  case object RevisedAndSealReplaced extends Procedure {
-    override val prefix: String = "otherThingsToReport.newAuthAndSealsReplaced"
+  sealed trait CannotUseRevised extends Procedure {
+    override val revised: Boolean = false
   }
 
-  case object RevisedAndSealNotReplaced extends Procedure {
-    override val prefix: String = "otherThingsToReport.newAuth"
+  case object CannotUseRevisedDueToConditions extends CannotUseRevised
+
+  case object CannotUseRevisedDueToDiscrepancies extends CannotUseRevised
+
+  sealed trait Revised extends Procedure {
+    override val revised: Boolean = true
   }
+
+  case object RevisedAndGoodsTooLarge extends Revised
+
+  case object RevisedAndGoodsNotTooLarge extends Revised
 
   def apply(userAnswers: UserAnswers): Procedure =
-    userAnswers.get(NewAuthYesNoPage) match
-      case Some(value) =>
-        apply(userAnswers, value)
-      case None =>
-        throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure because NewAuthYesNoPage is unpopulated")
-
-  def apply(userAnswers: UserAnswers, revised: Boolean): Procedure =
-    if (revised) {
-      userAnswers.get(SealsReplacedByCustomsAuthorityYesNoPage) match
-        case Some(true) =>
-          RevisedAndSealReplaced
-        case Some(false) =>
-          RevisedAndSealNotReplaced
-        case None =>
-          throw new Exception(s"[${userAnswers.id}] - Couldn't determine procedure because SealsReplacedByCustomsAuthorityYesNoPage is unpopulated")
-    } else {
-      Unrevised
+    (
+      userAnswers.get(NewAuthYesNoPage),
+      userAnswers.get(RevisedUnloadingProcedureConditionsYesNoPage),
+      userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+    ) match {
+      case (Some(true), Some(false), _) => CannotUseRevisedDueToConditions
+      case (Some(true), Some(true), Some(true)) =>
+        userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
+          case Some(true) => CannotUseRevisedDueToDiscrepancies
+          case _          => RevisedAndGoodsTooLarge
+        }
+      case (Some(true), Some(true), Some(false)) => RevisedAndGoodsNotTooLarge
+      case _                                     => Unrevised
     }
 }

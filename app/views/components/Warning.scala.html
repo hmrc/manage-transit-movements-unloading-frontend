@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-import pages.behaviours.PageBehaviours
+@this(govukWarningText: GovukWarningText)
 
-class LargeUnsealedGoodsRecordDiscrepanciesYesNoPageSpec extends PageBehaviours {
+@(text: String)(implicit messages: Messages)
 
-  "LargeUnsealedGoodsRecordDiscrepanciesYesNoPage" - {
-
-    beRetrievable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-
-    beSettable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-
-    beRemovable[Boolean](LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
-  }
-}
+@govukWarningText(
+    WarningText(
+        iconFallbackText = Some(messages("site.warning")),
+        content = Text(text)
+    )
+)

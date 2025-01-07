@@ -16,7 +16,7 @@
 
 package generators
 
-import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode}
+import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode, Procedure}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -35,6 +35,7 @@ import viewModels.houseConsignment.index.departureTransportMeans.{
   HouseConsignmentCountryViewModel,
   IdentificationNumberViewModel as HCIdentificationNumberViewModel
 }
+import viewModels.houseConsignment.index.documents as hcViewModel
 import viewModels.houseConsignment.index.documents.{
   AddAnotherHouseConsignmentDocumentViewModel as DocumentsAddAnotherHouseConsignmentDocumentViewModel,
   ReferenceNumberViewModel
@@ -64,7 +65,6 @@ import viewModels.houseConsignment.index.items.{
   GrossWeightViewModel,
   NetWeightViewModel
 }
-import viewModels.houseConsignment.index.documents as hcViewModel
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -135,8 +135,8 @@ trait ViewModelGenerators {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(0, maxSeqLength)
-      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
-      children     <- Gen.containerOf[Seq, AccordionSection](arbitrary[AccordionSection])
+      rows         <- listWithMaxLength[SummaryListRow]()
+      children     <- listWithMaxLength[AccordionSection]()
     } yield StaticSection(sectionTitle, rows, children)
   }
 
@@ -144,7 +144,8 @@ trait ViewModelGenerators {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
-      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+      rows         <- listWithMaxLength[SummaryListRow]()
+      rows         <- listWithMaxLength[SummaryListRow]()
     } yield StaticSection(sectionTitle, rows, Nil)
   }
 
@@ -152,7 +153,7 @@ trait ViewModelGenerators {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
-      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+      rows         <- listWithMaxLength[SummaryListRow]()
     } yield AccordionSection(sectionTitle, rows)
   }
 
@@ -699,9 +700,10 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryCheckYourAnswersViewModel: Arbitrary[CheckYourAnswersViewModel] = Arbitrary {
     for {
+      procedureSection      <- arbitrary[StaticSection]
       sections              <- listWithMaxLength[StaticSection]()
       showDiscrepanciesLink <- arbitrary[Boolean]
-      goodsTooLarge         <- Gen.option(arbitrary[Boolean])
-    } yield CheckYourAnswersViewModel(sections, showDiscrepanciesLink, goodsTooLarge)
+      procedure             <- arbitrary[Procedure]
+    } yield CheckYourAnswersViewModel(procedureSection, sections, showDiscrepanciesLink, procedure)
   }
 }

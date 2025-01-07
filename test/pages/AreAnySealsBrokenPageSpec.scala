@@ -29,8 +29,9 @@ class AreAnySealsBrokenPageSpec extends PageBehaviours {
     beRemovable[Boolean](AreAnySealsBrokenPage)
 
     "cleanup" - {
-      "must remove answer to AddTransitUnloadingPermissionDiscrepanciesYesNoPage when state of seals = 0" in {
+      "must remove answer to AddTransitUnloadingPermissionDiscrepanciesYesNoPage when state of seals = 0 and using legacy" in {
         val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
           .setValue(CanSealsBeReadPage, true)
           .setValue(AreAnySealsBrokenPage, false)
           .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
@@ -38,6 +39,20 @@ class AreAnySealsBrokenPageSpec extends PageBehaviours {
         val result = userAnswers.setValue(AreAnySealsBrokenPage, true)
 
         result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) must not be defined
+      }
+
+      "must keep answer to AddTransitUnloadingPermissionDiscrepanciesYesNoPage when state of seals = 0 and switched from revised to legacy" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+          .setValue(CanSealsBeReadPage, true)
+          .setValue(AreAnySealsBrokenPage, true)
+
+        val result = userAnswers.setValue(AreAnySealsBrokenPage, false)
+
+        result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) must be(defined)
       }
 
       "must keep answer to AddTransitUnloadingPermissionDiscrepanciesYesNoPage when state of seals = 1" in {

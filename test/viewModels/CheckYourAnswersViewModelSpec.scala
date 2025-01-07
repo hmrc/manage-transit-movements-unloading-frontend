@@ -16,213 +16,271 @@
 
 package viewModels
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generators.Generators
+import models.UnloadingType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 
 import java.time.LocalDate
 
-class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "headerSection" - {
+  "procedureSection" - {
 
-    "must render rows" in {
-
-      val unloadedDate = arbitrary[LocalDate].sample.value
-      val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, false)
-        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
-        .setValue(DateGoodsUnloadedPage, unloadedDate)
-        .setValue(CanSealsBeReadPage, true)
-        .setValue(AreAnySealsBrokenPage, true)
-
-      setExistingUserAnswers(userAnswers)
-
-      val viewModelProvider = new CheckYourAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-
-      result.sections.length mustBe 2
-      result.sections.head.rows.size mustBe 5
-    }
-
-    "must render LargeUnsealedGoodsRecordDiscrepanciesYesNoPage row when false" in {
-      val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, false)
-        .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, false)
-
-      setExistingUserAnswers(userAnswers)
-
-      val viewModelProvider = new CheckYourAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-
-      result.sections.length mustBe 2
-      result.sections.head.rows.size mustBe 2
-    }
-
-  }
-
-  "comments section" - {
-
-    "must render 1 rows if add comments false" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, false)
-        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-      setExistingUserAnswers(userAnswers)
-
-      val viewModelProvider = new CheckYourAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-
-      result.sections.length mustBe 2
-      result.sections(1).rows.size mustBe 1
-
-      result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-
-    }
-
-    "must render 2 rows if add comments true" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, false)
-        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-        .setValue(UnloadingCommentsPage, "Test")
-
-      setExistingUserAnswers(userAnswers)
-
-      val viewModelProvider = new CheckYourAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-
-      result.sections.length mustBe 2
-      result.sections(1).rows.size mustBe 2
-
-      result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-
-    }
-
-  }
-
-  "showDiscrepanciesLink boolean for" - {
-    "old auth must be" - {
-      "false when seals are present & not damaged and AddUnloadingCommentsYesNo page is false" in {
+    "must render rows" - {
+      "when legacy procedure" in {
         val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, true)
-          .setValue(AreAnySealsBrokenPage, false)
-          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-
-        result.showDiscrepanciesLink mustBe false
-      }
-
-      "true when seals are present & not damaged and AddUnloadingCommentsYesNo page is true" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, true)
-          .setValue(AreAnySealsBrokenPage, false)
           .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-        setExistingUserAnswers(userAnswers)
-
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
-        result.showDiscrepanciesLink mustBe true
+        result.procedureSection.sectionTitle must not be defined
+        result.procedureSection.rows.size mustBe 1
       }
 
-      "true when seals are present but can't be read" in {
+      "when switching from legacy to revised procedure" in {
         val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, false)
-          .setValue(AreAnySealsBrokenPage, false)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-
-        result.showDiscrepanciesLink mustBe true
-      }
-
-      "true when seals are present but are broken" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, true)
-          .setValue(AreAnySealsBrokenPage, true)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-
-        result.showDiscrepanciesLink mustBe true
-      }
-
-      "true when seals are present but can't be read and are broken" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, false)
-          .setValue(AreAnySealsBrokenPage, true)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-
-        result.showDiscrepanciesLink mustBe true
-      }
-
-      "false when seals are not present and AddUnloadingCommentsYesNo page is false" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, None)
-          .setValue(AreAnySealsBrokenPage, None)
-          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new CheckYourAnswersViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-
-        result.showDiscrepanciesLink mustBe false
-      }
-
-      "true when seals are not present and AddUnloadingCommentsYesNo page is true" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(CanSealsBeReadPage, None)
-          .setValue(AreAnySealsBrokenPage, None)
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, true)
           .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-        setExistingUserAnswers(userAnswers)
+        val viewModelProvider = new CheckYourAnswersViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+
+        result.procedureSection.sectionTitle must not be defined
+        result.procedureSection.rows.size mustBe 4
+      }
+
+      "when revised procedure" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, true)
+          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          .setValue(GoodsTooLargeForContainerYesNoPage, false)
 
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
-        result.showDiscrepanciesLink mustBe true
+        result.procedureSection.sectionTitle must not be defined
+        result.procedureSection.rows.size mustBe 3
       }
-    }
-
-    "new auth must be false when NewAuthPageYesNo is true" in {
-      val replaced = arbitrary[Boolean].sample.value
-      val userAnswers = emptyUserAnswers
-        .setValue(NewAuthYesNoPage, true)
-        .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
-
-      setExistingUserAnswers(userAnswers)
-
-      val viewModelProvider = new CheckYourAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-
-      result.showDiscrepanciesLink mustBe false
     }
   }
 
+  "sections" - {
+
+    "must render unloading and discrepancies sections" - {
+
+      "when legacy procedure" in {
+
+        val date     = arbitrary[LocalDate].sample.value
+        val comments = nonEmptyString.sample.value
+        val report   = nonEmptyString.sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(NewAuthYesNoPage, false)
+          .setValue(UnloadingTypePage, UnloadingType.Fully)
+          .setValue(DateGoodsUnloadedPage, date)
+          .setValue(CanSealsBeReadPage, true)
+          .setValue(AreAnySealsBrokenPage, true)
+          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+          .setValue(AddCommentsYesNoPage, true)
+          .setValue(UnloadingCommentsPage, comments)
+          .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+          .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+          .setValue(OtherThingsToReportPage, report)
+
+        val viewModelProvider = new CheckYourAnswersViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+
+        result.sections.length mustBe 2
+
+        result.sections.head.sectionTitle must not be defined
+        result.sections.head.rows.size mustBe 4
+
+        result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
+        result.sections(1).rows.size mustBe 6
+      }
+
+      "when revised procedure" - {
+        "when goods too large" in {
+
+          val comments = nonEmptyString.sample.value
+          val report   = nonEmptyString.sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, true)
+            .setValue(AddCommentsYesNoPage, true)
+            .setValue(UnloadingCommentsPage, comments)
+            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+            .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+            .setValue(OtherThingsToReportPage, report)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.sections.length mustBe 2
+
+          result.sections.head.sectionTitle must not be defined
+          result.sections.head.rows.size mustBe 2
+
+          result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
+          result.sections(1).rows.size mustBe 5
+        }
+      }
+    }
+  }
+
+  "showDiscrepanciesLink" - {
+    "when legacy procedure" - {
+      "when seals are present & not damaged and AddUnloadingCommentsYesNo page is false" - {
+        "must be false" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe false
+        }
+      }
+
+      "when seals are present & not damaged and AddUnloadingCommentsYesNo page is true" - {
+        "must be true" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe true
+        }
+      }
+
+      "when seals are present but can't be read" - {
+        "must be true" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, false)
+            .setValue(AreAnySealsBrokenPage, false)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe true
+        }
+      }
+
+      "when seals are present but are broken" - {
+        "must be true" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, true)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe true
+        }
+      }
+
+      "when seals are present but can't be read and are broken" - {
+        "must be true" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, false)
+            .setValue(AreAnySealsBrokenPage, true)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe true
+        }
+      }
+
+      "when seals are not present and AddUnloadingCommentsYesNo page is false" - {
+        "must be false" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, None)
+            .setValue(AreAnySealsBrokenPage, None)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe false
+        }
+      }
+
+      "when seals are not present and AddUnloadingCommentsYesNo page is true" - {
+        "must be true" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, false)
+            .setValue(CanSealsBeReadPage, None)
+            .setValue(AreAnySealsBrokenPage, None)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe true
+        }
+      }
+    }
+
+    "revised procedure" - {
+      "when not switching to legacy procedure" - {
+        "must be false" in {
+          val replaced = arbitrary[Boolean].sample.value
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, false)
+            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
+
+          val viewModelProvider = new CheckYourAnswersViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.showDiscrepanciesLink mustBe false
+        }
+      }
+
+      "when switching to legacy procedure" - {
+        "when adding discrepancies" - {
+          "must be true" in {
+            val replaced = arbitrary[Boolean].sample.value
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+              .setValue(SealsReplacedByCustomsAuthorityYesNoPage, replaced)
+
+            val viewModelProvider = new CheckYourAnswersViewModelProvider()
+            val result            = viewModelProvider.apply(userAnswers)
+
+            result.showDiscrepanciesLink mustBe true
+          }
+        }
+      }
+    }
+  }
 }

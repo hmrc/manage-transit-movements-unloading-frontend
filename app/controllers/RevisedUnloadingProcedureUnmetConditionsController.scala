@@ -18,41 +18,30 @@ package controllers
 
 import controllers.actions.*
 import models.ArrivalId
-import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class RevisedUnloadingProcedureUnmetConditionsController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
-  view: RevisedUnloadingProcedureUnmetConditionsView,
-  service: UsersAnswersService,
-  sessionRepository: SessionRepository
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+  view: RevisedUnloadingProcedureUnmetConditionsView
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions
-      .requireData(arrivalId) {
-        implicit request =>
-          Ok(view(request.userAnswers.mrn, arrivalId))
-      }
+    actions.requireData(arrivalId) {
+      implicit request =>
+        Ok(view(request.userAnswers.mrn, arrivalId))
+    }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
+    actions.requireData(arrivalId) {
       implicit request =>
-        for {
-          updatedAnswers <- service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = false, request.userAnswers)
-          _              <- sessionRepository.set(updatedAnswers)
-        } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+        Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
     }
 }

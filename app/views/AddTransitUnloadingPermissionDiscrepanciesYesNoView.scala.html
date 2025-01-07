@@ -20,11 +20,11 @@
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
-errorSummary: ErrorSummary,
-button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[?], messages: Messages)
@@ -34,9 +34,9 @@ button: Button
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @errorSummary(form.errors)
 
-        @formHelper(action = controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
@@ -46,8 +46,6 @@ button: Button
                 additionalHtml = messages("addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph").toParagraph
             )
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }

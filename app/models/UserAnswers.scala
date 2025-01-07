@@ -37,6 +37,17 @@ final case class UserAnswers(
   lastUpdated: Instant
 ) {
 
+  def getAndCopyTo(path: JsPath, to: UserAnswers): UserAnswers =
+    (
+      for {
+        pick <- this.data.get(path)
+        put  <- to.data.setObject(path, pick)
+      } yield put
+    ) match {
+      case JsSuccess(data, _) => to.copy(data = data)
+      case _                  => to
+    }
+
   def get[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
 

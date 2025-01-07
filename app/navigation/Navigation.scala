@@ -18,7 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{CheckMode, Mode, NormalMode, RichCC043CType, StateOfSeals, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, Procedure, RichCC043CType, StateOfSeals, UserAnswers}
+import models.Procedure.*
 import pages.*
 import play.api.mvc.Call
 
@@ -38,7 +39,6 @@ class Navigation extends Navigator {
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, NormalMode)
-    case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, NormalMode)
     case RevisedUnloadingProcedureConditionsYesNoPage        => ua => revisedUnloadingProcedureConditionsYesNoNavigation(ua)
   }
@@ -53,7 +53,6 @@ class Navigation extends Navigator {
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
     case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, CheckMode)
-    case LargeUnsealedGoodsRecordDiscrepanciesYesNoPage      => ua => largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, CheckMode)
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
@@ -88,7 +87,7 @@ class Navigation extends Navigator {
       case CheckMode =>
         ua.get(GoodsTooLargeForContainerYesNoPage).map {
           case true =>
-            ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+            ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
               .fold {
                 routes.UnloadingGuidanceController.onPageLoad(ua.id)
               } {
@@ -117,17 +116,10 @@ class Navigation extends Navigator {
           }
     }
 
-  private def largeUnsealedGoodsDiscrepanciesYesNoNavigation(ua: UserAnswers): Option[Call] =
-    ua.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage).map {
-      case true =>
-        routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(ua.id)
-      case false =>
-        routes.CheckYourAnswersController.onPageLoad(ua.id)
-    }
-
   private def stateOfSealsNormalNavigation(ua: UserAnswers): Option[Call] =
-    (ua.get(DidUserChooseNewProcedurePage), ua.get(NewAuthYesNoPage)) match
-      case (Some(true), Some(false)) => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    Procedure(ua) match {
+      case CannotUseRevisedDueToDiscrepancies =>
+        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
       case _ =>
         StateOfSeals(ua).value match {
           case Some(true) =>
@@ -135,18 +127,24 @@ class Navigation extends Navigator {
           case _ =>
             Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
         }
+    }
 
   private def stateOfSealsCheckNavigation(ua: UserAnswers): Option[Call] =
-    StateOfSeals(ua).value match {
-      case Some(true) =>
-        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
-          case Some(_) =>
-            Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
-          case None =>
-            Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, CheckMode))
-        }
+    Procedure(ua) match {
+      case CannotUseRevisedDueToDiscrepancies =>
+        Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
       case _ =>
-        Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        StateOfSeals(ua).value match {
+          case Some(true) =>
+            ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
+              case Some(_) =>
+                Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+              case None =>
+                Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, CheckMode))
+            }
+          case _ =>
+            Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        }
     }
 
   private def addCommentsNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
@@ -169,15 +167,17 @@ class Navigation extends Navigator {
     }
 
   private def anyDiscrepanciesNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
-    ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
-      case true =>
-        routes.UnloadingFindingsController.onPageLoad(ua.id)
-      case false =>
-        mode match {
-          case NormalMode =>
+    Procedure(ua) match {
+      case CannotUseRevisedDueToDiscrepancies =>
+        Some(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(ua.id))
+      case RevisedAndGoodsTooLarge =>
+        Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+      case _ =>
+        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
+          case true =>
+            routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case false =>
             routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, mode)
-          case CheckMode =>
-            routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
     }
 

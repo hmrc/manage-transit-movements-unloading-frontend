@@ -34,13 +34,13 @@ class GoodsTooLargeForContainerYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
           (anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
             val userAnswers = emptyUserAnswers
-              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, anyDiscrepancies)
               .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
               .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val result = userAnswers.setValue(GoodsTooLargeForContainerYesNoPage, false)
 
-            result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) must not be defined
+            result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) must not be defined
             result.get(SealsReplacedByCustomsAuthorityYesNoPage) mustBe defined
             result.get(OtherThingsToReportPage) mustBe defined
         }
@@ -50,13 +50,13 @@ class GoodsTooLargeForContainerYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[Boolean], arbitrary[Boolean], nonEmptyString) {
           (anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
             val userAnswers = emptyUserAnswers
-              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, anyDiscrepancies)
               .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
               .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val result = userAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
 
-            result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe defined
+            result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) mustBe defined
             result.get(SealsReplacedByCustomsAuthorityYesNoPage) must not be defined
             result.get(OtherThingsToReportPage) must not be defined
         }

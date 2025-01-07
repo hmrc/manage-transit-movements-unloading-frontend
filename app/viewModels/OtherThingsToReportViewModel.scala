@@ -17,7 +17,7 @@
 package viewModels
 
 import controllers.routes
-import models.{ArrivalId, Mode, Procedure, UserAnswers}
+import models.{ArrivalId, Mode, OtherThingsToReport, Procedure, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import viewModels.OtherThingsToReportViewModel.AdditionalHtml
@@ -58,12 +58,12 @@ object OtherThingsToReportViewModel {
     def apply(
       userAnswers: UserAnswers,
       arrivalId: ArrivalId,
-      mode: Mode,
-      revised: Boolean
+      mode: Mode
     )(implicit messages: Messages): OtherThingsToReportViewModel = {
-      val prefix = Procedure(userAnswers, revised).prefix
+      val procedure = Procedure(userAnswers)
+      val prefix    = OtherThingsToReport(userAnswers, procedure).prefix
 
-      val additionalHtml = Option.when(revised)(AdditionalHtml(prefix, arrivalId, mode))
+      val additionalHtml = Option.when(procedure.revised)(AdditionalHtml(prefix, arrivalId, mode))
 
       new OtherThingsToReportViewModel(
         title = messages(s"$prefix.title"),

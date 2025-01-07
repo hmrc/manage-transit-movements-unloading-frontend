@@ -32,11 +32,11 @@ case object NewAuthYesNoPage extends QuestionPage[Boolean] {
     value match {
       case Some(false) =>
         userAnswers
-          .remove(GoodsTooLargeForContainerYesNoPage)
-          .flatMap(_.remove(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage))
+          .remove(RevisedUnloadingProcedureConditionsYesNoPage)
+          .flatMap(_.remove(GoodsTooLargeForContainerYesNoPage))
+          .flatMap(_.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage))
           .flatMap(_.remove(SealsReplacedByCustomsAuthorityYesNoPage))
           .flatMap(_.remove(OtherThingsToReportPage))
-          .flatMap(_.remove(RevisedUnloadingProcedureConditionsYesNoPage))
       case _ =>
         super.cleanup(value, userAnswers)
     }

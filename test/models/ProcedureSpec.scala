@@ -17,14 +17,14 @@
 package models
 
 import base.SpecBase
-import pages.{NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 
 class ProcedureSpec extends SpecBase {
 
   "Procedure" - {
 
     "when not a revised procedure" - {
-      "must be Unrevised" in {
+      "must be UsingUnrevised" in {
         val userAnswers = emptyUserAnswers
           .setValue(NewAuthYesNoPage, false)
 
@@ -34,46 +34,75 @@ class ProcedureSpec extends SpecBase {
       }
     }
 
-    "when a revised procedure" - {
-      "and external seal replaced by customs authority" - {
-        "must be RevisedAndSealReplaced" in {
+    "when switching from revised to legacy procedure" - {
+      "when RevisedUnloadingProcedureConditionsYesNoPage is false" - {
+        "must be CannotUseRevised" in {
           val userAnswers = emptyUserAnswers
             .setValue(NewAuthYesNoPage, true)
-            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
 
           val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.RevisedAndSealReplaced)
+          result.mustBe(Procedure.CannotUseRevisedDueToConditions)
         }
       }
 
-      "and external seal not replaced by customs authority" - {
-        "must be RevisedAndSealNotReplaced" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-            .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
+      "when RevisedUnloadingProcedureConditionsYesNoPage is true" - {
+        "and AddTransitUnloadingPermissionDiscrepanciesYesNoPage is true" - {
+          "must be CannotUseRevised" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-          val result = Procedure.apply(userAnswers)
+            val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.RevisedAndSealNotReplaced)
-        }
-      }
-
-      "and SealsReplacedByCustomsAuthorityYesNoPage is unpopulated" - {
-        "must throw exception" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-
-          a[Exception].mustBe(thrownBy(Procedure.apply(userAnswers)))
+            result.mustBe(Procedure.CannotUseRevisedDueToDiscrepancies)
+          }
         }
       }
     }
 
-    "when NewAuthYesNoPage unpopulated" - {
-      "must throw exception" in {
-        val userAnswers = emptyUserAnswers
+    "when a revised procedure" - {
+      "and goods too large" - {
+        "must be RevisedAndGoodsTooLarge" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
-        a[Exception].mustBe(thrownBy(Procedure.apply(userAnswers)))
+          val result = Procedure.apply(userAnswers)
+
+          result.mustBe(Procedure.RevisedAndGoodsTooLarge)
+        }
+      }
+
+      "and goods not too large" - {
+        "must be RevisedAndGoodsNotTooLarge" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, false)
+
+          val result = Procedure.apply(userAnswers)
+
+          result.mustBe(Procedure.RevisedAndGoodsNotTooLarge)
+        }
+      }
+
+      "and AddTransitUnloadingPermissionDiscrepanciesYesNoPage is unpopulated" - {
+        "must be RevisedAndGoodsTooLarge" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NewAuthYesNoPage, true)
+            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+            .setValue(GoodsTooLargeForContainerYesNoPage, true)
+
+          val result = Procedure.apply(userAnswers)
+
+          result.mustBe(Procedure.RevisedAndGoodsTooLarge)
+        }
       }
     }
   }

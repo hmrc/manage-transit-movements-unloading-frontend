@@ -16,10 +16,10 @@
 
 package generators
 
+import models.*
 import models.P5.ArrivalMessageType
-import models._
+import models.reference.*
 import models.reference.TransportMode.InlandMode
-import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -120,7 +120,7 @@ trait ModelGenerators {
     }
 
   implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] = {
-    import models.P5.ArrivalMessageType._
+    import models.P5.ArrivalMessageType.*
     Arbitrary {
       for {
         value <- nonEmptyString
@@ -245,5 +245,16 @@ trait ModelGenerators {
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
       Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
+    }
+
+  implicit lazy val arbitraryProcedure: Arbitrary[Procedure] =
+    Arbitrary {
+      Gen.oneOf(
+        Procedure.Unrevised,
+        Procedure.CannotUseRevisedDueToConditions,
+        Procedure.CannotUseRevisedDueToDiscrepancies,
+        Procedure.RevisedAndGoodsTooLarge,
+        Procedure.RevisedAndGoodsNotTooLarge
+      )
     }
 }

@@ -18,27 +18,28 @@ package controllers
 
 import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.{DidUserChooseNewProcedurePage, NewAuthYesNoPage}
+import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UsersAnswersService
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.NewAuthYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
-                                        navigator: Navigation,
-                                        actions: Actions,
-                                        formProvider: YesNoFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: NewAuthYesNoView,
-                                        usersAnswersService: UsersAnswersService,
-                                        sessionRepository: SessionRepository
+class NewAuthYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  navigator: Navigation,
+  actions: Actions,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NewAuthYesNoView,
+  userAnswersService: UserAnswersService,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -62,15 +63,18 @@ class NewAuthYesNoController @Inject() (override val messagesApi: MessagesApi,
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
+            val userAnswersF: Future[UserAnswers] =
+              if (request.userAnswers.hasAnswerChanged(NewAuthYesNoPage, value) && value) {
+                userAnswersService.retainAndTransform(request.userAnswers, NewAuthYesNoPage)
+              } else {
+                Future.successful(request.userAnswers)
+              }
+
             for {
-              // DidUserChooseNewProcedurePage is similar to NewAuthYesNoPage to determine if the user chooses new procedure
-              // For navigation we need to know how the user journey starts
-              // However we cannot use NewAuthYesNoPage for this purpose as in some cases it's updated programmatically
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DidUserChooseNewProcedurePage, value))
-              updatedAndTransformedAnswers <- usersAnswersService
-                .updateConditionalAndWipe(page = NewAuthYesNoPage, value = value, updatedAnswers)
-              _ <- sessionRepository.set(updatedAndTransformedAnswers)
-            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAndTransformedAnswers))
+              userAnswers    <- userAnswersF
+              updatedAnswers <- Future.fromTry(userAnswers.set(NewAuthYesNoPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NewAuthYesNoPage, mode, updatedAnswers))
         )
   }
 }

@@ -21,7 +21,7 @@ import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigation
-import pages.{NewAuthYesNoPage, OtherThingsToReportPage}
+import pages.OtherThingsToReportPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,6 @@ class OtherThingsToReportController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigation,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: OtherThingsToReportFormProvider,
   val controllerComponents: MessagesControllerComponents,
   viewModelProvider: OtherThingsToReportViewModelProvider,
@@ -52,9 +51,9 @@ class OtherThingsToReportController @Inject() (
     formProvider(viewModel.requiredError, viewModel.maxLengthError, viewModel.invalidError)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)) {
+    actions.requireData(arrivalId) {
       implicit request =>
-        val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, request.arg)
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
         val preparedForm = request.userAnswers.get(OtherThingsToReportPage) match {
           case None        => form(viewModel)
           case Some(value) => form(viewModel).fill(value)
@@ -64,9 +63,9 @@ class OtherThingsToReportController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(NewAuthYesNoPage)).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
-        val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, request.arg)
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
         form(viewModel)
           .bindFromRequest()
           .fold(

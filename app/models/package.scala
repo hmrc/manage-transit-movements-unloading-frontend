@@ -45,6 +45,9 @@ package object models {
 
   implicit class RichJsValue(jsValue: JsValue) {
 
+    def get(path: JsPath): JsResult[JsValue] =
+      jsValue.transform(path.json.pick)
+
     def set(path: JsPath, value: JsValue): JsResult[JsValue] =
       (path.path, jsValue) match {
 

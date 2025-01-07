@@ -18,26 +18,19 @@ package controllers
 
 import controllers.actions.*
 import models.{ArrivalId, NormalMode, RichCC043CType}
-import pages.NewAuthYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.UsersAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CannotUseRevisedUnloadingProcedureView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class CannotUseRevisedUnloadingProcedureController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   actions: Actions,
-  view: CannotUseRevisedUnloadingProcedureView,
-  service: UsersAnswersService,
-  sessionRepository: SessionRepository
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+  view: CannotUseRevisedUnloadingProcedureView
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
@@ -48,15 +41,12 @@ class CannotUseRevisedUnloadingProcedureController @Inject() (
       }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
+    actions.requireData(arrivalId) {
       implicit request =>
         if (request.userAnswers.ie043Data.sealsExist) {
-          for {
-            updatedAnswers <- service.updateConditionalAndWipe(page = NewAuthYesNoPage, value = false, request.userAnswers)
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode))
+          Redirect(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode))
         } else {
-          Future.successful(Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)))
+          Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
     }
 }
