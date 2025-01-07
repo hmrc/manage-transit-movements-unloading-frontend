@@ -18,16 +18,16 @@ package controllers
 
 import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode, UserAnswers}
+import models.Procedure.CannotUseRevisedDueToDiscrepancies
+import models.{ArrivalId, Mode, Procedure, UserAnswers}
 import navigation.Navigation
-import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
+import pages.*
 import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UsersAnswersService
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.transformers.IE043Transformer
 import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
 import javax.inject.Inject
@@ -41,8 +41,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddTransitUnloadingPermissionDiscrepanciesYesNoView,
-  dataTransformer: IE043Transformer,
-  userAnswersService: UsersAnswersService
+  userAnswersService: UserAnswersService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -67,11 +66,20 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value => {
             val userAnswersF: Future[UserAnswers] =
-              if (value) {
-                Future.successful(request.userAnswers)
+              if (request.userAnswers.hasAnswerChanged(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, value) && !value) {
+                Procedure(request.userAnswers) match {
+                  case CannotUseRevisedDueToDiscrepancies =>
+                    userAnswersService.retainAndTransform(
+                      request.userAnswers,
+                      NewAuthYesNoPage,
+                      RevisedUnloadingProcedureConditionsYesNoPage,
+                      GoodsTooLargeForContainerYesNoPage
+                    )
+                  case _ =>
+                    userAnswersService.retainAndTransform(request.userAnswers, OtherQuestionsSection)
+                }
               } else {
                 Future.successful(request.userAnswers)
-                userAnswersService.retainAndTransform(request.userAnswers, OtherQuestionsSection)(dataTransformer.transform(_))
               }
 
             for {

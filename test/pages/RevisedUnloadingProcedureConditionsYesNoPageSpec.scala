@@ -35,14 +35,14 @@ class RevisedUnloadingProcedureConditionsYesNoPageSpec extends PageBehaviours {
           (goodsTooLarge, anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
             val userAnswers = emptyUserAnswers
               .setValue(GoodsTooLargeForContainerYesNoPage, goodsTooLarge)
-              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, anyDiscrepancies)
               .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
               .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val result = userAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
 
             result.get(GoodsTooLargeForContainerYesNoPage) must not be defined
-            result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) must not be defined
+            result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) must not be defined
             result.get(SealsReplacedByCustomsAuthorityYesNoPage) must not be defined
             result.get(OtherThingsToReportPage) must not be defined
         }
@@ -53,14 +53,14 @@ class RevisedUnloadingProcedureConditionsYesNoPageSpec extends PageBehaviours {
           (goodsTooLarge, anyDiscrepancies, sealsReplaced, otherThingsToReport) =>
             val userAnswers = emptyUserAnswers
               .setValue(GoodsTooLargeForContainerYesNoPage, goodsTooLarge)
-              .setValue(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage, anyDiscrepancies)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, anyDiscrepancies)
               .setValue(SealsReplacedByCustomsAuthorityYesNoPage, sealsReplaced)
               .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val result = userAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
 
             result.get(GoodsTooLargeForContainerYesNoPage) mustBe defined
-            result.get(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage) mustBe defined
+            result.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) mustBe defined
             result.get(SealsReplacedByCustomsAuthorityYesNoPage) mustBe defined
             result.get(OtherThingsToReportPage) mustBe defined
         }

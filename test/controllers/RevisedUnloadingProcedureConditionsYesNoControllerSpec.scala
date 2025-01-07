@@ -20,41 +20,43 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigation
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.RevisedUnloadingProcedureConditionsYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.UsersAnswersService
+import services.UserAnswersService
 import views.html.RevisedUnloadingProcedureConditionsYesNoView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private lazy val revisedUnloadingProcedureConditionsYesNoRoute =
-    controllers.routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, mode).url
+    routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(arrivalId, mode).url
+
+  private val mockUserAnswersService = mock[UserAnswersService]
+
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("revisedUnloadingProcedureConditionsYesNo")
   private val mode         = NormalMode
-  private val mockService  = mock[UsersAnswersService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockService)
-  }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[UsersAnswersService].toInstance(mockService)
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockUserAnswersService)
+  }
 
   "RevisedUnloadingProcedureConditionsYesNo Controller" - {
 
@@ -93,12 +95,12 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
-    "must redirect to the next page after transformation when valid data is submitted" in {
-
+    "must redirect to the next page when yes is submitted and answer has changed" in {
       val jsonBeforeEverything = Json
         .parse(s"""
              |{
              |  "otherQuestions" : {
+             |    "newAuthYesNo" : true,
              |    "foo" : "bar",
              |    "otherThingsToReport" : "other things"
              |  },
@@ -117,18 +119,23 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
              |{
              |  "someDummyTransformedData" : {
              |    "foo" : "bar"
+             |  },
+             |  "otherQuestions" : {
+             |    "newAuthYesNo" : true,
+             |    "revisedUnloadingProcedureConditionsYesNo" : true
              |  }
              |}
              |""".stripMargin)
         .as[JsObject]
 
-      val now                            = Instant.now()
-      val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
+      val userAnswers                    = emptyUserAnswers
+      val userAnswersBeforeEverything    = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterTransformation = userAnswers.copy(data = jsonAfterTransformation)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterTransformation))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
@@ -140,14 +147,35 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustBe userAnswersAfterTransformation
     }
 
-    "must redirect to the next page when user answer is submitted" in {
+    "must redirect to the next page when yes is submitted and answer has not changed" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(emptyUserAnswers))
+      val userAnswers = emptyUserAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
 
-      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, revisedUnloadingProcedureConditionsYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when no is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, revisedUnloadingProcedureConditionsYesNoRoute)
         .withFormUrlEncodedBody(("value", "false"))
@@ -157,6 +185,26 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when no is submitted" in {
+
+      val userAnswers = emptyUserAnswers
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, revisedUnloadingProcedureConditionsYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

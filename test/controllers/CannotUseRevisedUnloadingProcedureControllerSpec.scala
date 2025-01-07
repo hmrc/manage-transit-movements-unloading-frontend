@@ -21,19 +21,16 @@ import generated.{CUSTOM_ConsignmentType05, Number0, SealType04, TransportEquipm
 import generators.Generators
 import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.CannotUseRevisedUnloadingProcedureView
 
 class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+
   private val mode = NormalMode
 
-  lazy val cannotUseRevisedUnloadingProcedureRoute: String = controllers.routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(arrivalId).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
+  lazy val cannotUseRevisedUnloadingProcedureRoute: String =
+    routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(arrivalId).url
 
   "CannotUseRevisedUnloadingProcedureController" - {
 
@@ -72,8 +69,15 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
         emptyUserAnswers.copy(ie043Data =
           basicIe043.copy(Consignment =
             Some(
-              CUSTOM_ConsignmentType05(containerIndicator = Number0,
-                                       TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 1, Seal = Seq(SealType04(1, "1"))))
+              CUSTOM_ConsignmentType05(
+                containerIndicator = Number0,
+                TransportEquipment = Seq(
+                  TransportEquipmentType05(
+                    sequenceNumber = 1,
+                    numberOfSeals = 1,
+                    Seal = Seq(SealType04(1, "1"))
+                  )
+                )
               )
             )
           )
@@ -91,13 +95,22 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
     "must redirect to UnloadingFindings page if number of ie043 seals is zero" in {
 
       setExistingUserAnswers(
-        emptyUserAnswers.copy(ie043Data =
-          basicIe043.copy(Consignment =
-            Some(
-              CUSTOM_ConsignmentType05(containerIndicator = Number0, TransportEquipment = Seq(TransportEquipmentType05(sequenceNumber = 1, numberOfSeals = 0)))
+        emptyUserAnswers
+          .copy(ie043Data =
+            basicIe043.copy(Consignment =
+              Some(
+                CUSTOM_ConsignmentType05(
+                  containerIndicator = Number0,
+                  TransportEquipment = Seq(
+                    TransportEquipmentType05(
+                      sequenceNumber = 1,
+                      numberOfSeals = 0
+                    )
+                  )
+                )
+              )
             )
           )
-        )
       )
 
       val request = FakeRequest(POST, cannotUseRevisedUnloadingProcedureRoute)

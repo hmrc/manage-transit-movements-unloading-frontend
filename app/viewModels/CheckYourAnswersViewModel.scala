@@ -16,8 +16,9 @@
 
 package viewModels
 
-import models.UserAnswers
-import pages.{AddTransitUnloadingPermissionDiscrepanciesYesNoPage, GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage}
+import models.Procedure.*
+import models.{Procedure, UserAnswers}
+import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -26,9 +27,10 @@ import viewModels.sections.Section.StaticSection
 import javax.inject.Inject
 
 case class CheckYourAnswersViewModel(
+  procedureSection: Section,
   sections: Seq[Section],
   showDiscrepanciesLink: Boolean,
-  goodsTooLarge: Option[Boolean]
+  procedure: Procedure
 )
 
 object CheckYourAnswersViewModel {
@@ -36,17 +38,27 @@ object CheckYourAnswersViewModel {
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel =
     new CheckYourAnswersViewModelProvider()(userAnswers)
 
-  class CheckYourAnswersViewModelProvider @Inject() () {
+  class CheckYourAnswersViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
 
-      val headerSection = StaticSection(
+      val procedure = Procedure(userAnswers)
+
+      val procedureSection = StaticSection(
         rows = Seq(
           helper.newProcedure,
           helper.revisedUnloadingProcedureConditionsYesNo,
           helper.goodsTooLarge,
-          helper.largeUnsealedGoodsRecordDiscrepanciesYesNo,
+          procedure match {
+            case RevisedAndGoodsTooLarge | CannotUseRevisedDueToDiscrepancies => helper.addDiscrepanciesYesNo
+            case _                                                            => None
+          }
+        ).flatten
+      )
+
+      val unloadingSection = StaticSection(
+        rows = Seq(
           helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
@@ -54,10 +66,13 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val commentsSection = StaticSection(
+      val discrepanciesSection = StaticSection(
         sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
         rows = Seq(
-          helper.addDiscrepanciesYesNo,
+          procedure match {
+            case RevisedAndGoodsTooLarge | CannotUseRevisedDueToDiscrepancies => None
+            case _                                                            => helper.addDiscrepanciesYesNo
+          },
           helper.addCommentsYesNo,
           helper.additionalComment,
           helper.sealsReplaced,
@@ -66,17 +81,21 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val discrepanciesPresent =
-        (userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage), userAnswers.get(NewAuthYesNoPage)) match {
-          case (Some(false), _) => false
-          case (_, Some(true))  => false
-          case _                => true
-        }
+      val discrepanciesPresent = procedure match {
+        case _: Revised =>
+          false
+        case _ =>
+          userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
+            case Some(false) => false
+            case _           => true
+          }
+      }
 
       new CheckYourAnswersViewModel(
-        Seq(headerSection, commentsSection),
+        procedureSection,
+        Seq(unloadingSection, discrepanciesSection),
         discrepanciesPresent,
-        userAnswers.get(GoodsTooLargeForContainerYesNoPage)
+        procedure
       )
     }
   }

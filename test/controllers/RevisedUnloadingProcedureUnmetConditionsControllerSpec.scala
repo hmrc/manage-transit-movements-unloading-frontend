@@ -18,40 +18,15 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.UserAnswers
-import navigation.Navigation
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.UsersAnswersService
 import views.html.RevisedUnloadingProcedureUnmetConditionsView
-
-import java.time.Instant
-import scala.concurrent.Future
 
 class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private lazy val revisedUnloadingProcedureUnmet: String = controllers.routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(arrivalId).url
-  private val mockService                                 = mock[UsersAnswersService]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[Navigation].toInstance(fakeNavigation),
-        bind[UsersAnswersService].toInstance(mockService)
-      )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockService)
-  }
+  private lazy val revisedUnloadingProcedureUnmet: String =
+    routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(arrivalId).url
 
   "RevisedUnloadingProcedureUnmetConditionsController" - {
 
@@ -84,34 +59,15 @@ class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase wi
       redirectLocation(result).value `mustEqual` routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to UnloadingGuidance page and set newAuthYesNo to No(false) on submit" in {
-      val now         = Instant.now()
-      val userAnswers = emptyUserAnswers.copy(lastUpdated = now)
-      val updatedUserAnswer = emptyUserAnswers.copy(
-        data = Json
-          .parse(s"""
-               |{
-               |  "otherQuestions" : {
-               |    "newAuthYesNo" : false
-               |  }
-               |}
-               |""".stripMargin)
-          .as[JsObject],
-        lastUpdated = now
-      )
-      setExistingUserAnswers(userAnswers)
+    "must redirect to UnloadingGuidance page on submit" in {
+      setExistingUserAnswers(emptyUserAnswers)
+
       val request = FakeRequest(POST, revisedUnloadingProcedureUnmet)
-      when(mockService.updateConditionalAndWipe(any(), any(), any())(any(), any())).thenReturn(Future.successful(updatedUserAnswer))
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val result = route(app, request).value
 
       status(result) `mustEqual` SEE_OTHER
       redirectLocation(result).value `mustEqual` controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
-
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue mustBe updatedUserAnswer
     }
   }
 }

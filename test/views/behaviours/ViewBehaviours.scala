@@ -23,10 +23,10 @@ import org.scalatest.Assertion
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import play.twirl.api.TwirlHelperImports._
+import play.twirl.api.TwirlHelperImports.*
 import views.assertions.ViewSpecAssertions
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
@@ -275,5 +275,22 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render form with action" in {
       val formAction = getElementByTag(doc, "form").attr("action")
       formAction mustBe expectedUrl
+    }
+
+  def pageWithWarningText(expectedText: String): Unit =
+    pageWithWarningText(doc, expectedText)
+
+  def pageWithWarningText(doc: Document, expectedText: String): Unit =
+    s"must render warning text" in {
+      val warning = getElementByClass(doc, "govuk-warning-text__text")
+      assertElementContainsText(warning, s"Warning $expectedText")
+    }
+
+  def pageWithoutWarningText(): Unit =
+    pageWithoutWarningText(doc)
+
+  def pageWithoutWarningText(doc: Document): Unit =
+    s"must render warning text" in {
+      assertElementDoesNotExist(doc, "govuk-warning-text")
     }
 }

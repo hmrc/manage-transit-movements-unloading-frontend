@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.{Mode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{NewAuthYesNoPage, SealsReplacedByCustomsAuthorityYesNoPage}
+import pages.*
 import viewModels.OtherThingsToReportViewModel.{AdditionalHtml, OtherThingsToReportViewModelProvider}
 
 class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -33,7 +33,7 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
         .setValue(NewAuthYesNoPage, false)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode, revised = false)
+      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode)
 
       result.title mustBe "What do you want to report?"
       result.heading mustBe "What do you want to report?"
@@ -47,10 +47,12 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
     "when newAuth is true and sealsReplaced is false" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode, revised = true)
+      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode)
 
       result.title mustBe "What is the identification number for the external seal?"
       result.heading mustBe "What is the identification number for the external seal?"
@@ -72,10 +74,12 @@ class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyC
     "when newAuth is true and sealsReplace is true" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, true)
+        .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+        .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
 
       val viewModelProvider = new OtherThingsToReportViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode, revised = true)
+      val result            = viewModelProvider.apply(userAnswers, arrivalId, mode)
 
       result.title mustBe "What is the identification number for the replacement external seal?"
       result.heading mustBe "What is the identification number for the replacement external seal?"

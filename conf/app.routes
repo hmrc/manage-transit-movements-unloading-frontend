@@ -107,11 +107,6 @@ POST       /:arrivalId/external-seal-replaced                                   
 GET        /:arrivalId/change-external-seal-replaced                                                                 controllers.SealsReplacedByCustomsAuthorityYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-external-seal-replaced                                                                 controllers.SealsReplacedByCustomsAuthorityYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/large-unsealed-goods/add-transit-movement-unloading-permission-discrepancies                  controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/large-unsealed-goods/add-transit-movement-unloading-permission-discrepancies                  controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloading-permission-discrepancies           controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/large-unsealed-goods/change-add-transit-movement-unloading-permission-discrepancies           controllers.LargeUnsealedGoodsRecordDiscrepanciesYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
-
 GET        /:arrivalId/cannot-use-revised-unloading-procedure                                                        controllers.CannotUseRevisedUnloadingProcedureController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/cannot-use-revised-unloading-procedure                                                        controllers.CannotUseRevisedUnloadingProcedureController.onSubmit(arrivalId: ArrivalId)
 

@@ -18,8 +18,9 @@ package services.submission
 
 import connectors.ApiConnector
 import generated.*
+import models.Procedure.*
 import models.UnloadingSubmissionValues.*
-import models.{ArrivalId, DocType, EoriNumber, Index, RichCC043CType, StateOfSeals, UnloadingType, UserAnswers}
+import models.{ArrivalId, DocType, EoriNumber, Index, Procedure, RichCC043CType, StateOfSeals, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -143,13 +144,10 @@ class SubmissionService @Inject() (
         unloadingRemark = unloadingRemark
       )
 
-    NewAuthYesNoPage.path.read[Boolean].flatMap {
-      case true => revisedProcedureReads
-      case false =>
-        DidUserChooseNewProcedurePage.path.readNullable[Boolean].flatMap {
-          case Some(true) => cannotUseRevisedUnloadingProcedureReads
-          case _          => unrevisedProcedureReads
-        }
+    Procedure(userAnswers) match {
+      case CannotUseRevisedDueToDiscrepancies          => cannotUseRevisedUnloadingProcedureReads
+      case Unrevised | CannotUseRevisedDueToConditions => unrevisedProcedureReads
+      case _: Revised                                  => revisedProcedureReads
     }
   }
 

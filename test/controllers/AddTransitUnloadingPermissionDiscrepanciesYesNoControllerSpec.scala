@@ -29,11 +29,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.UsersAnswersService
-import utils.transformers.IE043Transformer
+import services.UserAnswersService
 import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -45,22 +43,19 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
   private lazy val addTransitUnloadingPermissionDiscrepanciesYesNoRoute =
     controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode).url
 
-  private val mockTransformer = mock[IE043Transformer]
-  private val mockService     = mock[UsersAnswersService]
+  private val mockUserAnswersService = mock[UserAnswersService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[Navigation].toInstance(fakeNavigation),
-        bind[IE043Transformer].toInstance(mockTransformer),
-        bind[UsersAnswersService].toInstance(mockService)
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockTransformer)
-    reset(mockService)
+    reset(mockUserAnswersService)
   }
 
   "AddTransitUnloadingPermissionDiscrepanciesYesNoPage Controller" - {
@@ -114,32 +109,22 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      verifyNoInteractions(mockTransformer)
     }
 
-    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted" in {
+    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted and on legacy procedure" in {
 
       val jsonBeforeEverything = Json
         .parse(s"""
            |{
            |  "otherQuestions" : {
-           |    "foo" : "bar"
+           |    "newAuthYesNo" : false,
+           |    "canSealsBeRead" : true,
+           |    "areAnySealsBroken" : false
            |  },
            |  "someDummyTransformedData" : {
            |    "foo" : "bar"
            |  },
            |  "someDummyDiscrepancies" : {
-           |    "foo" : "bar"
-           |  }
-           |}
-           |""".stripMargin)
-        .as[JsObject]
-
-      val jsonAfterTransformation = Json
-        .parse(s"""
-           |{
-           |  "someDummyTransformedData" : {
            |    "foo" : "bar"
            |  }
            |}
@@ -153,22 +138,23 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
            |    "foo" : "bar"
            |  },
            |  "otherQuestions" : {
-           |    "foo" : "bar",
+           |    "newAuthYesNo" : false,
+           |    "canSealsBeRead" : true,
+           |    "areAnySealsBroken" : false,
            |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : false
            |  }
            |}
            |""".stripMargin)
         .as[JsObject]
 
-      val now                            = Instant.now()
-      val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
-      val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
-      val userAnswersAfterEverything     = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
+      val userAnswers                 = emptyUserAnswers
+      val userAnswersBeforeEverything = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterEverything  = userAnswers.copy(data = jsonAfterEverything)
 
       setExistingUserAnswers(userAnswersBeforeEverything)
 
-      when(mockService.retainAndTransform(any(), any())(any())(any(), any(), any())).thenReturn(Future.successful(userAnswersAfterEverything))
-      when(mockTransformer.transform(any())(any(), any())).thenReturn(Future.successful(userAnswersAfterTransformation))
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterEverything))
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
@@ -184,6 +170,124 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
       userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+    }
+
+    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted and switched from revised to legacy procedure" in {
+
+      val jsonBeforeEverything = Json
+        .parse(s"""
+           |{
+           |  "otherQuestions" : {
+           |    "newAuthYesNo" : true,
+           |    "revisedUnloadingProcedureConditionsYesNo" : true,
+           |    "goodsTooLargeForContainerYesNo" : true,
+           |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : true,
+           |    "canSealsBeRead" : true,
+           |    "areAnySealsBroken" : false
+           |  },
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  },
+           |  "someDummyDiscrepancies" : {
+           |    "foo" : "bar"
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val jsonAfterEverything = Json
+        .parse(s"""
+           |{
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  },
+           |  "otherQuestions" : {
+           |    "newAuthYesNo" : true,
+           |    "revisedUnloadingProcedureConditionsYesNo" : true,
+           |    "goodsTooLargeForContainerYesNo" : true,
+           |    "addTransitUnloadingPermissionDiscrepanciesYesNo" : false
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val userAnswers                 = emptyUserAnswers
+      val userAnswersBeforeEverything = userAnswers.copy(data = jsonBeforeEverything)
+      val userAnswersAfterEverything  = userAnswers.copy(data = jsonAfterEverything)
+
+      setExistingUserAnswers(userAnswersBeforeEverything)
+
+      when(mockUserAnswersService.retainAndTransform(any(), any())(any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterEverything))
+
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+    }
+
+    "must redirect to the next page when no is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when yes is submitted and answer has not changed" in {
+
+      val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
+    }
+
+    "must redirect to the next page when yes is submitted" in {
+
+      val userAnswers = emptyUserAnswers
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, addTransitUnloadingPermissionDiscrepanciesYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockUserAnswersService)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

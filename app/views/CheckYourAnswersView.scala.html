@@ -14,15 +14,17 @@
  * limitations under the License.
  *@
 
+@import models.Procedure._
 @import viewModels.CheckYourAnswersViewModel
-@import views.html.components.{AnswerSections, Button, Heading}
+@import views.html.components.{AnswerSections, Button, Heading, Warning}
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     answerSections: AnswerSections,
     button: Button,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    warning: Warning
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CheckYourAnswersViewModel)(implicit request: Request[?], messages: Messages)
@@ -37,15 +39,21 @@
         caption = Some(messages("site.caption", mrn.toString))
     )
 
+    @answerSections(Seq(viewModel.procedureSection))
+
+    @viewModel.procedure match {
+        case _: CannotUseRevised => {
+            @warning(messages("site.warning.procedure"))
+        }
+        case _ => {}
+    }
+
     @answerSections(viewModel.sections)
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.sendRemarks")</h2>
 
-    @viewModel.goodsTooLarge match {
-        case None => {
-            <p class="govuk-body">@messages("checkYourAnswers.paragraph1")</p>
-        }
-        case Some(true) => {
+    @viewModel.procedure match {
+        case RevisedAndGoodsTooLarge => {
             <p class="govuk-body">@messages("checkYourAnswers.paragraph2")</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>@messages("checkYourAnswers.bullet1")</li>
@@ -53,7 +61,7 @@
                 <li>@messages("checkYourAnswers.bullet3")</li>
             </ul>
         }
-        case Some(false) => {
+        case RevisedAndGoodsNotTooLarge => {
             <p class="govuk-body">@messages("checkYourAnswers.paragraph2")</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>@messages("checkYourAnswers.bullet1")</li>
@@ -61,6 +69,9 @@
                 <li>@messages("checkYourAnswers.bullet5")</li>
                 <li>@messages("checkYourAnswers.bullet6")</li>
             </ul>
+        }
+        case _ => {
+            <p class="govuk-body">@messages("checkYourAnswers.paragraph1")</p>
         }
     }
 

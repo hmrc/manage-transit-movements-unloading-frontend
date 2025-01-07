@@ -31,7 +31,7 @@ case object GoodsTooLargeForContainerYesNoPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) =>
-        userAnswers.remove(LargeUnsealedGoodsRecordDiscrepanciesYesNoPage)
+        userAnswers.remove(AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
       case Some(true) =>
         userAnswers
           .remove(SealsReplacedByCustomsAuthorityYesNoPage)
