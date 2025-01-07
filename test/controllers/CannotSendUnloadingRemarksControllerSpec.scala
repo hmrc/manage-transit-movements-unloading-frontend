@@ -53,8 +53,6 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
 
   "CannotSendUnloadingRemarksController" - {
     "return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val ie043Data = basicIe043.copy(CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId))

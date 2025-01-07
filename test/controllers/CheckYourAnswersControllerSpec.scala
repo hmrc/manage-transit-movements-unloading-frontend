@@ -63,8 +63,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
   "UnloadingFindingsController Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val checkYourAnswersViewModel = arbitrary[CheckYourAnswersViewModel].sample.value
@@ -85,8 +83,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "must redirect to the next page when submission successful" in {
-      checkArrivalStatus()
-
       when(mockSubmissionService.submit(any(), any())(any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -108,8 +104,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
     "must redirect to tech difficulties when submission unsuccessful" in {
       forAll(Gen.choose(400: Int, 599: Int)) {
         errorCode =>
-          checkArrivalStatus()
-
           when(mockSubmissionService.submit(any(), any())(any()))
             .thenReturn(Future.successful(HttpResponse(errorCode, "")))
 
@@ -130,8 +124,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, checkYourAnswersRoute)
@@ -144,8 +136,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, checkYourAnswersRoute)

@@ -71,8 +71,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
   "NetWeightAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, NetWeightRoute)
@@ -88,8 +86,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      checkArrivalStatus()
-
       val userAnswers = emptyUserAnswers.setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal("123456.123"))
       setExistingUserAnswers(userAnswers)
 
@@ -108,8 +104,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      checkArrivalStatus()
-
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -125,8 +119,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, NetWeightRoute).withFormUrlEncodedBody(("value", ""))
@@ -142,8 +134,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "must return a Bad Request and errors when 0 is submitted" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, NetWeightRoute).withFormUrlEncodedBody(("value", "0"))
@@ -159,8 +149,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, NetWeightRoute)
@@ -173,8 +161,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request =
@@ -189,8 +175,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     }
 
     "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
-      checkArrivalStatus()
-
       when(mockUnloadingPermissionMessageService.canSubmitUnloadingRemarks(any())(any(), any()))
         .thenReturn(Future.successful(false))
 

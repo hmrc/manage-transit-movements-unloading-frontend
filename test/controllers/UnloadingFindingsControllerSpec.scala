@@ -44,8 +44,6 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
   "UnloadingFindingsController Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val sections = arbitraryStaticSections.arbitrary.sample.value
@@ -67,8 +65,6 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
-      checkArrivalStatus()
-
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, unloadingFindingsRoute)
@@ -81,8 +77,6 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to AddCommentsYesNo page" in {
-      checkArrivalStatus()
-
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, unloadingFindingsRoute)
