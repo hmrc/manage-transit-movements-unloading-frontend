@@ -340,7 +340,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
-    "unloadingCommentsYesNo" - {
+    "addDiscrepanciesYesNo" - {
       "must return row" - {
         "when answered Yes" in {
 
@@ -387,64 +387,6 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       href = routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some("if there were any discrepancies between the transit movement and unloading permission"),
                       attributes = Map("id" -> "change-add-discrepancies")
-                    )
-                  )
-                )
-              )
-            )
-          )
-        }
-      }
-    }
-
-    "addCommentsYesNo" - {
-      "must return row" - {
-        "when answered Yes" in {
-
-          val answers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
-          val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.addCommentsYesNo
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Do you want to add any comments?".toText),
-              value = Value("Yes".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = routes.AddCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some(
-                        "if you want to add any comments"
-                      ),
-                      attributes = Map("id" -> "change-add-comments")
-                    )
-                  )
-                )
-              )
-            )
-          )
-        }
-
-        "when answered No" in {
-
-          val answers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
-          val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.addCommentsYesNo
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Do you want to add any comments?".toText),
-              value = Value("No".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = routes.AddCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if you want to add any comments"),
-                      attributes = Map("id" -> "change-add-comments")
                     )
                   )
                 )

@@ -18,8 +18,8 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{CheckMode, Mode, NormalMode, Procedure, RichCC043CType, StateOfSeals, UserAnswers}
 import models.Procedure.*
+import models.{CheckMode, Mode, NormalMode, Procedure, RichCC043CType, StateOfSeals, UserAnswers}
 import pages.*
 import play.api.mvc.Call
 
@@ -34,7 +34,6 @@ class Navigation extends Navigator {
     case CanSealsBeReadPage                                  => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
     case AreAnySealsBrokenPage                               => ua => stateOfSealsNormalNavigation(ua)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, NormalMode)
-    case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, NormalMode)
     case UnloadingCommentsPage                               => ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, NormalMode)
     case OtherThingsToReportPage                             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
@@ -49,7 +48,6 @@ class Navigation extends Navigator {
     case RevisedUnloadingProcedureConditionsYesNoPage        => ua => revisedUnloadingProcedureConditionsYesNoNavigation(ua)
     case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsCheckNavigation(ua)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, CheckMode)
-    case AddCommentsYesNoPage                                => ua => addCommentsNavigation(ua, CheckMode)
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
     case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, CheckMode)
@@ -144,19 +142,6 @@ class Navigation extends Navigator {
             }
           case _ =>
             Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-        }
-    }
-
-  private def addCommentsNavigation(ua: UserAnswers, mode: Mode): Option[Call] =
-    ua.get(AddCommentsYesNoPage) map {
-      case true =>
-        routes.UnloadingCommentsController.onPageLoad(ua.id, mode)
-      case false =>
-        mode match {
-          case NormalMode =>
-            routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, mode)
-          case CheckMode =>
-            routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
     }
 

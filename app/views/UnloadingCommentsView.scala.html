@@ -41,9 +41,10 @@
 
         @inputCharacterCount(
             field = form("value"),
-            inputCharacterCountType = OrdinaryInputCharacterCount(
+            inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
                 heading = messages("unloadingComments.heading"),
-                caption = Some(messages("site.caption", mrn.toString))
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = messages("unloadingComments.paragraph").toParagraph
             ),
             maxLength = maxLength
         )

@@ -89,7 +89,6 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           .setValue(CanSealsBeReadPage, true)
           .setValue(AreAnySealsBrokenPage, true)
           .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-          .setValue(AddCommentsYesNoPage, true)
           .setValue(UnloadingCommentsPage, comments)
           .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
           .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
@@ -104,7 +103,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
         result.sections.head.rows.size mustBe 4
 
         result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-        result.sections(1).rows.size mustBe 6
+        result.sections(1).rows.size mustBe 5
       }
 
       "when revised procedure" - {
@@ -120,7 +119,6 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
             .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
             .setValue(CanSealsBeReadPage, true)
             .setValue(AreAnySealsBrokenPage, true)
-            .setValue(AddCommentsYesNoPage, true)
             .setValue(UnloadingCommentsPage, comments)
             .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
             .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
@@ -135,7 +133,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           result.sections.head.rows.size mustBe 2
 
           result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-          result.sections(1).rows.size mustBe 5
+          result.sections(1).rows.size mustBe 4
         }
       }
     }

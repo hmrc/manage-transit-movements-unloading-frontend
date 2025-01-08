@@ -322,12 +322,6 @@ addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrep
 addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit movement and unloading permission
 
-addCommentsYesNo.title = Do you want to add any comments?
-addCommentsYesNo.heading = Do you want to add any comments?
-addCommentsYesNo.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
-addCommentsYesNo.hint = Adding comments is optional.
-addCommentsYesNo.error.required = Select yes if you want to add any comments
-
 doYouHaveAnythingElseToReportYesNo.title = Do you have anything else to report?
 doYouHaveAnythingElseToReportYesNo.heading = Do you have anything else to report?
 doYouHaveAnythingElseToReportYesNo.paragraph = This can be anything else you want to tell us about the transit movement.
@@ -336,6 +330,7 @@ doYouHaveAnythingElseToReportYesNo.error.required = Select yes if you have anyth
 
 unloadingComments.title = Enter your comments
 unloadingComments.heading = Enter your comments
+unloadingComments.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
 unloadingComments.error.required = Enter your comments
 unloadingComments.error.length = Your comments must be 512 characters or less
 unloadingComments.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
@@ -654,8 +649,6 @@ checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals 
 checkYourAnswers.subsections.additionalComments = Transit movement and unloading permission discrepancies
 checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit movement and unloading permission?
 checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit movement and unloading permission
-checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
-checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
 checkYourAnswers.rowHeadings.additionalComments = Comments
 checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
 checkYourAnswers.rowHeadings.addReportYesNo = Do you have anything else to report?

@@ -30,10 +30,7 @@ case object AddTransitUnloadingPermissionDiscrepanciesYesNoPage extends Question
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) =>
-        userAnswers
-          .remove(AddCommentsYesNoPage)
-          .flatMap(_.remove(UnloadingCommentsPage))
-      case _ => super.cleanup(value, userAnswers)
+      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
+      case _           => super.cleanup(value, userAnswers)
     }
 }
