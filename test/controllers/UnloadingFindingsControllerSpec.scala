@@ -76,7 +76,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to AddCommentsYesNo page" in {
+    "must redirect to unloading comments page" in {
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, unloadingFindingsRoute)
