@@ -41,6 +41,8 @@ class UnloadingCommentsViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This can be anything else you want to tell us about the discrepancies you spotted when unloading.")
+
   behave like pageWithCharacterCount(unloadingCommentsLength)
 
   behave like pageWithHint(s"You can enter up to $unloadingCommentsLength characters")

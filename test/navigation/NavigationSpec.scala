@@ -280,24 +280,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from add comments yes/no page" - {
-        "when answer is true to unloading comments controller" in {
-          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
-
-          navigator
-            .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
-        }
-
-        "when answer is false to do you have anything else to report yes/no page" in {
-          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
-
-          navigator
-            .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
-        }
-      }
-
       "must go from can unloading comments page to do you have anything else to report yes/no page" in {
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
@@ -562,22 +544,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         navigator
           .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
           .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, mode))
-      }
-
-      "must go from add comments yes/no page to unloading comments page when true" in {
-        val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
-
-        navigator
-          .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode))
-      }
-
-      "must go from add comments yes/no page to check your answers page when false" in {
-        val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
-
-        navigator
-          .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from unloading comments page to check your answers" in {

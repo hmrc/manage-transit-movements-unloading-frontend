@@ -25,7 +25,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.UnloadingFindingsViewModel
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 import views.html.UnloadingFindingsView
@@ -76,7 +76,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to AddCommentsYesNo page" in {
+    "must redirect to unloading comments page" in {
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, unloadingFindingsRoute)
@@ -84,7 +84,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
+      redirectLocation(result).value mustEqual controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
     }
 
   }

@@ -90,14 +90,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
-  def addCommentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddCommentsYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "checkYourAnswers.rowHeadings.addCommentsYesNo",
-    id = Some("change-add-comments"),
-    call = Some(controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
-  )
-
   def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = UnloadingCommentsPage,
     formatAnswer = formatAsText,

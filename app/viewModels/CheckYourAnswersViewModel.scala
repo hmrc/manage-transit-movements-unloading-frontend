@@ -73,7 +73,6 @@ object CheckYourAnswersViewModel {
             case RevisedAndGoodsTooLarge | CannotUseRevisedDueToDiscrepancies => None
             case _                                                            => helper.addDiscrepanciesYesNo
           },
-          helper.addCommentsYesNo,
           helper.additionalComment,
           helper.sealsReplaced,
           helper.addReportYesNo,

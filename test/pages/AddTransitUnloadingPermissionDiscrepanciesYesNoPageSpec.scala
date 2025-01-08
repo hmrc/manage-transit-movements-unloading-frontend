@@ -34,12 +34,10 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoPageSpec extends PageBehavi
           forAll(nonEmptyString) {
             comments =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddCommentsYesNoPage, true)
                 .setValue(UnloadingCommentsPage, comments)
 
               val result = userAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
-              result.get(AddCommentsYesNoPage) must not be defined
               result.get(UnloadingCommentsPage) must not be defined
           }
         }
@@ -49,12 +47,10 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoPageSpec extends PageBehavi
           forAll(nonEmptyString) {
             comments =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddCommentsYesNoPage, true)
                 .setValue(UnloadingCommentsPage, comments)
 
               val result = userAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-              result.get(AddCommentsYesNoPage) mustBe defined
               result.get(UnloadingCommentsPage) mustBe defined
           }
         }
