@@ -289,6 +289,33 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getPreviousDocumentExport" - {
+      val typeValue = "C512"
+      val url       = s"/$baseUrl/lists/PreviousDocumentExportType?data.code=$typeValue"
+
+      "must return previous document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(previousDocumentResponseJson))
+        )
+
+        val expectedResult: DocumentType =
+          DocumentType(Previous, typeValue, "SDE - Authorisation to use simplified declaration (Column 7a, Annex A of Delegated Regulation (EU) 2015/2446)")
+
+        connector.getPreviousDocumentExport(typeValue).futureValue mustEqual expectedResult
+        server.resetMappings()
+        connector.getPreviousDocumentExport(typeValue).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPreviousDocumentExport(typeValue))
+      }
+
+      "should handle client and server errors" in {
+        checkErrorResponse(url, connector.getPreviousDocumentExport(typeValue))
+      }
+    }
+
     "getAdditionalReferences" - {
       val url = s"/$baseUrl/lists/AdditionalReference"
 
