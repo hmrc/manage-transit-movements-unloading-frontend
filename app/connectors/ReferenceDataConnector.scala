@@ -169,6 +169,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getPreviousDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
     getDocument(Previous, "PreviousDocumentType", typeValue)
 
+  def getPreviousDocumentExport(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
+    getDocument(Previous, "PreviousDocumentExportType", typeValue)
+
   def getDocuments(dt: DocType, path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
     implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)
 

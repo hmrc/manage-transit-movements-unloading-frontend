@@ -303,10 +303,10 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd1 tv"))(any(), any()))
+      when(mockReferenceDataConnector.getPreviousDocumentExport(eqTo("pd1 tv"))(any(), any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd1 tv", "pd1 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd2 tv"))(any(), any()))
+      when(mockReferenceDataConnector.getPreviousDocumentExport(eqTo("pd2 tv"))(any(), any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd2 tv", "pd2 d")))
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments, hcIndex).apply(emptyUserAnswers).futureValue

@@ -18,6 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
+import models.reference.DocumentType
 import models.{Document, Index, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -38,6 +39,9 @@ class DocumentsTransformer @Inject() (
     import pages.sections.documents.DocumentSection
 
     genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+      previousDocument =>
+        referenceDataConnector.getPreviousDocument(previousDocument.typeValue)
+    } {
       case (document, documentIndex) =>
         document match {
           case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
@@ -69,6 +73,9 @@ class DocumentsTransformer @Inject() (
     import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
     genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+      previousDocument =>
+        referenceDataConnector.getPreviousDocument(previousDocument.typeValue)
+    } {
       case (document, documentIndex) =>
         document match {
           case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
@@ -99,6 +106,9 @@ class DocumentsTransformer @Inject() (
     import pages.sections.houseConsignment.index.documents.DocumentSection
 
     genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+      previousDocument =>
+        referenceDataConnector.getPreviousDocumentExport(previousDocument.typeValue)
+    } {
       case (document, documentIndex) =>
         document match {
           case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
@@ -124,6 +134,8 @@ class DocumentsTransformer @Inject() (
     transportDocuments: Seq[TransportDocumentType02],
     previousDocuments: Seq[PreviousDocumentType06]
   )(
+    previousDocumentLookup: PreviousDocumentType06 => Future[DocumentType]
+  )(
     pipeline: (Document, Index) => UserAnswers => Future[UserAnswers]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
@@ -143,7 +155,7 @@ class DocumentsTransformer @Inject() (
 
     lazy val previousDocumentsWithDescription = previousDocuments.map {
       previousDocument =>
-        referenceDataConnector.getPreviousDocument(previousDocument.typeValue).map {
+        previousDocumentLookup(previousDocument).map {
           Document.apply(previousDocument, _)
         }
     }
