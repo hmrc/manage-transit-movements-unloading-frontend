@@ -17,17 +17,17 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.Index
 import models.reference.DocumentType
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -35,23 +35,23 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[DocumentsTransformer]
 
-  private lazy val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" - {
     "when consignment documents" in {
-      import pages.documents._
+      import pages.documents.*
       import pages.sections.documents.DocumentSection
 
       val supportingDocuments = Seq(
@@ -97,22 +97,22 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         )
       )
 
-      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
+      when(mockReferenceDataService.getSupportingDocument(eqTo("sd1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
 
-      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
+      when(mockReferenceDataService.getSupportingDocument(eqTo("sd2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
 
-      when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
+      when(mockReferenceDataService.getTransportDocument(eqTo("td1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
 
-      when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
+      when(mockReferenceDataService.getTransportDocument(eqTo("td2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd1 tv"))(any(), any()))
+      when(mockReferenceDataService.getPreviousDocument(eqTo("pd1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd1 tv", "pd1 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd2 tv"))(any(), any()))
+      when(mockReferenceDataService.getPreviousDocument(eqTo("pd2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd2 tv", "pd2 d")))
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments).apply(emptyUserAnswers).futureValue
@@ -149,7 +149,7 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     }
 
     "when consignment item documents" in {
-      import pages.houseConsignment.index.items.document._
+      import pages.houseConsignment.index.items.document.*
       import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
       val supportingDocuments = Seq(
@@ -195,22 +195,22 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         )
       )
 
-      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
+      when(mockReferenceDataService.getSupportingDocument(eqTo("sd1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
 
-      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
+      when(mockReferenceDataService.getSupportingDocument(eqTo("sd2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
 
-      when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
+      when(mockReferenceDataService.getTransportDocument(eqTo("td1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
 
-      when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
+      when(mockReferenceDataService.getTransportDocument(eqTo("td2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd1 tv"))(any(), any()))
+      when(mockReferenceDataService.getPreviousDocument(eqTo("pd1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd1 tv", "pd1 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd2 tv"))(any(), any()))
+      when(mockReferenceDataService.getPreviousDocument(eqTo("pd2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd2 tv", "pd2 d")))
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
@@ -245,7 +245,7 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     }
 
     "when house consignment documents" in {
-      import pages.houseConsignment.index.documents._
+      import pages.houseConsignment.index.documents.*
       import pages.sections.houseConsignment.index.documents.DocumentSection
 
       val supportingDocuments = Seq(
@@ -291,22 +291,22 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         )
       )
 
-      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
+      when(mockReferenceDataService.getSupportingDocument(eqTo("sd1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
 
-      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
+      when(mockReferenceDataService.getSupportingDocument(eqTo("sd2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
 
-      when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
+      when(mockReferenceDataService.getTransportDocument(eqTo("td1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
 
-      when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
+      when(mockReferenceDataService.getTransportDocument(eqTo("td2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocumentExport(eqTo("pd1 tv"))(any(), any()))
+      when(mockReferenceDataService.getPreviousDocumentExport(eqTo("pd1 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd1 tv", "pd1 d")))
 
-      when(mockReferenceDataConnector.getPreviousDocumentExport(eqTo("pd2 tv"))(any(), any()))
+      when(mockReferenceDataService.getPreviousDocumentExport(eqTo("pd2 tv"))(any()))
         .thenReturn(Future.successful(DocumentType(Previous, "pd2 tv", "pd2 d")))
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments, hcIndex).apply(emptyUserAnswers).futureValue

@@ -28,7 +28,7 @@ import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.ReferenceDataService
 import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel
 import viewModels.houseConsignment.index.items.CustomsUnionAndStatisticsCodeViewModel.CustomsUnionAndStatisticsCodeViewModelProvider
@@ -109,7 +109,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockReferenceDataService.doesCUSCodeExist(anyString())(any(), any())).thenReturn(Future.successful(true))
+      when(mockReferenceDataService.doesCUSCodeExist(anyString())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

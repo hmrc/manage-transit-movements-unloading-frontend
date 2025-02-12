@@ -17,17 +17,17 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.AdditionalInformationType02
 import generators.Generators
 import models.Index
 import models.reference.AdditionalInformationCode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -35,29 +35,29 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
 
   private val transformer: AdditionalInformationTransformer = app.injector.instanceOf[AdditionalInformationTransformer]
 
-  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRefDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" in {
-    import pages.additionalInformation._
+    import pages.additionalInformation.*
     import pages.sections.additionalInformation.AdditionalInformationSection
 
     val additionalInformationType02: Seq[AdditionalInformationType02] = arbitrary[Seq[AdditionalInformationType02]].sample.value
 
     additionalInformationType02.map {
       code0 =>
-        when(mockRefDataConnector.getAdditionalInformationCode(eqTo(code0.code))(any(), any()))
+        when(mockReferenceDataService.getAdditionalInformationCode(eqTo(code0.code))(any()))
           .thenReturn(
             Future.successful(AdditionalInformationCode(code = code0.code, description = "describe me"))
           )
@@ -75,17 +75,15 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
   }
 
   "must transform data at HC level" in {
-    import pages.houseConsignment.index.additionalinformation._
+    import pages.houseConsignment.index.additionalinformation.*
     import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
 
     val additionalInformationType02: Seq[AdditionalInformationType02] = arbitrary[Seq[AdditionalInformationType02]].sample.value
 
     additionalInformationType02.map {
       type0 =>
-        when(mockRefDataConnector.getAdditionalInformationCode(eqTo(type0.code))(any(), any()))
-          .thenReturn(
-            Future.successful(AdditionalInformationCode(code = type0.code, description = "describe me"))
-          )
+        when(mockReferenceDataService.getAdditionalInformationCode(eqTo(type0.code))(any()))
+          .thenReturn(Future.successful(AdditionalInformationCode(code = type0.code, description = "describe me")))
     }
 
     val result = transformer.transform(additionalInformationType02, hcIndex).apply(emptyUserAnswers).futureValue
@@ -100,14 +98,14 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
   }
 
   "must transform data at Item level" in {
-    import pages.houseConsignment.index.items.additionalinformation._
+    import pages.houseConsignment.index.items.additionalinformation.*
     import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
 
     val additionalInformationType02: Seq[AdditionalInformationType02] = arbitrary[Seq[AdditionalInformationType02]].sample.value
 
     additionalInformationType02.map {
       type0 =>
-        when(mockRefDataConnector.getAdditionalInformationCode(eqTo(type0.code))(any(), any()))
+        when(mockReferenceDataService.getAdditionalInformationCode(eqTo(type0.code))(any()))
           .thenReturn(
             Future.successful(AdditionalInformationCode(code = type0.code, description = "describe me"))
           )

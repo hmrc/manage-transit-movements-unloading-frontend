@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import models.{ArrivalId, CannotSendUnloadingRemarksViewModel}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,7 +43,7 @@ class CannotSendUnloadingRemarksController @Inject() (
       implicit request =>
         val customsOfficeId = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
         referenceDataService
-          .getCustomsOfficeByCode(customsOfficeId)
+          .getCustomsOffice(customsOfficeId)
           .map {
             customsOffice =>
               Ok(view(request.userAnswers.mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, customsOfficeId)))

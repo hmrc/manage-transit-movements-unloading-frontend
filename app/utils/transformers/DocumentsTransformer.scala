@@ -16,17 +16,17 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
 import models.reference.DocumentType
 import models.{Document, Index, UserAnswers}
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -35,12 +35,12 @@ class DocumentsTransformer @Inject() (
     transportDocuments: Seq[TransportDocumentType02],
     previousDocuments: Seq[PreviousDocumentType06]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.documents._
+    import pages.documents.*
     import pages.sections.documents.DocumentSection
 
     genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
       previousDocument =>
-        referenceDataConnector.getPreviousDocument(previousDocument.typeValue)
+        referenceDataService.getPreviousDocument(previousDocument.typeValue)
     } {
       case (document, documentIndex) =>
         document match {
@@ -69,12 +69,12 @@ class DocumentsTransformer @Inject() (
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.houseConsignment.index.items.document._
+    import pages.houseConsignment.index.items.document.*
     import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
     genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
       previousDocument =>
-        referenceDataConnector.getPreviousDocument(previousDocument.typeValue)
+        referenceDataService.getPreviousDocument(previousDocument.typeValue)
     } {
       case (document, documentIndex) =>
         document match {
@@ -102,12 +102,12 @@ class DocumentsTransformer @Inject() (
     previousDocuments: Seq[PreviousDocumentType06],
     hcIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.houseConsignment.index.documents._
+    import pages.houseConsignment.index.documents.*
     import pages.sections.houseConsignment.index.documents.DocumentSection
 
     genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
       previousDocument =>
-        referenceDataConnector.getPreviousDocumentExport(previousDocument.typeValue)
+        referenceDataService.getPreviousDocumentExport(previousDocument.typeValue)
     } {
       case (document, documentIndex) =>
         document match {
@@ -141,14 +141,14 @@ class DocumentsTransformer @Inject() (
 
     lazy val supportingDocumentsWithDescription = supportingDocuments.map {
       supportingDocument =>
-        referenceDataConnector.getSupportingDocument(supportingDocument.typeValue).map {
+        referenceDataService.getSupportingDocument(supportingDocument.typeValue).map {
           Document.apply(supportingDocument, _)
         }
     }
 
     lazy val transportDocumentsWithDescription = transportDocuments.map {
       transportDocument =>
-        referenceDataConnector.getTransportDocument(transportDocument.typeValue).map {
+        referenceDataService.getTransportDocument(transportDocument.typeValue).map {
           Document.apply(transportDocument, _)
         }
     }

@@ -16,28 +16,28 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
-import generated._
+import generated.*
 import models.{DynamicAddress, Index, UserAnswers}
-import pages.houseConsignment.consignor.{CountryPage => HouseCountryPage}
+import pages.houseConsignment.consignor.CountryPage as HouseCountryPage
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignor: Option[ConsignorType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.consignor._
+    import pages.consignor.*
 
     userAnswers =>
       consignor match {
         case Some(ConsignorType05(_, _, address)) =>
           for {
-            country <- address.map(_.country).lookup(referenceDataConnector.getCountry)
+            country <- address.map(_.country).lookup(referenceDataService.getCountry)
             userAnswers <- {
               val pipeline: UserAnswers => Future[UserAnswers] =
                 set(CountryPage, country)
@@ -80,7 +80,7 @@ class ConsignorTransformer @Inject() (
     address match {
 
       case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
-        referenceDataConnector.getCountry(country).flatMap {
+        referenceDataService.getCountry(country).flatMap {
           countryVal =>
             val pipeline: UserAnswers => Future[UserAnswers] =
               set(HouseCountryPage(hcIndex), countryVal) andThen

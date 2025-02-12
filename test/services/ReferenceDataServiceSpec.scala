@@ -16,113 +16,239 @@
 
 package services
 
+import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import models.reference.{CUSCode, Country, CustomsOffice}
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import models.DocType.*
+import models.SelectableList
+import models.reference.*
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matchers with MockitoSugar with BeforeAndAfterEach {
+class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private val uk      = Country("GB", "United Kingdom")
-  private val andorra = Country("AD", "Andorra")
-  private val france  = Country("FR", "France")
-
-  private val countries = NonEmptySet.of(uk, andorra, france)
-
-  private val customsOffice = CustomsOffice("ID1", "NAME001", "GB", None)
-
-  private val cusCode = CUSCode("0010001-6")
+  private val service = ReferenceDataService(mockConnector)
 
   override def beforeEach(): Unit = {
-    reset(mockConnector)
     super.beforeEach()
+    reset(mockConnector)
   }
 
   "ReferenceDataService" - {
 
-    "getCountries should" - {
-      "return a list of sorted countries" in {
+    "countries" - {
 
-        when(mockConnector.getCountries()(any(), any())).thenReturn(Future.successful(countries))
+      val uk      = Country("GB", "United Kingdom")
+      val andorra = Country("AD", "Andorra")
+      val france  = Country("FR", "France")
 
-        val service = new ReferenceDataServiceImpl(mockConnector)
+      val countries = NonEmptySet.of(uk, andorra, france)
 
-        service.getCountries().futureValue mustBe
-          Seq(andorra, france, uk)
+      "getCountries should" - {
+        "return a list of sorted countries" in {
 
-        verify(mockConnector).getCountries()(any(), any())
+          when(mockConnector.getCountries()(any(), any()))
+            .thenReturn(Future.successful(Right(countries)))
+
+          service.getCountries().futureValue mustBe
+            Seq(andorra, france, uk)
+
+          verify(mockConnector).getCountries()(any(), any())
+        }
+      }
+
+      "getCountry should" - {
+        "return Country if country code exists" in {
+
+          when(mockConnector.getCountry("GB"))
+            .thenReturn(Future.successful(Right(uk)))
+
+          service.getCountry("GB").futureValue mustBe Country("GB", "United Kingdom")
+        }
       }
     }
 
-    "getCountryByCode should" - {
+    "customs offices" - {
 
-      "return Country if country code exists" in {
+      val customsOffice = CustomsOffice("ID1", "NAME001", "GB", None)
 
-        when(mockConnector.getCountry("GB")).thenReturn(Future.successful(uk))
+      "getCustomsOffice should" - {
+        "return a customsOffice" in {
 
-        val service = new ReferenceDataServiceImpl(mockConnector)
+          when(mockConnector.getCustomsOffice(any())(any(), any()))
+            .thenReturn(Future.successful(Right(customsOffice)))
 
-        service.getCountryByCode("GB").futureValue mustBe Country("GB", "United Kingdom")
+          service.getCustomsOffice("GB00001").futureValue mustBe customsOffice
+
+          verify(mockConnector).getCustomsOffice(any())(any(), any())
+        }
       }
-
     }
 
-    "getCustomsOfficeByCode should" - {
-      "return a customsOffice" in {
+    "CUS codes" - {
 
-        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+      val cusCode = CUSCode("0010001-6")
 
-        val service = new ReferenceDataServiceImpl(mockConnector)
+      "doesCUSCodeExist should" - {
+        "return true when cusCode exists" in {
 
-        service.getCustomsOfficeByCode("GB00001").futureValue mustBe customsOffice
+          when(mockConnector.getCUSCode(any())(any(), any()))
+            .thenReturn(Future.successful(Right(cusCode)))
 
-        verify(mockConnector).getCustomsOffice(any())(any(), any())
+          service.doesCUSCodeExist(cusCode.code).futureValue mustBe true
+
+          verify(mockConnector).getCUSCode(eqTo(cusCode.code))(any(), any())
+        }
+
+        "return false when cusCode does not exist" in {
+
+          when(mockConnector.getCUSCode(any())(any(), any()))
+            .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
+
+          service.doesCUSCodeExist(cusCode.code).futureValue mustBe false
+
+          verify(mockConnector).getCUSCode(eqTo(cusCode.code))(any(), any())
+        }
       }
-
     }
 
-    "doesCUSCodeExist should" - {
-      "return true when cusCode exists" in {
+    "AdditionalReferences" - {
 
-        when(mockConnector.getCUSCode(any())(any(), any())).thenReturn(Future.successful(cusCode))
+      val additionalReference1 = AdditionalReferenceType(
+        "Y015",
+        "The rough diamonds are contained in tamper-resistant containers"
+      )
 
-        val service = new ReferenceDataServiceImpl(mockConnector)
+      val additionalReference2 = AdditionalReferenceType(
+        "C658",
+        "Consignor / exporter (AEO certificate number)"
+      )
 
-        service.doesCUSCodeExist("0010001-6").futureValue mustBe
-          true
+      val additionalReference3 = AdditionalReferenceType(
+        "Y016",
+        "Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009"
+      )
 
-        verify(mockConnector).getCUSCode(any())(any(), any())
+      val additionalReferences = NonEmptySet.of(additionalReference2, additionalReference1, additionalReference3)
+
+      val docTypeExcise = DocTypeExcise(
+        "C651",
+        "AAD - Administrative Accompanying Document (EMCS)"
+      )
+
+      "getAdditionalReferences" - {
+        "must return a list of sorted countries" in {
+
+          when(mockConnector.getAdditionalReferences()(any(), any()))
+            .thenReturn(Future.successful(Right(additionalReferences)))
+
+          service.getAdditionalReferences().futureValue mustBe
+            SelectableList(Seq(additionalReference2, additionalReference3, additionalReference1))
+
+          verify(mockConnector).getAdditionalReferences()(any(), any())
+        }
       }
 
-      "return false when cusCode does not exist" in {
-        val cusCode = "0010001-6"
+      "isDocumentTypeExcise should" - {
+        "return true when docTypeExcise" in {
 
-        when(mockConnector.getCUSCode(any())(any(), any())).thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+          when(mockConnector.getDocumentTypeExcise(any())(any(), any()))
+            .thenReturn(Future.successful(Right(docTypeExcise)))
 
-        val service = new ReferenceDataServiceImpl(mockConnector)
+          service.isDocumentTypeExcise("C651").futureValue mustBe true
 
-        service.doesCUSCodeExist(cusCode).futureValue mustBe
-          false
+          verify(mockConnector).getDocumentTypeExcise(any())(any(), any())
+        }
 
-        verify(mockConnector).getCUSCode(ArgumentMatchers.eq(cusCode))(any(), any())
+        "return false when it is not a docTypeExcise" in {
+          val docType = "C656"
+
+          when(mockConnector.getDocumentTypeExcise(any())(any(), any()))
+            .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
+
+          service.isDocumentTypeExcise(docType).futureValue mustBe false
+
+          verify(mockConnector).getDocumentTypeExcise(eqTo(docType))(any(), any())
+        }
+      }
+    }
+
+    "Documents" - {
+
+      val transportDocument1  = DocumentType(Transport, "N235", "Container list")
+      val transportDocument2  = DocumentType(Transport, "N741", "Master airwaybill")
+      val supportingDocument1 = DocumentType(Support, "C673", "Catch certificate")
+      val supportingDocument2 = DocumentType(Support, "N941", "Embargo permit")
+
+      val transportDocuments  = NonEmptySet.of(transportDocument1, transportDocument2)
+      val supportingDocuments = NonEmptySet.of(supportingDocument1, supportingDocument2)
+
+      "getDocuments" - {
+        "returns a list of transport and supporting documents" in {
+          when(mockConnector.getTransportDocuments()(any(), any()))
+            .thenReturn(Future.successful(Right(transportDocuments)))
+          when(mockConnector.getSupportingDocuments()(any(), any()))
+            .thenReturn(Future.successful(Right(supportingDocuments)))
+
+          service.getDocuments().futureValue mustBe
+            Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2)
+
+          verify(mockConnector).getTransportDocuments()(any(), any())
+          verify(mockConnector).getSupportingDocuments()(any(), any())
+        }
       }
 
+      "getTransportDocuments" - {
+        "returns a list of transport documents" in {
+          when(mockConnector.getTransportDocuments()(any(), any()))
+            .thenReturn(Future.successful(Right(transportDocuments)))
+
+          service.getTransportDocuments().futureValue mustBe
+            Seq(transportDocument1, transportDocument2)
+
+          verify(mockConnector).getTransportDocuments()(any(), any())
+        }
+      }
+
+      "getSupportingDocuments" - {
+        "returns a list of supporting documents" in {
+          when(mockConnector.getSupportingDocuments()(any(), any()))
+            .thenReturn(Future.successful(Right(supportingDocuments)))
+
+          service.getSupportingDocuments().futureValue mustBe
+            Seq(supportingDocument1, supportingDocument2)
+
+          verify(mockConnector).getSupportingDocuments()(any(), any())
+        }
+      }
+    }
+
+    "Means Of Transport Identification Types" - {
+
+      val tm1 = TransportMeansIdentification("t1", "d1")
+      val tm2 = TransportMeansIdentification("t2", "d2")
+      val tm3 = TransportMeansIdentification("t3", "d3")
+
+      val tms = NonEmptySet.of(tm1, tm2, tm3)
+
+      "getMeansOfTransportIdentificationTypes" - {
+        "returns a list of means of transport" in {
+          when(mockConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
+            .thenReturn(Future.successful(Right(tms)))
+
+          service.getMeansOfTransportIdentificationTypes().futureValue mustBe
+            Seq(tm1, tm2, tm3)
+
+          verify(mockConnector).getMeansOfTransportIdentificationTypes()(any(), any())
+        }
+      }
     }
   }
 }

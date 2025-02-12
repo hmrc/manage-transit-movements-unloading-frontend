@@ -16,7 +16,7 @@
 
 package controllers.houseConsignment.index.items
 
-import controllers.actions._
+import controllers.actions.*
 import forms.CUSCodeFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
@@ -40,7 +40,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: HouseConsignmentItemNavigatorProvider,
   formProvider: CUSCodeFormProvider,
-  service: ReferenceDataService,
+  referenceDataService: ReferenceDataService,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsUnionAndStatisticsCodeView,
@@ -77,7 +77,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
                 BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))
               ),
             value =>
-              service.doesCUSCodeExist(value).flatMap {
+              referenceDataService.doesCUSCodeExist(value).flatMap {
                 case true => redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
                 case false =>
                   val formWithErrors =

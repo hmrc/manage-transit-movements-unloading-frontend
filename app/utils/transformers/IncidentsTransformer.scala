@@ -16,18 +16,18 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import models.reference.Incident
 import models.{Index, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.sections.incidents.IncidentSection
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentsTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector,
+  referenceDataService: ReferenceDataService,
   incidentEndorsementTransformer: IncidentEndorsementTransformer,
   incidentLocationTransformer: IncidentLocationTransformer,
   replacementMeansOfTransportTransformer: ReplacementMeansOfTransportTransformer
@@ -43,7 +43,7 @@ class IncidentsTransformer @Inject() (
 
     lazy val incidentRefLookups = incidents.map {
       incidentType0 =>
-        val incidentF = referenceDataConnector.getIncidentType(incidentType0.code)
+        val incidentF = referenceDataService.getIncidentType(incidentType0.code)
         for {
           incident <- incidentF
         } yield TempIncident(incidentType0, incident)
