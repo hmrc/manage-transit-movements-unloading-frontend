@@ -50,10 +50,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   // https://www.playframework.com/documentation/2.6.x/ScalaCache#Accessing-the-Cache-API
   private def getOrElseUpdate[T: ClassTag](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
     cache.getOrElseUpdate[Response[T]](url.toString, config.asyncCacheApiExpiration.seconds) {
-      get[T](url).map {
-        case Right(value) => Right(value.head)
-        case Left(value)  => Left(value)
-      }
+      get[T](url).map(_.map(_.head))
     }
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
