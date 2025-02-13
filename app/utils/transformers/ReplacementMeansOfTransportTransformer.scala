@@ -16,25 +16,25 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.TranshipmentType02
 import models.{Index, UserAnswers}
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReplacementMeansOfTransportTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(transhipment: Option[TranshipmentType02], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transhipment match {
       case Some(TranshipmentType02(_, transportMeans)) =>
-        val transportMeansIdentificationF = referenceDataConnector.getMeansOfTransportIdentificationType(transportMeans.typeOfIdentification)
-        val countryF                      = referenceDataConnector.getCountry(transportMeans.nationality)
+        val transportMeansIdentificationF = referenceDataService.getMeansOfTransportIdentificationType(transportMeans.typeOfIdentification)
+        val countryF                      = referenceDataService.getCountry(transportMeans.nationality)
 
         for {
           identification <- transportMeansIdentificationF

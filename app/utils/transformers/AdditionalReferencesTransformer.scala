@@ -16,19 +16,19 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
-import services.AdditionalReferencesService
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalReferencesTransformer @Inject() (referenceDataConnector: ReferenceDataConnector, service: AdditionalReferencesService)(implicit
-  ec: ExecutionContext
-) extends PageTransformer {
+class AdditionalReferencesTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   private case class TempAdditionalReference[T](
     underlying: T,
@@ -53,7 +53,7 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     additionalReferences: Seq[AdditionalReferenceType03],
     hcIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.houseConsignment.index.additionalReference._
+    import pages.houseConsignment.index.additionalReference.*
     import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
 
     genericTransform(additionalReferences)(_.typeValue) {
@@ -76,7 +76,7 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
         userAnswers =>
-          service.isDocumentTypeExcise(typeValue.documentType).flatMap {
+          referenceDataService.isDocumentTypeExcise(typeValue.documentType).flatMap {
             isInCL234 =>
               val transformations =
                 setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
@@ -98,8 +98,8 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
     lazy val referenceDataLookups = additionalReferences.map {
       additionalReference =>
-        referenceDataConnector
-          .getAdditionalReferenceType(lookup(additionalReference))
+        referenceDataService
+          .getAdditionalReference(lookup(additionalReference))
           .map(TempAdditionalReference(additionalReference, _))
     }
 

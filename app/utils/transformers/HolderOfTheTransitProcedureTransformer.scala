@@ -26,15 +26,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 // HolderOfTheTransitProcedure is read only data. Fetch country only to be able to display with description on cross-check page
-class HolderOfTheTransitProcedureTransformer @Inject() (referenceDataConnector: ReferenceDataService)(implicit ec: ExecutionContext) extends PageTransformer {
+class HolderOfTheTransitProcedureTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   def transform(holderOfTheTransitProcedureOption: Option[HolderOfTheTransitProcedureType06])(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     holderOfTheTransitProcedureOption match {
       case Some(holderOfTheTransitProcedure) =>
-        referenceDataConnector
-          .getCountryByCode(holderOfTheTransitProcedure.Address.country)
+        referenceDataService
+          .getCountry(holderOfTheTransitProcedure.Address.country)
           .flatMap(
             country => set(CountryPage, country).apply(userAnswers)
           )

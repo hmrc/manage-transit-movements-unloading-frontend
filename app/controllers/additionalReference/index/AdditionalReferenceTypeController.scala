@@ -16,7 +16,7 @@
 
 package controllers.additionalReference.index
 
-import controllers.actions._
+import controllers.actions.*
 import forms.SelectableFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.MandatoryDataRequest
@@ -26,7 +26,7 @@ import pages.additionalReference.AdditionalReferenceTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.AdditionalReferencesService
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
 import views.html.additionalReference.index.AdditionalReferenceTypeView
@@ -40,7 +40,7 @@ class AdditionalReferenceTypeController @Inject() (
   navigator: AdditionalReferenceNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
-  service: AdditionalReferencesService,
+  referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceTypeView,
   viewModelProvider: AdditionalReferenceTypeViewModelProvider
@@ -55,7 +55,7 @@ class AdditionalReferenceTypeController @Inject() (
       .requireData(arrivalId)
       .async {
         implicit request =>
-          service.getAdditionalReferences().map {
+          referenceDataService.getAdditionalReferences().map {
             additionalReferences =>
               val form      = formProvider(mode, prefix, additionalReferences)
               val viewModel = viewModelProvider.apply(arrivalId, mode, additionalReferenceIndex)
@@ -73,7 +73,7 @@ class AdditionalReferenceTypeController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode, additionalReferenceIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.getAdditionalReferences().flatMap {
+        referenceDataService.getAdditionalReferences().flatMap {
           additionalReferences =>
             val form      = formProvider(mode, prefix, additionalReferences)
             val viewModel = viewModelProvider.apply(arrivalId, mode, additionalReferenceIndex)

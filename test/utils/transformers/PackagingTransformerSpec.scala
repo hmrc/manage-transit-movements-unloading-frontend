@@ -17,12 +17,11 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.PackagingType02
 import generators.Generators
 import models.Index
 import models.reference.PackageType
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -30,6 +29,7 @@ import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, Packag
 import pages.sections.PackagingSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -37,18 +37,18 @@ class PackagingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[PackagingTransformer]
 
-  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRefDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" in {
@@ -57,7 +57,7 @@ class PackagingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     packagingType02.map {
       type0 =>
-        when(mockRefDataConnector.getPackageType(eqTo(type0.typeOfPackages))(any(), any()))
+        when(mockReferenceDataService.getPackageType(eqTo(type0.typeOfPackages))(any()))
           .thenReturn(
             Future.successful(PackageType(type0.typeOfPackages, "describe me"))
           )

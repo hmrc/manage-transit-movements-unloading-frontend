@@ -25,13 +25,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsOfficeOfDestinationActualTransformer @Inject() (referenceDataService: ReferenceDataService)(implicit ec: ExecutionContext)
+class CustomsOfficeOfDestinationActualTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(customsOfficeOfDestination: CustomsOfficeOfDestinationActualType03)(implicit
     hc: HeaderCarrier
   ): Future[UserAnswers] => Future[UserAnswers] = userAnswers =>
-    referenceDataService.getCustomsOfficeByCode(customsOfficeOfDestination.referenceNumber) flatMap {
+    referenceDataService.getCustomsOffice(customsOfficeOfDestination.referenceNumber) flatMap {
       customsOffice =>
         val pipeline: UserAnswers => Future[UserAnswers] =
           set(CustomsOfficeOfDestinationActualPage, customsOffice)

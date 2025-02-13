@@ -16,13 +16,13 @@
 
 package controllers.departureMeansOfTransport
 
-import controllers.actions._
+import controllers.actions.*
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

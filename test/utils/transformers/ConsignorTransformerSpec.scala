@@ -17,17 +17,17 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
-import generated._
+import generated.*
 import generators.Generators
 import models.DynamicAddress
 import models.reference.Country
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -35,23 +35,23 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[ConsignorTransformer]
 
-  private lazy val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" - {
     "at consignment level" - {
-      import pages.consignor._
+      import pages.consignor.*
 
       "when consignor defined" - {
         "when address defined" in {
@@ -61,7 +61,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
               val input = consignor.copy(Address = Some(address))
 
-              when(mockReferenceDataConnector.getCountry(eqTo(address.country))(any(), any()))
+              when(mockReferenceDataService.getCountry(eqTo(address.country))(any()))
                 .thenReturn(Future.successful(country))
 
               val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
@@ -81,7 +81,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
               result.get(CountryPage) must not be defined
 
-              verifyNoInteractions(mockReferenceDataConnector)
+              verifyNoInteractions(mockReferenceDataService)
           }
         }
       }
@@ -91,7 +91,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         result.get(CountryPage) must not be defined
 
-        verifyNoInteractions(mockReferenceDataConnector)
+        verifyNoInteractions(mockReferenceDataService)
       }
     }
 
@@ -105,7 +105,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
             val input = consignor.copy(Address = Some(address))
 
-            when(mockReferenceDataConnector.getCountry(eqTo(address.country))(any(), any()))
+            when(mockReferenceDataService.getCountry(eqTo(address.country))(any()))
               .thenReturn(Future.successful(country))
 
             val result = transformer.transform(Some(input), hcIndex).apply(emptyUserAnswers).futureValue

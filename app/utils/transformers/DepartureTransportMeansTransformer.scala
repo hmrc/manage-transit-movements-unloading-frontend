@@ -16,18 +16,19 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit
-  ec: ExecutionContext
-) extends PageTransformer {
+class DepartureTransportMeansTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   private case class GenericDepartureTransportMeans(
     sequenceNumber: BigInt,
@@ -64,7 +65,7 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   def transform(
     departureTransportMeans: Seq[CUSTOM_DepartureTransportMeansType02]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.departureMeansOfTransport._
+    import pages.departureMeansOfTransport.*
     import pages.sections.TransportMeansSection
 
     genericTransform(departureTransportMeans.map(GenericDepartureTransportMeans(_))) {
@@ -80,7 +81,7 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
     departureTransportMeans: Seq[DepartureTransportMeansType02],
     hcIndex: Index
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.houseConsignment.index.departureMeansOfTransport._
+    import pages.houseConsignment.index.departureMeansOfTransport.*
     import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
     genericTransform(departureTransportMeans.map(GenericDepartureTransportMeans(_))) {
@@ -100,8 +101,8 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
     lazy val referenceDataLookups = departureTransportMeans.map {
       dtm =>
         // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
-        val typeOfIdentificationF = dtm.typeOfIdentification.lookup(referenceDataConnector.getMeansOfTransportIdentificationType)
-        val nationalityF          = dtm.nationality.lookup(referenceDataConnector.getCountry)
+        val typeOfIdentificationF = dtm.typeOfIdentification.lookup(referenceDataService.getMeansOfTransportIdentificationType)
+        val nationalityF          = dtm.nationality.lookup(referenceDataService.getCountry)
 
         for {
           typeOfIdentification <- typeOfIdentificationF

@@ -33,7 +33,7 @@ class CountryOfDestinationTransformer @Inject() (
     userAnswers =>
       countryOfDestination match {
         case Some(countryOfDestination) =>
-          val countryOD = referenceDataService.getCountryByCode(countryOfDestination)
+          val countryOD = referenceDataService.getCountry(countryOfDestination)
 
           for {
             country <- countryOD

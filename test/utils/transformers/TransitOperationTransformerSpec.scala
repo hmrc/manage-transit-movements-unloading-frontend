@@ -17,17 +17,17 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.TransitOperationType14
 import generators.Generators
 import models.SecurityType
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.SecurityTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -35,25 +35,25 @@ class TransitOperationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val transformer: TransitOperationTransformer = app.injector.instanceOf[TransitOperationTransformer]
 
-  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRefDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" in {
 
     val transitOperationType14: TransitOperationType14 = arbitrary[TransitOperationType14].sample.value
 
-    when(mockRefDataConnector.getSecurityType(eqTo(transitOperationType14.security))(any(), any()))
+    when(mockReferenceDataService.getSecurityType(eqTo(transitOperationType14.security))(any()))
       .thenReturn(Future.successful(SecurityType(transitOperationType14.security, "test2")))
 
     val result = transformer.transform(transitOperationType14).apply(emptyUserAnswers).futureValue

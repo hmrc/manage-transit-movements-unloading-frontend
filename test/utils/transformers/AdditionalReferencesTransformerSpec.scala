@@ -17,21 +17,20 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import generators.Generators
 import models.Index
 import models.reference.AdditionalReferenceType
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AdditionalReferenceTypePage
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceTypePage => AdditionalReferenceTypeItemPage}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceTypePage as AdditionalReferenceTypeItemPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import services.AdditionalReferencesService
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -39,20 +38,18 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
   private val transformer: AdditionalReferencesTransformer = app.injector.instanceOf[AdditionalReferencesTransformer]
 
-  private lazy val mockRefDataConnector: ReferenceDataConnector                 = mock[ReferenceDataConnector]
-  private lazy val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
-        bind[AdditionalReferencesService].toInstance(mockAdditionalReferencesService)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRefDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" in {
@@ -61,7 +58,7 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
     additionalReferenceType03.map {
       type0 =>
-        when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+        when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
           .thenReturn(
             Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
           )
@@ -78,14 +75,14 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
   }
 
   "must transform data at HC level" in {
+    import pages.houseConsignment.index.additionalReference.*
     import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
-    import pages.houseConsignment.index.additionalReference._
 
     val additionalReferenceType03: Seq[AdditionalReferenceType03] = arbitrary[Seq[AdditionalReferenceType03]].sample.value
 
     additionalReferenceType03.map {
       type0 =>
-        when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+        when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
           .thenReturn(
             Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
           )
@@ -106,13 +103,13 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
       additionalReferenceType02.map {
         type0 =>
-          when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+          when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
             .thenReturn(
               Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
             )
       }
 
-      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(true))
+      when(mockReferenceDataService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(true))
 
       val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
@@ -129,13 +126,13 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
       additionalReferenceType02.map {
         type0 =>
-          when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+          when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
             .thenReturn(
               Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
             )
       }
 
-      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
+      when(mockReferenceDataService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
 
       val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 

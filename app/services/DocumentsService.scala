@@ -16,7 +16,6 @@
 
 package services
 
-import connectors.ReferenceDataConnector
 import models.reference.DocumentType
 import models.{CheckMode, DocType, Index, Mode, SelectableList, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -24,26 +23,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
-
-  def getDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
-    for {
-      transportDocuments  <- referenceDataConnector.getTransportDocuments()
-      supportingDocuments <- referenceDataConnector.getSupportingDocuments()
-      documents = transportDocuments ++ supportingDocuments
-    } yield SelectableList(documents.toSeq)
-
-  def getTransportDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
-    referenceDataConnector
-      .getTransportDocuments()
-      .map(_.toSeq)
-      .map(SelectableList(_))
-
-  def getSupportingDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
-    referenceDataConnector
-      .getSupportingDocuments()
-      .map(_.toSeq)
-      .map(SelectableList(_))
+class DocumentsService @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext) {
 
   def getDocumentList(
     userAnswers: UserAnswers,
@@ -52,15 +34,17 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
   )(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] = {
     import pages.documents.TypePage
 
-    if (mode == CheckMode) {
+    val documentsF = if (mode == CheckMode) {
       userAnswers.get(TypePage(documentIndex)).map(_.`type`) match {
-        case Some(DocType.Transport) => getTransportDocuments()
-        case Some(DocType.Support)   => getSupportingDocuments()
-        case _                       => getDocuments()
+        case Some(DocType.Transport) => referenceDataService.getTransportDocuments()
+        case Some(DocType.Support)   => referenceDataService.getSupportingDocuments()
+        case _                       => referenceDataService.getDocuments()
       }
     } else {
-      getDocuments()
+      referenceDataService.getDocuments()
     }
+
+    documentsF.map(SelectableList(_))
   }
 
   def getDocumentList(
@@ -72,15 +56,17 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
   )(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] = {
     import pages.houseConsignment.index.items.document.TypePage
 
-    if (mode == CheckMode) {
+    val documentsF = if (mode == CheckMode) {
       userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`) match {
-        case Some(DocType.Transport) => getTransportDocuments()
-        case Some(DocType.Support)   => getSupportingDocuments()
-        case _                       => getDocuments()
+        case Some(DocType.Transport) => referenceDataService.getTransportDocuments()
+        case Some(DocType.Support)   => referenceDataService.getSupportingDocuments()
+        case _                       => referenceDataService.getDocuments()
       }
     } else {
-      getDocuments()
+      referenceDataService.getDocuments()
     }
+
+    documentsF.map(SelectableList(_))
   }
 
   def getDocumentList(
@@ -91,14 +77,16 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
   )(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] = {
     import pages.houseConsignment.index.documents.TypePage
 
-    if (mode == CheckMode) {
+    val documentsF = if (mode == CheckMode) {
       userAnswers.get(TypePage(houseConsignmentIndex, documentIndex)).map(_.`type`) match {
-        case Some(DocType.Transport) => getTransportDocuments()
-        case Some(DocType.Support)   => getSupportingDocuments()
-        case _                       => getDocuments()
+        case Some(DocType.Transport) => referenceDataService.getTransportDocuments()
+        case Some(DocType.Support)   => referenceDataService.getSupportingDocuments()
+        case _                       => referenceDataService.getDocuments()
       }
     } else {
-      getDocuments()
+      referenceDataService.getDocuments()
     }
+
+    documentsF.map(SelectableList(_))
   }
 }

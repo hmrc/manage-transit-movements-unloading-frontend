@@ -16,7 +16,7 @@
 
 package controllers.houseConsignment.index.items.additionalReference
 
-import controllers.actions._
+import controllers.actions.*
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
@@ -24,7 +24,7 @@ import pages.houseConsignment.index.items.additionalReference.{AdditionalReferen
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AdditionalReferencesService
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
 import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
@@ -38,7 +38,7 @@ class AdditionalReferenceTypeController @Inject() (
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
-  service: AdditionalReferencesService,
+  referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceTypeView,
   viewModelProvider: AdditionalReferenceTypeViewModelProvider
@@ -61,7 +61,7 @@ class AdditionalReferenceTypeController @Inject() (
       .requireData(arrivalId)
       .async {
         implicit request =>
-          service.getAdditionalReferences().map {
+          referenceDataService.getAdditionalReferences().map {
             additionalReferences =>
               val form = formProvider(additionalReferenceMode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
               val viewModel = viewModelProvider
@@ -88,7 +88,7 @@ class AdditionalReferenceTypeController @Inject() (
   ): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.getAdditionalReferences().flatMap {
+        referenceDataService.getAdditionalReferences().flatMap {
           additionalReferences =>
             val form = formProvider(additionalReferenceMode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
             val viewModel = viewModelProvider
@@ -104,7 +104,7 @@ class AdditionalReferenceTypeController @Inject() (
                   ),
                 value =>
                   for {
-                    isInCL234 <- service.isDocumentTypeExcise(value.documentType)
+                    isInCL234 <- referenceDataService.isDocumentTypeExcise(value.documentType)
                     updatedAnswers <- Future.fromTry(
                       request.userAnswers
                         .set(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)

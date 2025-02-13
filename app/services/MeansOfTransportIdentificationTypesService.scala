@@ -17,8 +17,7 @@
 package services
 
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
-import config.Constants.TransportModeCode._
-import connectors.ReferenceDataConnector
+import config.Constants.TransportModeCode.*
 import models.UserAnswers
 import models.reference.TransportMeansIdentification
 import models.reference.TransportMode.InlandMode
@@ -29,15 +28,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MeansOfTransportIdentificationTypesService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext) {
 
   def getMeansOfTransportIdentificationTypes(
     userAnswers: UserAnswers
   )(implicit hc: HeaderCarrier): Future[Seq[TransportMeansIdentification]] =
-    referenceDataConnector
+    referenceDataService
       .getMeansOfTransportIdentificationTypes()
-      .map(_.toSeq)
       .map(filter(_, userAnswers.get(InlandModePage)))
 
   private def filter(

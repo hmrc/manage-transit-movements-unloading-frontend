@@ -16,19 +16,22 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.TransitOperationType14
 import models.UserAnswers
 import pages.SecurityTypePage
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransitOperationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
+class TransitOperationTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   def transform(transitOperation: TransitOperationType14)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    referenceDataConnector.getSecurityType(transitOperation.security).flatMap {
+    referenceDataService.getSecurityType(transitOperation.security).flatMap {
       secType =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           set(SecurityTypePage, secType)

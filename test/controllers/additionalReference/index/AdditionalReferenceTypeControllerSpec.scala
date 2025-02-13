@@ -28,8 +28,8 @@ import pages.additionalReference.AdditionalReferenceTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.AdditionalReferencesService
+import play.api.test.Helpers.*
+import services.ReferenceDataService
 import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel
 import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
 import views.html.additionalReference.index.AdditionalReferenceTypeView
@@ -45,10 +45,10 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   private val mockViewModelProvider = mock[AdditionalReferenceTypeViewModelProvider]
   private val viewModel             = arbitrary[AdditionalReferenceTypeViewModel].sample.value
 
-  private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
-  private val formProvider                                                 = new SelectableFormProvider()
-  private val mode                                                         = NormalMode
-  private val form = formProvider(mode, "additionalReference.index.additionalReferenceType", additionalReferenceList)
+  private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+  private val formProvider                                   = new SelectableFormProvider()
+  private val mode                                           = NormalMode
+  private val form                                           = formProvider(mode, "additionalReference.index.additionalReferenceType", additionalReferenceList)
 
   private lazy val additionalReferenceRoute =
     routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, mode, additionalReferenceIndex).url
@@ -58,7 +58,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
       .guiceApplicationBuilder()
       .overrides(
         bind(classOf[AdditionalReferenceNavigator]).toInstance(FakeConsignmentNavigators.fakeAdditionalReferenceNavigator),
-        bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService),
+        bind(classOf[ReferenceDataService]).toInstance(mockReferenceDataService),
         bind(classOf[AdditionalReferenceTypeViewModelProvider]).toInstance(mockViewModelProvider)
       )
 
@@ -74,7 +74,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockReferenceDataService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, additionalReferenceRoute)
@@ -91,7 +91,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockReferenceDataService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
       val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReference1)
       setExistingUserAnswers(userAnswers)
 
@@ -111,7 +111,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockReferenceDataService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -128,7 +128,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockReferenceDataService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, additionalReferenceRoute).withFormUrlEncodedBody(("value", "invalid value"))

@@ -16,16 +16,19 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.AdditionalInformationType02
 import models.reference.AdditionalInformationCode
 import models.{Index, UserAnswers}
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
+class AdditionalInformationTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   private case class TempAdditionalInformation(
     underlying: AdditionalInformationType02,
@@ -35,7 +38,7 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
   def transform(
     additionalInformation: Seq[AdditionalInformationType02]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.additionalInformation._
+    import pages.additionalInformation.*
     import pages.sections.additionalInformation.AdditionalInformationSection
 
     genericTransform(additionalInformation) {
@@ -50,7 +53,7 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     additionalInformation: Seq[AdditionalInformationType02],
     hcIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.houseConsignment.index.additionalinformation._
+    import pages.houseConsignment.index.additionalinformation.*
     import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
 
     genericTransform(additionalInformation) {
@@ -66,7 +69,7 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.houseConsignment.index.items.additionalinformation._
+    import pages.houseConsignment.index.items.additionalinformation.*
     import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
 
     genericTransform(additionalInformation) {
@@ -84,7 +87,7 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
     lazy val referenceDataLookups = additionalInformation.map {
       additionalInformation =>
-        referenceDataConnector
+        referenceDataService
           .getAdditionalInformationCode(additionalInformation.code)
           .map(TempAdditionalInformation(additionalInformation, _))
     }

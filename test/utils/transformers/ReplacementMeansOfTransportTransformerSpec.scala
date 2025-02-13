@@ -17,11 +17,10 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.TranshipmentType02
 import generators.Generators
 import models.reference.{Country, TransportMeansIdentification}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -29,6 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -36,18 +36,18 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
 
   private val transformer = app.injector.instanceOf[ReplacementMeansOfTransportTransformer]
 
-  private lazy val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" - {
@@ -60,10 +60,10 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
 
           val identification = TransportMeansIdentification(transhipment.TransportMeans.typeOfIdentification, description)
 
-          when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+          when(mockReferenceDataService.getCountry(any())(any()))
             .thenReturn(Future.successful(country))
 
-          when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(any())(any(), any()))
+          when(mockReferenceDataService.getMeansOfTransportIdentificationType(any())(any()))
             .thenReturn(Future.successful(identification))
 
           val result = transformer.transform(Some(transhipment), index).apply(emptyUserAnswers).futureValue
@@ -71,8 +71,8 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
           result.getValue(NationalityPage(index)) mustBe country
           result.getValue(IdentificationPage(index)) mustBe identification
 
-          verify(mockReferenceDataConnector).getCountry(eqTo(transhipment.TransportMeans.nationality))(any(), any())
-          verify(mockReferenceDataConnector).getMeansOfTransportIdentificationType(eqTo(transhipment.TransportMeans.typeOfIdentification))(any(), any())
+          verify(mockReferenceDataService).getCountry(eqTo(transhipment.TransportMeans.nationality))(any())
+          verify(mockReferenceDataService).getMeansOfTransportIdentificationType(eqTo(transhipment.TransportMeans.typeOfIdentification))(any())
       }
     }
 
@@ -82,7 +82,7 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
       result.get(NationalityPage(index)) must not be defined
       result.get(IdentificationPage(index)) must not be defined
 
-      verifyNoInteractions(mockReferenceDataConnector)
+      verifyNoInteractions(mockReferenceDataService)
     }
   }
 }

@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.ReferenceDataService
 import viewModels.departureTransportMeans.CountryViewModel
 import viewModels.departureTransportMeans.CountryViewModel.CountryViewModelProvider
@@ -72,7 +72,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   "departureMeansOfTransportCountry Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataService.getCountries()(any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -90,7 +90,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(
+      when(mockReferenceDataService.getCountries()(any())).thenReturn(
         Future.successful(countries)
       )
 
@@ -113,7 +113,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
-      when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataService.getCountries()(any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -128,7 +128,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
+      when(mockReferenceDataService.getCountries()(any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
 

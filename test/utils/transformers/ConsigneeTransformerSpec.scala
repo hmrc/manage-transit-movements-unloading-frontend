@@ -17,23 +17,23 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.{AddressType07, ConsigneeType03, ConsigneeType04}
 import generators.Generators
 import models.reference.Country
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.{
-  ConsigneeAddressPage => ItemConsigneeAddressPage,
-  ConsigneeCountryPage => ItemConsigneeCountryPage,
-  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
-  ConsigneeNamePage => ItemConsigneeNamePage
+  ConsigneeAddressPage as ItemConsigneeAddressPage,
+  ConsigneeCountryPage as ItemConsigneeCountryPage,
+  ConsigneeIdentifierPage as ItemConsigneeIdentifierPage,
+  ConsigneeNamePage as ItemConsigneeNamePage
 }
 import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -41,18 +41,18 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[ConsigneeTransformer]
 
-  private lazy val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" - {
@@ -67,7 +67,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
             val input = consignor.copy(Address = Some(address))
 
-            when(mockReferenceDataConnector.getCountry(eqTo(address.country))(any(), any()))
+            when(mockReferenceDataService.getCountry(eqTo(address.country))(any()))
               .thenReturn(Future.successful(country))
 
             val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
@@ -80,14 +80,14 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         val result = transformer.transform(None).apply(emptyUserAnswers).futureValue
 
         result.get(pages.consignee.CountryPage) must not be defined
-        verifyNoInteractions(mockReferenceDataConnector)
+        verifyNoInteractions(mockReferenceDataService)
       }
     }
 
     "at house consignment level" - {
 
       "when consignee defined" in {
-        when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+        when(mockReferenceDataService.getCountry(any())(any()))
           .thenReturn(Future.successful(country))
 
         forAll(arbitrary[ConsigneeType04]) {
@@ -116,7 +116,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     "at item level" - {
 
       "when consignee defined" in {
-        when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+        when(mockReferenceDataService.getCountry(any())(any()))
           .thenReturn(Future.successful(country))
 
         forAll(arbitrary[ConsigneeType03]) {

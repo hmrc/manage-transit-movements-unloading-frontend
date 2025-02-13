@@ -16,24 +16,24 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.EndorsementType03
 import models.{Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentEndorsementTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(endorsement: Option[EndorsementType03], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     endorsement match {
       case Some(EndorsementType03(date, authority, place, countryCode)) =>
-        val countryF = referenceDataConnector.getCountry(countryCode)
+        val countryF = referenceDataService.getCountry(countryCode)
 
         for {
           country <- countryF

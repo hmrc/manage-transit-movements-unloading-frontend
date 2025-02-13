@@ -17,42 +17,135 @@
 package services
 
 import connectors.ReferenceDataConnector
-import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import models.reference.{Country, CustomsOffice}
+import models.reference.*
+import models.reference.TransportMode.InlandMode
+import models.{SecurityType, SelectableList}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) extends ReferenceDataService {
+class ReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] =
-    connector.getCountries().map(_.toSeq)
+  def getAdditionalInformationCode(code: String)(implicit hc: HeaderCarrier): Future[AdditionalInformationCode] =
+    referenceDataConnector
+      .getAdditionalInformationCode(code)
+      .map(_.resolve())
 
-  def getCountryByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] =
-    connector.getCountry(code)
+  def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReferenceType]] =
+    referenceDataConnector
+      .getAdditionalReferences()
+      .map(_.resolve())
+      .map(_.toSelectableList)
 
-  def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] =
-    connector.getCustomsOffice(customsOfficeCode)
+  def getAdditionalReference(code: String)(implicit hc: HeaderCarrier): Future[AdditionalReferenceType] =
+    referenceDataConnector
+      .getAdditionalReference(code)
+      .map(_.resolve())
 
-  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] =
-    connector.getCountryNameByCode(code).map(_.code)
+  def isDocumentTypeExcise(docType: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
+      .getDocumentTypeExcise(docType)
+      .map(_.isDefined)
 
-  def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
-    connector
+  def getCountries()(implicit hc: HeaderCarrier): Future[Seq[Country]] =
+    referenceDataConnector
+      .getCountries()
+      .map(_.resolve())
+      .map(_.toSeq)
+
+  def getCountry(code: String)(implicit hc: HeaderCarrier): Future[Country] =
+    referenceDataConnector
+      .getCountry(code)
+      .map(_.resolve())
+
+  def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
       .getCUSCode(cusCode)
-      .map(
-        _ => true
-      )
-      .recover {
-        case _: NoReferenceDataFoundException => false
-      }
-}
+      .map(_.isDefined)
 
-trait ReferenceDataService {
-  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]]
-  def getCountryByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country]
-  def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice]
-  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String]
-  def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean]
+  def getCustomsOffice(code: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =
+    referenceDataConnector
+      .getCustomsOffice(code)
+      .map(_.resolve())
+
+  def getPreviousDocument(code: String)(implicit hc: HeaderCarrier): Future[DocumentType] =
+    referenceDataConnector
+      .getPreviousDocument(code)
+      .map(_.resolve())
+
+  def getSupportingDocument(code: String)(implicit hc: HeaderCarrier): Future[DocumentType] =
+    referenceDataConnector
+      .getSupportingDocument(code)
+      .map(_.resolve())
+
+  def getTransportDocument(code: String)(implicit hc: HeaderCarrier): Future[DocumentType] =
+    referenceDataConnector
+      .getTransportDocument(code)
+      .map(_.resolve())
+
+  def getPreviousDocumentExport(code: String)(implicit hc: HeaderCarrier): Future[DocumentType] =
+    referenceDataConnector
+      .getPreviousDocumentExport(code)
+      .map(_.resolve())
+
+  def getDocuments()(implicit hc: HeaderCarrier): Future[Seq[DocumentType]] =
+    for {
+      transportDocuments  <- referenceDataConnector.getTransportDocuments()
+      supportingDocuments <- referenceDataConnector.getSupportingDocuments()
+      documents = transportDocuments.resolve() ++ supportingDocuments.resolve()
+    } yield documents.toSeq
+
+  def getTransportDocuments()(implicit hc: HeaderCarrier): Future[Seq[DocumentType]] =
+    referenceDataConnector
+      .getTransportDocuments()
+      .map(_.resolve())
+      .map(_.toSeq)
+
+  def getSupportingDocuments()(implicit hc: HeaderCarrier): Future[Seq[DocumentType]] =
+    referenceDataConnector
+      .getSupportingDocuments()
+      .map(_.resolve())
+      .map(_.toSeq)
+
+  def getMeansOfTransportIdentificationTypes()(implicit hc: HeaderCarrier): Future[Seq[TransportMeansIdentification]] =
+    referenceDataConnector
+      .getMeansOfTransportIdentificationTypes()
+      .map(_.resolve())
+      .map(_.toSeq)
+
+  def getMeansOfTransportIdentificationType(code: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
+    referenceDataConnector
+      .getMeansOfTransportIdentificationType(code)
+      .map(_.resolve())
+
+  def getPackageTypes()(implicit hc: HeaderCarrier): Future[SelectableList[PackageType]] =
+    referenceDataConnector.getPackageTypes
+      .map(_.resolve())
+      .map(_.toSelectableList)
+
+  def getPackageType(code: String)(implicit hc: HeaderCarrier): Future[PackageType] =
+    referenceDataConnector
+      .getPackageType(code)
+      .map(_.resolve())
+
+  def getSecurityType(code: String)(implicit hc: HeaderCarrier): Future[SecurityType] =
+    referenceDataConnector
+      .getSecurityType(code)
+      .map(_.resolve())
+
+  def getTransportModeCode(code: String)(implicit hc: HeaderCarrier): Future[InlandMode] =
+    referenceDataConnector
+      .getTransportModeCode(code)
+      .map(_.resolve())
+
+  def getQualifierOfIdentificationIncident(code: String)(implicit hc: HeaderCarrier): Future[QualifierOfIdentification] =
+    referenceDataConnector
+      .getQualifierOfIdentificationIncident(code)
+      .map(_.resolve())
+
+  def getIncidentType(code: String)(implicit hc: HeaderCarrier): Future[Incident] =
+    referenceDataConnector
+      .getIncidentType(code)
+      .map(_.resolve())
 }

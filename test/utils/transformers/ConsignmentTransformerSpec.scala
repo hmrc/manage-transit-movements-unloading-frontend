@@ -17,7 +17,6 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.CUSTOM_ConsignmentType05
 import generators.Generators
 import models.reference.Country
@@ -26,12 +25,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{GrossWeightPage, QuestionPage}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
+import pages.{GrossWeightPage, QuestionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -48,7 +48,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
   private lazy val mockIncidentsTransformer               = mock[IncidentsTransformer]
   private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
-  private lazy val mockReferenceDataConnector             = mock[ReferenceDataConnector]
+
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -63,7 +64,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
         bind[IncidentsTransformer].toInstance(mockIncidentsTransformer),
         bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   private case object FakeConsignorSection extends QuestionPage[JsObject] {
@@ -150,11 +151,11 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
             }
 
           val country = Country("GB", "country")
-          when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+          when(mockReferenceDataService.getCountry(any())(any()))
             .thenReturn(Future.successful(country))
 
           val inlandMode = InlandMode("1", "mode")
-          when(mockReferenceDataConnector.getTransportModeCode(any())(any(), any()))
+          when(mockReferenceDataService.getTransportModeCode(any())(any()))
             .thenReturn(Future.successful(inlandMode))
 
           val updatedConsignment = consignment.copy(countryOfDestination = Some("country - GB"), inlandModeOfTransport = Some("mode"))

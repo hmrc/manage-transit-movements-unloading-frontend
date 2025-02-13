@@ -22,12 +22,12 @@ import generators.Generators
 import matchers.JsonMatchers
 import models.CannotSendUnloadingRemarksViewModel
 import models.reference.CustomsOffice
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.ReferenceDataService
 import views.html.CannotSendUnloadingRemarksView
 
@@ -53,7 +53,7 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
 
   "CannotSendUnloadingRemarksController" - {
     "return OK and the correct view for a GET" in {
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(customsOffice))
+      when(mockReferenceDataService.getCustomsOffice(any())(any())).thenReturn(Future.successful(customsOffice))
 
       val ie043Data = basicIe043.copy(CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId))
       setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = ie043Data))
@@ -68,7 +68,7 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
 
       contentAsString(result) mustEqual view(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, customsOfficeId))(request, messages).toString
 
-      verify(mockReferenceDataService).getCustomsOfficeByCode(eqTo(customsOfficeId))(any(), any())
+      verify(mockReferenceDataService).getCustomsOffice(eqTo(customsOfficeId))(any())
     }
   }
 }

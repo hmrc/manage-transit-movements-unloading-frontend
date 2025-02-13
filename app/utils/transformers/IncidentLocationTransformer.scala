@@ -16,25 +16,25 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.LocationType02
 import models.{Index, UserAnswers}
-import pages.incident.location._
+import pages.incident.location.*
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentLocationTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(location: LocationType02, incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     location match {
       case LocationType02(qualifier, unLocode, countryCode, _, _) =>
-        val countryF                   = referenceDataConnector.getCountry(countryCode)
-        val qualifierOfIdentificationF = referenceDataConnector.getQualifierOfIdentificationIncident(qualifier)
+        val countryF                   = referenceDataService.getCountry(countryCode)
+        val qualifierOfIdentificationF = referenceDataService.getQualifierOfIdentificationIncident(qualifier)
 
         for {
           country                   <- countryF

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.CustomsOfficeOfDestinationActualType03
 import generators.Generators
 import models.reference.CustomsOffice
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -35,25 +35,25 @@ class CustomsOfficeOfDestinationActualTransformerSpec extends SpecBase with AppW
 
   private val transformer: CustomsOfficeOfDestinationActualTransformer = app.injector.instanceOf[CustomsOfficeOfDestinationActualTransformer]
 
-  private lazy val mockRefDataService: ReferenceDataService = mock[ReferenceDataService]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataService].toInstance(mockRefDataService)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRefDataService)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" in {
 
     val customsOfficeOfDestinationActualType03: CustomsOfficeOfDestinationActualType03 = arbitrary[CustomsOfficeOfDestinationActualType03].sample.value
 
-    when(mockRefDataService.getCustomsOfficeByCode(eqTo(customsOfficeOfDestinationActualType03.referenceNumber))(any(), any()))
+    when(mockReferenceDataService.getCustomsOffice(eqTo(customsOfficeOfDestinationActualType03.referenceNumber))(any()))
       .thenReturn(
         Future.successful(CustomsOffice(customsOfficeOfDestinationActualType03.referenceNumber, "name", "countryID", None))
       )
