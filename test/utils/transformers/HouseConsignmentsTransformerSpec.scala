@@ -17,12 +17,11 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.CUSTOM_HouseConsignmentType04
 import generators.Generators
 import models.reference.Country
 import models.{Index, SecurityType}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,6 +31,7 @@ import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -46,7 +46,8 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
   private lazy val mockAdditionalReferenceTransformer     = mock[AdditionalReferencesTransformer]
   private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
   private lazy val mockConsignmentItemTransformer         = mock[ConsignmentItemTransformer]
-  private lazy val mockReferenceDataConnector             = mock[ReferenceDataConnector]
+
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -59,7 +60,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferenceTransformer),
         bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
         bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer),
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject] {
@@ -133,12 +134,12 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
                 ua => Future.successful(ua.setValue(FakeConsignmentItemSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockReferenceDataConnector.getSecurityType(any())(any(), any()))
+            when(mockReferenceDataService.getSecurityType(any())(any()))
               .thenReturn {
                 Future.successful(SecurityType("code", "description"))
               }
 
-            when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+            when(mockReferenceDataService.getCountry(any())(any()))
               .thenReturn(Future.successful(country))
         }
 

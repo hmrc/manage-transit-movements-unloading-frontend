@@ -50,7 +50,7 @@ class UnloadingRemarksSentController @Inject() (
         for {
           ie044 <- OptionT(messageService.getIE044(arrivalId))
           customsOfficeId = ie044.CustomsOfficeOfDestinationActual.referenceNumber
-          customsOffice <- OptionT.liftF(referenceDataService.getCustomsOfficeByCode(customsOfficeId))
+          customsOffice <- OptionT.liftF(referenceDataService.getCustomsOffice(customsOfficeId))
           _             <- OptionT.liftF(sessionRepository.remove(arrivalId))
         } yield Ok(view(ie044.TransitOperation.MRN, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
       ).getOrElse {

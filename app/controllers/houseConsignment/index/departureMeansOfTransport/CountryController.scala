@@ -16,13 +16,13 @@
 
 package controllers.houseConsignment.index.departureMeansOfTransport
 
-import controllers.actions._
+import controllers.actions.*
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

@@ -19,7 +19,7 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.Country
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -34,7 +34,7 @@ class CountryOfDestinationTransformerSpec extends SpecBase with AppWithDefaultMo
 
   private val transformer = app.injector.instanceOf[CountryOfDestinationTransformer]
 
-  private lazy val mockReferenceDataService = mock[ReferenceDataService]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -54,14 +54,14 @@ class CountryOfDestinationTransformerSpec extends SpecBase with AppWithDefaultMo
         (countryOfDestination, countryOfDestinationCode) =>
           beforeEach()
 
-          when(mockReferenceDataService.getCountryByCode(any())(any(), any()))
+          when(mockReferenceDataService.getCountry(any())(any()))
             .thenReturn(Future.successful(countryOfDestination))
 
           val result = transformer.transform(Some(countryOfDestinationCode), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
           result.getValue(CountryOfDestinationPage(hcIndex, itemIndex)) mustBe countryOfDestination
 
-          verify(mockReferenceDataService).getCountryByCode(eqTo(countryOfDestinationCode))(any(), any())
+          verify(mockReferenceDataService).getCountry(eqTo(countryOfDestinationCode))(any())
       }
     }
 

@@ -28,8 +28,8 @@ import pages.houseConsignment.index.items.packages.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.PackagesService
+import play.api.test.Helpers.*
+import services.ReferenceDataService
 import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel
 import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel.PackageTypeViewModelProvider
 import views.html.houseConsignment.index.items.packages.PackageTypeView
@@ -45,10 +45,10 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val mockViewModelProvider = mock[PackageTypeViewModelProvider]
   private val viewModel             = arbitrary[PackageTypeViewModel].sample.value
 
-  private val mockPackagesService: PackagesService = mock[PackagesService]
+  private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private lazy val packageTypeRoute =
-    controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+    routes.PackageTypeController
       .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
       .url
 
@@ -58,7 +58,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       .overrides(
         bind(classOf[PackagesNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigatorProvider),
         bind(classOf[PackageTypeViewModelProvider]).toInstance(mockViewModelProvider),
-        bind(classOf[PackagesService]).toInstance(mockPackagesService)
+        bind(classOf[ReferenceDataService]).toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
@@ -81,7 +81,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockReferenceDataService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
@@ -110,7 +110,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockReferenceDataService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       val userAnswers = emptyUserAnswers.setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType1)
       setExistingUserAnswers(userAnswers)
 
@@ -142,7 +142,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockReferenceDataService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -159,7 +159,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockReferenceDataService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
 
       setExistingUserAnswers(emptyUserAnswers)
 

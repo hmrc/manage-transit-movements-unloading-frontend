@@ -17,9 +17,7 @@
 package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import cats.data.NonEmptySet
-import config.Constants.TransportModeCode._
-import connectors.ReferenceDataConnector
+import config.Constants.TransportModeCode.*
 import models.reference.TransportMeansIdentification
 import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
@@ -33,36 +31,34 @@ import scala.concurrent.Future
 
 class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  private val mockReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
-  private val meansOfTransportIdentificationTypes = NonEmptySet
-    .of(
-      "10",
-      "11",
-      "20",
-      "21",
-      "30",
-      "31",
-      "40",
-      "41",
-      "80",
-      "81",
-      "99"
-    )
-    .map(TransportMeansIdentification(_, ""))
+  private val meansOfTransportIdentificationTypes = Seq(
+    "10",
+    "11",
+    "20",
+    "21",
+    "30",
+    "31",
+    "40",
+    "41",
+    "80",
+    "81",
+    "99"
+  ).map(TransportMeansIdentification(_, ""))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
 
-    when(mockReferenceDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
+    when(mockReferenceDataService.getMeansOfTransportIdentificationTypes()(any()))
       .thenReturn(Future.successful(meansOfTransportIdentificationTypes))
   }
 

@@ -21,13 +21,13 @@ import generated.{CC044CType, CustomsOfficeOfDestinationActualType03}
 import generators.Generators
 import models.UnloadingRemarksSentViewModel
 import models.reference.CustomsOffice
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.ReferenceDataService
 import views.html.UnloadingRemarksSentView
 
@@ -62,7 +62,7 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
           when(mockUnloadingPermissionMessageService.getIE044(any())(any(), any()))
             .thenReturn(Future.successful(Some(ie044)))
 
-          when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any()))
+          when(mockReferenceDataService.getCustomsOffice(any())(any()))
             .thenReturn(Future.successful(customsOffice))
 
           when(mockSessionRepository.remove(any()))
@@ -81,7 +81,7 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
           contentAsString(result) mustEqual view(mrn.toString, unloadingRemarksSentViewModel)(request, messages).toString
 
           verify(mockUnloadingPermissionMessageService).getIE044(eqTo(arrivalId))(any(), any())
-          verify(mockReferenceDataService).getCustomsOfficeByCode(eqTo(customsOfficeId))(any(), any())
+          verify(mockReferenceDataService).getCustomsOffice(eqTo(customsOfficeId))(any())
           verify(mockSessionRepository).remove(eqTo(arrivalId))
       }
     }

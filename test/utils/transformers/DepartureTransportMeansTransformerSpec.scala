@@ -17,36 +17,36 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
 import generators.Generators
 import models.Index
 import models.reference.{Country, TransportMeansIdentification}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
 class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   private val transformer = app.injector.instanceOf[DepartureTransportMeansTransformer]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" - {
@@ -68,10 +68,10 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
 
             departureTransportMeans.zipWithIndex.map {
               case (dtm, i) =>
-                when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(eqTo(dtm.typeOfIdentification.value))(any(), any()))
+                when(mockReferenceDataService.getMeansOfTransportIdentificationType(eqTo(dtm.typeOfIdentification.value))(any()))
                   .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification.value, i.toString)))
 
-                when(mockReferenceDataConnector.getCountry(eqTo(dtm.nationality.value))(any(), any()))
+                when(mockReferenceDataService.getCountry(eqTo(dtm.nationality.value))(any()))
                   .thenReturn(Future.successful(Country(dtm.nationality.value, i.toString)))
             }
 
@@ -112,7 +112,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     }
 
     "when house consignment level" in {
-      import pages.houseConsignment.index.departureMeansOfTransport._
+      import pages.houseConsignment.index.departureMeansOfTransport.*
       import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
       def departureTransportMeansGen(implicit a: Arbitrary[DepartureTransportMeansType02]): Gen[Seq[DepartureTransportMeansType02]] =
@@ -126,10 +126,10 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
-              when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(any())(any(), any()))
+              when(mockReferenceDataService.getMeansOfTransportIdentificationType(any())(any()))
                 .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, i.toString)))
 
-              when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+              when(mockReferenceDataService.getCountry(any())(any()))
                 .thenReturn(Future.successful(Country(dtm.nationality, i.toString)))
 
               val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue

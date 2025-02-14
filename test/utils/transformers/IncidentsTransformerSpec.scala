@@ -17,12 +17,11 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
-import generated._
+import generated.*
 import generators.Generators
 import models.Index
 import models.reference.Incident
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,6 +31,7 @@ import pages.sections.incidents.IncidentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -39,19 +39,17 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[IncidentsTransformer]
 
-  private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-
-  private lazy val mockIncidentEndorsementTransformer: IncidentEndorsementTransformer = mock[IncidentEndorsementTransformer]
-
-  private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer = mock[IncidentLocationTransformer]
-
+  private lazy val mockIncidentEndorsementTransformer: IncidentEndorsementTransformer  = mock[IncidentEndorsementTransformer]
+  private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer        = mock[IncidentLocationTransformer]
   private lazy val mockTranshipmentTransformer: ReplacementMeansOfTransportTransformer = mock[ReplacementMeansOfTransportTransformer]
+
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService),
         bind[IncidentEndorsementTransformer].toInstance(mockIncidentEndorsementTransformer),
         bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer),
         bind[ReplacementMeansOfTransportTransformer].toInstance(mockTranshipmentTransformer)
@@ -59,7 +57,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockRefDataConnector)
+    reset(mockReferenceDataService)
     reset(mockIncidentEndorsementTransformer)
     reset(mockIncidentLocationTransformer)
     reset(mockTranshipmentTransformer)
@@ -93,7 +91,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
           incidents.zipWithIndex.map {
             case (type0, i) =>
-              when(mockRefDataConnector.getIncidentType(eqTo(type0.code))(any(), any()))
+              when(mockReferenceDataService.getIncidentType(eqTo(type0.code))(any()))
                 .thenReturn(
                   Future.successful(Incident(type0.code, i.toString))
                 )

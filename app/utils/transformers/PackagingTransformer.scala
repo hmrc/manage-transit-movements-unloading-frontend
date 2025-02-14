@@ -16,18 +16,21 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.PackagingType02
 import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.sections.PackagingSection
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
+class PackagingTransformer @Inject() (
+  referenceDataService: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   private case class TempPackaging[T](
     underlying: T,
@@ -39,7 +42,7 @@ class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConne
 
       lazy val packageTypeRefLookups = packages.map {
         `package` =>
-          referenceDataConnector
+          referenceDataService
             .getPackageType(`package`.typeOfPackages)
             .map(TempPackaging(`package`, _))
       }

@@ -16,12 +16,12 @@
 
 package utils.transformers
 
-import connectors.ReferenceDataConnector
 import generated.CUSTOM_ConsignmentType05
 import models.UserAnswers
 import pages.GrossWeightPage
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class ConsignmentTransformer @Inject() (
   additionalReferencesTransformer: AdditionalReferencesTransformer,
   additionalInformationTransformer: AdditionalInformationTransformer,
   incidentsTransformer: IncidentsTransformer,
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -69,7 +69,7 @@ class ConsignmentTransformer @Inject() (
     countryOfDestination match {
 
       case Some(country) =>
-        referenceDataConnector.getCountry(country).flatMap {
+        referenceDataService.getCountry(country).flatMap {
           countryVal =>
             val pipeline: UserAnswers => Future[UserAnswers] =
               set(CountryOfDestinationPage, countryVal)
@@ -84,7 +84,7 @@ class ConsignmentTransformer @Inject() (
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     inlandModeOfTransport match {
       case Some(inlandMode) =>
-        referenceDataConnector.getTransportModeCode(inlandMode).flatMap {
+        referenceDataService.getTransportModeCode(inlandMode).flatMap {
           inlandModeVal =>
             val pipeline: UserAnswers => Future[UserAnswers] =
               set(InlandModeOfTransportPage, inlandModeVal)

@@ -17,18 +17,18 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import generated.LocationType02
 import generators.Generators
 import models.reference.{Country, QualifierOfIdentification}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.location._
+import pages.incident.location.*
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -36,18 +36,18 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val transformer = app.injector.instanceOf[IncidentLocationTransformer]
 
-  private lazy val mockReferenceDataConnector = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockReferenceDataConnector)
+    reset(mockReferenceDataService)
   }
 
   "must transform data" in {
@@ -58,10 +58,10 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
         val qualifierOfIdentification = QualifierOfIdentification(location.qualifierOfIdentification, qualifierDescription)
         val country                   = Country(location.country, countryDescription)
 
-        when(mockReferenceDataConnector.getQualifierOfIdentificationIncident(any())(any(), any()))
+        when(mockReferenceDataService.getQualifierOfIdentificationIncident(any())(any()))
           .thenReturn(Future.successful(qualifierOfIdentification))
 
-        when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+        when(mockReferenceDataService.getCountry(any())(any()))
           .thenReturn(Future.successful(country))
 
         val result = transformer.transform(location, index).apply(emptyUserAnswers).futureValue
@@ -70,8 +70,8 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
         result.get(UNLocodePage(index)) mustBe location.UNLocode
         result.getValue(CountryPage(index)) mustBe country
 
-        verify(mockReferenceDataConnector).getQualifierOfIdentificationIncident(eqTo(location.qualifierOfIdentification))(any(), any())
-        verify(mockReferenceDataConnector).getCountry(eqTo(location.country))(any(), any())
+        verify(mockReferenceDataService).getQualifierOfIdentificationIncident(eqTo(location.qualifierOfIdentification))(any())
+        verify(mockReferenceDataService).getCountry(eqTo(location.country))(any())
     }
   }
 }
