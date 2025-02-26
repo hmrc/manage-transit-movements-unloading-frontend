@@ -21,7 +21,7 @@ import forms.AddAnotherFormProvider
 import generators.Generators
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -30,12 +30,14 @@ import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.GoodsReferenceService
 import viewModels.ListItem
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
 import views.html.houseConsignment.index.items.AddAnotherItemView
+
+import scala.util.Success
 
 class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
@@ -118,19 +120,19 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to add description page at next index and set declaration goods item number" in {
-          val initialAnswers                 = emptyUserAnswers
-          val answersAfterCleanup            = emptyUserAnswers
-          val nextIndex                      = Index(0)
-          val nextDeclarationGoodsItemNumber = positiveBigInts.sample.value
+          val nextIndex           = Index(0)
+          val initialAnswers      = emptyUserAnswers
+          val answersAfterCleanup = emptyUserAnswers
+          val answersAfterSet     = emptyUserAnswers.setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, nextIndex), BigInt(1))
 
           when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel.copy(nextIndex = nextIndex))
 
-          when(mockGoodsReferenceService.getNextDeclarationGoodsItemNumber(any()))
-            .thenReturn(nextDeclarationGoodsItemNumber)
-
           when(mockGoodsReferenceService.removeEmptyItems(any(), any()))
             .thenReturn(answersAfterCleanup)
+
+          when(mockGoodsReferenceService.setNextDeclarationGoodsItemNumber(any(), any(), any()))
+            .thenReturn(Success(answersAfterSet))
 
           setExistingUserAnswers(initialAnswers)
 
@@ -149,10 +151,10 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          val expectedAnswers = answersAfterCleanup.setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, nextIndex), nextDeclarationGoodsItemNumber)
-          userAnswersCaptor.getValue mustBe expectedAnswers
+          userAnswersCaptor.getValue mustEqual answersAfterSet
 
           verify(mockGoodsReferenceService).removeEmptyItems(eqTo(initialAnswers), eqTo(houseConsignmentIndex))
+          verify(mockGoodsReferenceService).setNextDeclarationGoodsItemNumber(eqTo(answersAfterCleanup), eqTo(houseConsignmentIndex), eqTo(itemIndex))
         }
       }
 

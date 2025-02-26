@@ -17,13 +17,12 @@
 package controllers.houseConsignment.index.items
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
-import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -66,13 +65,10 @@ class AddAnotherItemController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, userAnswers.mrn, arrivalId, viewModel))),
           {
             case true =>
-              val itemIndex                      = viewModel.nextIndex
-              val nextDeclarationGoodsItemNumber = goodsReferenceService.getNextDeclarationGoodsItemNumber(userAnswers)
+              val itemIndex = viewModel.nextIndex
               for {
-                updatedAnswers <- Future.fromTry {
-                  userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
-                }
-                _ <- sessionRepository.set(updatedAnswers)
+                updatedAnswers <- Future.fromTry(goodsReferenceService.setNextDeclarationGoodsItemNumber(userAnswers, houseConsignmentIndex, itemIndex))
+                _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(
                 controllers.houseConsignment.index.items.routes.DescriptionController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, itemIndex)

@@ -200,14 +200,26 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
     }
   }
 
-  "getNextDeclarationGoodsItemNumber" - {
+  "setNextDeclarationGoodsItemNumber" - {
     "must return 1" - {
       "when no house consignments and no consignment items" in {
         val userAnswers = emptyUserAnswers
 
-        val result = service.getNextDeclarationGoodsItemNumber(userAnswers)
+        val result = service.setNextDeclarationGoodsItemNumber(userAnswers, Index(0), Index(0))
 
-        result mustBe BigInt(1)
+        result.get.getValue(DeclarationGoodsItemNumberPage(Index(0), Index(0))) mustEqual BigInt(1)
+      }
+    }
+
+    "must return existing value" - {
+      "when value already set" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+          .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+
+        val result = service.setNextDeclarationGoodsItemNumber(userAnswers, Index(0), Index(1))
+
+        result.get.getValue(DeclarationGoodsItemNumberPage(Index(0), Index(1))) mustEqual BigInt(2)
       }
     }
 
@@ -217,9 +229,9 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
           .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
 
-        val result = service.getNextDeclarationGoodsItemNumber(userAnswers)
+        val result = service.setNextDeclarationGoodsItemNumber(userAnswers, Index(0), Index(2))
 
-        result mustBe BigInt(3)
+        result.get.getValue(DeclarationGoodsItemNumberPage(Index(0), Index(2))) mustEqual BigInt(3)
       }
 
       "when multiple house consignments with consignment items" in {
@@ -230,9 +242,9 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
           .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
           .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(2)), BigInt(5))
 
-        val result = service.getNextDeclarationGoodsItemNumber(userAnswers)
+        val result = service.setNextDeclarationGoodsItemNumber(userAnswers, Index(1), Index(3))
 
-        result mustBe BigInt(6)
+        result.get.getValue(DeclarationGoodsItemNumberPage(Index(1), Index(3))) mustEqual BigInt(6)
       }
     }
   }
