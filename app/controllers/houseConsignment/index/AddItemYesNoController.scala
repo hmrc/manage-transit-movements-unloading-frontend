@@ -25,11 +25,13 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.houseConsignment.index.AddItemYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 class AddItemYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -38,7 +40,8 @@ class AddItemYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddItemYesNoView
+  view: AddItemYesNoView,
+  goodsReferenceService: GoodsReferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -69,8 +72,18 @@ class AddItemYesNoController @Inject() (
               ),
             value =>
               for {
-                updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(AddItemYesNoPage(houseConsignmentIndex), value))
+                updatedAnswers <- Future.fromTry(
+                  request.userAnswers
+                    .set(AddItemYesNoPage(houseConsignmentIndex), value)
+                    .flatMap {
+                      userAnswers =>
+                        if (value) {
+                          goodsReferenceService.setNextDeclarationGoodsItemNumber(userAnswers, houseConsignmentIndex, Index(0))
+                        } else {
+                          Success(userAnswers)
+                        }
+                    }
+                )
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(AddItemYesNoPage(houseConsignmentIndex), houseConsignmentMode, updatedAnswers))
           )

@@ -24,7 +24,7 @@ import pages.transportEquipment.index.ItemPage
 import utils.transformers.{DeclarationGoodsItemNumber, Removed}
 
 import javax.inject.Inject
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class GoodsReferenceService @Inject() {
 
@@ -74,15 +74,22 @@ class GoodsReferenceService @Inject() {
     } yield GoodsReference(declarationGoodsItemNumber, description)
   }
 
-  def getNextDeclarationGoodsItemNumber(userAnswers: UserAnswers): BigInt = {
-    val declarationGoodsItemNumbers = for {
-      hcIndex                    <- (0 until userAnswers.get(HouseConsignmentsSection).length).map(Index(_))
-      itemIndex                  <- (0 until userAnswers.get(ItemsSection(hcIndex)).length).map(Index(_))
-      declarationGoodsItemNumber <- userAnswers.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex))
-    } yield declarationGoodsItemNumber
+  def setNextDeclarationGoodsItemNumber(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Try[UserAnswers] =
+    userAnswers.get(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex)) match {
+      case Some(_) =>
+        Success(userAnswers)
+      case None =>
+        val nextDeclarationGoodsItemNumber = {
+          val declarationGoodsItemNumbers = for {
+            hcIndex                    <- (0 until userAnswers.get(HouseConsignmentsSection).length).map(Index(_))
+            itemIndex                  <- (0 until userAnswers.get(ItemsSection(hcIndex)).length).map(Index(_))
+            declarationGoodsItemNumber <- userAnswers.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex))
+          } yield declarationGoodsItemNumber
 
-    declarationGoodsItemNumbers.maxOption.getOrElse(BigInt(0)) + 1
-  }
+          declarationGoodsItemNumbers.maxOption.getOrElse(BigInt(0)) + 1
+        }
+        userAnswers.set(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), nextDeclarationGoodsItemNumber)
+    }
 
   def removeEmptyItems(userAnswers: UserAnswers, hcIndex: Index): UserAnswers =
     (0 until userAnswers.get(ItemsSection(hcIndex)).length)

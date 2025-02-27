@@ -18,18 +18,22 @@ package controllers.houseConsignment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{Index, NormalMode, UserAnswers}
 import navigation.houseConsignment.index.HouseConsignmentNavigator
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.houseConsignment.index.AddItemYesNoPage
+import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import services.GoodsReferenceService
 import views.html.houseConsignment.index.AddItemYesNoView
 
 import scala.concurrent.Future
+import scala.util.Success
 
 class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
@@ -41,12 +45,20 @@ class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val addItemYesNoRoute =
     routes.AddItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode).url
 
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator),
+        bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGoodsReferenceService)
+  }
 
   "AddItemYesNoController" - {
 
@@ -85,11 +97,19 @@ class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
         view(filledForm, mrn, arrivalId, houseConsignmentIndex, houseConsignmentMode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid yes is submitted" in {
+      val nextIndex      = Index(0)
+      val initialAnswers = emptyUserAnswers
+      val answersAfterSet = initialAnswers
+        .setValue(AddItemYesNoPage(houseConsignmentIndex), true)
+        .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, nextIndex), BigInt(1))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(initialAnswers)
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
+
+      when(mockGoodsReferenceService.setNextDeclarationGoodsItemNumber(any(), any(), any()))
+        .thenReturn(Success(answersAfterSet))
 
       val request = FakeRequest(POST, addItemYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -99,6 +119,35 @@ class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustEqual answersAfterSet
+    }
+
+    "must redirect to the next page when valid no is submitted" in {
+      val initialAnswers = emptyUserAnswers
+      val answersAfterSet = initialAnswers
+        .setValue(AddItemYesNoPage(houseConsignmentIndex), false)
+
+      setExistingUserAnswers(initialAnswers)
+
+      when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
+
+      val request = FakeRequest(POST, addItemYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustEqual answersAfterSet
+
+      verifyNoInteractions(mockGoodsReferenceService)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
