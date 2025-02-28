@@ -16,10 +16,10 @@
 
 package connectors
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.ArrivalId
 import play.api.Logging
-import play.api.http.HeaderNames.{ACCEPT, CONTENT_TYPE}
+import play.api.http.HeaderNames.CONTENT_TYPE
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpErrorFunctions, HttpResponse, StringContextOps}
@@ -31,20 +31,16 @@ import scala.xml.NodeSeq
 
 class ApiConnector @Inject() (
   http: HttpClientV2,
-  appConfig: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends HttpErrorFunctions
     with Logging {
-
-  private val version = phaseConfig.values.apiVersion
 
   def submit(xml: NodeSeq, arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val url = url"${appConfig.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .post(url)
       .setHeader(
-        ACCEPT       -> s"application/vnd.hmrc.$version+json",
         CONTENT_TYPE -> "application/xml"
       )
       .withBody(xml)

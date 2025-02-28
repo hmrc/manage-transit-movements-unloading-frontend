@@ -22,10 +22,10 @@ import models.EoriNumber
 import models.requests.DataRequest
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.*
+import play.api.mvc.Results.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import scala.concurrent.Future
 
@@ -120,74 +120,21 @@ class UnreachablePageActionSpec extends SpecBase with BeforeAndAfterEach with Ge
 
   "UnreachablePageAction" - {
 
-    "when during transition" - {
-      val app = transitionApplicationBuilder().build()
-      running(app) {
+    "must return None" in {
+      val pages = reachablePages ++ unreachablePages
+      forAll(Gen.oneOf(pages)) {
+        page =>
+          val action = app.injector.instanceOf[UnreachablePageAction]
 
-        "must return None" - {
-          "when a reachable page" in {
-            forAll(Gen.oneOf(reachablePages)) {
-              reachablePage =>
-                val action = app.injector.instanceOf[UnreachablePageAction]
+          val testRequest = DataRequest(
+            FakeRequest(GET, page),
+            EoriNumber("eori"),
+            emptyUserAnswers
+          )
 
-                val testRequest = DataRequest(
-                  FakeRequest(GET, reachablePage),
-                  EoriNumber("eori"),
-                  emptyUserAnswers
-                )
+          val result: Future[Result] = action.invokeBlock(testRequest, fakeOkResult)
 
-                val result: Future[Result] = action.invokeBlock(testRequest, fakeOkResult)
-
-                status(result) mustEqual OK
-            }
-          }
-        }
-
-        "must redirect to page not found" - {
-          "when an unreachable page" in {
-            forAll(Gen.oneOf(unreachablePages)) {
-              unreachablePage =>
-                val action = app.injector.instanceOf[UnreachablePageAction]
-
-                val testRequest = DataRequest(
-                  FakeRequest(GET, unreachablePage),
-                  eoriNumber,
-                  emptyUserAnswers
-                )
-
-                val result: Future[Result] = action.invokeBlock(testRequest, fakeOkResult)
-
-                status(result) mustEqual SEE_OTHER
-
-                redirectLocation(result).value mustBe
-                  controllers.routes.ErrorController.notFound().url
-            }
-          }
-        }
-      }
-    }
-
-    "when post-transition" - {
-      val app = postTransitionApplicationBuilder().build()
-      running(app) {
-
-        "must return None" in {
-          val pages = reachablePages ++ unreachablePages
-          forAll(Gen.oneOf(pages)) {
-            page =>
-              val action = app.injector.instanceOf[UnreachablePageAction]
-
-              val testRequest = DataRequest(
-                FakeRequest(GET, page),
-                EoriNumber("eori"),
-                emptyUserAnswers
-              )
-
-              val result: Future[Result] = action.invokeBlock(testRequest, fakeOkResult)
-
-              status(result) mustEqual OK
-          }
-        }
+          status(result) mustEqual OK
       }
     }
   }

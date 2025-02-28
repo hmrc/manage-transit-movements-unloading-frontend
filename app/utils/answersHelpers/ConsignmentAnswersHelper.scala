@@ -16,11 +16,10 @@
 
 package utils.answersHelpers
 
-import config.PhaseConfig
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
-import models.{Link, NormalMode, Phase, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
@@ -40,7 +39,7 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelper(
   userAnswers: UserAnswers
-)(implicit messages: Messages, phaseConfig: PhaseConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
   private val documentAddRemoveLink: Link = Link(
@@ -69,18 +68,13 @@ class ConsignmentAnswersHelper(
     )
 
   private val houseConsignmentAddRemoveLink: Option[Link] =
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        None
-      case Phase.PostTransition =>
-        Some(
-          Link(
-            id = s"add-remove-house-consignment",
-            href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
-            text = messages("houseConsignment.addRemove")
-          )
-        )
-    }
+    Some(
+      Link(
+        id = s"add-remove-house-consignment",
+        href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
+        text = messages("houseConsignment.addRemove")
+      )
+    )
 
   def headerSection: Section = StaticSection(
     rows = Seq(

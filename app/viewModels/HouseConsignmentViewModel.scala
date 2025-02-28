@@ -16,8 +16,7 @@
 
 package viewModels
 
-import config.PhaseConfig
-import models.{Index, Phase, UserAnswers}
+import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
@@ -29,7 +28,7 @@ case class HouseConsignmentViewModel(section: Section)
 
 object HouseConsignmentViewModel {
 
-  class HouseConsignmentViewModelProvider @Inject() (implicit phaseConfig: PhaseConfig) {
+  class HouseConsignmentViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
@@ -40,22 +39,15 @@ object HouseConsignmentViewModel {
         helper.grossMassRow
       ).flatten
 
-      val children: Seq[Section] = phaseConfig.phase match {
-        case Phase.Transition =>
-          Seq(
-            helper.itemSection
-          )
-        case Phase.PostTransition =>
-          Seq(
-            helper.houseConsignmentConsignorSection,
-            helper.houseConsignmentConsigneeSection,
-            helper.departureTransportMeansSection,
-            helper.documentSection,
-            helper.additionalReferencesSection,
-            helper.additionalInformationSection,
-            helper.itemSection
-          )
-      }
+      val children: Seq[Section] = Seq(
+        helper.houseConsignmentConsignorSection,
+        helper.houseConsignmentConsigneeSection,
+        helper.departureTransportMeansSection,
+        helper.documentSection,
+        helper.additionalReferencesSection,
+        helper.additionalInformationSection,
+        helper.itemSection
+      )
 
       val houseConsignmentSection: Section =
         StaticSection(rows = rows, children = children)

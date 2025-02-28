@@ -16,10 +16,9 @@
 
 package connectors
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.ArrivalId
 import models.P5.Messages
-import play.api.http.HeaderNames._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -30,17 +29,13 @@ import scala.xml.{Node, XML}
 
 class ArrivalMovementConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2,
-  phaseConfig: PhaseConfig
+  http: HttpClientV2
 ) {
-
-  private val version = phaseConfig.values.apiVersion
 
   def getMessageMetaData(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Messages] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .get(url)
-      .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+json")
       .execute[Messages]
   }
 
@@ -48,7 +43,6 @@ class ArrivalMovementConnector @Inject() (
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId/body"
     http
       .get(url)
-      .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+xml")
       .execute[HttpResponse]
       .map(_.body)
       .map(XML.loadString)
