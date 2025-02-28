@@ -29,7 +29,6 @@ class Actions @Inject() (
   checkArrivalStatusProvider: CheckArrivalStatusProvider,
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
-  unreachablePageAction: UnreachablePageAction,
   indexRequiredAction: IndexRequiredActionProvider
 ) {
 
@@ -40,8 +39,7 @@ class Actions @Inject() (
 
   def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     getData(arrivalId) andThen
-      dataRequiredAction andThen
-      unreachablePageAction
+      dataRequiredAction
 
   def requireDataOnly(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     identifierAction andThen
