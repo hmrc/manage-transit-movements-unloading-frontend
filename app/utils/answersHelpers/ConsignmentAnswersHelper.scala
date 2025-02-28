@@ -67,13 +67,11 @@ class ConsignmentAnswersHelper(
       text = messages("departureTransportMeans.addRemove")
     )
 
-  private val houseConsignmentAddRemoveLink: Option[Link] =
-    Some(
-      Link(
-        id = s"add-remove-house-consignment",
-        href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
-        text = messages("houseConsignment.addRemove")
-      )
+  private val houseConsignmentAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-house-consignment",
+      href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
+      text = messages("houseConsignment.addRemove")
     )
 
   def headerSection: Section = StaticSection(
@@ -411,7 +409,7 @@ class ConsignmentAnswersHelper(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
           children = children,
-          viewLinks = houseConsignmentAddRemoveLink.toList,
+          viewLinks = Seq(houseConsignmentAddRemoveLink),
           id = Some("houseConsignments")
         )
     }

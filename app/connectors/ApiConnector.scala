@@ -19,7 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import models.ArrivalId
 import play.api.Logging
-import play.api.http.HeaderNames.CONTENT_TYPE
+import play.api.http.HeaderNames.{ACCEPT, CONTENT_TYPE}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpErrorFunctions, HttpResponse, StringContextOps}
@@ -41,6 +41,7 @@ class ApiConnector @Inject() (
     http
       .post(url)
       .setHeader(
+        ACCEPT       -> s"application/vnd.hmrc.2.1+json",
         CONTENT_TYPE -> "application/xml"
       )
       .withBody(xml)

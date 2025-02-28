@@ -29,8 +29,6 @@ class Module extends AbstractModule {
 
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
-    bind(classOf[UnreachablePageAction]).to(classOf[UnreachablePageActionImpl]).asEagerSingleton()
-
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     bind(classOf[IndexRequiredActionProvider]).to(classOf[IndexRequiredActionProviderImpl]).asEagerSingleton()

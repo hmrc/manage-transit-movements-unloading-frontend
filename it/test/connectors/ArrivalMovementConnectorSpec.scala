@@ -64,6 +64,7 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
       "should return Messages" in {
         server.stubFor(
           get(url)
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
             .willReturn(okJson(expectedResponse))
         )
 
@@ -96,6 +97,7 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
       "should return Message" in {
         server.stubFor(
           get(s"/movements/arrivals/${arrivalId.value}/messages/$messageId/body")
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+xml"))
             .willReturn(ok(xml.toString()))
         )
 

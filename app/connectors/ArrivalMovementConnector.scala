@@ -19,6 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import models.ArrivalId
 import models.P5.Messages
+import play.api.http.HeaderNames._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -36,6 +37,7 @@ class ArrivalMovementConnector @Inject() (
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .get(url)
+      .setHeader(ACCEPT -> "application/vnd.hmrc.2.1+json")
       .execute[Messages]
   }
 
@@ -43,6 +45,7 @@ class ArrivalMovementConnector @Inject() (
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId/body"
     http
       .get(url)
+      .setHeader(ACCEPT -> "application/vnd.hmrc.2.1+xml")
       .execute[HttpResponse]
       .map(_.body)
       .map(XML.loadString)
