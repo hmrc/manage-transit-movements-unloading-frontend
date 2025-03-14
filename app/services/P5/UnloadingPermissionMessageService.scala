@@ -37,8 +37,7 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
       .map {
         _.messages
           .filterNot(_.status == MessageStatus.Failed)
-          .sortBy(_.received)
-          .reverse
+          .sorted
       }
 
   private def getMessageMetaData(
