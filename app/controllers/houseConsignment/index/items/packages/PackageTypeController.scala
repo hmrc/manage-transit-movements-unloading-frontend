@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.items.packages
 
 import controllers.actions.*
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.PackageTypeFormProvider
 import models.reference.PackageType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
@@ -41,7 +41,7 @@ class PackageTypeController @Inject() (
   actions: Actions,
   navigatorProvider: PackagesNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
-  formProvider: SelectableFormProvider,
+  formProvider: PackageTypeFormProvider,
   referenceDataService: ReferenceDataService,
   view: PackageTypeView,
   viewModelProvider: PackageTypeViewModelProvider

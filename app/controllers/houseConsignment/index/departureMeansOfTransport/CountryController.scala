@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import controllers.actions.*
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
@@ -36,7 +36,7 @@ class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView,

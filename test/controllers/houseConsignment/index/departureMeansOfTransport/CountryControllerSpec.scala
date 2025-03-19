@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{NormalMode, SelectableList}
@@ -43,14 +43,16 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val houseConsignmentMode = NormalMode
   private val transportMeansMode   = NormalMode
 
-  def form: Form[Country]                                 = new SelectableFormProvider()(transportMeansMode, prefix, SelectableList(countries), 1)
   private val country: Country                            = Country("GB", "United Kingdom")
   val countries: Seq[Country]                             = Seq(Country("GB", "United Kingdom"))
   val countryList: SelectableList[Country]                = SelectableList(countries)
   private val mockViewModelProvider                       = mock[HouseConsignmentCountryViewModelProvider]
   private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
+  private val prefix                                      = "houseConsignment.index.departureMeansOfTransport.country"
 
-  private val prefix = "houseConsignment.index.departureMeansOfTransport.country"
+  private val formProvider = new CountryFormProvider()
+  private val field        = formProvider.field
+  def form: Form[Country]  = formProvider(transportMeansMode, prefix, SelectableList(countries), 1)
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
@@ -106,7 +108,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
       val result  = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "GB"))
+      val filledForm = form.bind(Map(field -> "GB"))
 
       val view = injector.instanceOf[CountryView]
 
@@ -127,7 +129,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       val request =
         FakeRequest(POST, DepartureMeansOfTransportCountryRoute)
-          .withFormUrlEncodedBody(("value", "GB"))
+          .withFormUrlEncodedBody((field, "GB"))
 
       val result = route(app, request).value
 
@@ -140,8 +142,8 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, DepartureMeansOfTransportCountryRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request   = FakeRequest(POST, DepartureMeansOfTransportCountryRoute).withFormUrlEncodedBody((field, ""))
+      val boundForm = form.bind(Map(field -> ""))
 
       val result = route(app, request).value
 
@@ -172,7 +174,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       val request =
         FakeRequest(POST, DepartureMeansOfTransportCountryRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody((field, "answer"))
 
       val result = route(app, request).value
 
