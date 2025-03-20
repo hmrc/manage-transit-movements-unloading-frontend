@@ -49,7 +49,7 @@ object SelectableFormProvider {
   }
 
   object GoodsReferenceTypeFormProvider {
-    val field: String = "goodsReferenceType"
+    val field: String = "goods-reference"
   }
 
   class DocumentTypeFormProvider extends SelectableFormProvider {
@@ -57,7 +57,7 @@ object SelectableFormProvider {
   }
 
   object DocumentTypeFormProvider {
-    val field: String = "documentType"
+    val field: String = "document"
   }
 
   class AdditionalReferenceTypeFormProvider extends SelectableFormProvider {
@@ -65,7 +65,7 @@ object SelectableFormProvider {
   }
 
   object AdditionalReferenceTypeFormProvider {
-    val field: String = "additionalReferenceType"
+    val field: String = "additional-reference"
   }
 
   class PackageTypeFormProvider extends SelectableFormProvider {
@@ -73,6 +73,6 @@ object SelectableFormProvider {
   }
 
   object PackageTypeFormProvider {
-    val field: String = "packageType"
+    val field: String = "package"
   }
 }
