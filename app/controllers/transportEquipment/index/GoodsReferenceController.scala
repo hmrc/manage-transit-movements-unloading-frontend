@@ -16,8 +16,8 @@
 
 package controllers.transportEquipment.index
 
-import controllers.actions._
-import forms.SelectableFormProvider
+import controllers.actions.*
+import forms.SelectableFormProvider.GoodsReferenceTypeFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import pages.transportEquipment.index.ItemPage
@@ -36,7 +36,7 @@ class GoodsReferenceController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: GoodsReferenceNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: GoodsReferenceTypeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GoodsReferenceView,
   goodsReferenceService: GoodsReferenceService

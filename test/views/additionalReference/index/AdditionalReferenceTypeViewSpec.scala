@@ -16,7 +16,7 @@
 
 package views.additionalReference.index
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider
 import models.reference.AdditionalReferenceType
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
@@ -32,7 +32,11 @@ class AdditionalReferenceTypeViewSpec extends InputSelectViewBehaviours[Addition
   private val viewModel: AdditionalReferenceTypeViewModel =
     arbitrary[AdditionalReferenceTypeViewModel].sample.value
 
-  override def form: Form[AdditionalReferenceType] = new SelectableFormProvider().apply(NormalMode, prefix, SelectableList(values))
+  private val formProvider = new AdditionalReferenceTypeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[AdditionalReferenceType] = formProvider.apply(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[AdditionalReferenceType]): HtmlFormat.Appendable =
     injector

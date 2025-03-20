@@ -16,7 +16,7 @@
 
 package views.transportEquipment.index
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.GoodsReferenceTypeFormProvider
 import generated._
 import models.reference.GoodsReference
 import models.{Index, NormalMode, SelectableList}
@@ -40,7 +40,12 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[GoodsReference] {
       )
     )
   )
-  override def form: Form[GoodsReference] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
+
+  private val formProvider = new GoodsReferenceTypeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[GoodsReference] = formProvider(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[GoodsReference]): HtmlFormat.Appendable =
     injector

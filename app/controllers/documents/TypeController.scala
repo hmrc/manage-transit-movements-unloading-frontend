@@ -17,9 +17,9 @@
 package controllers.documents
 
 import config.FrontendAppConfig
-import controllers.actions._
-import forms.SelectableFormProvider
-import models._
+import controllers.actions.*
+import forms.SelectableFormProvider.DocumentTypeFormProvider
+import models.*
 import models.reference.DocumentType
 import models.requests.DataRequest
 import navigation.DocumentNavigator
@@ -40,7 +40,7 @@ class TypeController @Inject() (
   sessionRepository: SessionRepository,
   navigator: DocumentNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: DocumentTypeFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView,

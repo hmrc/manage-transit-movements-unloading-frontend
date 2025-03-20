@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.items.packages
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.PackageTypeFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
@@ -69,7 +69,8 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       .thenReturn(viewModel)
   }
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new PackageTypeFormProvider()
+  private val field        = formProvider.field
 
   private val houseConsignmentMode = NormalMode
   private val itemMode             = NormalMode
@@ -118,7 +119,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> packageType1.code))
+      val filledForm = form.bind(Map(field -> packageType1.code))
 
       val view = injector.instanceOf[PackageTypeView]
 
@@ -148,7 +149,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", packageType1.code))
+        .withFormUrlEncodedBody((field, packageType1.code))
 
       val result = route(app, request).value
 
@@ -163,8 +164,8 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -205,7 +206,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", packageType1.code))
+        .withFormUrlEncodedBody((field, packageType1.code))
 
       val result = route(app, request).value
 

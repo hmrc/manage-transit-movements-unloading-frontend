@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.items.additionalReference
 
 import controllers.actions.*
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
 import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceTypePage}
@@ -37,7 +37,7 @@ class AdditionalReferenceTypeController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: AdditionalReferenceTypeFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceTypeView,

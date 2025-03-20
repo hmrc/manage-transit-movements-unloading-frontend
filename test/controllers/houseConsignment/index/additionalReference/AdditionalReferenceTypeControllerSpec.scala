@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.additionalReference
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
@@ -46,7 +46,8 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   private val viewModel             = arbitrary[AdditionalReferenceTypeViewModel].sample.value
 
   private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  private val formProvider                                   = new SelectableFormProvider()
+  private val formProvider                                   = new AdditionalReferenceTypeFormProvider()
+  private val field                                          = formProvider.field
 
   private val houseConsignmentMode    = NormalMode
   private val additionalReferenceMode = NormalMode
@@ -105,7 +106,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> additionalReference1.value))
+      val filledForm = form.bind(Map(field -> additionalReference1.value))
 
       val view = injector.instanceOf[AdditionalReferenceTypeView]
 
@@ -123,7 +124,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, additionalReferenceRoute)
-        .withFormUrlEncodedBody(("value", additionalReference1.value))
+        .withFormUrlEncodedBody((field, additionalReference1.value))
 
       val result = route(app, request).value
 
@@ -137,8 +138,8 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
       when(mockReferenceDataService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, additionalReferenceRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, additionalReferenceRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -167,7 +168,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, additionalReferenceRoute)
-        .withFormUrlEncodedBody(("value", additionalReference1.value))
+        .withFormUrlEncodedBody((field, additionalReference1.value))
 
       val result = route(app, request).value
 

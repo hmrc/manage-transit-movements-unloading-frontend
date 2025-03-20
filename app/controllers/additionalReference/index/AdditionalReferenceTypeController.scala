@@ -17,7 +17,7 @@
 package controllers.additionalReference.index
 
 import controllers.actions.*
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
@@ -39,7 +39,7 @@ class AdditionalReferenceTypeController @Inject() (
   sessionRepository: SessionRepository,
   navigator: AdditionalReferenceNavigator,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: AdditionalReferenceTypeFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceTypeView,

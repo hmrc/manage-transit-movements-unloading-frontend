@@ -17,6 +17,7 @@
 @import controllers.transportEquipment.index.routes
 @import models.reference.Selectable._
 @import models.reference.GoodsReference
+@import forms.SelectableFormProvider.GoodsReferenceTypeFormProvider.field
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -47,7 +48,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = SelectWithAdditionalHtml(
                 heading = messages("transport.equipment.selectItems.heading"),
                 caption = Some(messages(s"MRN: $mrn")),

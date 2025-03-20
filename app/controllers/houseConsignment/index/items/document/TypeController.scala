@@ -18,7 +18,7 @@ package controllers.houseConsignment.index.items.document
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.DocumentTypeFormProvider
 import models.reference.DocumentType
 import models.requests.DataRequest
 import models.{ArrivalId, HouseConsignmentLevelDocuments, Index, Mode}
@@ -40,7 +40,7 @@ class TypeController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: DocumentTypeFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView,

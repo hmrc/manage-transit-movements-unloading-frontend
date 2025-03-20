@@ -16,7 +16,7 @@
 
 package views.documents
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.DocumentTypeFormProvider
 import models.reference.DocumentType
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
@@ -38,7 +38,11 @@ class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
   private val viewModelMaxedOutSupport: TypeViewModel =
     viewModel.copy(documents = arbitraryConsignmentLevelDocumentsMaxedOutSupport.arbitrary.sample.value)
 
-  override def form: Form[DocumentType] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
+  private val formProvider = new DocumentTypeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[DocumentType] = formProvider(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[DocumentType]): HtmlFormat.Appendable =
     injector.instanceOf[TypeView].apply(form, mrn, arrivalId, NormalMode, values, viewModel, documentIndex)(fakeRequest, messages, frontendAppConfig)
