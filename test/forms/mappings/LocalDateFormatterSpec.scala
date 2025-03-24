@@ -58,20 +58,33 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     }
   }
 
-  "must bind valid data with spaces" in {
+  "must bind valid data with after trim " in {
 
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "value.day"   -> s"${date.getDayOfMonth.toString}   ",
-          "value.month" -> s"${date.getMonthValue.toString}   ",
-          "value.year"  -> s"${date.getYear.toString}   "
+          "value.day"   -> s"  ${date.getDayOfMonth.toString}   ",
+          "value.month" -> s"  ${date.getMonthValue.toString}   ",
+          "value.year"  -> s"  ${date.getYear.toString}   "
         )
 
         val result = form.bind(data)
 
         result.value.value mustEqual date
     }
+  }
+
+  "must bind valid data after spaces removed" in {
+
+    val data = Map(
+      "value.day"   -> " 1 9 ",
+      "value.month" -> " 1 2 ",
+      "value.year"  -> " 2 0 2 5 "
+    )
+
+    val result = form.bind(data)
+
+    result.value.value mustEqual LocalDate.of(2025, 12, 19)
   }
 
   "must fail to bind an empty date" in {
@@ -93,7 +106,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required", List("day"))
+        result.errors must contain only FormError("value", "error.required.day", List("day"))
     }
   }
 
@@ -109,7 +122,9 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List("day"))
+        val days = date.getMonth.length(date.isLeapYear)
+
+        result.errors must contain only FormError("value", "error.invalid.day", List(days, "day"))
     }
   }
 
@@ -125,7 +140,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required", List("month"))
+        result.errors must contain only FormError("value", "error.required.month", List("month"))
     }
   }
 
@@ -141,7 +156,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List("month"))
+        result.errors must contain only FormError("value", "error.invalid.month", List("month"))
     }
   }
 
@@ -158,8 +173,8 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
         val result = form.bind(data)
 
         result.errors mustBe Seq(
-          FormError("value", "error.required", List("day")),
-          FormError("value", "error.invalid", List("month"))
+          FormError("value", "error.required.day", List("day")),
+          FormError("value", "error.invalid.month", List("month"))
         )
     }
   }
@@ -177,8 +192,8 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
         val result = form.bind(data)
 
         result.errors mustBe Seq(
-          FormError("value", "error.invalid", List("day")),
-          FormError("value", "error.required", List("month"))
+          FormError("value", "error.invalid.day", List(31, "day")),
+          FormError("value", "error.required.month", List("month"))
         )
     }
   }
@@ -188,14 +203,14 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     forAll(validData -> "valid date") {
       date =>
         val data = Map(
-          "value.day"   -> date.getDayOfMonth.toString,
-          "value.month" -> date.getMonthValue.toString,
+          "value.day"   -> "12",
+          "value.month" -> "12",
           "value.year"  -> ""
         )
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required", List("year"))
+        result.errors must contain only FormError("value", "error.required.year", List("year"))
     }
   }
 
@@ -211,7 +226,7 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List("year"))
+        result.errors must contain only FormError("value", "error.invalid.year", List("year"))
     }
   }
 
@@ -327,19 +342,156 @@ class LocalDateFormatterSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
     }
   }
 
-  "must fail to bind an invalid date" in {
+  "must fail to bind an invalid date" - {
 
-    val data = Map(
-      "value.day"   -> "30",
-      "value.month" -> "2",
-      "value.year"  -> "2018"
-    )
+    "when date is 29th Feb in a non-leap year" in {
+      val data = Map(
+        "value.day"   -> "29",
+        "value.month" -> "2",
+        "value.year"  -> "2025"
+      )
+      val result = form.bind(data)
 
-    val result = form.bind(data)
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.day", List(28, "day"))
+      )
+    }
 
-    result.errors must contain(
-      FormError("value", "error.invalid.all", List("day", "month", "year"))
-    )
+    "when date is 31st of a month with only 30 days" in {
+
+      val data = Map(
+        "value.day"   -> "31",
+        "value.month" -> "4",
+        "value.year"  -> "2025"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.day", List(30, "day"))
+      )
+    }
+
+    "when date is 32nd of a month with only 28 days" in {
+
+      val data = Map(
+        "value.day"   -> "32",
+        "value.month" -> "02",
+        "value.year"  -> "2025"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.day", List(28, "day"))
+      )
+    }
+
+    "when date is 31st of a month with only 28 days in an invalid year" in {
+
+      val data = Map(
+        "value.day"   -> "31",
+        "value.month" -> "02",
+        "value.year"  -> "foo"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.multiple", List("day", "year"))
+      )
+    }
+
+    "when date is 31st of a month with max 29 days in an unknown year" in {
+
+      val data = Map(
+        "value.day"   -> "31",
+        "value.month" -> "02",
+        "value.year"  -> ""
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.day", List(29, "day")),
+        FormError("value", "error.required.year", List("year"))
+      )
+    }
+
+    "when date contains a month not between 1 and 12" in {
+
+      val data = Map(
+        "value.day"   -> "15",
+        "value.month" -> "13",
+        "value.year"  -> "2025"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.month", Seq("month"))
+      )
+    }
+
+    "when date contains an invalid day and month" in {
+
+      val data = Map(
+        "value.day"   -> "32",
+        "value.month" -> "13",
+        "value.year"  -> "2025"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.multiple", Seq("day", "month"))
+      )
+    }
+
+    "when date contains an invalid day, month and year" in {
+
+      val data = Map(
+        "value.day"   -> "foo",
+        "value.month" -> "foo",
+        "value.year"  -> "foo"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.all", Seq("day", "month", "year"))
+      )
+    }
+
+    "when date contains an invalid year" in {
+
+      val data = Map(
+        "value.day"   -> "12",
+        "value.month" -> "12",
+        "value.year"  -> "foo"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.year", Seq("year"))
+      )
+    }
+
+    "when date contains a year that cannot be parsed as an integer" in {
+
+      val data = Map(
+        "value.day"   -> "12",
+        "value.month" -> "12",
+        "value.year"  -> "99999999999"
+      )
+
+      val result = form.bind(data)
+
+      result.errors mustEqual Seq(
+        FormError("value", "error.invalid.year", Seq("year"))
+      )
+    }
   }
 
   "must unbind a date" in {
