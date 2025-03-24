@@ -17,7 +17,7 @@
 package controllers.documents
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.DocumentTypeFormProvider
 import generators.Generators
 import models.reference.DocumentType
 import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
@@ -47,7 +47,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   private val supportingDocumentList = SelectableList(Seq(document3, document4))
   private val documentsList          = SelectableList(transportDocumentList.values ++ supportingDocumentList.values)
 
-  private lazy val formProvider = new SelectableFormProvider()
+  private lazy val formProvider = new DocumentTypeFormProvider()
+  private val field             = formProvider.field
 
   private val viewModel             = arbitrary[TypeViewModel].sample.value
   private val mockViewModelProvider = mock[TypeViewModelProvider]
@@ -88,7 +89,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           val result = route(app, request).value
 
-          val filledForm = form.bind(Map("value" -> document1.value))
+          val filledForm = form.bind(Map(field -> document1.value))
 
           val view = injector.instanceOf[TypeView]
 
@@ -107,7 +108,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(POST, typeRoute(CheckMode))
-            .withFormUrlEncodedBody(("value", document1.value))
+            .withFormUrlEncodedBody((field, document1.value))
 
           val result = route(app, request).value
 
@@ -122,8 +123,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document1)
           setExistingUserAnswers(userAnswers)
 
-          val request   = FakeRequest(POST, typeRoute(CheckMode)).withFormUrlEncodedBody(("value", "invalid value"))
-          val boundForm = form.bind(Map("value" -> "invalid value"))
+          val request   = FakeRequest(POST, typeRoute(CheckMode)).withFormUrlEncodedBody((field, "invalid value"))
+          val boundForm = form.bind(Map(field -> "invalid value"))
 
           val result = route(app, request).value
 
@@ -152,7 +153,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           setNoExistingUserAnswers()
 
           val request = FakeRequest(POST, typeRoute(CheckMode))
-            .withFormUrlEncodedBody(("value", document1.code))
+            .withFormUrlEncodedBody((field, document1.code))
 
           val result = route(app, request).value
 
@@ -175,7 +176,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           val result = route(app, request).value
 
-          val filledForm = form.bind(Map("value" -> document3.value))
+          val filledForm = form.bind(Map(field -> document3.value))
 
           val view = injector.instanceOf[TypeView]
 
@@ -194,7 +195,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(POST, typeRoute(CheckMode))
-            .withFormUrlEncodedBody(("value", document4.value))
+            .withFormUrlEncodedBody((field, document4.value))
 
           val result = route(app, request).value
 
@@ -209,8 +210,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
-          val request   = FakeRequest(POST, typeRoute(CheckMode)).withFormUrlEncodedBody(("value", "invalid value"))
-          val boundForm = form.bind(Map("value" -> "invalid value"))
+          val request   = FakeRequest(POST, typeRoute(CheckMode)).withFormUrlEncodedBody((field, "invalid value"))
+          val boundForm = form.bind(Map(field -> "invalid value"))
 
           val result = route(app, request).value
 
@@ -239,7 +240,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           setNoExistingUserAnswers()
 
           val request = FakeRequest(POST, typeRoute(CheckMode))
-            .withFormUrlEncodedBody(("value", document1.code))
+            .withFormUrlEncodedBody((field, document1.code))
 
           val result = route(app, request).value
 
@@ -267,7 +268,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         val result = route(app, request).value
 
-        val filledForm = form.bind(Map("value" -> document1.value))
+        val filledForm = form.bind(Map(field -> document1.value))
 
         val view = injector.instanceOf[TypeView]
 
@@ -319,7 +320,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, typeRoute(NormalMode))
-          .withFormUrlEncodedBody(("value", document1.value))
+          .withFormUrlEncodedBody((field, document1.value))
 
         val result = route(app, request).value
 
@@ -334,8 +335,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document1)
         setExistingUserAnswers(userAnswers)
 
-        val request   = FakeRequest(POST, typeRoute(NormalMode)).withFormUrlEncodedBody(("value", "invalid value"))
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val request   = FakeRequest(POST, typeRoute(NormalMode)).withFormUrlEncodedBody((field, "invalid value"))
+        val boundForm = form.bind(Map(field -> "invalid value"))
 
         val result = route(app, request).value
 
@@ -364,7 +365,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         setNoExistingUserAnswers()
 
         val request = FakeRequest(POST, typeRoute(NormalMode))
-          .withFormUrlEncodedBody(("value", document1.code))
+          .withFormUrlEncodedBody((field, document1.code))
 
         val result = route(app, request).value
 

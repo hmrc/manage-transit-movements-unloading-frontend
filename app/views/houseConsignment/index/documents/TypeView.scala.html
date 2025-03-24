@@ -19,6 +19,7 @@
 @import models.MovementReferenceNumber
 @import models.reference.DocumentType
 @import models.reference.Selectable._
+@import forms.SelectableFormProvider.DocumentTypeFormProvider.field
 @import viewModels.components.InputSelectViewModel._
 @import viewModels.houseConsignment.index.documents.TypeViewModel
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -44,7 +45,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))

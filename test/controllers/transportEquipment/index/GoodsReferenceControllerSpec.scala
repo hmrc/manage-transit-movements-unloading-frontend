@@ -17,7 +17,7 @@
 package controllers.transportEquipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.GoodsReferenceTypeFormProvider
 import generators.Generators
 import models.reference.GoodsReference
 import models.{Index, NormalMode, SelectableList}
@@ -44,7 +44,8 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val goodsReference = goodsReferences.head
 
-  private val formProvider       = new SelectableFormProvider()
+  private val formProvider       = new GoodsReferenceTypeFormProvider()
+  private val field              = formProvider.field
   private val equipmentMode      = NormalMode
   private val goodsReferenceMode = NormalMode
   private val form               = formProvider(equipmentMode, "transport.equipment.selectItems", SelectableList(goodsReferences))
@@ -100,7 +101,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> goodsReference.declarationGoodsItemNumber.toString()))
+      val filledForm = form.bind(Map(field -> goodsReference.declarationGoodsItemNumber.toString()))
 
       val view = injector.instanceOf[GoodsReferenceView]
 
@@ -117,7 +118,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, controllerRoute)
-        .withFormUrlEncodedBody(("value", goodsReference.declarationGoodsItemNumber.toString()))
+        .withFormUrlEncodedBody((field, goodsReference.declarationGoodsItemNumber.toString()))
 
       val result = route(app, request).value
 
@@ -130,8 +131,8 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, controllerRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, controllerRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -160,7 +161,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, controllerRoute)
-        .withFormUrlEncodedBody(("value", "123"))
+        .withFormUrlEncodedBody((field, "123"))
 
       val result = route(app, request).value
 

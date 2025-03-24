@@ -19,6 +19,7 @@
 @import models.reference.PackageType
 @import models.reference.Selectable
 @import models.reference.Selectable._
+@import forms.SelectableFormProvider.PackageTypeFormProvider.field
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -44,7 +45,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = InputSelectViewModel(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),

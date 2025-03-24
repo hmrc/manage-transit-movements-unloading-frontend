@@ -16,6 +16,7 @@
 
 @import models.MovementReferenceNumber
 @import models.reference.Selectable._
+@import forms.SelectableFormProvider.CountryFormProvider.field
 @import models.reference.{Country, Selectable}
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -42,7 +43,7 @@
         @errorSummary(form.errors)
 
         @select(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
