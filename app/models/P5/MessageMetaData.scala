@@ -25,6 +25,9 @@ case class MessageMetaData(received: LocalDateTime, messageType: ArrivalMessageT
 
 object MessageMetaData {
 
+  implicit val ordering: Ordering[MessageMetaData] =
+    Ordering.by[MessageMetaData, LocalDateTime](_.received).reverse
+
   implicit lazy val reads: Reads[MessageMetaData] = {
     import play.api.libs.functional.syntax.*
     (

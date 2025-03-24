@@ -291,7 +291,6 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val addOrRemoveLink = result.viewLinks.head
             addOrRemoveLink.id mustBe "add-remove-document"
             addOrRemoveLink.text mustBe "Add or remove document"
-            addOrRemoveLink.visuallyHidden mustBe defined
             addOrRemoveLink.href mustBe
               controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode).url
 
