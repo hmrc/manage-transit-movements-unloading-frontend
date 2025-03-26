@@ -34,10 +34,9 @@
 
 @dateInput = @{
     DateInput(
-        fieldset = None,
         id = field.id,
         hint = hint.map(hint => Hint(content = Text(messages(hint))))
-    ).withDayMonthYearWithErrorAsHtml(field)
+    ).withDayMonthYearFormField(field)
 }
 
 @dateType match {
