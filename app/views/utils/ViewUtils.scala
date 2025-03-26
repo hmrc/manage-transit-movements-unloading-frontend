@@ -16,7 +16,6 @@
 
 package views.utils
 
-import forms.mappings.LocalDateFormatter
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -71,13 +70,15 @@ object ViewUtils {
   implicit class DateTimeRichFormErrors(formErrors: Seq[FormError])(implicit messages: Messages) {
 
     def toErrorLinks: Seq[ErrorLink] =
-      formErrors.map {
-        formError =>
-          val args = LocalDateFormatter.fieldKeys
-          val arg  = formError.args.find(args.contains).getOrElse(args.head).toString
-          val key  = s"#${formError.key}.$arg"
-          ErrorLink(href = Some(key), content = messages(formError.message, formError.args*).toText)
-      }
+      formErrors
+        .distinctBy(_.message)
+        .map {
+          formError =>
+            ErrorLink(
+              href = Some(s"#${formError.key}"),
+              content = messages(formError.message, formError.args*).toText
+            )
+        }
   }
 
   implicit class SelectImplicits(select: Select)(implicit messages: Messages) extends RichSelectSupport {
