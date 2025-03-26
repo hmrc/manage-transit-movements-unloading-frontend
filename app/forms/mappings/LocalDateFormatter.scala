@@ -38,13 +38,13 @@ private[mappings] class LocalDateFormatter(
   )(f: Int => T)(predicate: T => Boolean): Either[FieldError, T] =
     stringFormatter(requiredKey, Seq(field.key))(_.removeSpaces()).bind(field.id(key), data) match {
       case Left(errors) =>
-        Left(FieldError(field, Error(RequiredError, requiredKey)))
+        Left(FieldError(field, requiredKey))
       case Right(value) =>
         Try(f(Integer.parseInt(value))) match {
           case Success(t) if predicate(t) =>
             Right(t)
           case _ =>
-            Left(FieldError(field, Error(InvalidError, invalidKey), args*))
+            Left(FieldError(field, invalidKey, args*))
         }
     }
 
@@ -95,17 +95,17 @@ private[mappings] class LocalDateFormatter(
         .collect {
           case Left(fieldErrors) => fieldErrors
         }
-        .groupByPreserveOrder(_.error)
+        .groupByPreserveOrder(_.errorKey)
         .flatMap {
-          case (error, errors) if errors.size == 3 =>
+          case (errorKey, errors) if errors.size == 3 =>
             val fields = errors.toSeq.map(_.field)
             fields.map {
-              field => FormError(field.id(key), s"${error.key}.all", fields.map(_.key))
+              field => FormError(field.id(key), s"$errorKey.all", fields.map(_.key))
             }
-          case (error, errors) if errors.size == 2 =>
+          case (errorKey, errors) if errors.size == 2 =>
             val fields = errors.toSeq.map(_.field)
             fields.map {
-              field => FormError(field.id(key), s"${error.key}.multiple", fields.map(_.key))
+              field => FormError(field.id(key), s"$errorKey.multiple", fields.map(_.key))
             }
           case (_, error :: Nil) =>
             val field = error.field
@@ -138,16 +138,8 @@ object LocalDateFormatter {
     override val key: String = "year"
   }
 
-  case class Error(`type`: ErrorType, key: String)
+  case class FieldError(field: Field, errorKey: String, args: Any*) {
 
-  sealed trait ErrorType
-
-  private case object RequiredError extends ErrorType
-
-  private case object InvalidError extends ErrorType
-
-  case class FieldError(field: Field, error: Error, args: Any*) {
-
-    val messageKey: String = s"${error.key}.${field.key}"
+    val messageKey: String = s"$errorKey.${field.key}"
   }
 }
