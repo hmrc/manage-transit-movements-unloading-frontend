@@ -17,11 +17,12 @@
 package controllers.transportEquipment.index
 
 import config.FrontendAppConfig
-import controllers.actions._
-import controllers.routes._
-import controllers.transportEquipment.index.seals.routes._
+import controllers.actions.*
+import controllers.routes.*
+import controllers.transportEquipment.index.seals.routes.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.transportEquipment.index.AddAnotherSealPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,7 +50,11 @@ class AddAnotherSealController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex)
-      Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
+      val preparedForm = request.userAnswers.get(AddAnotherSealPage(equipmentIndex)) match {
+        case None        => form(viewModel, equipmentIndex)
+        case Some(value) => form(viewModel, equipmentIndex).fill(value)
+      }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
   def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {

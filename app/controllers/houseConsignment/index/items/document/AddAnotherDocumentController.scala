@@ -17,15 +17,16 @@
 package controllers.houseConsignment.index.items.document
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.houseConsignment.index.items.document.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel
-import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel._
+import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel.*
 import views.html.houseConsignment.index.items.document.AddAnotherDocumentView
 
 import javax.inject.Inject
@@ -41,33 +42,33 @@ class AddAnotherDocumentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemsIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
+  private def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel, houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMore, itemIndex.display, houseConsignmentIndex.display)
+
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel): Form[Boolean] =
-          formProvider(viewModel.prefix, viewModel.allowMore, itemsIndex.display, houseConsignmentIndex.display)
-
-        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemsIndex, houseConsignmentMode, itemMode)
-        Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemsIndex, viewModel))
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        val preparedForm = request.userAnswers.get(AddAnotherDocumentPage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form(viewModel, houseConsignmentIndex, itemIndex)
+          case Some(value) => form(viewModel, houseConsignmentIndex, itemIndex).fill(value)
+        }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel))
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemsIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemsIndex, houseConsignmentMode, itemMode)
-
-        def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel): Form[Boolean] =
-          formProvider(viewModel.prefix, viewModel.allowMore, itemsIndex, houseConsignmentIndex)
-
-        form(viewModel)
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        form(viewModel, houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemsIndex, viewModel)),
+            formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel)),
             {
               case true =>
                 Redirect(
                   controllers.houseConsignment.index.items.document.routes.TypeController
-                    .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
+                    .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, viewModel.nextIndex)
                 )
               case false =>
                 itemMode match {
@@ -76,7 +77,7 @@ class AddAnotherDocumentController @Inject() (
                   case NormalMode =>
                     Redirect(
                       controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-                        .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, houseConsignmentMode, itemMode)
+                        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
                     )
                 }
             }

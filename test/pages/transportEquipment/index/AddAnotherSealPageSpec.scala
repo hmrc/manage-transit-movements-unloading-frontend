@@ -16,17 +16,16 @@
 
 package pages.transportEquipment.index
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherSealPageSpec extends PageBehaviours {
 
   "AddAnotherSealPage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherSealPage(equipmentIndex))
+    beRetrievable[Boolean](AddAnotherSealPage(equipmentIndex))
 
-    beSettable[AdditionalInformationCode](AddAnotherSealPage(equipmentIndex))
+    beSettable[Boolean](AddAnotherSealPage(equipmentIndex))
 
-    beRemovable[AdditionalInformationCode](AddAnotherSealPage(equipmentIndex))
+    beRemovable[Boolean](AddAnotherSealPage(equipmentIndex))
   }
 }

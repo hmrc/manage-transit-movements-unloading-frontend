@@ -16,17 +16,16 @@
 
 package pages.departureMeansOfTransport
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherDepartureMeansOfTransportPageSpec extends PageBehaviours {
 
   "AddAnotherDepartureMeansOfTransportPage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherDepartureMeansOfTransportPage)
+    beRetrievable[Boolean](AddAnotherDepartureMeansOfTransportPage)
 
-    beSettable[AdditionalInformationCode](AddAnotherDepartureMeansOfTransportPage)
+    beSettable[Boolean](AddAnotherDepartureMeansOfTransportPage)
 
-    beRemovable[AdditionalInformationCode](AddAnotherDepartureMeansOfTransportPage)
+    beRemovable[Boolean](AddAnotherDepartureMeansOfTransportPage)
   }
 }

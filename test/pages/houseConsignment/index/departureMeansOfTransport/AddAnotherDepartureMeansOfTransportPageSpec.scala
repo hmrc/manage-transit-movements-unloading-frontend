@@ -16,17 +16,16 @@
 
 package pages.houseConsignment.index.departureMeansOfTransport
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherDepartureMeansOfTransportPageSpec extends PageBehaviours {
 
   "AddAnotherDepartureMeansOfTransportPage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex))
+    beRetrievable[Boolean](AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex))
 
-    beSettable[AdditionalInformationCode](AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex))
+    beSettable[Boolean](AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex))
 
-    beRemovable[AdditionalInformationCode](AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex))
+    beRemovable[Boolean](AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex))
   }
 }

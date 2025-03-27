@@ -17,12 +17,13 @@
 package controllers.houseConsignment.index.items.packages
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.houseConsignment.index.items.packages.AddAnotherPackagePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.packages.AddAnotherPackageViewModel
 import viewModels.houseConsignment.index.items.packages.AddAnotherPackageViewModel.AddAnotherPackageViewModelProvider
@@ -48,8 +49,11 @@ class AddAnotherPackageController @Inject() (
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-
-        Ok(view(form(viewModel, houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel))
+        val preparedForm = request.userAnswers.get(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form(viewModel, houseConsignmentIndex, itemIndex)
+          case Some(value) => form(viewModel, houseConsignmentIndex, itemIndex).fill(value)
+        }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =

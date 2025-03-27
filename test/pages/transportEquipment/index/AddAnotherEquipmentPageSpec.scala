@@ -16,17 +16,16 @@
 
 package pages.transportEquipment.index
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherEquipmentPageSpec extends PageBehaviours {
 
   "AddAnotherEquipmentPage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherEquipmentPage)
+    beRetrievable[Boolean](AddAnotherEquipmentPage)
 
-    beSettable[AdditionalInformationCode](AddAnotherEquipmentPage)
+    beSettable[Boolean](AddAnotherEquipmentPage)
 
-    beRemovable[AdditionalInformationCode](AddAnotherEquipmentPage)
+    beRemovable[Boolean](AddAnotherEquipmentPage)
   }
 }

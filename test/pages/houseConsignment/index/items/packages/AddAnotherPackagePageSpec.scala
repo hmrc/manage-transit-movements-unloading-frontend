@@ -16,17 +16,16 @@
 
 package pages.houseConsignment.index.items.packages
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherPackagePageSpec extends PageBehaviours {
 
   "AddAnotherPackagePage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherPackagePage(houseConsignmentIndex, itemIndex))
+    beRetrievable[Boolean](AddAnotherPackagePage(houseConsignmentIndex, itemIndex))
 
-    beSettable[AdditionalInformationCode](AddAnotherPackagePage(houseConsignmentIndex, itemIndex))
+    beSettable[Boolean](AddAnotherPackagePage(houseConsignmentIndex, itemIndex))
 
-    beRemovable[AdditionalInformationCode](AddAnotherPackagePage(houseConsignmentIndex, itemIndex))
+    beRemovable[Boolean](AddAnotherPackagePage(houseConsignmentIndex, itemIndex))
   }
 }

@@ -16,17 +16,16 @@
 
 package pages.additionalReference
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherAdditionalReferencePageSpec extends PageBehaviours {
 
   "AddAnotherAdditionalReferencePage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherAdditionalReferencePage)
+    beRetrievable[Boolean](AddAnotherAdditionalReferencePage)
 
-    beSettable[AdditionalInformationCode](AddAnotherAdditionalReferencePage)
+    beSettable[Boolean](AddAnotherAdditionalReferencePage)
 
-    beRemovable[AdditionalInformationCode](AddAnotherAdditionalReferencePage)
+    beRemovable[Boolean](AddAnotherAdditionalReferencePage)
   }
 }

@@ -16,17 +16,16 @@
 
 package pages.houseConsignment.index.additionalReference
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherAdditionalReferencePageSpec extends PageBehaviours {
 
   "AddAnotherAdditionalReferencePage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
+    beRetrievable[Boolean](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
 
-    beSettable[AdditionalInformationCode](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
+    beSettable[Boolean](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
 
-    beRemovable[AdditionalInformationCode](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
+    beRemovable[Boolean](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
   }
 }

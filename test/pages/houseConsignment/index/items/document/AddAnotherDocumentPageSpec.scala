@@ -16,17 +16,16 @@
 
 package pages.houseConsignment.index.items.document
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherDocumentPageSpec extends PageBehaviours {
 
   "AddAnotherDocumentPage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
+    beRetrievable[Boolean](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
 
-    beSettable[AdditionalInformationCode](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
+    beSettable[Boolean](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
 
-    beRemovable[AdditionalInformationCode](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
+    beRemovable[Boolean](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
   }
 }

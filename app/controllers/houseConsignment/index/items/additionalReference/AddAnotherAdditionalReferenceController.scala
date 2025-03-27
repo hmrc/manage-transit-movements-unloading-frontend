@@ -17,9 +17,10 @@
 package controllers.houseConsignment.index.items.additionalReference
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferencePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +49,11 @@ class AddAnotherAdditionalReferenceController @Inject() (
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
-        Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
+        val preparedForm = request.userAnswers.get(AddAnotherAdditionalReferencePage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
+        }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =

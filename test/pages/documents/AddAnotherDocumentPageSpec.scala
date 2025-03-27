@@ -16,17 +16,16 @@
 
 package pages.documents
 
-import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class AddAnotherDocumentPageSpec extends PageBehaviours {
 
   "AddAnotherDocumentPage" - {
 
-    beRetrievable[AdditionalInformationCode](AddAnotherDocumentPage)
+    beRetrievable[Boolean](AddAnotherDocumentPage)
 
-    beSettable[AdditionalInformationCode](AddAnotherDocumentPage)
+    beSettable[Boolean](AddAnotherDocumentPage)
 
-    beRemovable[AdditionalInformationCode](AddAnotherDocumentPage)
+    beRemovable[Boolean](AddAnotherDocumentPage)
   }
 }
