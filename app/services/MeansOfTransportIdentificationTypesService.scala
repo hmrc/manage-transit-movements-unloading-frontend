@@ -21,7 +21,7 @@ import config.Constants.TransportModeCode.*
 import models.UserAnswers
 import models.reference.TransportMeansIdentification
 import models.reference.TransportMode.InlandMode
-import pages.equipment.InlandModePage
+import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
   )(implicit hc: HeaderCarrier): Future[Seq[TransportMeansIdentification]] =
     referenceDataService
       .getMeansOfTransportIdentificationTypes()
-      .map(filter(_, userAnswers.get(InlandModePage)))
+      .map(filter(_, userAnswers.get(InlandModeOfTransportPage)))
 
   private def filter(
     identificationTypes: Seq[TransportMeansIdentification],

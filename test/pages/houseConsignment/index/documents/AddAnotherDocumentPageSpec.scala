@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package pages.sections.equipment
+package pages.houseConsignment.index.documents
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import models.reference.AdditionalInformationCode
+import pages.behaviours.PageBehaviours
 
-case object TransportSection extends Section[JsObject] {
+class AddAnotherDocumentPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddAnotherDocumentPage" - {
 
-  override def toString: String = "transport"
+    beRetrievable[AdditionalInformationCode](AddAnotherDocumentPage(houseConsignmentIndex))
+
+    beSettable[AdditionalInformationCode](AddAnotherDocumentPage(houseConsignmentIndex))
+
+    beRemovable[AdditionalInformationCode](AddAnotherDocumentPage(houseConsignmentIndex))
+  }
 }

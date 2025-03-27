@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package pages.equipment
+package pages.additionalReference
 
-import models.reference.TransportMode.InlandMode
-import pages.QuestionPage
-import pages.sections.equipment.TransportSection
-import play.api.libs.json.JsPath
+import models.reference.AdditionalInformationCode
+import pages.behaviours.PageBehaviours
 
-case object InlandModePage extends QuestionPage[InlandMode] {
+class AddAnotherAdditionalReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = TransportSection.path \ toString
+  "AddAnotherAdditionalReferencePage" - {
 
-  override def toString: String = "inlandModeOfTransport"
+    beRetrievable[AdditionalInformationCode](AddAnotherAdditionalReferencePage)
+
+    beSettable[AdditionalInformationCode](AddAnotherAdditionalReferencePage)
+
+    beRemovable[AdditionalInformationCode](AddAnotherAdditionalReferencePage)
+  }
 }
