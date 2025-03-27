@@ -17,12 +17,12 @@
 package controllers.houseConsignment.index.items.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -48,7 +48,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val itemMode             = NormalMode
 
   private lazy val addAnotherDocumentRoute =
-    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+    routes.AddAnotherDocumentController
       .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       .url
 
@@ -198,28 +198,66 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           status(result) mustEqual SEE_OTHER
 
-          onwardRoute.url
+          redirectLocation(result).value mustEqual
+            routes.TypeController
+              .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, viewModel.nextIndex)
+              .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex, itemIndex)) mustEqual true
         }
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
+        "must redirect to next page" - {
+          "when normal mode" in {
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
+              .thenReturn(notMaxedOutViewModel)
 
-          setExistingUserAnswers(emptyUserAnswers)
+            setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherDocumentRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+            val request = FakeRequest(POST, addAnotherDocumentRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-          val result = route(app, request).value
+            val result = route(app, request).value
 
-          status(result) mustEqual SEE_OTHER
+            status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual
-            controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+            redirectLocation(result).value mustEqual
+              controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+                .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex, itemIndex)) mustEqual false
+          }
+
+          "when check mode" in {
+            val addAnotherDocumentRoute = routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
+
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
+              .thenReturn(notMaxedOutViewModel)
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val request = FakeRequest(POST, addAnotherDocumentRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex, itemIndex)) mustEqual false
+          }
         }
       }
     }
@@ -242,6 +280,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
             .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex, itemIndex)) mustEqual false
       }
     }
 
@@ -277,7 +319,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -290,7 +332,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

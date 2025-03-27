@@ -24,21 +24,24 @@ import pages.houseConsignment.index.items.packages.AddAnotherPackagePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.packages.AddAnotherPackageViewModel
 import viewModels.houseConsignment.index.items.packages.AddAnotherPackageViewModel.AddAnotherPackageViewModelProvider
 import views.html.houseConsignment.index.items.packages.AddAnotherPackageView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherPackageController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherPackageView,
   viewModelProvider: AddAnotherPackageViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -57,31 +60,35 @@ class AddAnotherPackageController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId) {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
         form(viewModel, houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel)),
-            {
-              case true =>
-                Redirect(
-                  controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-                    .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, viewModel.nextIndex, houseConsignmentMode, itemMode, NormalMode)
-                )
-              case false =>
-                itemMode match {
-                  case CheckMode =>
-                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-                  case NormalMode =>
-                    Redirect(
-                      controllers.houseConsignment.index.items.routes.AddAnotherItemController
-                        .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
-                        .url
-                    )
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherPackagePage(houseConsignmentIndex, itemIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield
+                if (value) {
+                  Redirect(
+                    routes.PackageTypeController
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, viewModel.nextIndex, houseConsignmentMode, itemMode, NormalMode)
+                  )
+                } else {
+                  itemMode match {
+                    case CheckMode =>
+                      Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                    case NormalMode =>
+                      Redirect(
+                        controllers.houseConsignment.index.items.routes.AddAnotherItemController
+                          .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+                      )
+                  }
                 }
-            }
           )
     }
 }

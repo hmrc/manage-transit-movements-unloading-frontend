@@ -19,9 +19,10 @@ package controllers.houseConsignment.index.documents
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -193,6 +194,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.documents.routes.TypeController
             .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex)) mustEqual true
         }
       }
 
@@ -217,6 +222,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
               controllers.houseConsignment.index.routes.AddAdditionalReferenceYesNoController
                 .onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex)
                 .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex)) mustEqual false
           }
 
           "when changing house consignment" in {
@@ -236,6 +245,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex)) mustEqual false
           }
         }
       }
@@ -259,6 +272,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           controllers.houseConsignment.index.routes.AddAdditionalReferenceYesNoController
             .onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex)
             .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherDocumentPage(houseConsignmentIndex)) mustEqual false
       }
     }
 

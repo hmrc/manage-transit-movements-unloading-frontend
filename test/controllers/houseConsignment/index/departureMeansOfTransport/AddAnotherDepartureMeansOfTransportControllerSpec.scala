@@ -21,10 +21,10 @@ import controllers.houseConsignment.index.departureMeansOfTransport.routes as de
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentMatchers
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -170,6 +170,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           redirectLocation(result).value mustEqual departureMeansOfTransportRoutes.IdentificationController
             .onPageLoad(arrivalId, houseConsignmentIndex, notMaxedOutViewModel.nextIndex, houseConsignmentMode, NormalMode)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual true
         }
       }
 
@@ -194,6 +198,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual false
           }
 
           "when house consignment mode is NormalMode" in {
@@ -215,6 +223,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
             redirectLocation(result).value mustEqual
               controllers.houseConsignment.index.routes.AddDocumentsYesNoController.onPageLoad(arrivalId, NormalMode, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual false
           }
         }
       }
@@ -237,6 +249,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.routes.AddDocumentsYesNoController
           .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
           .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual false
       }
     }
 

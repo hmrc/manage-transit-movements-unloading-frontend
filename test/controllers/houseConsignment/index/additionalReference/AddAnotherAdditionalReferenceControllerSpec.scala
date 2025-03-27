@@ -19,11 +19,11 @@ package controllers.houseConsignment.index.additionalReference
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.ArgumentMatchers
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -172,6 +172,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
             .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual true
         }
       }
 
@@ -197,6 +201,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
               controllers.houseConsignment.index.routes.AddItemYesNoController
                 .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
                 .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual false
           }
 
           "when changing house consignment" in {
@@ -218,6 +226,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
             redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController
               .onPageLoad(arrivalId, houseConsignmentIndex)
               .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual false
           }
         }
       }
@@ -241,6 +253,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           controllers.houseConsignment.index.routes.AddItemYesNoController
             .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
             .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual false
       }
     }
 

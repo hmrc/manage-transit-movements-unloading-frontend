@@ -22,9 +22,10 @@ import controllers.houseConsignment.routes as houseConsignmentRoutes
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -170,6 +171,10 @@ class AddAnotherHouseConsignmentControllerSpec extends SpecBase with AppWithDefa
           redirectLocation(result).value mustEqual houseConsignmentIndexRoutes.GrossWeightController
             .onPageLoad(arrivalId, notMaxedOutViewModel.nextIndex, mode)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherHouseConsignmentPage) mustEqual true
         }
       }
 
@@ -188,6 +193,10 @@ class AddAnotherHouseConsignmentControllerSpec extends SpecBase with AppWithDefa
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherHouseConsignmentPage) mustEqual false
         }
       }
     }
@@ -207,6 +216,10 @@ class AddAnotherHouseConsignmentControllerSpec extends SpecBase with AppWithDefa
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherHouseConsignmentPage) mustEqual false
       }
     }
 

@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import config.FrontendAppConfig
 import controllers.actions.*
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.houseConsignment.index.items.AddAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,6 +33,7 @@ import views.html.houseConsignment.index.items.AddAnotherItemView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
 class AddAnotherItemController @Inject() (
   override val messagesApi: MessagesApi,
@@ -68,27 +69,31 @@ class AddAnotherItemController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, userAnswers.mrn, arrivalId, viewModel))),
-          {
-            case true =>
-              val itemIndex = viewModel.nextIndex
-              for {
-                updatedAnswers <- Future.fromTry(goodsReferenceService.setNextDeclarationGoodsItemNumber(userAnswers, houseConsignmentIndex, itemIndex))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(
-                controllers.houseConsignment.index.items.routes.DescriptionController
-                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, itemIndex)
-              )
-            case false =>
-              sessionRepository.set(userAnswers).map {
-                _ =>
-                  mode match {
-                    case NormalMode =>
-                      Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
-                    case CheckMode =>
-                      Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-                  }
+          value =>
+            lazy val itemIndex = viewModel.nextIndex
+            def setNextDeclarationGoodsItemNumber(userAnswers: UserAnswers): Try[UserAnswers] =
+              if (value) {
+                goodsReferenceService.setNextDeclarationGoodsItemNumber(userAnswers, houseConsignmentIndex, itemIndex)
+              } else {
+                Success(userAnswers)
               }
-          }
+
+            for {
+              updatedAnswers <- Future.fromTry {
+                userAnswers.set(AddAnotherItemPage(houseConsignmentIndex), value).flatMap(setNextDeclarationGoodsItemNumber)
+              }
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield
+              if (value) {
+                Redirect(routes.DescriptionController.onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, itemIndex))
+              } else {
+                mode match {
+                  case NormalMode =>
+                    Redirect(controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode))
+                  case CheckMode =>
+                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                }
+              }
         )
   }
 

@@ -21,9 +21,10 @@ import controllers.departureMeansOfTransport.routes as departureMeansOfTransport
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -169,6 +170,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           redirectLocation(result).value mustEqual departureMeansOfTransportRoutes.AddIdentificationYesNoController
             .onPageLoad(arrivalId, notMaxedOutViewModel.nextIndex, mode)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage) mustEqual true
         }
       }
 
@@ -187,6 +192,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage) mustEqual false
         }
       }
     }
@@ -206,6 +215,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage) mustEqual false
       }
     }
 

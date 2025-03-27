@@ -20,9 +20,10 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -199,6 +200,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.PackageTypeController
             .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex, houseConsignmentMode, itemMode, NormalMode)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual true
         }
       }
 
@@ -220,6 +225,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
             redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
               .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
               .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual false
           }
         }
 
@@ -247,6 +256,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual false
           }
         }
       }
@@ -269,6 +282,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
           .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual false
       }
     }
 

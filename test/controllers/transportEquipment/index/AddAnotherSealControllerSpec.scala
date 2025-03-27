@@ -19,9 +19,10 @@ package controllers.transportEquipment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -174,6 +175,8 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         "must redirect to seal id number page at next index" in {
           forAll(arbitrary[Mode]) {
             equipmentMode =>
+              beforeEach()
+
               lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, equipmentIndex).url
 
               when(mockViewModelProvider.apply(any(), any(), any(), any()))
@@ -191,6 +194,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
               redirectLocation(result).value mustEqual controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
                 .onPageLoad(arrivalId, equipmentMode, NormalMode, equipmentIndex, notMaxedOutViewModel.nextIndex)
                 .url
+
+              val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(mockSessionRepository).set(userAnswersCaptor.capture())
+              userAnswersCaptor.getValue.get(AddAnotherSealPage(equipmentIndex)).value mustEqual true
           }
         }
       }
@@ -214,6 +221,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherSealPage(equipmentIndex)) mustEqual false
           }
 
           "when equipment mode is NormalMode" in {
@@ -233,6 +244,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, NormalMode).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherSealPage(equipmentIndex)) mustEqual false
           }
         }
       }
@@ -254,6 +269,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         redirectLocation(result).value mustEqual
           controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, equipmentMode).url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherSealPage(equipmentIndex)) mustEqual false
       }
     }
 

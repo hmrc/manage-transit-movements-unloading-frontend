@@ -24,21 +24,24 @@ import pages.houseConsignment.AddAnotherHouseConsignmentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel
 import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel.AddAnotherHouseConsignmentViewModelProvider
 import views.html.houseConsignment.AddAnotherHouseConsignmentView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherHouseConsignmentController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherHouseConsignmentView,
   viewModelProvider: AddAnotherHouseConsignmentViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -55,19 +58,23 @@ class AddAnotherHouseConsignmentController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
-          {
-            case true =>
-              Redirect(controllers.houseConsignment.index.routes.GrossWeightController.onPageLoad(arrivalId, viewModel.nextIndex, mode))
-            case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherHouseConsignmentPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield
+              if (value) {
+                Redirect(controllers.houseConsignment.index.routes.GrossWeightController.onPageLoad(arrivalId, viewModel.nextIndex, mode))
+              } else {
+                Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              }
         )
   }
 

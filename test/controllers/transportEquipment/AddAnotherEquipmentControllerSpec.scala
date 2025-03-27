@@ -20,9 +20,10 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
@@ -167,6 +168,10 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
           redirectLocation(result).value mustEqual controllers.transportEquipment.index.routes.AddContainerIdentificationNumberYesNoController
             .onPageLoad(arrivalId, mode, notMaxedOutViewModel.nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherEquipmentPage) mustEqual true
         }
       }
 
@@ -185,6 +190,10 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherEquipmentPage) mustEqual false
         }
       }
     }
@@ -204,6 +213,10 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherEquipmentPage) mustEqual false
       }
     }
 
