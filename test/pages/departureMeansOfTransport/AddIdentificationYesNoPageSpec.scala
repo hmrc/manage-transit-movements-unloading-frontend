@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package pages.departureTransportMeans
+package pages.departureMeansOfTransport
 
 import models.reference.TransportMeansIdentification
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
-import pages.departureMeansOfTransport.{AddIdentificationYesNoPage, TransportMeansIdentificationPage}
 
 class AddIdentificationYesNoPageSpec extends PageBehaviours {
 

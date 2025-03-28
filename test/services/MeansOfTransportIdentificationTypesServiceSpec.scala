@@ -23,7 +23,7 @@ import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
-import pages.equipment.InlandModePage
+import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -72,7 +72,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
               val service = app.injector.instanceOf[MeansOfTransportIdentificationTypesService]
 
-              val userAnswers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
+              val userAnswers = emptyUserAnswers.setValue(InlandModeOfTransportPage, inlandMode)
 
               val result = service.getMeansOfTransportIdentificationTypes(userAnswers).futureValue
 
@@ -98,7 +98,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
           val service = app.injector.instanceOf[MeansOfTransportIdentificationTypesService]
 
-          val userAnswers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
+          val userAnswers = emptyUserAnswers.setValue(InlandModeOfTransportPage, inlandMode)
 
           val result = service.getMeansOfTransportIdentificationTypes(userAnswers).futureValue
 

@@ -19,14 +19,15 @@ package controllers.houseConsignment.index.additionalReference
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.ArgumentMatchers
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.additionalReference.AddAnotherAdditionalReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -111,6 +112,48 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex)))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex), true))
+
+        val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex)))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex), true))
+
+        val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to additional reference type page at next index" in {
@@ -129,6 +172,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
             .onPageLoad(arrivalId, houseConsignmentMode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual true
         }
       }
 
@@ -154,6 +201,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
               controllers.houseConsignment.index.routes.AddItemYesNoController
                 .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
                 .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual false
           }
 
           "when changing house consignment" in {
@@ -175,6 +226,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
             redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController
               .onPageLoad(arrivalId, houseConsignmentIndex)
               .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual false
           }
         }
       }
@@ -198,6 +253,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           controllers.houseConsignment.index.routes.AddItemYesNoController
             .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
             .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) mustEqual false
       }
     }
 
