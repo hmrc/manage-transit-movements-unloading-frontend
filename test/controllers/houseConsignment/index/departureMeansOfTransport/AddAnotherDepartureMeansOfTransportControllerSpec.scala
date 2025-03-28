@@ -17,21 +17,22 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.houseConsignment.index.departureMeansOfTransport.{routes => departureMeansOfTransportRoutes}
+import controllers.houseConsignment.index.departureMeansOfTransport.routes as departureMeansOfTransportRoutes
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentMatchers
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
 import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
@@ -109,6 +110,48 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex), true))
+
+        val request = FakeRequest(GET, addAnotherDepartureMeansOfTransportRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherDepartureMeansOfTransportView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex), true))
+
+        val request = FakeRequest(GET, addAnotherDepartureMeansOfTransportRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherDepartureMeansOfTransportView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to add identification yes no page at next index" in {
@@ -127,6 +170,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           redirectLocation(result).value mustEqual departureMeansOfTransportRoutes.IdentificationController
             .onPageLoad(arrivalId, houseConsignmentIndex, notMaxedOutViewModel.nextIndex, houseConsignmentMode, NormalMode)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual true
         }
       }
 
@@ -151,6 +198,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual false
           }
 
           "when house consignment mode is NormalMode" in {
@@ -172,6 +223,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
             redirectLocation(result).value mustEqual
               controllers.houseConsignment.index.routes.AddDocumentsYesNoController.onPageLoad(arrivalId, NormalMode, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual false
           }
         }
       }
@@ -194,6 +249,10 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.routes.AddDocumentsYesNoController
           .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
           .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) mustEqual false
       }
     }
 

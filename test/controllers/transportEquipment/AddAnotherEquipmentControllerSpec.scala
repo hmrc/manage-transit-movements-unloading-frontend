@@ -20,16 +20,18 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transportEquipment.index.AddAnotherEquipmentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
@@ -106,6 +108,48 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherEquipmentPage, true))
+
+        val request = FakeRequest(GET, addAnotherEquipmentRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherEquipmentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherEquipmentPage, true))
+
+        val request = FakeRequest(GET, addAnotherEquipmentRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherEquipmentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to add container identification yes no page at next index" in {
@@ -124,6 +168,10 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
           redirectLocation(result).value mustEqual controllers.transportEquipment.index.routes.AddContainerIdentificationNumberYesNoController
             .onPageLoad(arrivalId, mode, notMaxedOutViewModel.nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherEquipmentPage) mustEqual true
         }
       }
 
@@ -142,6 +190,10 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherEquipmentPage) mustEqual false
         }
       }
     }
@@ -161,6 +213,10 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherEquipmentPage) mustEqual false
       }
     }
 

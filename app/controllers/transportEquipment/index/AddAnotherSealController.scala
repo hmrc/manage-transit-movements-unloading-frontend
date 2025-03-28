@@ -17,29 +17,33 @@
 package controllers.transportEquipment.index
 
 import config.FrontendAppConfig
-import controllers.actions._
-import controllers.routes._
-import controllers.transportEquipment.index.seals.routes._
+import controllers.actions.*
+import controllers.routes.*
+import controllers.transportEquipment.index.seals.routes.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.transportEquipment.index.AddAnotherSealPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportEquipment.index.AddAnotherSealViewModel
 import viewModels.transportEquipment.index.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 import views.html.transportEquipment.index.AddAnotherSealView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSealView,
   viewModelProvider: AddAnotherSealViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -49,27 +53,35 @@ class AddAnotherSealController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex)
-      Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
+      val preparedForm = request.userAnswers.get(AddAnotherSealPage(equipmentIndex)) match {
+        case None        => form(viewModel, equipmentIndex)
+        case Some(value) => form(viewModel, equipmentIndex).fill(value)
+      }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex)
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
-          {
-            case true =>
-              Redirect(SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, NormalMode, equipmentIndex, viewModel.nextIndex))
-            case false =>
-              equipmentMode match {
-                case NormalMode =>
-                  Redirect(routes.ApplyAnItemYesNoController.onSubmit(arrivalId, equipmentIndex, equipmentMode))
-                case CheckMode =>
-                  Redirect(UnloadingFindingsController.onPageLoad(arrivalId))
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSealPage(equipmentIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield
+              if (value) {
+                Redirect(SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, NormalMode, equipmentIndex, viewModel.nextIndex))
+              } else {
+                equipmentMode match {
+                  case NormalMode =>
+                    Redirect(routes.ApplyAnItemYesNoController.onSubmit(arrivalId, equipmentIndex, equipmentMode))
+                  case CheckMode =>
+                    Redirect(UnloadingFindingsController.onPageLoad(arrivalId))
+                }
               }
-          }
         )
   }
 

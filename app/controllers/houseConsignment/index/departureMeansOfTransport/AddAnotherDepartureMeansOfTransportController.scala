@@ -17,27 +17,31 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.houseConsignment.index.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
 import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherDepartureMeansOfTransportController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDepartureMeansOfTransportView,
   viewModelProvider: AddAnotherDepartureMeansOfTransportViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -47,34 +51,41 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, houseConsignmentMode)
-
-      Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
+      val preparedForm = request.userAnswers.get(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex)) match {
+        case None        => form(viewModel)
+        case Some(value) => form(viewModel).fill(value)
+      }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, houseConsignmentMode)
       val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex)
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, houseConsignmentMode, NormalMode)
-              )
-            case false =>
-              houseConsignmentMode match {
-                case NormalMode =>
-                  Redirect(
-                    controllers.houseConsignment.index.routes.AddDocumentsYesNoController.onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex)
-                  )
-                case CheckMode =>
-                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherDepartureMeansOfTransportPage(houseConsignmentIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield
+              if (value) {
+                Redirect(
+                  controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
+                    .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, houseConsignmentMode, NormalMode)
+                )
+              } else {
+                houseConsignmentMode match {
+                  case NormalMode =>
+                    Redirect(
+                      controllers.houseConsignment.index.routes.AddDocumentsYesNoController.onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex)
+                    )
+                  case CheckMode =>
+                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                }
               }
-          }
         )
   }
 

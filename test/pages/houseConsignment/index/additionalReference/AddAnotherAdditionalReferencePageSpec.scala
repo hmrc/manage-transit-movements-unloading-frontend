@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections.equipment
+package pages.houseConsignment.index.additionalReference
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object TransportSection extends Section[JsObject] {
+class AddAnotherAdditionalReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "AddAnotherAdditionalReferencePage" - {
 
-  override def toString: String = "transport"
+    beRetrievable[Boolean](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
+
+    beSettable[Boolean](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
+
+    beRemovable[Boolean](AddAnotherAdditionalReferencePage(houseConsignmentIndex))
+  }
 }

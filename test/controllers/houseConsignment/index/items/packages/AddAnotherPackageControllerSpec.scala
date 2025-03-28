@@ -20,16 +20,18 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.items.packages.AddAnotherPackagePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.houseConsignment.index.items.packages.AddAnotherPackageViewModel
 import viewModels.houseConsignment.index.items.packages.AddAnotherPackageViewModel.AddAnotherPackageViewModelProvider
@@ -124,6 +126,62 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex), true))
+
+        val request = FakeRequest(GET, addAnotherPackageRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherPackageView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(
+            filledForm,
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            notMaxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex), true))
+
+        val request = FakeRequest(GET, addAnotherPackageRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherPackageView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(
+            filledForm,
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            maxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to package type page at next index" in {
@@ -142,6 +200,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.PackageTypeController
             .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex, houseConsignmentMode, itemMode, NormalMode)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual true
         }
       }
 
@@ -163,6 +225,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
             redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
               .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
               .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual false
           }
         }
 
@@ -190,6 +256,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
             redirectLocation(result).value mustEqual
               controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual false
           }
         }
       }
@@ -212,6 +282,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
           .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherPackagePage(houseConsignmentIndex, itemIndex)) mustEqual false
       }
     }
 

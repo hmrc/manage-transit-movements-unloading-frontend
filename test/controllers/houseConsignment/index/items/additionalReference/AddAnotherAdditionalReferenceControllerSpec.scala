@@ -17,20 +17,20 @@
 package controllers.houseConsignment.index.items.additionalReference
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
-import org.mockito.ArgumentMatchers
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
@@ -47,7 +47,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
   private val itemMode             = NormalMode
 
   private lazy val addAnotherAdditionalReferenceRoute =
-    controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+    routes.AddAnotherAdditionalReferenceController
       .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
       .url
 
@@ -111,6 +111,48 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex, itemIndex), true))
+
+        val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to additional reference type page at next index" in {
@@ -126,29 +168,65 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+          redirectLocation(result).value mustEqual routes.AdditionalReferenceTypeController
             .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex)
             .url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex, itemIndex)) mustEqual true
         }
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
-            .thenReturn(notMaxedOutViewModel)
+        "must redirect to next page" - {
+          "when normal mode" in {
+            val addAnotherAdditionalReferenceRoute =
+              routes.AddAnotherAdditionalReferenceController
+                .onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex)
+                .url
 
-          setExistingUserAnswers(emptyUserAnswers)
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+              .thenReturn(notMaxedOutViewModel)
 
-          val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+            setExistingUserAnswers(emptyUserAnswers)
 
-          val result = route(app, request).value
+            val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-          status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-            .url
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex, itemIndex)) mustEqual false
+          }
+
+          "when check mode" in {
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+              .thenReturn(notMaxedOutViewModel)
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+              .url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex, itemIndex)) mustEqual false
+          }
         }
       }
     }
@@ -170,6 +248,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           .url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherAdditionalReferencePage(houseConsignmentIndex, itemIndex)) mustEqual false
       }
     }
 
@@ -206,7 +288,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -219,7 +301,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

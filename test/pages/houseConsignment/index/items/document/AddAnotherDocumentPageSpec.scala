@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages.departureTransportMeans
+package pages.houseConsignment.index.items.document
 
-import models.reference.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
-import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 
-class TransportMeansIdentificationPageSpec extends PageBehaviours {
+class AddAnotherDocumentPageSpec extends PageBehaviours {
 
-  "IdentificationPage" - {
+  "AddAnotherDocumentPage" - {
 
-    beRetrievable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
+    beRetrievable[Boolean](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
 
-    beSettable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
+    beSettable[Boolean](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
 
-    beRemovable[TransportMeansIdentification](TransportMeansIdentificationPage(index))
+    beRemovable[Boolean](AddAnotherDocumentPage(houseConsignmentIndex, itemIndex))
   }
 }

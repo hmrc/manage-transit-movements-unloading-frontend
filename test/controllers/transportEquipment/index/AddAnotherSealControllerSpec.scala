@@ -19,17 +19,19 @@ package controllers.transportEquipment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transportEquipment.index.AddAnotherSealPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.ListItem
 import viewModels.transportEquipment.index.AddAnotherSealViewModel
 import viewModels.transportEquipment.index.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
@@ -126,11 +128,55 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherSealPage(equipmentIndex), true))
+
+        val request = FakeRequest(GET, addAnotherSealRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel, equipmentIndex).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherSealView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherSealPage(equipmentIndex), true))
+
+        val request = FakeRequest(GET, addAnotherSealRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel, equipmentIndex).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherSealView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to seal id number page at next index" in {
           forAll(arbitrary[Mode]) {
             equipmentMode =>
+              beforeEach()
+
               lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, equipmentIndex).url
 
               when(mockViewModelProvider.apply(any(), any(), any(), any()))
@@ -148,6 +194,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
               redirectLocation(result).value mustEqual controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
                 .onPageLoad(arrivalId, equipmentMode, NormalMode, equipmentIndex, notMaxedOutViewModel.nextIndex)
                 .url
+
+              val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(mockSessionRepository).set(userAnswersCaptor.capture())
+              userAnswersCaptor.getValue.get(AddAnotherSealPage(equipmentIndex)).value mustEqual true
           }
         }
       }
@@ -171,6 +221,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherSealPage(equipmentIndex)) mustEqual false
           }
 
           "when equipment mode is NormalMode" in {
@@ -190,6 +244,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             redirectLocation(result).value mustEqual
               controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, NormalMode).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())
+            userAnswersCaptor.getValue.getValue(AddAnotherSealPage(equipmentIndex)) mustEqual false
           }
         }
       }
@@ -211,6 +269,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         redirectLocation(result).value mustEqual
           controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, equipmentMode).url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.getValue(AddAnotherSealPage(equipmentIndex)) mustEqual false
       }
     }
 
