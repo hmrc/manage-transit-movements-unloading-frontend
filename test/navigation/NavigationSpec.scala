@@ -61,32 +61,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from AddTransitUnloadingPermissionDiscrepanciesYesNoPage" - {
-        "to CannotUseRevisedUnloadingProcedurePage when answer is Yes" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
-            .setValue(GoodsTooLargeForContainerYesNoPage, true)
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
-        }
-
-        "to CheckYourAnswersPage when the answer is No" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
-            .setValue(GoodsTooLargeForContainerYesNoPage, true)
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
-        }
-      }
-
       "must go from SealsReplacedByCustomsAuthorityYesNoPage to OtherThingsToReportPage" - {
         "when answered true" in {
 
@@ -253,30 +227,66 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
 
       "must go from add transit unloading permission discrepancies yes/no page page" - {
-        "when answer is true to unloading comments controller" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, false)
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+        "when unrevised procedure" - {
+          "and yes selected" - {
+            "to unloading comments controller" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              navigator
+                .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+                .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            }
+          }
+
+          "and no selected" - {
+            "to report yes/no page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, false)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+              navigator
+                .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+                .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
+            }
+          }
         }
 
-        "when answer is false to do you have anything else to report yes/no page" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, false)
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+        "when procedure is CannotUseRevisedDueToDiscrepancies" - {
+          "to CannotUseRevisedUnloadingProcedurePage" in {
 
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+            navigator
+              .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+              .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
+          }
         }
 
-        "to session expired controller when no existing answers found" in {
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, emptyUserAnswers)
-            .mustBe(routes.SessionExpiredController.onPageLoad())
+        "when procedure is RevisedAndGoodsTooLarge" - {
+          "to CheckYourAnswersPage" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+            navigator
+              .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          }
+        }
+
+        "when no existing answers found" - {
+          "to session expired controller" in {
+            navigator
+              .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, emptyUserAnswers)
+              .mustBe(routes.SessionExpiredController.onPageLoad())
+          }
         }
       }
 
@@ -325,22 +335,28 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "to GoodsTooLargeForContainerYesNo page when RevisedUnloadingProcedureConditionsYesNoPage is true" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+      "must go from RevisedUnloadingProcedureConditionsYesNoPage" - {
+        "when answer is true" - {
+          "to GoodsTooLargeForContainerYesNo page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
 
-        navigator
-          .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-          .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
-      }
+            navigator
+              .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+              .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+          }
+        }
 
-      "to RevisedUnloadingProcedureUnmetConditions page when RevisedUnloadingProcedureConditionsYesNoPage is false" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+        "when answer is false" - {
+          "to RevisedUnloadingProcedureUnmetConditions page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
 
-        navigator
-          .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-          .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
+            navigator
+              .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+              .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
+          }
+        }
       }
     }
 
@@ -350,13 +366,27 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "must go from NewAuthYesNoPage" - {
         "when answer is Yes" - {
-          "to revisedUnloadingProcedureConditions page" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(NewAuthYesNoPage, true)
+          "and RevisedUnloadingProcedureConditionsYesNoPage is undefined" - {
+            "to revisedUnloadingProcedureConditions page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(NewAuthYesNoPage, true)
 
-            navigator
-              .nextPage(NewAuthYesNoPage, mode, userAnswers)
-              .mustBe(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, NormalMode))
+              navigator
+                .nextPage(NewAuthYesNoPage, mode, userAnswers)
+                .mustBe(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, mode))
+            }
+          }
+
+          "and RevisedUnloadingProcedureConditionsYesNoPage is defined" - {
+            "to CYA page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+                .setValue(NewAuthYesNoPage, true)
+
+              navigator
+                .nextPage(NewAuthYesNoPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
           }
         }
 
@@ -391,24 +421,52 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "must go from RevisedUnloadingProcedureConditionsYesNoPage" - {
         "when answer is Yes" - {
-          "to GoodsTooLargeForContainerYesNo page" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+          "and GoodsTooLargeForContainerYesNoPage is undefined" - {
+            "to GoodsTooLargeForContainerYesNo page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
 
-            navigator
-              .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-              .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, NormalMode))
+              navigator
+                .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+                .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+            }
+          }
+
+          "and GoodsTooLargeForContainerYesNoPage is defined" - {
+            "to CYA page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(GoodsTooLargeForContainerYesNoPage, false)
+                .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+
+              navigator
+                .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
           }
         }
 
         "when answer is No" - {
-          "to RevisedUnloadingProcedureUnmetConditionsController" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+          "and UnloadingTypePage is undefined" - {
+            "to RevisedUnloadingProcedureUnmetConditionsController" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
 
-            navigator
-              .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-              .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
+              navigator
+                .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+                .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
+            }
+          }
+
+          "and UnloadingTypePage is defined" - {
+            "to CYA page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(UnloadingTypePage, UnloadingType.Fully)
+                .setValue(RevisedUnloadingProcedureConditionsYesNoPage, false)
+
+              navigator
+                .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
           }
         }
       }
@@ -458,14 +516,29 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
 
         "when state of seals is 0" - {
-          "must go to check your answers page" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(CanSealsBeReadPage, false)
-              .setValue(AreAnySealsBrokenPage, false)
+          "and UnloadingCommentsPage is undefined" - {
+            "must go to unloading findings page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(CanSealsBeReadPage, false)
+                .setValue(AreAnySealsBrokenPage, false)
 
-            navigator
-              .nextPage(CanSealsBeReadPage, mode, userAnswers)
-              .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+              navigator
+                .nextPage(CanSealsBeReadPage, mode, userAnswers)
+                .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+            }
+          }
+
+          "and UnloadingCommentsPage is defined" - {
+            "must go to check your answers page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(UnloadingCommentsPage, "foo")
+                .setValue(CanSealsBeReadPage, false)
+                .setValue(AreAnySealsBrokenPage, false)
+
+              navigator
+                .nextPage(CanSealsBeReadPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
           }
         }
       }
@@ -514,36 +587,117 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
 
         "when state of seals is 0" - {
-          "must go to check your answers page" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(CanSealsBeReadPage, false)
-              .setValue(AreAnySealsBrokenPage, false)
+          "and UnloadingCommentsPage is undefined" - {
+            "must go to unloading findings page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(CanSealsBeReadPage, false)
+                .setValue(AreAnySealsBrokenPage, false)
 
-            navigator
-              .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-              .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+              navigator
+                .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+                .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+            }
+          }
+
+          "and UnloadingCommentsPage is defined" - {
+            "must go to check your answers page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(UnloadingCommentsPage, "foo")
+                .setValue(CanSealsBeReadPage, false)
+                .setValue(AreAnySealsBrokenPage, false)
+
+              navigator
+                .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
           }
         }
       }
 
-      "must go from add transit unloading permission discrepancies yes/no page to unloading findings page when true" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+      "must go from add transit unloading permission discrepancies yes/no page" - {
+        "when unrevised procedure" - {
+          "when yes selected" - {
+            "and OtherCommentsPage undefined" - {
+              "to unloading findings page" in {
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-        navigator
-          .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
-      }
+                navigator
+                  .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+                  .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+              }
+            }
 
-      "must go from add transit unloading permission discrepancies yes/no page to report yes/no page when false" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(NewAuthYesNoPage, false)
-          .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+            "and OtherCommentsPage defined" - {
+              "to CYA page" in {
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(UnloadingCommentsPage, "foo")
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
-        navigator
-          .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, mode))
+                navigator
+                  .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+
+          "when no is selected" - {
+            "and DoYouHaveAnythingElseToReportYesNoPage is undefined" - {
+              "to DoYouHaveAnythingElseToReportYesNoPage" in {
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+                navigator
+                  .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+                  .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, mode))
+              }
+            }
+
+            "and DoYouHaveAnythingElseToReportYesNoPage is defined" - {
+              "to CYA page" in {
+                val userAnswers = emptyUserAnswers
+                  .setValue(NewAuthYesNoPage, false)
+                  .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+                  .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+                navigator
+                  .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              }
+            }
+          }
+        }
+
+        "when procedure is CannotUseRevisedDueToDiscrepancies" - {
+          "to CannotUseRevisedUnloadingProcedurePage" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+            navigator
+              .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+              .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
+          }
+        }
+
+        "RevisedAndGoodsTooLarge" - {
+          "to CheckYourAnswersPage" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, true)
+              .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
+              .setValue(GoodsTooLargeForContainerYesNoPage, true)
+              .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+            navigator
+              .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          }
+        }
       }
 
       "must go from unloading comments page to check your answers" in {
@@ -554,20 +708,40 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
-      "must go from do you have anything else to report yes/no page to other things to report page when true" in {
-        val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+      "must go from do you have anything else to report yes/no page" - {
+        "when true" - {
+          "and OtherThingsToReportPage undefined" - {
+            "to other things to report page" in {
+              val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
 
-        navigator
-          .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
-      }
+              navigator
+                .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+                .mustBe(controllers.routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+            }
+          }
 
-      "must go from do you have anything else to report yes/no page to check your answers page when false" in {
-        val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+          "and OtherThingsToReportPage defined" - {
+            "to CYA page" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(OtherThingsToReportPage, "foo")
+                .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
 
-        navigator
-          .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              navigator
+                .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+            }
+          }
+        }
+
+        "when false" - {
+          "to check your answers page" in {
+            val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+
+            navigator
+              .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          }
+        }
       }
 
       "must go from other things to report page to check your answers" in {
@@ -587,32 +761,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             navigator
               .nextPage(UnknownPage, mode, answers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-      }
-
-      "must go from AddTransitUnloadingPermissionDiscrepanciesYesNoPage" - {
-        "to CannotUseRevisedUnloadingProcedurePage when answer is Yes" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
-            .setValue(GoodsTooLargeForContainerYesNoPage, true)
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
-        }
-
-        "to CheckYourAnswersPage when the answer is No" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(NewAuthYesNoPage, true)
-            .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
-            .setValue(GoodsTooLargeForContainerYesNoPage, true)
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
         }
       }
 
