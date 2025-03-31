@@ -20,23 +20,28 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.DescriptionFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.ItemDescriptionPage
+import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.GoodsReferenceService
 import viewModels.houseConsignment.index.items.DescriptionViewModel
 import viewModels.houseConsignment.index.items.DescriptionViewModel.DescriptionViewModelProvider
 import views.html.houseConsignment.index.items.DescriptionView
 
 import scala.concurrent.Future
+import scala.util.Success
 
 class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
 
   private val viewModel = arbitrary[DescriptionViewModel].sample.value
 
@@ -58,11 +63,15 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       .guiceApplicationBuilder()
       .overrides(
         bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
-        bind(classOf[DescriptionViewModelProvider]).toInstance(mockViewModelProvider)
+        bind(classOf[DescriptionViewModelProvider]).toInstance(mockViewModelProvider),
+        bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+
+    reset(mockViewModelProvider)
+    reset(mockGoodsReferenceService)
 
     when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
       .thenReturn(viewModel)
@@ -106,18 +115,34 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val validAnswer = "testString"
+
+      val userAnswers = emptyUserAnswers
+
+      val userAnswersAfterFirstSet  = userAnswers.setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), validAnswer)
+      val userAnswersAfterSecondSet = userAnswersAfterFirstSet.setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
+
+      when(mockGoodsReferenceService.setNextDeclarationGoodsItemNumber(any(), any(), any()))
+        .thenReturn(Success(userAnswersAfterSecondSet))
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, itemDescriptionRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verify(mockGoodsReferenceService).setNextDeclarationGoodsItemNumber(eqTo(userAnswersAfterFirstSet), eqTo(houseConsignmentIndex), eqTo(itemIndex))
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustEqual userAnswersAfterSecondSet
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

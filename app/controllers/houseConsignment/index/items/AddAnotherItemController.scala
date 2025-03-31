@@ -19,13 +19,12 @@ package controllers.houseConsignment.index.items
 import config.FrontendAppConfig
 import controllers.actions.*
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import pages.houseConsignment.index.items.AddAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
 import repositories.SessionRepository
-import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
@@ -33,7 +32,6 @@ import views.html.houseConsignment.index.items.AddAnotherItemView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
 
 class AddAnotherItemController @Inject() (
   override val messagesApi: MessagesApi,
@@ -42,8 +40,7 @@ class AddAnotherItemController @Inject() (
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherItemView,
-  viewModelProvider: AddAnotherItemViewModelProvider,
-  goodsReferenceService: GoodsReferenceService
+  viewModelProvider: AddAnotherItemViewModelProvider
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
@@ -63,29 +60,19 @@ class AddAnotherItemController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val userAnswers = goodsReferenceService.removeEmptyItems(request.userAnswers, houseConsignmentIndex)
+      val userAnswers = request.userAnswers
       val viewModel   = viewModelProvider(userAnswers, arrivalId, houseConsignmentIndex, mode)
       form(viewModel, houseConsignmentIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, userAnswers.mrn, arrivalId, viewModel))),
           value =>
-            lazy val itemIndex = viewModel.nextIndex
-            def setNextDeclarationGoodsItemNumber(userAnswers: UserAnswers): Try[UserAnswers] =
-              if (value) {
-                goodsReferenceService.setNextDeclarationGoodsItemNumber(userAnswers, houseConsignmentIndex, itemIndex)
-              } else {
-                Success(userAnswers)
-              }
-
             for {
-              updatedAnswers <- Future.fromTry {
-                userAnswers.set(AddAnotherItemPage(houseConsignmentIndex), value).flatMap(setNextDeclarationGoodsItemNumber)
-              }
-              _ <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <- Future.fromTry(userAnswers.set(AddAnotherItemPage(houseConsignmentIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
             } yield
               if (value) {
-                Redirect(routes.DescriptionController.onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, itemIndex))
+                Redirect(routes.DescriptionController.onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex))
               } else {
                 mode match {
                   case NormalMode =>
