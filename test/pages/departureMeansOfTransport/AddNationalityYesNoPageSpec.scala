@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package pages.departureTransportMeans
+package pages.departureMeansOfTransport
 
 import models.reference.Country
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
-import pages.departureMeansOfTransport.{AddNationalityYesNoPage, CountryPage}
 
 class AddNationalityYesNoPageSpec extends PageBehaviours {
 

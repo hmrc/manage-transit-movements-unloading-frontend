@@ -22,14 +22,14 @@ import org.scalatest.freespec.AnyFreeSpec
 trait ErrorSummaryViewBehaviours[T] extends AnyFreeSpec {
   this: QuestionViewBehaviours[T] =>
 
-  def pageWithErrorSummary(): Unit =
-    "when rendered with an error" - {
+  def pageWithErrorSummary(field: String = "value"): Unit =
+    s"when rendered with an error for $field" - {
       "must show an error summary" in {
-        assertRenderedByClass(docWithError(), "govuk-error-summary")
+        assertRenderedByClass(docWithError(field), "govuk-error-summary")
       }
 
       "must show an error in the value field's label" in {
-        val errorSpan = docWithError().getElementsByClass("govuk-error-message").first
+        val errorSpan = docWithError(field).getElementsByClass("govuk-error-message").first
         assertElementContainsText(errorSpan, s"${messages("error.title.prefix")} ${messages(errorMessage)}")
       }
     }

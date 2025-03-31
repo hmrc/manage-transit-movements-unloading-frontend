@@ -25,12 +25,14 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
   implicit val arbitraryT: Arbitrary[T]
   lazy val values: Seq[T] = listWithMaxLength[T]().sample.value
 
+  val field: String
+
   def pageWithSelect(): Unit =
     "behave like a page with a select element" - {
 
       "when rendered" - {
         "must contain an input for the value" in {
-          assertRenderedById(doc, "value")
+          assertRenderedById(doc, field)
         }
 
         val options = getElementsByTag(doc, "option")
@@ -55,6 +57,6 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
         }
       }
 
-      behave like pageWithErrorSummary()
+      behave like pageWithErrorSummary(field)
     }
 }

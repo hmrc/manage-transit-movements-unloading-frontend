@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.items.packages
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.PackageTypeFormProvider
 import models.reference.PackageType
 import models.{CheckMode, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
@@ -32,7 +32,11 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
   private val viewModel: PackageTypeViewModel =
     arbitrary[PackageTypeViewModel].sample.value
 
-  override def form: Form[PackageType] = new SelectableFormProvider().apply(NormalMode, prefix, SelectableList(values))
+  private val formProvider = new PackageTypeFormProvider()
+
+  override val field: String = formProvider.field
+
+  override def form: Form[PackageType] = formProvider.apply(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector

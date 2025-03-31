@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.departureMeansOfTransport
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{CheckMode, NormalMode, SelectableList}
@@ -29,8 +29,12 @@ import views.behaviours.InputSelectViewBehaviours
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
-  private val mode                                        = Gen.oneOf(NormalMode, CheckMode).sample.value
-  override def form: Form[Country]                        = new SelectableFormProvider()(mode, prefix, SelectableList(values), houseConsignmentIndex, dtmIndex)
+  private val mode = Gen.oneOf(NormalMode, CheckMode).sample.value
+
+  private val formProvider = new CountryFormProvider()
+
+  override val field: String                              = formProvider.field
+  override def form: Form[Country]                        = formProvider(mode, prefix, SelectableList(values), houseConsignmentIndex, dtmIndex)
   private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =

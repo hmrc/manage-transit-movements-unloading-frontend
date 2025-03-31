@@ -27,12 +27,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.equipment.InlandModePage
 import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
+import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.MeansOfTransportIdentificationTypesService
 import viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel
 import viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel.IdentificationViewModelProvider
@@ -84,7 +84,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       when(mockMeansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
-      val userAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode("4", "Air"))
+      val userAnswers = emptyUserAnswers.setValue(InlandModeOfTransportPage, InlandMode("4", "Air"))
 
       setExistingUserAnswers(userAnswers)
 
@@ -104,7 +104,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
-        .setValue(InlandModePage, InlandMode("4", "Air"))
+        .setValue(InlandModeOfTransportPage, InlandMode("4", "Air"))
         .setValue(TransportMeansIdentificationPage(hcIndex, index), identificationType1)
       setExistingUserAnswers(userAnswers)
 
@@ -128,7 +128,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
-        .setValue(InlandModePage, InlandMode("4", "Air"))
+        .setValue(InlandModeOfTransportPage, InlandMode("4", "Air"))
 
       setExistingUserAnswers(userAnswers)
       val request = FakeRequest(POST, identificationRoute)
@@ -146,7 +146,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
-        .setValue(InlandModePage, InlandMode("4", "Air"))
+        .setValue(InlandModeOfTransportPage, InlandMode("4", "Air"))
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, identificationRoute).withFormUrlEncodedBody(("value", "invalid value"))

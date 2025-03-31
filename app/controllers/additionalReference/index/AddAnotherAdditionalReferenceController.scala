@@ -17,27 +17,31 @@
 package controllers.additionalReference.index
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, Mode}
+import pages.additionalReference.AddAnotherAdditionalReferencePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.additionalReference.index.AddAnotherAdditionalReferenceViewModel
 import viewModels.additionalReference.index.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import views.html.additionalReference.index.AddAnotherAdditionalReferenceView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalReferenceView,
   viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -47,25 +51,33 @@ class AddAnotherAdditionalReferenceController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
-      Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
+      val preparedForm = request.userAnswers.get(AddAnotherAdditionalReferencePage) match {
+        case None        => form(viewModel)
+        case Some(value) => form(viewModel).fill(value)
+      }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.additionalReference.index.routes.AdditionalReferenceTypeController
-                  .onPageLoad(arrivalId, mode, viewModel.nextIndex)
-              )
-            case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherAdditionalReferencePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield
+              if (value) {
+                Redirect(
+                  controllers.additionalReference.index.routes.AdditionalReferenceTypeController
+                    .onPageLoad(arrivalId, mode, viewModel.nextIndex)
+                )
+              } else {
+                Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              }
         )
   }
 }

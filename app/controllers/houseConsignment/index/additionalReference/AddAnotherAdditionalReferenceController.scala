@@ -20,24 +20,28 @@ import config.FrontendAppConfig
 import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import pages.houseConsignment.index.additionalReference.AddAnotherAdditionalReferencePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import views.html.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalReferenceView,
   viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -47,31 +51,39 @@ class AddAnotherAdditionalReferenceController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex)
-      Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
+      val preparedForm = request.userAnswers.get(AddAnotherAdditionalReferencePage(houseConsignmentIndex)) match {
+        case None        => form(viewModel)
+        case Some(value) => form(viewModel).fill(value)
+      }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex)
       val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex.display)
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
-                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
-              )
-            case false =>
-              mode match {
-                case NormalMode =>
-                  Redirect(controllers.houseConsignment.index.routes.AddItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
-                case CheckMode =>
-                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherAdditionalReferencePage(houseConsignmentIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield
+              if (value) {
+                Redirect(
+                  controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
+                    .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
+                )
+              } else {
+                mode match {
+                  case NormalMode =>
+                    Redirect(controllers.houseConsignment.index.routes.AddItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+                  case CheckMode =>
+                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                }
               }
-          }
         )
   }
 }

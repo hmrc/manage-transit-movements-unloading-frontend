@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package pages.equipment
+package pages.documents
 
-import models.reference.TransportMode.InlandMode
-import pages.QuestionPage
-import pages.sections.equipment.TransportSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object InlandModePage extends QuestionPage[InlandMode] {
+class AddAnotherDocumentPageSpec extends PageBehaviours {
 
-  override def path: JsPath = TransportSection.path \ toString
+  "AddAnotherDocumentPage" - {
 
-  override def toString: String = "inlandModeOfTransport"
+    beRetrievable[Boolean](AddAnotherDocumentPage)
+
+    beSettable[Boolean](AddAnotherDocumentPage)
+
+    beRemovable[Boolean](AddAnotherDocumentPage)
+  }
 }
