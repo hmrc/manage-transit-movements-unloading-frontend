@@ -16,7 +16,7 @@
 
 package controllers.houseConsignment.index.items
 
-import controllers.actions._
+import controllers.actions.*
 import forms.DescriptionFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.DescriptionViewModel
 import viewModels.houseConsignment.index.items.DescriptionViewModel.DescriptionViewModelProvider
@@ -42,7 +43,8 @@ class DescriptionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   formProvider: DescriptionFormProvider,
   view: DescriptionView,
-  viewModelProvider: DescriptionViewModelProvider
+  viewModelProvider: DescriptionViewModelProvider,
+  goodsReferenceService: GoodsReferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -84,8 +86,12 @@ class DescriptionController @Inject() (
     itemMode: Mode
   )(implicit request: MandatoryDataRequest[?]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemDescriptionPage(houseConsignmentIndex, itemIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
+      updatedAnswers <- Future.fromTry {
+        request.userAnswers
+          .set(ItemDescriptionPage(houseConsignmentIndex, itemIndex), value)
+          .flatMap(goodsReferenceService.setNextDeclarationGoodsItemNumber(_, houseConsignmentIndex, itemIndex))
+      }
+      _ <- sessionRepository.set(updatedAnswers)
     } yield {
       val navigator = navigatorProvider.apply(houseConsignmentMode)
       Redirect(navigator.nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
