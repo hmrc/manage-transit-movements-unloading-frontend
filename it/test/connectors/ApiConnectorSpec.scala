@@ -47,7 +47,7 @@ class ApiConnectorSpec extends ItSpecBase with WireMockServerHandler {
         server.stubFor(
           post(urlEqualTo(url))
             .withRequestBody(equalTo(body.toString()))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
             .withHeader("Content-Type", equalTo("application/xml"))
             .willReturn(aResponse().withStatus(OK))
         )

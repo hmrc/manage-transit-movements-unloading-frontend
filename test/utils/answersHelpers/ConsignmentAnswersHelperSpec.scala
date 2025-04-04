@@ -16,7 +16,6 @@
 
 package utils.answersHelpers
 
-import config.PhaseConfig._
 import generated._
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
@@ -414,124 +413,64 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "houseConsignmentSections" - {
       import pages._
+      "and there are house consignments" - {
+        "must generate accordion sections with add/remove link" in {
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+            (consignorName, consignorId, consigneeName, consigneeId) =>
+              val answers = emptyUserAnswers
+                .setValue(ConsignorNamePage(hcIndex), consignorName)
+                .setValue(ConsignorIdentifierPage(hcIndex), consignorId)
+                .setValue(ConsigneeNamePage(hcIndex), consigneeName)
+                .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
 
-      "when post-transition" - {
-        "and there are house consignments" - {
-          "must generate accordion sections with add/remove link" in {
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-              (consignorName, consignorId, consigneeName, consigneeId) =>
-                val answers = emptyUserAnswers
-                  .setValue(ConsignorNamePage(hcIndex), consignorName)
-                  .setValue(ConsignorIdentifierPage(hcIndex), consignorId)
-                  .setValue(ConsigneeNamePage(hcIndex), consigneeName)
-                  .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
+              val helper = new ConsignmentAnswersHelper(answers)(
+                messages
+              )
+              val result = helper.houseConsignmentSection
 
-                val helper = new ConsignmentAnswersHelper(answers)(
-                  messages,
-                  app.injector.instanceOf[PostTransitionConfig]
-                )
-                val result = helper.houseConsignmentSection
+              result mustBe a[AccordionSection]
+              result.sectionTitle.value mustBe "House consignments"
 
-                result mustBe a[AccordionSection]
-                result.sectionTitle.value mustBe "House consignments"
+              result.viewLinks.size mustBe 1
+              val addOrRemoveLink = result.viewLinks.head
+              addOrRemoveLink.id mustBe "add-remove-house-consignment"
+              addOrRemoveLink.text mustBe "Add or remove house consignment"
+              addOrRemoveLink.visuallyHidden must not be defined
+              addOrRemoveLink.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
 
-                result.viewLinks.size mustBe 1
-                val addOrRemoveLink = result.viewLinks.head
-                addOrRemoveLink.id mustBe "add-remove-house-consignment"
-                addOrRemoveLink.text mustBe "Add or remove house consignment"
-                addOrRemoveLink.visuallyHidden must not be defined
-                addOrRemoveLink.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
+              result.children.head mustBe a[AccordionSection]
+              result.children.head.sectionTitle.value mustBe "House consignment 1"
+              result.children.head.rows.size mustBe 2
 
-                result.children.head mustBe a[AccordionSection]
-                result.children.head.sectionTitle.value mustBe "House consignment 1"
-                result.children.head.rows.size mustBe 2
-
-                val link = result.children.head.viewLinks.head
-                link.id mustBe "view-house-consignment-1"
-                link.text mustBe "More details"
-                link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
-                link.visuallyHidden.value mustBe "on house consignment 1"
-                result.children.head.id.value mustBe "houseConsignment1"
-            }
-          }
-        }
-
-        "and there are no house consignments" - {
-          "must generate add/remove link" in {
-            val answers = emptyUserAnswers
-            val helper = new ConsignmentAnswersHelper(answers)(
-              messages,
-              app.injector.instanceOf[PostTransitionConfig]
-            )
-            val result = helper.houseConsignmentSection
-
-            result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "House consignments"
-
-            result.children mustBe Nil
-
-            result.viewLinks.size mustBe 1
-            val addOrRemoveLink = result.viewLinks.head
-            addOrRemoveLink.id mustBe "add-remove-house-consignment"
-            addOrRemoveLink.text mustBe "Add or remove house consignment"
-            addOrRemoveLink.visuallyHidden must not be defined
-            addOrRemoveLink.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
+              val link = result.children.head.viewLinks.head
+              link.id mustBe "view-house-consignment-1"
+              link.text mustBe "More details"
+              link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
+              link.visuallyHidden.value mustBe "on house consignment 1"
+              result.children.head.id.value mustBe "houseConsignment1"
           }
         }
       }
 
-      "when during transition" - {
-        "and there are house consignments" - {
-          "must generate accordion sections without add/remove link" in {
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-              (consignorName, consignorId, consigneeName, consigneeId) =>
-                val answers = emptyUserAnswers
-                  .setValue(ConsignorNamePage(hcIndex), consignorName)
-                  .setValue(ConsignorIdentifierPage(hcIndex), consignorId)
-                  .setValue(ConsigneeNamePage(hcIndex), consigneeName)
-                  .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
+      "and there are no house consignments" - {
+        "must generate add/remove link" in {
+          val answers = emptyUserAnswers
+          val helper = new ConsignmentAnswersHelper(answers)(
+            messages
+          )
+          val result = helper.houseConsignmentSection
 
-                val helper = new ConsignmentAnswersHelper(answers)(
-                  messages,
-                  app.injector.instanceOf[TransitionConfig]
-                )
-                val result = helper.houseConsignmentSection
+          result mustBe a[AccordionSection]
+          result.sectionTitle.value mustBe "House consignments"
 
-                result mustBe a[AccordionSection]
-                result.sectionTitle.value mustBe "House consignments"
+          result.children mustBe Nil
 
-                result.viewLinks mustBe Nil
-
-                result.children.head mustBe a[AccordionSection]
-                result.children.head.sectionTitle.value mustBe "House consignment 1"
-                result.children.head.rows.size mustBe 2
-
-                val link = result.children.head.viewLinks.head
-                link.id mustBe "view-house-consignment-1"
-                link.text mustBe "More details"
-                link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
-                link.visuallyHidden.value mustBe "on house consignment 1"
-                result.children.head.id.value mustBe "houseConsignment1"
-            }
-          }
-        }
-
-        "and there are no house consignments" - {
-          "must not generate add/remove link" in {
-            val answers = emptyUserAnswers
-            val helper = new ConsignmentAnswersHelper(answers)(
-              messages,
-              app.injector.instanceOf[TransitionConfig]
-            )
-            val result = helper.houseConsignmentSection
-
-            result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "House consignments"
-
-            result.children mustBe Nil
-
-            result.viewLinks mustBe Nil
-          }
+          result.viewLinks.size mustBe 1
+          val addOrRemoveLink = result.viewLinks.head
+          addOrRemoveLink.id mustBe "add-remove-house-consignment"
+          addOrRemoveLink.text mustBe "Add or remove house consignment"
+          addOrRemoveLink.visuallyHidden must not be defined
+          addOrRemoveLink.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
         }
       }
     }
