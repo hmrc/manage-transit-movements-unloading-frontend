@@ -953,6 +953,9 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
+unloadingFindings.ucr = Reference number UCR
+unloadingFindings.ucr.change.hidden = reference number UCR
+
 unloadingFindings.inlandModeOfTransport = Inland mode of transport
 unloadingFindings.inlandModeOfTransport.label = Mode
 
