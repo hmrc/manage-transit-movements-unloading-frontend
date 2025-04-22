@@ -17,21 +17,22 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated._
+import generated.*
 import generators.Generators
-import models.reference._
+import models.reference.*
 import models.{Index, SecurityType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
-import pages.holderOfTheTransitProcedure.{CountryPage => HotPCountryPage}
+import pages.holderOfTheTransitProcedure.CountryPage as HotPCountryPage
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage, NetWeightPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.transportEquipment.index.ItemPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import play.api.test.Helpers.running
 import scalaxb.XMLCalendar
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
@@ -40,7 +41,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
   "Unloading findings sections" - {
 
     "must render header section" in {
-      val viewModelProvider = new UnloadingFindingsViewModelProvider()
+      val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
       val userAnswers: UserAnswers = emptyUserAnswers.copy(ie043Data =
         emptyUserAnswers.ie043Data.copy(TransitOperation =
           emptyUserAnswers.ie043Data.TransitOperation.copy(
@@ -73,7 +74,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
           val section           = result.sections(1)
 
@@ -87,7 +88,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             ie043 =>
               val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
-              val viewModelProvider = new UnloadingFindingsViewModelProvider()
+              val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
               val result            = viewModelProvider.apply(userAnswers)
               val section           = result.sections(1)
 
@@ -106,7 +107,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
           val section           = result.sections(1)
 
@@ -120,7 +121,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             ie043 =>
               val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
-              val viewModelProvider = new UnloadingFindingsViewModelProvider()
+              val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
               val result            = viewModelProvider.apply(userAnswers)
               val section           = result.sections.find(_.sectionTitle.contains("Consignee")).get
 
@@ -148,7 +149,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
           .setValue(HotPCountryPage, country)
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
         val section           = result.sections(1)
 
@@ -161,7 +162,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
           .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = None))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
         val section           = result.sections(1)
 
@@ -184,7 +185,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
           )
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
         val section           = result.sections(1)
 
@@ -206,7 +207,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
           )
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
         val section           = result.sections(1)
 
@@ -214,19 +215,46 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       }
     }
 
-    "must render Countries of routing section" in {
+    "must render Countries of routing section" - {
+      "when phase 6 is enabled" in {
+        val app = super
+          .guiceApplicationBuilder()
+          .configure("features.phase-6-enabled" -> "true")
+          .build()
 
-      val userAnswers = emptyUserAnswers
-        .setValue(CountryOfRoutingPage(index), Country("GB", "United Kingdom"))
+        running(app) {
+          val userAnswers = emptyUserAnswers
+            .setValue(CountryOfRoutingPage(index), Country("GB", "United Kingdom"))
 
-      val viewModelProvider = new UnloadingFindingsViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-      val section           = result.sections(2)
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(2)
 
-      section.sectionTitle.value mustBe "Countries of routing"
-      section.viewLinks must not be Nil
-      section.children.length mustBe 0
-      section.rows.length mustBe 1
+          section.sectionTitle.value mustBe "Countries of routing"
+          section.viewLinks must not be Nil
+          section.children.length mustBe 0
+          section.rows.length mustBe 1
+        }
+      }
+    }
+
+    "must not render Countries of routing section" - {
+      "when phase 6 is not enabled" in {
+        val app = super
+          .guiceApplicationBuilder()
+          .configure("features.phase-6-enabled" -> "false")
+          .build()
+
+        running(app) {
+          val userAnswers = emptyUserAnswers
+            .setValue(CountryOfRoutingPage(index), Country("GB", "United Kingdom"))
+
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
+          val result            = viewModelProvider.apply(userAnswers)
+
+          result.sections.filter(_.sectionTitle.contains("Countries of routing")) must be(empty)
+        }
+      }
     }
 
     "must render Departure Means of Transport section" in {
@@ -236,9 +264,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(VehicleIdentificationNumberPage(dtmIndex), "28")
         .setValue(CountryPage(dtmIndex), Country("GB", ""))
 
-      val viewModelProvider = new UnloadingFindingsViewModelProvider()
+      val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
       val result            = viewModelProvider.apply(userAnswers)
-      val section           = result.sections(3)
+      val section           = result.sections(2)
 
       section.sectionTitle.value mustBe "Departure means of transport"
       section.viewLinks must not be Nil
@@ -258,9 +286,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(VehicleIdentificationNumberPage(Index(1)), "28")
         .setValue(CountryPage(Index(1)), Country("GB", ""))
 
-      val viewModelProvider = new UnloadingFindingsViewModelProvider()
+      val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
       val result            = viewModelProvider.apply(userAnswers)
-      val section           = result.sections(3)
+      val section           = result.sections(2)
 
       section.sectionTitle.value mustBe "Departure means of transport"
       section.children.length mustBe 2
@@ -282,9 +310,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.viewLinks must not be Nil
@@ -301,9 +329,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.viewLinks must not be Nil
@@ -327,9 +355,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.viewLinks must not be Nil
@@ -353,9 +381,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.children.length mustBe 2
@@ -389,9 +417,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.viewLinks must not be Nil
@@ -414,9 +442,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
             .setValue(ItemPage(equipmentIndex, itemIndex), BigInt(10))
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.viewLinks must not be Nil
@@ -448,9 +476,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.children.length mustBe 2
@@ -485,9 +513,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealIdentificationNumberPage(Index(1), Index(0)), "1002")
             .setValue(ItemPage(Index(1), Index(0)), BigInt(10))
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(4)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment"
           section.children.length mustBe 2
@@ -541,9 +569,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(9)
+        val section           = result.sections(8)
 
         section.sectionTitle.value mustBe "House consignments"
         section.children.length mustBe 1
@@ -579,9 +607,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(GrossWeightPage(Index(1), itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(Index(1), itemIndex), BigDecimal(123.45))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(9)
+        val section           = result.sections(8)
 
         section.sectionTitle.value mustBe "House consignments"
         section.children.length mustBe 2
@@ -600,9 +628,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(AdditionalReferenceTypePage(index), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
           .setValue(AdditionalReferenceNumberPage(index), "addref-1")
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(6)
+        val section           = result.sections(5)
 
         section.sectionTitle.value mustBe "Additional references"
         section.children.head.rows.size mustBe 2
@@ -616,9 +644,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("Y022", "Consignor / exporter (AEO certificate number)"))
           .setValue(AdditionalReferenceNumberPage(Index(1)), "addref-2")
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(6)
+        val section           = result.sections(5)
 
         section.sectionTitle.value mustBe "Additional references"
         section.children.size mustBe 2
@@ -633,9 +661,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(AdditionalInformationCodePage(index), AdditionalInformationCode("20300", "Export"))
           .setValue(AdditionalInformationTextPage(index), "a string")
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(8)
+        val section           = result.sections(7)
 
         section.sectionTitle.value mustBe "Additional information"
         section.children.head.rows.size mustBe 2
@@ -655,9 +683,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
           .setValue(AdditionalInformationTextPage(Index(1)), "another string")
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(8)
+        val section           = result.sections(7)
 
         section.sectionTitle.value mustBe "Additional information"
         section.children.size mustBe 2
@@ -671,9 +699,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(IncidentCodePage(index), Incident("1", "bad wrapping paper"))
           .setValue(IncidentTextPage(index), "it got wet")
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(7)
+        val section           = result.sections(6)
 
         section.sectionTitle.value mustBe "Incidents"
         section.children.length mustBe 1
@@ -691,10 +719,10 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(IncidentCodePage(Index(1)), Incident("2", "desc 2"))
           .setValue(IncidentTextPage(Index(1)), "free text 2")
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val viewModelProvider = app.injector.instanceOf[UnloadingFindingsViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers)
 
-        val section = result.sections(7)
+        val section = result.sections(6)
 
         section.sectionTitle.value mustBe "Incidents"
         section.children.length mustBe 2
