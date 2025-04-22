@@ -294,6 +294,7 @@ class HouseConsignmentAnswersHelper(
 
         val rows = Seq(
           helper.descriptionRow,
+          helper.ucrRow,
           helper.declarationType,
           helper.countryOfDestination,
           Seq(helper.grossWeightRow),

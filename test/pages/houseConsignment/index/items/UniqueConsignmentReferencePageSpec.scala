@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.houseConsignment.index.items
 
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object ConsignmentSection extends Section[JsObject] {
+class UniqueConsignmentReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "UniqueConsignmentReferencePage" - {
 
-  override def toString: String = "Consignment"
+    beRetrievable[String](UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex))
+
+    beSettable[String](UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex))
+
+    beRemovable[String](UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex))
+  }
 }

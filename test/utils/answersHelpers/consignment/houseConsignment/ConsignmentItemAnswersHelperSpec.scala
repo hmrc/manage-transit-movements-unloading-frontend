@@ -62,6 +62,35 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "ucrRow" - {
+      val page = UniqueConsignmentReferencePage(hcIndex, itemIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.ucrRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(Gen.alphaNumStr) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+              val result = helper.ucrRow.value
+              result.value.value mustBe value
+              val actions = result.actions.get.items
+              result.key.value mustBe "Reference Number UCR"
+              val action = actions.head
+              action.href mustBe "#"
+              action.visuallyHiddenText.get mustBe "reference number UCR of item 1"
+
+          }
+        }
+      }
+    }
+
     "declarationTypeRow" - {
       val page = DeclarationTypePage(hcIndex, itemIndex)
       "must return None" - {

@@ -462,6 +462,7 @@ unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods i
 
 declarationType = Declaration type
 securityType = Safety and security details
+ucrType = Unique Consignment Reference Page
 reducedDatasetIndicator = Do you want to use a reduced data set?
 declarationAcceptanceDate = Declaration acceptance date
 
@@ -501,6 +502,12 @@ unloadingFindings.rowHeadings.incident.item = Goods item number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 unloadingFindings.rowHeadings.consignment.item = Item {0}
 
+unloadingFindings.rowHeadings.countryOfRouting = Country {0}
+unloadingFindings.rowHeadings.countryOfRouting.change.hidden = country {0}
+
+unloadingFindings.rowHeadings.countriesOfRouting = Countries of routing
+countriesOfRoutingLink.addRemove = Add or remove country of routing
+
 unloadingFindings.subsections.houseConsignment = House consignment {0}
 unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
@@ -527,6 +534,8 @@ unloadingFindings.subsections.item.parent.heading = Items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.description.change.hidden = description
+unloadingFindings.rowHeadings.item.uniqueConsignmentReference = Reference Number UCR
+unloadingFindings.rowHeadings.item.uniqueConsignmentReference.change.hidden = reference number UCR of item {0}
 unloadingFindings.rowHeadings.item.declarationType = Declaration type
 unloadingFindings.rowHeadings.item.countryOfDestination = Country of destination
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight

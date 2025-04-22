@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages
 
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object ConsignmentSection extends Section[JsObject] {
+class UniqueConsignmentReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "UniqueConsignmentReferencePage" - {
 
-  override def toString: String = "Consignment"
+    beRetrievable[String](UniqueConsignmentReferencePage)
+
+    beSettable[String](UniqueConsignmentReferencePage)
+
+    beRemovable[String](UniqueConsignmentReferencePage)
+  }
+
 }

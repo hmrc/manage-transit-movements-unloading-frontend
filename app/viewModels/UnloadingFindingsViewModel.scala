@@ -38,6 +38,7 @@ object UnloadingFindingsViewModel {
         helper.consigneeSection,
         helper.holderOfTheTransitProcedureSection,
         Some(helper.inlandModeOfTransportSection),
+        Some(helper.countriesOfRoutingSection),
         Some(helper.departureTransportMeansSection),
         Some(helper.transportEquipmentSection),
         Some(helper.documentSection),
