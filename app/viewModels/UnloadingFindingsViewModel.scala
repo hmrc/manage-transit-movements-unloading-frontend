@@ -32,7 +32,6 @@ object UnloadingFindingsViewModel {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
       val helper = new ConsignmentAnswersHelper(userAnswers)
-
       val sections = Seq(
         Some(helper.headerSection),
         helper.consignorSection,
