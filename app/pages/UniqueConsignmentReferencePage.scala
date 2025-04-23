@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages
 
-import play.api.libs.json.{JsObject, JsPath}
+import generated.CUSTOM_ConsignmentType05
+import pages.sections.ConsignmentSection
+import play.api.libs.json.JsPath
 
-case object ConsignmentSection extends Section[JsObject] {
+case object UniqueConsignmentReferencePage extends DiscrepancyQuestionPage[String, Option[CUSTOM_ConsignmentType05], String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = ConsignmentSection.path \ toString
 
-  override def toString: String = "Consignment"
+  override def toString: String = "ucr"
+
+  override def valueInIE043(ie043: Option[CUSTOM_ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
+    None
 }

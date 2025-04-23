@@ -21,17 +21,19 @@ import models.DocType.Previous
 import models.reference.Country
 import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
-import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
 import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
-import pages.{houseConsignment, _}
+import pages.{houseConsignment, *}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment._
+import utils.answersHelpers.consignment.houseConsignment.*
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -51,6 +53,14 @@ class HouseConsignmentAnswersHelper(
 
   def grossMassRowOnConsignmentPage: Option[SummaryListRow] =
     grossMassRow.map(_.copy(actions = None))
+
+  def ucrRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = UniqueConsignmentReferencePage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.ucr",
+    id = Some(s"change-unique-consignment-reference"),
+    call = Some(Call(GET, "#")) // TODO - update once controller built (CTCP-6422)
+  )
 
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
@@ -284,6 +294,7 @@ class HouseConsignmentAnswersHelper(
 
         val rows = Seq(
           helper.descriptionRow,
+          helper.ucrRow,
           helper.declarationType,
           helper.countryOfDestination,
           Seq(helper.grossWeightRow),

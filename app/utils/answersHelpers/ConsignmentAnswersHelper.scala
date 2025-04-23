@@ -23,16 +23,18 @@ import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
-import pages.sections._
+import pages.sections.*
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
-import pages.{CustomsOfficeOfDestinationActualPage, GrossWeightPage, SecurityTypePage}
+import pages.{CustomsOfficeOfDestinationActualPage, GrossWeightPage, SecurityTypePage, UniqueConsignmentReferencePage}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.answersHelpers.consignment._
+import uk.gov.hmrc.http.HttpVerbs.GET
+import utils.answersHelpers.consignment.*
 import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -60,6 +62,14 @@ class ConsignmentAnswersHelper(
     text = messages("transportEquipmentLink.addRemove")
   )
 
+  private def countryOfRoutingAddRemoveLink: Link =
+    Link(
+      id = "add-remove-countries-of-routing",
+      href = "#",
+      text = messages("countriesOfRoutingLink.addRemove"),
+      visuallyHidden = None
+    )
+
   private val departureTransportMeansAddRemoveLink: Link =
     Link(
       id = s"add-remove-departure-transport-means",
@@ -83,6 +93,7 @@ class ConsignmentAnswersHelper(
       countryOfDestinationRow,
       customsOfficeOfDestinationActual,
       grossMassRow,
+      ucrRow,
       Some(traderAtDestinationRow)
     ).flatten
   )
@@ -143,6 +154,14 @@ class ConsignmentAnswersHelper(
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
     call = Some(controllers.routes.GrossWeightController.onPageLoad(userAnswers.id))
+  )
+
+  def ucrRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = UniqueConsignmentReferencePage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.ucr",
+    id = Some(s"change-unique-consignment-reference"),
+    call = Some(Call(GET, "#")) //  TODO - update once controller built (CTCP-6421)
   )
 
   def inlandModeOfTransportRow: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
@@ -276,6 +295,23 @@ class ConsignmentAnswersHelper(
           viewLinks = Seq(additionalReferenceAddRemoveLink),
           children = children,
           id = Some("additionalReferences")
+        )
+    }
+
+  def countriesOfRoutingSection: Section =
+    userAnswers
+      .get(CountriesOfRoutingSection)
+      .mapWithIndex {
+        case (_, index) =>
+          val helper = new CountryOfRoutingAnswersHelper(userAnswers, index)
+          Seq(helper.country).flatten
+      } match {
+      case rows =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.rowHeadings.countriesOfRouting")),
+          rows = rows.flatten,
+          id = Some("countries-of-routing"),
+          viewLinks = Seq(countryOfRoutingAddRemoveLink)
         )
     }
 

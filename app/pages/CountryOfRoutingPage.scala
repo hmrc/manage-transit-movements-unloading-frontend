@@ -1,0 +1,33 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package pages
+
+import generated.CUSTOM_ConsignmentType05
+import models.Index
+import models.reference.Country
+import pages.sections.CountryOfRoutingSection
+import play.api.libs.json.JsPath
+
+case class CountryOfRoutingPage(countryIndex: Index) extends DiscrepancyQuestionPage[Country, Option[CUSTOM_ConsignmentType05], String] {
+
+  override def path: JsPath = CountryOfRoutingSection(countryIndex).path \ toString
+
+  override def toString: String = "country"
+
+  override def valueInIE043(ie043: Option[CUSTOM_ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
+    None // TODO Update when we run this into submission logic
+}

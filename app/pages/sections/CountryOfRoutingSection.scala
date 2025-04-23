@@ -16,11 +16,11 @@
 
 package pages.sections
 
+import models.Index
 import play.api.libs.json.{JsObject, JsPath}
 
-case object ConsignmentSection extends Section[JsObject] {
+case class CountryOfRoutingSection(countryIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = CountriesOfRoutingSection.path \ countryIndex.position
 
-  override def toString: String = "Consignment"
 }
