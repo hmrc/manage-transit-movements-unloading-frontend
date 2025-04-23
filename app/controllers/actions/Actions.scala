@@ -51,6 +51,10 @@ class Actions @Inject() (
     requireData(arrivalId) andThen
       indexRequiredAction(section, addAnother)
 
+  def requirePhase6AndIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
+    requirePhase6(arrivalId) andThen
+      indexRequiredAction(section, addAnother)
+
   def requirePhase6(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     requireData(arrivalId) andThen
       phase6Action()

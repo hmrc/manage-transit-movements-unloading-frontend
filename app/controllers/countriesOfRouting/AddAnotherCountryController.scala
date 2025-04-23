@@ -48,7 +48,7 @@ class AddAnotherCountryController @Inject() (
   private def form(viewModel: AddAnotherCountryViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requirePhase6(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
       val preparedForm = request.userAnswers.get(AddAnotherCountryPage) match {
@@ -58,7 +58,7 @@ class AddAnotherCountryController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requirePhase6(arrivalId).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
       form(viewModel)

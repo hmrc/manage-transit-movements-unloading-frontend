@@ -52,14 +52,14 @@ class RemoveCountryYesNoController @Inject() (
     userAnswers.get(CountryOfRoutingPage(index)).map(_.toString)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, index: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, CountryOfRoutingSection(index), addAnother(arrivalId, mode)) {
+    .requirePhase6AndIndex(arrivalId, CountryOfRoutingSection(index), addAnother(arrivalId, mode)) {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, index)
         Ok(view(form(index), request.userAnswers.mrn, arrivalId, index, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, index: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, CountryOfRoutingSection(index), addAnother(arrivalId, mode))
+    .requirePhase6AndIndex(arrivalId, CountryOfRoutingSection(index), addAnother(arrivalId, mode))
     .async {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, index)
