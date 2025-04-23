@@ -1,5 +1,6 @@
 # microservice specific routes
 
+->         /                                            app.countriesOfRouting.Routes
 ->         /                                            app.departureMeansOfTransport.Routes
 ->         /                                            app.houseConsignment.Routes
 ->         /                                            app.transportEquipment.Routes

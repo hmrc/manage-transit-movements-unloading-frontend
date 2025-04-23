@@ -137,6 +137,15 @@ grossWeight.error.invalidFormat = The new gross weight must only include 6 decim
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
 
+countriesOfRouting.country.NormalMode.title = Which country do you want to add to the transit route?
+countriesOfRouting.country.CheckMode.title = Which new country do you want to add to the transit route?
+countriesOfRouting.country.NormalMode.heading = Which country do you want to add to the transit route?
+countriesOfRouting.country.CheckMode.heading = Which new country do you want to add to the transit route?
+countriesOfRouting.country.NormalMode.error.required = Select the country you want to add to the transit route
+countriesOfRouting.country.CheckMode.error.required = Select the new country you want to add to the transit route
+countriesOfRouting.country.placeholder = Select a country
+countriesOfRouting.country.hint = Enter the country or code, like Austria or AT.
+
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
@@ -155,7 +164,7 @@ departureMeansOfTransport.country.CheckMode.heading = What country is the new de
 departureMeansOfTransport.country.NormalMode.error.required = Select the country the vehicle is registered to
 departureMeansOfTransport.country.CheckMode.error.required = Select the country the new departure means of transport is registered to
 departureMeansOfTransport.country.placeholder = Select a country
-departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
+departureMeansOfTransport.country.hint = Enter the country or code, like Austria or AT.
 
 departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport?
