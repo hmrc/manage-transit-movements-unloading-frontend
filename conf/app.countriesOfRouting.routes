@@ -1,0 +1,4 @@
+GET        /:arrivalId/transit-route/:index/country                                     controllers.countriesOfRouting.CountryController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/transit-route/:index/country                                     controllers.countriesOfRouting.CountryController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/change-transit-route/:index/country                              controllers.countriesOfRouting.CountryController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/change-transit-route/:index/country                              controllers.countriesOfRouting.CountryController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)

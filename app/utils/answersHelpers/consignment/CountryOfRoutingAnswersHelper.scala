@@ -16,13 +16,12 @@
 
 package utils.answersHelpers.consignment
 
+import controllers.countriesOfRouting.routes
 import models.reference.Country
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.CountryOfRoutingPage
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class CountryOfRoutingAnswersHelper(
@@ -36,7 +35,7 @@ class CountryOfRoutingAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.countryOfRouting",
     id = Some(s"change-country-$countryIndex"),
-    call = Some(Call(GET, "#")),
+    call = Some(routes.CountryController.onPageLoad(userAnswers.id, countryIndex, CheckMode)),
     args = countryIndex.display
   )
 }
