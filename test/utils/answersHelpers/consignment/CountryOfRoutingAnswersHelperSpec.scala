@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import models.CheckMode
 import models.reference.Country
 import pages.CountryOfRoutingPage
 import org.scalacheck.Arbitrary.arbitrary
@@ -47,7 +48,7 @@ class CountryOfRoutingAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.toString
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe controllers.countriesOfRouting.routes.CountryController.onPageLoad(arrivalId, index, CheckMode).url
               action.visuallyHiddenText.value mustBe "country 1"
               action.id mustBe "change-country-1"
           }
