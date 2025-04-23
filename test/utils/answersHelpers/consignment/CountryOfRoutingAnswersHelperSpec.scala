@@ -18,8 +18,8 @@ package utils.answersHelpers.consignment
 
 import models.CheckMode
 import models.reference.Country
-import pages.CountryOfRoutingPage
 import org.scalacheck.Arbitrary.arbitrary
+import pages.countriesOfRouting.CountryOfRoutingPage
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class CountryOfRoutingAnswersHelperSpec extends AnswersHelperSpecBase {

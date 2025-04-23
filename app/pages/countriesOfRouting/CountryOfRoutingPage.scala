@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package pages.countriesOfRouting
 
 import generated.CUSTOM_ConsignmentType05
 import models.Index
 import models.reference.Country
+import pages.DiscrepancyQuestionPage
 import pages.sections.CountryOfRoutingSection
 import play.api.libs.json.JsPath
 

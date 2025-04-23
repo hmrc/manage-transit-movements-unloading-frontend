@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.countriesOfRouting.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
@@ -24,27 +25,27 @@
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    insetText: InsetText,
+    insetTextComp : InsetText,
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, documentIndex: Index, mode: Mode, document: Option[String])(implicit request: Request[?], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, index: Index, mode: Mode, insetText: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.removeDocumentYesNo.title"),
+    title = messages("countriesOfRouting.removeCountryYesNo.title"),
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
+    @formHelper(action = routes.RemoveCountryYesNoController.onSubmit(arrivalId, mode, index), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = controllers.documents.routes.RemoveDocumentYesNoController.onSubmit(arrivalId,mode, documentIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = InputYesNoViewModel(
-                heading = messages("document.removeDocumentYesNo.heading"),
+                heading = messages("countriesOfRouting.removeCountryYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = document.map(insetText(_))
+                additionalHtml = insetText.map(insetTextComp(_))
             )
         )
 

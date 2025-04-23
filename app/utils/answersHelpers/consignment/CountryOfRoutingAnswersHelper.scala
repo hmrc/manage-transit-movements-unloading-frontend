@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import controllers.countriesOfRouting.routes
 import models.reference.Country
 import models.{CheckMode, Index, UserAnswers}
-import pages.CountryOfRoutingPage
+import pages.countriesOfRouting.CountryOfRoutingPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
