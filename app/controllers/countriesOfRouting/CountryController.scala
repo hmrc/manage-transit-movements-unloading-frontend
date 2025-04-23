@@ -19,6 +19,7 @@ package controllers.countriesOfRouting
 import controllers.actions.*
 import forms.SelectableFormProvider.CountryFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
+import navigation.CountryOfRoutingNavigator
 import pages.countriesOfRouting.CountryOfRoutingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
@@ -39,6 +40,7 @@ class CountryController @Inject() (
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView,
+  navigator: CountryOfRoutingNavigator,
   countryViewModelProvider: CountryViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -83,7 +85,7 @@ class CountryController @Inject() (
                     for {
                       updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfRoutingPage(index), value))
                       _              <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(routes.CountryController.onSubmit(arrivalId, index, mode))
+                    } yield Redirect(navigator.nextPage(CountryOfRoutingPage(index), mode, request.userAnswers))
                 )
           }
     }
