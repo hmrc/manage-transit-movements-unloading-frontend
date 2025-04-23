@@ -23,7 +23,7 @@ import models.reference.TransportMode.InlandMode
 import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.CountryOfRoutingPage
+import pages.countriesOfRouting.CountryOfRoutingPage
 import pages.transportEquipment.index.ItemPage
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -188,6 +188,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.id mustBe "add-remove-countries-of-routing"
             addOrRemoveLink.text mustBe "Add or remove country of routing"
             addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe controllers.countriesOfRouting.routes.AddAnotherCountryController.onPageLoad(arrivalId, NormalMode).url
 
             result.rows.size mustEqual 2
             result.rows.head.value.value mustEqual value1.toString

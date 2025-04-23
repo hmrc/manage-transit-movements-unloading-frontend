@@ -146,6 +146,21 @@ countriesOfRouting.country.CheckMode.error.required = Select the new country you
 countriesOfRouting.country.placeholder = Select a country
 countriesOfRouting.country.hint = Enter the country or code, like Austria or AT.
 
+countriesOfRouting.removeCountryYesNo.title = Are you sure you want to remove this country from the transit route?
+countriesOfRouting.removeCountryYesNo.heading = Are you sure you want to remove this country from the transit route?
+countriesOfRouting.removeCountryYesNo.error.required = Select yes if you want to remove this country from the transit route
+
+countriesOfRouting.addAnotherCountry.empty.title = You have added 0 countries to the transit route
+countriesOfRouting.addAnotherCountry.singular.title = You have added 1 country to the transit route
+countriesOfRouting.addAnotherCountry.plural.title = You have added {0} countries to the transit route
+countriesOfRouting.addAnotherCountry.empty.heading = You have added 0 countries to the transit route
+countriesOfRouting.addAnotherCountry.singular.heading = You have added 1 country to the transit route
+countriesOfRouting.addAnotherCountry.plural.heading = You have added {0} countries to the transit route
+countriesOfRouting.addAnotherCountry.empty.label = Do you want to add a country to the transit route?
+countriesOfRouting.addAnotherCountry.label = Do you want to add another country to the transit route?
+countriesOfRouting.addAnotherCountry.maxLimit.label = You cannot add another country to the transit route. To add another, you need to remove one first.
+countriesOfRouting.addAnotherCountry.error.required = Select yes if you want to add another country to the transit route
+
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?

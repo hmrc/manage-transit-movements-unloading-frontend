@@ -24,7 +24,7 @@ import models.{CheckMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.CountryOfRoutingPage
+import pages.countriesOfRouting.CountryOfRoutingPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder

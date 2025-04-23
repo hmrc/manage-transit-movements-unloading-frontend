@@ -19,7 +19,7 @@ package controllers.countriesOfRouting
 import controllers.actions.*
 import forms.SelectableFormProvider.CountryFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
-import pages.CountryOfRoutingPage
+import pages.countriesOfRouting.CountryOfRoutingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
 import repositories.SessionRepository

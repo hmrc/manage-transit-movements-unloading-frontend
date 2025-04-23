@@ -26,6 +26,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.*
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import pages.countriesOfRouting.CountryOfRoutingPage
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.holderOfTheTransitProcedure.CountryPage as HotPCountryPage
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage, NetWeightPage}

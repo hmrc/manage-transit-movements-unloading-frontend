@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package pages.countriesOfRouting
 
-import generated.CUSTOM_ConsignmentType05
-import models.Index
 import models.reference.Country
-import pages.sections.CountryOfRoutingSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class CountryOfRoutingPage(countryIndex: Index) extends DiscrepancyQuestionPage[Country, Option[CUSTOM_ConsignmentType05], String] {
+class CountryOfRoutingPageSpec extends PageBehaviours {
 
-  override def path: JsPath = CountryOfRoutingSection(countryIndex).path \ toString
+  "CountryOfRoutingPage" - {
 
-  override def toString: String = "country"
+    beRetrievable[Country](CountryOfRoutingPage(index))
 
-  override def valueInIE043(ie043: Option[CUSTOM_ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
-    None // TODO Update when we run this into submission logic
+    beSettable[Country](CountryOfRoutingPage(index))
+
+    beRemovable[Country](CountryOfRoutingPage(index))
+  }
+
 }

@@ -65,7 +65,7 @@ class ConsignmentAnswersHelper(
   private def countryOfRoutingAddRemoveLink: Link =
     Link(
       id = "add-remove-countries-of-routing",
-      href = "#",
+      href = controllers.countriesOfRouting.routes.AddAnotherCountryController.onPageLoad(arrivalId, NormalMode).url,
       text = messages("countriesOfRoutingLink.addRemove"),
       visuallyHidden = None
     )
