@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.countriesOfRouting
 
-import models.reference.Country
 import pages.behaviours.PageBehaviours
 
-class CountryOfRoutingPageSpec extends PageBehaviours {
+class AddAnotherCountryPageSpec extends PageBehaviours {
 
-  "CountryOfRoutingPage" - {
+  "AddAnotherCountryPage" - {
 
-    beRetrievable[Country](CountryOfRoutingPage(index))
+    beRetrievable[Boolean](AddAnotherCountryPage)
 
-    beSettable[Country](CountryOfRoutingPage(index))
+    beSettable[Boolean](AddAnotherCountryPage)
 
-    beRemovable[Country](CountryOfRoutingPage(index))
+    beRemovable[Boolean](AddAnotherCountryPage)
   }
-
 }

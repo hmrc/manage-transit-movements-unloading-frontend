@@ -90,6 +90,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     val fakeDocumentNavigator: DocumentNavigator =
       new FakeDocumentNavigator(onwardRoute)
 
+    val fakeCountryOfRoutingNavigator: CountryOfRoutingNavigator =
+      new FakeCountryOfRoutingNavigator(onwardRoute)
+
     val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator =
       new FakeDepartureTransportMeansNavigator(onwardRoute)
 

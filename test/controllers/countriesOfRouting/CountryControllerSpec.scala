@@ -21,10 +21,11 @@ import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{CheckMode, SelectableList}
+import navigation.CountryOfRoutingNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.CountryOfRoutingPage
+import pages.countriesOfRouting.CountryOfRoutingPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -67,6 +68,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       .guiceApplicationBuilder()
       .configure("feature-flags.phase-6-enabled" -> true)
       .overrides(
+        bind(classOf[CountryOfRoutingNavigator]).toInstance(FakeConsignmentNavigators.fakeCountryOfRoutingNavigator),
         bind[ReferenceDataService].toInstance(mockReferenceDataService),
         bind[CountryViewModelProvider].toInstance(mockViewModelProvider)
       )
@@ -126,8 +128,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual
-        routes.CountryController.onPageLoad(arrivalId, index, mode).url // TODO - Update redirect logic when other pages built CTCP-6428
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
