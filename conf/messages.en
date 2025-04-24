@@ -1233,6 +1233,11 @@ houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross
 houseConsignment.index.grossWeight.NormalMode.error.zero = The gross weight must be more than 0
 houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight must be more than 0
 
+houseConsignment.index.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.index.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.index.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
+houseConsignment.index.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for house consignment {0}
+
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.hint = Adding an additional reference number is optional.
