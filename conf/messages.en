@@ -230,6 +230,11 @@ houseConsignment.item.grossWeight.error.invalidValue = The gross weight must be 
 houseConsignment.item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 
+houseConsignment.item.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
+houseConsignment.item.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}
+
 netWeight.CheckMode.title = What is the new net weight of item {1} in house consignment {0}?
 netWeight.NormalMode.title = What is the net weight of item {1} in house consignment {0}?
 netWeight.CheckMode.heading = What is the new net weight of item {1} in house consignment {0}?
