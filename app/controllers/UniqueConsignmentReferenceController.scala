@@ -44,11 +44,10 @@ class UniqueConsignmentReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = ucrFormProvider("uniqueConsignmentReference")
-
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requirePhase6(arrivalId).async {
       implicit request =>
+        val form      = ucrFormProvider("uniqueConsignmentReference", mode)
         val viewModel = viewModelProvider.apply(mode)
         val preparedForm = request.userAnswers.get(UniqueConsignmentReferencePage) match {
           case None        => form
@@ -60,6 +59,7 @@ class UniqueConsignmentReferenceController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
+        val form      = ucrFormProvider("uniqueConsignmentReference", mode)
         val viewModel = viewModelProvider.apply(mode)
         form
           .bindFromRequest()

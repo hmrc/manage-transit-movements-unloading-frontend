@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.maxUCRLength
 import forms.mappings.Mappings
-import models.RichString
+import models.{Mode, RichString}
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
 
@@ -26,13 +26,13 @@ import javax.inject.Inject
 
 class UniqueConsignmentReferenceFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(prefix: String, mode: Mode): Form[String] =
     Form(
-      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
+      "value" -> adaptedText(s"$prefix.${mode.toString}.error.required")(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
-            maxLength(maxUCRLength, s"$prefix.error.length")
+            regexp(alphaNumericRegex, s"$prefix.${mode.toString}.error.invalid"),
+            maxLength(maxUCRLength, s"$prefix.${mode.toString}.error.length")
           )
         )
     )

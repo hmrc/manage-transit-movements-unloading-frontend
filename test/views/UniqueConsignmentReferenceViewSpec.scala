@@ -18,7 +18,7 @@ package views
 
 import forms.UniqueConsignmentReferenceFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{Mode, NormalMode}
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
@@ -31,7 +31,9 @@ class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String]
 
   override val prefix: String = "uniqueConsignmentReference"
 
-  override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix)
+  private val mode: Mode = NormalMode
+
+  override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix, mode)
 
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
 

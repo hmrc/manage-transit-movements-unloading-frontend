@@ -144,8 +144,8 @@ uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignm
 uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference
 uniqueConsignmentReference.NormalMode.error.invalid = The Unique Consignment Reference must only include letters a to z and numbers 0 to 9
 uniqueConsignmentReference.CheckMode.error.invalid = The new Unique Consignment Reference must only include letters a to z and numbers 0 to 9
-uniqueConsignmentReference.CheckMode.error.length = The Unique Consignment Reference must be 70 characters or less
-uniqueConsignmentReference.NormalMode.error.length = The new Unique Consignment Reference must be 70 characters or less
+uniqueConsignmentReference.NormalMode.error.length = The Unique Consignment Reference must be 70 characters or less
+uniqueConsignmentReference.CheckMode.error.length = The new Unique Consignment Reference must be 70 characters or less
 
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
