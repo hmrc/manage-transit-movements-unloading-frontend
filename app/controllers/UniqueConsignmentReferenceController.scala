@@ -45,7 +45,7 @@ class UniqueConsignmentReferenceController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId).async {
+    actions.requirePhase6(arrivalId) {
       implicit request =>
         val form      = ucrFormProvider("uniqueConsignmentReference", mode)
         val viewModel = viewModelProvider.apply(mode)
@@ -53,7 +53,7 @@ class UniqueConsignmentReferenceController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel)))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =

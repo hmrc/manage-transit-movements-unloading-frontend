@@ -26,7 +26,7 @@ object UnloadingRemarksRequest {
   val presentationOfficeLength                      = 8
   val newSealNumberMaximumLength                    = 20
   val vehicleIdentificationNumberMaxLength          = 35
-  val alphaNumericRegex                             = "^[a-zA-Z0-9]*$"
+  val alphaNumericRegex                             = "^[a-zA-Z0-9 ]*$"
   val alphaNumericWithHyphenRegex: Regex            = "^[a-zA-Z0-9\\-]*$".r
   val alphaNumericWithSpacesRegex: Regex            = "^[a-zA-Z\\s0-9]*$".r
   val stringFieldRegexComma: Regex                  = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
