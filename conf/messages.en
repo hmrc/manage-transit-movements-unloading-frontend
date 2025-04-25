@@ -134,6 +134,19 @@ grossWeight.error.invalidCharacters = The new gross weight must only include num
 grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
+
+uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
+uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference
+uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference
+uniqueConsignmentReference.NormalMode.error.invalid = The Unique Consignment Reference must only include letters a to z and numbers 0 to 9
+uniqueConsignmentReference.CheckMode.error.invalid = The new Unique Consignment Reference must only include letters a to z and numbers 0 to 9
+uniqueConsignmentReference.NormalMode.error.length = The Unique Consignment Reference must be 70 characters or less
+uniqueConsignmentReference.CheckMode.error.length = The new Unique Consignment Reference must be 70 characters or less
+
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
 

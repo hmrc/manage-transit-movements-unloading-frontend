@@ -684,6 +684,14 @@ trait ViewModelGenerators {
     } yield CommodityCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
+  implicit lazy val arbitraryConsignmentUniqueReferenceNumberViewModel: Arbitrary[UniqueConsignmentReferenceViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield UniqueConsignmentReferenceViewModel(heading, title, requiredError)
+  }
+
   implicit lazy val arbitraryItemCombinedNomenclatureCodeViewModel: Arbitrary[CombinedNomenclatureCodeViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString

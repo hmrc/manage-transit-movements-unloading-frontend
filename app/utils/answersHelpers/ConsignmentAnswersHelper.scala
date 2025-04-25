@@ -16,10 +16,11 @@
 
 package utils.answersHelpers
 
+import controllers.routes
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
-import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
@@ -30,10 +31,8 @@ import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
 import pages.{CustomsOfficeOfDestinationActualPage, GrossWeightPage, SecurityTypePage, UniqueConsignmentReferencePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment.*
 import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
@@ -161,7 +160,7 @@ class ConsignmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.ucr",
     id = Some(s"change-unique-consignment-reference"),
-    call = Some(Call(GET, "#")) //  TODO - update once controller built (CTCP-6421)
+    call = Some(routes.UniqueConsignmentReferenceController.onPageLoad(userAnswers.id, CheckMode))
   )
 
   def inlandModeOfTransportRow: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](

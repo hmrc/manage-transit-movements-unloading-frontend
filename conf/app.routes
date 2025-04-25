@@ -78,6 +78,11 @@ POST       /:arrivalId/check-answers                                            
 GET        /:arrivalId/change-gross-weight                                                                           controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-gross-weight                                                                           controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
+GET        /:arrivalId/ucr/                                                                                         controllers.UniqueConsignmentReferenceController.onPageLoad(arrivalId: ArrivalId,  mode: Mode = NormalMode)
+POST       /:arrivalId/ucr/                                                                                         controllers.UniqueConsignmentReferenceController.onSubmit(arrivalId: ArrivalId,  mode: Mode = NormalMode)
+GET       /:arrivalId/change-ucr/                                                                                   controllers.UniqueConsignmentReferenceController.onPageLoad(arrivalId: ArrivalId,  mode: Mode = CheckMode)
+POST       /:arrivalId/change-ucr/                                                                                  controllers.UniqueConsignmentReferenceController.onSubmit(arrivalId: ArrivalId,  mode: Mode = CheckMode)
+
 GET        /:arrivalId/report                                                                                        controllers.OtherThingsToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/report                                                                                        controllers.OtherThingsToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-report                                                                                 controllers.OtherThingsToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
