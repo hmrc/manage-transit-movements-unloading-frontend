@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels.houseConsignment
+package viewModels.houseConsignment.index
 
 import models.Mode
 import play.api.i18n.Messages
