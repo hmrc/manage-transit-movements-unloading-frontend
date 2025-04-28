@@ -29,9 +29,7 @@ import pages.sections.houseConsignment.index.additionalInformation.AdditionalInf
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import pages.{houseConsignment, *}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.*
 import viewModels.sections.Section
@@ -59,7 +57,7 @@ class HouseConsignmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.ucr",
     id = Some(s"change-unique-consignment-reference"),
-    call = Some(Call(GET, "#")) // TODO - update once controller built (CTCP-6422)
+    call = Some(routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode))
   )
 
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
