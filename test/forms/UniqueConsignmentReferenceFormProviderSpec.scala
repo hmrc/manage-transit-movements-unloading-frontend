@@ -18,20 +18,18 @@ package forms
 
 import forms.behaviours.{FieldBehaviours, StringFieldBehaviours}
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
-import models.{Mode, NormalMode}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
 class UniqueConsignmentReferenceFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
   private val prefix       = Gen.alphaNumStr.sample.value
-  val mode: Mode           = NormalMode
-  val requiredKey          = s"$prefix.${mode.toString}.error.required"
-  val lengthKey            = s"$prefix.${mode.toString}.error.length"
-  val invalidCharactersKey = s"$prefix.${mode.toString}.error.invalid"
+  val requiredKey          = s"$prefix.error.required"
+  val lengthKey            = s"$prefix.error.length"
+  val invalidCharactersKey = s"$prefix.error.invalid"
   val maxLength            = 70
 
-  val form = new UniqueConsignmentReferenceFormProvider()(prefix, mode)
+  val form = new UniqueConsignmentReferenceFormProvider()(prefix, requiredKey)
 
   val fieldName = "value"
 

@@ -83,7 +83,9 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val actions = result.actions.get.items
               result.key.value mustBe "Reference Number UCR"
               val action = actions.head
-              action.href mustBe "#"
+              action.href mustBe controllers.houseConsignment.index.items.routes.UniqueConsignmentReferenceController
+                .onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, itemIndex)
+                .url
               action.visuallyHiddenText.get mustBe "reference number UCR of item 1"
 
           }
