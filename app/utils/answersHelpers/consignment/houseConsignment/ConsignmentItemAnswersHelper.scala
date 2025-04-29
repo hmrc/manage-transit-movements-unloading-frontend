@@ -62,7 +62,7 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.uniqueConsignmentReference",
     id = None,
-    call = Some(Call(GET, "#")), // TODO - update once controller built
+    call = Some(routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex)),
     args = itemIndex.display
   )
 

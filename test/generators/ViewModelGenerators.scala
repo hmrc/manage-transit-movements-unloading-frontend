@@ -62,7 +62,8 @@ import viewModels.houseConsignment.index.items.{
   CustomsUnionAndStatisticsCodeViewModel,
   DescriptionViewModel,
   GrossWeightViewModel,
-  NetWeightViewModel
+  NetWeightViewModel,
+  UniqueConsignmentReferenceViewModel as ItemUniqueConsignmentReferenceViewModel
 }
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
@@ -673,6 +674,15 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       arrivalId     <- arbitrary[ArrivalId]
     } yield CustomsUnionAndStatisticsCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryItemUniqueConsignmentReferenceViewModel: Arbitrary[ItemUniqueConsignmentReferenceViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- arbitrary[ArrivalId]
+    } yield ItemUniqueConsignmentReferenceViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
   implicit lazy val arbitraryItemCommodityCodeViewModel: Arbitrary[CommodityCodeViewModel] = Arbitrary {
