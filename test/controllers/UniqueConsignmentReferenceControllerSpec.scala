@@ -41,7 +41,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
   private val mockViewModelProvider                          = mock[UniqueConsignmentReferenceViewModelProvider]
   private val mode                                           = NormalMode
-  private val form                                           = formProvider("uniqueConsignmentReference", mode)
+  private val form                                           = formProvider("uniqueConsignmentReference", viewModel.requiredError)
   private val validAnswer                                    = "ucr123"
 
   lazy val ucrRoute: String = routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, mode).url
