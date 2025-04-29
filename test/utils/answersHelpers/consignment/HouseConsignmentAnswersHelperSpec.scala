@@ -84,7 +84,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           result.value.value mustBe "foo"
           val action = result.actions.value.items.head
           action.content.value mustBe "Change"
-          action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/ucr"
+          action.href mustBe "#"
           action.visuallyHiddenText.value mustBe "reference number UCR"
           action.id mustBe "change-unique-consignment-reference"
         }

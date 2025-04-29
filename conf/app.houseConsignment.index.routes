@@ -14,12 +14,6 @@ POST       /:arrivalId/house-consignment/:houseConsignmentIndex/add-ucr         
 GET        /:arrivalId/change-house-consignment/:houseConsignmentIndex/add-ucr                                     controllers.houseConsignment.index.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/change-house-consignment/:houseConsignmentIndex/add-ucr                                     controllers.houseConsignment.index.UniqueConsignmentReferenceYesNoController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/house-consignment/:houseConsignmentIndex/ucr                                                controllers.houseConsignment.index.UniqueConsignmentReferenceController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/house-consignment/:houseConsignmentIndex/ucr                                                controllers.houseConsignment.index.UniqueConsignmentReferenceController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/change-house-consignment/:houseConsignmentIndex/ucr                                  controllers.houseConsignment.index.UniqueConsignmentReferenceController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/change-house-consignment/:houseConsignmentIndex/ucr                                  controllers.houseConsignment.index.UniqueConsignmentReferenceController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)
-
-
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/departure-means-of-transport/add                   controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/departure-means-of-transport/add                   controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/change-house-consignment/:houseConsignmentIndex/departure-means-of-transport/add            controllers.houseConsignment.index.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)

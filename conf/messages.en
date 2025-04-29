@@ -246,19 +246,6 @@ houseConsignment.item.uniqueConsignmentReferenceYesNo.heading = Do you want to a
 houseConsignment.item.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
 houseConsignment.item.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}
 
-houseConsignment.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR)?
-houseConsignment.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR)?
-houseConsignment.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR)?
-houseConsignment.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR)?
-houseConsignment.uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
-houseConsignment.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference
-houseConsignment.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference
-houseConsignment.uniqueConsignmentReference.NormalMode.error.invalid = The Unique Consignment Reference must only include letters a to z and numbers 0 to 9
-houseConsignment.uniqueConsignmentReference.CheckMode.error.invalid = The new Unique Consignment Reference must only include letters a to z and numbers 0 to 9
-houseConsignment.uniqueConsignmentReference.NormalMode.error.length = The Unique Consignment Reference must be 70 characters or less
-houseConsignment.uniqueConsignmentReference.CheckMode.error.length = The new Unique Consignment Reference must be 70 characters or less
-
-
 netWeight.CheckMode.title = What is the new net weight of item {1} in house consignment {0}?
 netWeight.NormalMode.title = What is the net weight of item {1} in house consignment {0}?
 netWeight.CheckMode.heading = What is the new net weight of item {1} in house consignment {0}?
