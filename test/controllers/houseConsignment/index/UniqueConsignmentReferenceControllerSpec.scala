@@ -41,7 +41,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
   private val mockViewModelProvider                          = mock[UniqueConsignmentReferenceViewModelProvider]
   private val mode                                           = NormalMode
-  private val form                                           = formProvider("houseConsignment.uniqueConsignmentReference", mode)
+  private val form                                           = formProvider("houseConsignment.uniqueConsignmentReference", viewModel.requiredError)
   private val validAnswer                                    = "ucr123"
 
   lazy val ucrRoute: String = routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, index, mode).url
@@ -49,7 +49,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(viewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

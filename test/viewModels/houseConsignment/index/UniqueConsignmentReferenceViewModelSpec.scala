@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewModels.UniqueConsignmentReferenceViewModel.UniqueConsignmentReferenceViewModelProvider
+import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel.UniqueConsignmentReferenceViewModelProvider
 
 class UniqueConsignmentReferenceViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -28,20 +28,20 @@ class UniqueConsignmentReferenceViewModelSpec extends SpecBase with ScalaCheckPr
     "when NormalMode" in {
       val viewModelProvider = new UniqueConsignmentReferenceViewModelProvider()
 
-      val result = viewModelProvider(NormalMode)(messages)
+      val result = viewModelProvider(NormalMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "What is the Unique Consignment Reference (UCR)?"
-      result.heading mustBe "What is the Unique Consignment Reference (UCR)?"
+      result.title mustBe "What is the Unique Consignment Reference (UCR) for this house consignment?"
+      result.heading mustBe "What is the Unique Consignment Reference (UCR) for this house consignment?"
     }
   }
 
   "when CheckMode" in {
     val viewModelProvider = new UniqueConsignmentReferenceViewModelProvider()
 
-    val result = viewModelProvider(CheckMode)(messages)
+    val result = viewModelProvider(CheckMode, houseConsignmentIndex)(messages)
 
-    result.title mustBe "What is the new Unique Consignment Reference (UCR)?"
-    result.heading mustBe "What is the new Unique Consignment Reference (UCR)?"
+    result.title mustBe "What is the new Unique Consignment Reference (UCR) for this house consignment?"
+    result.heading mustBe "What is the new Unique Consignment Reference (UCR) for this house consignment?"
   }
 
 }

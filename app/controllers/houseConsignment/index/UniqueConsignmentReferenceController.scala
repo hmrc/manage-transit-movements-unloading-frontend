@@ -21,10 +21,12 @@ import forms.UniqueConsignmentReferenceFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigation
 import pages.houseConsignment.index.UniqueConsignmentReferencePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel
 import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel.UniqueConsignmentReferenceViewModelProvider
 import views.html.houseConsignment.index.UniqueConsignmentReferenceView
 
@@ -44,32 +46,35 @@ class UniqueConsignmentReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
+  private val prefix = "houseConsignment.uniqueConsignmentReference"
+
+  private def form(viewModel: UniqueConsignmentReferenceViewModel): Form[String] =
+    ucrFormProvider(prefix, viewModel.requiredError)
+
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requirePhase6(arrivalId) {
       implicit request =>
-        val form      = ucrFormProvider("houseConsignment.uniqueConsignmentReference", mode)
-        val viewModel = viewModelProvider.apply(mode)
-        val preparedForm = request.userAnswers.get(UniqueConsignmentReferencePage(index)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+        val viewModel = viewModelProvider.apply(mode, houseConsignmentIndex)
+        val preparedForm = request.userAnswers.get(UniqueConsignmentReferencePage(houseConsignmentIndex)) match {
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
         }
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode, viewModel))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode, viewModel))
     }
 
-  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val form      = ucrFormProvider("houseConsignment.uniqueConsignmentReference", mode)
-        val viewModel = viewModelProvider.apply(mode)
-        form
+        val viewModel = viewModelProvider.apply(mode, houseConsignmentIndex)
+        form(viewModel)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode, viewModel))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode, viewModel))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(UniqueConsignmentReferencePage(index), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(UniqueConsignmentReferencePage(houseConsignmentIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(UniqueConsignmentReferencePage(index), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(UniqueConsignmentReferencePage(houseConsignmentIndex), mode, updatedAnswers))
           )
     }
 

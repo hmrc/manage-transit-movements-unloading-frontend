@@ -34,9 +34,7 @@ import pages.sections.houseConsignment.index.items.additionalReference.Additiona
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
 import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.item.*
 import viewModels.sections.Section

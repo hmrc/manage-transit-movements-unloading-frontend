@@ -18,9 +18,9 @@ package views
 
 import forms.UniqueConsignmentReferenceFormProvider
 import generators.Generators
-import models.{Mode, NormalMode}
-import org.scalacheck.{Arbitrary, Gen}
+import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.{InputSize, UniqueConsignmentReferenceViewModel}

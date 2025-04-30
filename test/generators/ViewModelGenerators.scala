@@ -707,7 +707,7 @@ trait ViewModelGenerators {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-    } yield HouseConsignmentUCRViewModel(heading, title, requiredError)
+    } yield HouseConsignmentUCRViewModel(heading, title, requiredError, Index(0))
   }
 
   implicit lazy val arbitraryItemCombinedNomenclatureCodeViewModel: Arbitrary[CombinedNomenclatureCodeViewModel] = Arbitrary {

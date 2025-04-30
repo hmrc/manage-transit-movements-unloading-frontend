@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items
+package views.houseConsignment.index
 
 import forms.UniqueConsignmentReferenceFormProvider
 import models.{Mode, NormalMode}
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
@@ -27,13 +27,13 @@ import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.UniqueConsignmentReferenceView
 
-class UniqueConsignmentReferenceViewPageSpec extends InputTextViewBehaviours[String] {
+class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "houseConsignment.uniqueConsignmentReference"
 
   private val mode: Mode = NormalMode
 
-  override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix, mode)
+  override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix, viewModel.requiredError)
 
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
 

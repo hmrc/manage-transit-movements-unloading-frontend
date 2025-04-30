@@ -16,13 +16,13 @@
 
 package viewModels.houseConsignment.index
 
-import models.Mode
+import models.{Index, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class UniqueConsignmentReferenceViewModel(heading: String, title: String, requiredError: String)
+case class UniqueConsignmentReferenceViewModel(heading: String, title: String, requiredError: String, houseConsignmentIndex: Index)
 
 object UniqueConsignmentReferenceViewModel {
 
@@ -30,11 +30,12 @@ object UniqueConsignmentReferenceViewModel {
 
     override val prefix: String = "houseConsignment.uniqueConsignmentReference"
 
-    def apply(mode: Mode)(implicit message: Messages): UniqueConsignmentReferenceViewModel =
+    def apply(mode: Mode, houseConsignmentIndex: Index)(implicit message: Messages): UniqueConsignmentReferenceViewModel =
       new UniqueConsignmentReferenceViewModel(
-        heading(mode),
-        title(mode),
-        requiredError(mode)
+        heading(mode, houseConsignmentIndex),
+        title(mode, houseConsignmentIndex),
+        requiredError(mode, houseConsignmentIndex),
+        houseConsignmentIndex
       )
 
   }
