@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package views
+package views.houseConsignment.index
 
 import forms.UniqueConsignmentReferenceFormProvider
-import generators.Generators
-import models.NormalMode
+import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.{InputSize, UniqueConsignmentReferenceViewModel}
+import viewModels.InputSize
+import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel
 import views.behaviours.InputTextViewBehaviours
-import views.html.UniqueConsignmentReferenceView
+import views.html.houseConsignment.index.UniqueConsignmentReferenceView
 
-class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String] with Generators {
+class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "uniqueConsignmentReference"
+  override val prefix: String = "houseConsignment.uniqueConsignmentReference"
+
+  private val mode: Mode = NormalMode
 
   override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix, viewModel.requiredError)
 
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[UniqueConsignmentReferenceView].apply(form, mrn, arrivalId, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[UniqueConsignmentReferenceView].apply(form, mrn, arrivalId, index, NormalMode, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

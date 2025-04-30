@@ -39,6 +39,7 @@ import viewModels.houseConsignment.index.documents.{
   AddAnotherHouseConsignmentDocumentViewModel as DocumentsAddAnotherHouseConsignmentDocumentViewModel,
   ReferenceNumberViewModel
 }
+import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel as HouseConsignmentUCRViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel as AdditionalReferenceTypeItemViewModel
@@ -700,6 +701,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield UniqueConsignmentReferenceViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryHouseConsignmentUniqueReferenceNumberViewModel: Arbitrary[HouseConsignmentUCRViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield HouseConsignmentUCRViewModel(heading, title, requiredError, Index(0))
   }
 
   implicit lazy val arbitraryItemCombinedNomenclatureCodeViewModel: Arbitrary[CombinedNomenclatureCodeViewModel] = Arbitrary {
