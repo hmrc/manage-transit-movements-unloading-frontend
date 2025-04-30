@@ -55,7 +55,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               action.href mustBe controllers.houseConsignment.index.items.routes.DescriptionController
                 .onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, itemIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "description"
+              action.visuallyHiddenText.get mustBe "description of item 1"
 
           }
         }
