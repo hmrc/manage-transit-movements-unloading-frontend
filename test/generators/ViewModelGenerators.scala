@@ -26,7 +26,6 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
-import viewModels.*
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel
@@ -35,10 +34,12 @@ import viewModels.houseConsignment.index.departureTransportMeans.{
   HouseConsignmentCountryViewModel,
   IdentificationNumberViewModel as HCIdentificationNumberViewModel
 }
+import viewModels.houseConsignment.index.documents as hcViewModel
 import viewModels.houseConsignment.index.documents.{
   AddAnotherHouseConsignmentDocumentViewModel as DocumentsAddAnotherHouseConsignmentDocumentViewModel,
   ReferenceNumberViewModel
 }
+import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel as HouseConsignmentUCRViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel as AdditionalReferenceTypeItemViewModel
@@ -65,11 +66,11 @@ import viewModels.houseConsignment.index.items.{
   NetWeightViewModel,
   UniqueConsignmentReferenceViewModel as ItemUniqueConsignmentReferenceViewModel
 }
-import viewModels.houseConsignment.index.{documents as hcViewModel, UniqueConsignmentReferenceViewModel as HouseConsignmentUCRViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
+import viewModels.*
 
 trait ViewModelGenerators {
   self: Generators =>

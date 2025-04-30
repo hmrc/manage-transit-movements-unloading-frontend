@@ -35,24 +35,24 @@
 @(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, index: Index, mode:Mode, viewModel: UniqueConsignmentReferenceViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
-    title = viewModel.title,
-    showBackLink = true,
+  title = viewModel.title,
+  showBackLink = true,
 ) {
 
-    @formHelper(action = routes.UniqueConsignmentReferenceController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
+  @formHelper(action = routes.UniqueConsignmentReferenceController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors)
+    @errorSummary(form.errors)
 
-        @inputText(
-            field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = viewModel.heading,
-                caption = Some(messages("site.caption", mrn.toString))
-            ),
-            hint = Some(messages("houseConsignment.uniqueConsignmentReference.hint")),
-            inputClass = InputSize.Width20
-        )
+    @inputText(
+      field = form("value"),
+      inputTextType = OrdinaryTextInput(
+        heading = viewModel.heading,
+        caption = Some(messages("site.caption", mrn.toString))
+      ),
+      hint = Some(messages("houseConsignment.uniqueConsignmentReference.hint")),
+      inputClass = InputSize.Width20
+    )
 
-        @button(attributes = Map("id" -> "submit"))
-    }
+    @button(attributes = Map("id" -> "submit"))
+  }
 }
