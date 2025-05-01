@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UniqueConsignmentReferenceFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.houseConsignment.index.HouseConsignmentNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.UniqueConsignmentReferencePage
+import pages.houseConsignment.index.items.UniqueConsignmentReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel
-import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel.UniqueConsignmentReferenceViewModelProvider
-import views.html.houseConsignment.index.UniqueConsignmentReferenceView
+import viewModels.houseConsignment.index.items.UniqueConsignmentReferenceViewModel
+import viewModels.houseConsignment.index.items.UniqueConsignmentReferenceViewModel.UniqueConsignmentReferenceViewModelProvider
+import views.html.houseConsignment.index.items.UniqueConsignmentReferenceView
 
 import scala.concurrent.Future
 
@@ -40,16 +40,20 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
   private val formProvider                                   = new UniqueConsignmentReferenceFormProvider()
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
   private val mockViewModelProvider                          = mock[UniqueConsignmentReferenceViewModelProvider]
-  private val mode                                           = NormalMode
-  private val form                                           = formProvider("houseConsignment.uniqueConsignmentReference", viewModel.requiredError)
-  private val validAnswer                                    = "ucr123"
 
-  lazy val ucrRoute: String = routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, index, mode).url
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
+
+  private val form        = formProvider("houseConsignment.uniqueConsignmentReference", viewModel.requiredError, houseConsignmentIndex, itemIndex)
+  private val validAnswer = "ucr123"
+
+  lazy val ucrRoute: String =
+    routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -57,7 +61,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       .guiceApplicationBuilder()
       .configure("feature-flags.phase-6-enabled" -> true)
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator),
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
         bind[UniqueConsignmentReferenceViewModelProvider].toInstance(mockViewModelProvider)
       )
 
@@ -75,12 +79,12 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
+        view(form, mrn, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(UniqueConsignmentReferencePage(index), validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, ucrRoute)
@@ -94,7 +98,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -103,9 +107,8 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, ucrRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+      val request = FakeRequest(POST, ucrRoute)
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -128,7 +131,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[UniqueConsignmentReferenceView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
+        view(boundForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -166,9 +169,8 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, ucrRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+      val request = FakeRequest(POST, ucrRoute)
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -176,7 +178,5 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
-
   }
-
 }
