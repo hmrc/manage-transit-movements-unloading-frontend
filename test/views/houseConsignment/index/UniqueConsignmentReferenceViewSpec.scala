@@ -29,6 +29,8 @@ import views.html.houseConsignment.index.UniqueConsignmentReferenceView
 
 class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String] {
 
+  private val mode = NormalMode
+
   override val prefix: String = "houseConsignment.uniqueConsignmentReference"
 
   override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix, viewModel.requiredError)
@@ -36,7 +38,7 @@ class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String]
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[UniqueConsignmentReferenceView].apply(form, mrn, arrivalId, index, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[UniqueConsignmentReferenceView].apply(form, mrn, arrivalId, index, mode, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

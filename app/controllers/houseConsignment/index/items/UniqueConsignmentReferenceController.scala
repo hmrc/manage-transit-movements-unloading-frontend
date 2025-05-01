@@ -48,16 +48,16 @@ class UniqueConsignmentReferenceController @Inject() (
 
   private val prefix = "houseConsignment.item.uniqueConsignmentReference"
 
-  private def form(viewModel: UniqueConsignmentReferenceViewModel): Form[String] =
-    ucrFormProvider(prefix, viewModel.requiredError)
+  private def form(viewModel: UniqueConsignmentReferenceViewModel, houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
+    ucrFormProvider(prefix, viewModel.requiredError, houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
     actions.requirePhase6(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
         val preparedForm = request.userAnswers.get(UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex)) match {
-          case None        => form(viewModel)
-          case Some(value) => form(viewModel).fill(value)
+          case None        => form(viewModel, houseConsignmentIndex, itemIndex)
+          case Some(value) => form(viewModel, houseConsignmentIndex, itemIndex).fill(value)
         }
         Ok(view(preparedForm, request.userAnswers.mrn, viewModel))
     }
@@ -66,7 +66,7 @@ class UniqueConsignmentReferenceController @Inject() (
     actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
-        form(viewModel)
+        form(viewModel, houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))),

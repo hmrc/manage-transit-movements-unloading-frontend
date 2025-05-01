@@ -828,10 +828,10 @@ houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs U
 houseConsignment.item.customsUnionAndStatisticsCode.error.characters = The Customs Union and Statistics (CUS) code must only include letters a to z, numbers 0 to 9 and a hyphen
 houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Union and Statistics (CUS) code
 
-houseConsignment.item.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR) for this consignment item?
-houseConsignment.item.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR) for this consignment item?
-houseConsignment.item.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for this consignment item?
-houseConsignment.item.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for this consignment item?
+houseConsignment.item.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
 houseConsignment.item.uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
 houseConsignment.item.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference for this item
 houseConsignment.item.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference for this item

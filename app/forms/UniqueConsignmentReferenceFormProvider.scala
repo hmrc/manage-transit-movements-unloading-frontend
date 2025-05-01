@@ -26,9 +26,9 @@ import javax.inject.Inject
 
 class UniqueConsignmentReferenceFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, requiredError: String): Form[String] =
+  def apply(prefix: String, requiredError: String, args: Any*): Form[String] =
     Form(
-      "value" -> adaptedText(requiredError)(_.removeSpaces())
+      "value" -> adaptedText(requiredError, args)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalid"),
