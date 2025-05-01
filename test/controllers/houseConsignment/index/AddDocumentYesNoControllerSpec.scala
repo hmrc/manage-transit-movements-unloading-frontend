@@ -19,6 +19,7 @@ package controllers.houseConsignment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.FakeHouseConsignmentNavigatorProvider
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -26,7 +27,7 @@ import pages.houseConsignment.index.AddDocumentYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.houseConsignment.index.AddDocumentsYesNoView
 
 import scala.concurrent.Future
@@ -46,7 +47,7 @@ class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
+        bind[HouseConsignmentNavigator].toProvider(classOf[FakeHouseConsignmentNavigatorProvider])
       )
 
   "AddDocumentYesNoController" - {

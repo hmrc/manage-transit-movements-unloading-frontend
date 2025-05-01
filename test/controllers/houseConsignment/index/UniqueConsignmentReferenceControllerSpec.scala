@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UniqueConsignmentReferenceFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.FakeHouseConsignmentNavigatorProvider
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -57,7 +58,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       .guiceApplicationBuilder()
       .configure("feature-flags.phase-6-enabled" -> true)
       .overrides(
-        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig)),
+        bind[HouseConsignmentNavigator].toProvider(classOf[FakeHouseConsignmentNavigatorProvider]),
         bind[UniqueConsignmentReferenceViewModelProvider].toInstance(mockViewModelProvider)
       )
 

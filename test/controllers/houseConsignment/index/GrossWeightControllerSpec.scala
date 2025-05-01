@@ -21,6 +21,7 @@ import controllers.routes
 import forms.WeightFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.FakeHouseConsignmentNavigatorProvider
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import pages.houseConsignment.index.GrossWeightPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.houseConsignment.index.GrossWeightView
 
 import scala.concurrent.Future
@@ -50,7 +51,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
+        bind[HouseConsignmentNavigator].toProvider(classOf[FakeHouseConsignmentNavigatorProvider])
       )
 
   "GrossWeightAmount Controller" - {

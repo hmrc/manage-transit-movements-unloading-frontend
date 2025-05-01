@@ -19,6 +19,7 @@ package controllers.houseConsignment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.FakeHouseConsignmentNavigatorProvider
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +48,7 @@ class UniqueConsignmentReferenceYesNoControllerSpec extends SpecBase with AppWit
       .guiceApplicationBuilder()
       .configure("feature-flags.phase-6-enabled" -> true)
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
+        bind[HouseConsignmentNavigator].toProvider(classOf[FakeHouseConsignmentNavigatorProvider])
       )
 
   "UniqueConsignmentReferenceYesNoController" - {
