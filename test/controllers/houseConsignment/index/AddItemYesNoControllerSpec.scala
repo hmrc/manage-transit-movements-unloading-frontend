@@ -51,7 +51,7 @@ class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator),
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig)),
         bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
       )
 

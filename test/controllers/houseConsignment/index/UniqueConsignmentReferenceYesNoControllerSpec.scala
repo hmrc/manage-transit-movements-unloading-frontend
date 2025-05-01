@@ -47,7 +47,7 @@ class UniqueConsignmentReferenceYesNoControllerSpec extends SpecBase with AppWit
       .guiceApplicationBuilder()
       .configure("feature-flags.phase-6-enabled" -> true)
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
       )
 
   "UniqueConsignmentReferenceYesNoController" - {

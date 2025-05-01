@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import controllers.actions.*
 import models.{Mode, UserAnswers}
 import navigation.*
@@ -107,8 +108,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 
-    val fakeHouseConsignmentNavigator: HouseConsignmentNavigator =
-      new FakeHouseConsignmentNavigator(onwardRoute)
+    def fakeHouseConsignmentNavigator(appConfig: FrontendAppConfig): HouseConsignmentNavigator =
+      new FakeHouseConsignmentNavigator(onwardRoute, appConfig)
 
     val fakeAdditionalReferenceNavigatorProvider: AdditionalReferenceNavigatorProvider =
       new AdditionalReferenceNavigatorProvider {

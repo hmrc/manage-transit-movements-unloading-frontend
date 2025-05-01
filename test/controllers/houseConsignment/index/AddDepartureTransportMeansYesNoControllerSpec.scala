@@ -44,7 +44,7 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
       )
 
   "AddDepartureTransportMeansYesNo Controller" - {

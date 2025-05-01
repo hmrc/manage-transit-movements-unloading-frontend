@@ -46,7 +46,7 @@ class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
       )
 
   "AddDocumentYesNoController" - {

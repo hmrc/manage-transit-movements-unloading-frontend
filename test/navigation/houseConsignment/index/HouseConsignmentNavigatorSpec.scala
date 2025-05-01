@@ -17,14 +17,18 @@
 package navigation.houseConsignment.index
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import models.*
+import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.*
 
 class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val navigator = new HouseConsignmentNavigator
+  private val mockConfig = mock[FrontendAppConfig]
+  private val navigator  = new HouseConsignmentNavigator(mockConfig)
 
   "GrossWeightNavigator" - {
 
@@ -32,11 +36,25 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       val mode = CheckMode
 
       "must go from gross weight page to house consignment cross-check page" in {
-        val page = GrossWeightPage(hcIndex)
+        forAll(arbitrary[Boolean]) {
+          value =>
+            val mockConfig = mock[FrontendAppConfig]
+            when(mockConfig.phase6Enabled).thenReturn(value)
+            val page = GrossWeightPage(hcIndex)
+            val userAnswers = emptyUserAnswers
+              .setValue(page, BigDecimal("12.0"))
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+        }
+      }
 
+      "must go from UniqueConsignmentReferencePage to house consignment cross-check page" in {
+        val mockConfig = mock[FrontendAppConfig]
+        when(mockConfig.phase6Enabled).thenReturn(true)
+        val page = UniqueConsignmentReferencePage(hcIndex)
         val userAnswers = emptyUserAnswers
-          .setValue(page, BigDecimal("12.0"))
-
+          .setValue(page, "ucr123")
         navigator
           .nextPage(page, mode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
@@ -161,16 +179,74 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
     "in Normal mode" - {
       val mode = NormalMode
+      "when phase-6 disabled" - {
+        "must go from gross weight page to add departure means of transport yes/no page" in {
+          val page = GrossWeightPage(hcIndex)
 
-      "must go from gross weight page to add departure means of transport yes/no page" in {
-        val page = GrossWeightPage(hcIndex)
+          val userAnswers = emptyUserAnswers
+            .setValue(page, BigDecimal("12.0"))
 
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+        }
+
+      }
+      "when phase-6 enabled" - {
+        "must go from gross weight page to UniqueConsignmentReference yes/no page" in {
+          when(mockConfig.phase6Enabled).thenReturn(true)
+          val page = GrossWeightPage(hcIndex)
+
+          val userAnswers = emptyUserAnswers
+            .setValue(page, BigDecimal("12.0"))
+
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(controllers.houseConsignment.index.routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+        }
+
+      }
+
+      "must go from add house consignment UCR yes/no page" - {
+        val page = UniqueConsignmentReferenceYesNoPage(hcIndex)
+
+        "when yes selected" - {
+          "to UniqueConsignmentReferencePage" in {
+            val userAnswers = emptyUserAnswers.setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.routes.UniqueConsignmentReferenceController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+              )
+          }
+        }
+        "when no selected" - {
+          "to departure means of transport yes/no page" in {
+            when(mockConfig.phase6Enabled).thenReturn(true)
+            val userAnswers = emptyUserAnswers.setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+              )
+          }
+        }
+      }
+
+      "must go from UniqueConsignmentReferencePage" - {
+        val mockConfig = mock[FrontendAppConfig]
+        when(mockConfig.phase6Enabled).thenReturn(true)
+        val page = UniqueConsignmentReferencePage(hcIndex)
         val userAnswers = emptyUserAnswers
-          .setValue(page, BigDecimal("12.0"))
-
+          .setValue(page, "ucr123")
         navigator
           .nextPage(page, mode, userAnswers)
           .mustBe(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+
       }
 
       "must go from add departure means of transport yes/no page" - {

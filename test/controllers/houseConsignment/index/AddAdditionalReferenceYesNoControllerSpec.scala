@@ -46,7 +46,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator(frontendAppConfig))
       )
 
   "AdditionalReferenceNumberYesNoController Controller" - {

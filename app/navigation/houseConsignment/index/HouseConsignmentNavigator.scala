@@ -17,6 +17,7 @@
 package navigation.houseConsignment.index
 
 import com.google.inject.Singleton
+import config.FrontendAppConfig
 import controllers.houseConsignment
 import controllers.houseConsignment.index.{additionalReference, departureMeansOfTransport, documents, items, routes}
 import models.*
@@ -25,12 +26,20 @@ import pages.Page
 import pages.houseConsignment.index.{AddItemYesNoPage, *}
 import play.api.mvc.Call
 
+import javax.inject.Inject
+
 @Singleton
-class HouseConsignmentNavigator extends Navigator {
+class HouseConsignmentNavigator @Inject() (
+  appConfig: FrontendAppConfig
+) extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GrossWeightPage(houseConsignmentIndex) =>
-      ua => Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode))
+      ua => grossWeightPageRoute(ua, houseConsignmentIndex)
+    case UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex) =>
+      ua => addUniqueConsignmentReferenceYesNoRoute(ua, houseConsignmentIndex, NormalMode)
+    case UniqueConsignmentReferencePage(houseConsignmentIndex) =>
+      ua => Some(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode))
     case AddDepartureTransportMeansYesNoPage(houseConsignmentIndex) =>
       ua => addDepartureTransportMeansYesNoRoute(ua, houseConsignmentIndex, NormalMode)
     case AddDocumentYesNoPage(houseConsignmentIndex) =>
@@ -43,6 +52,8 @@ class HouseConsignmentNavigator extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GrossWeightPage(houseConsignmentIndex) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case UniqueConsignmentReferencePage(houseConsignmentIndex) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case AddDepartureTransportMeansYesNoPage(houseConsignmentIndex) =>
       ua => addDepartureTransportMeansYesNoRoute(ua, houseConsignmentIndex, CheckMode)
@@ -120,5 +131,24 @@ class HouseConsignmentNavigator extends Navigator {
           case CheckMode =>
             controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
+    }
+
+  private def addUniqueConsignmentReferenceYesNoRoute(
+    ua: UserAnswers,
+    houseConsignmentIndex: Index,
+    houseConsignmentMode: Mode
+  ): Option[Call] =
+    ua.get(UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.routes.UniqueConsignmentReferenceController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+      case false =>
+        controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+
+    }
+
+  private def grossWeightPageRoute(ua: UserAnswers, houseConsignmentIndex: Index): Option[Call] =
+    appConfig.phase6Enabled match {
+      case true  => Some(routes.UniqueConsignmentReferenceYesNoController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode))
+      case false => Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode))
     }
 }
