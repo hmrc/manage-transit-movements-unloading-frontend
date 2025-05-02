@@ -16,7 +16,6 @@
 
 package views.houseConsignment.index
 
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -27,7 +26,7 @@ class UniqueConsignmentReferenceYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[UniqueConsignmentReferenceYesNoView]
-      .apply(form, mrn, arrivalId, hcIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, hcIndex)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.uniqueConsignmentReferenceYesNo"
 

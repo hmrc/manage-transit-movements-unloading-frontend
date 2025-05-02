@@ -54,7 +54,7 @@ class UniqueConsignmentReferenceYesNoController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
@@ -66,7 +66,7 @@ class UniqueConsignmentReferenceYesNoController @Inject() (
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex))
               ),
             value =>
               for {

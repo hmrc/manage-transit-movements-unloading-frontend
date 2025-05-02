@@ -45,7 +45,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
               .setValue(page, BigDecimal("12.0"))
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -57,7 +57,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           .setValue(page, "ucr123")
         navigator
           .nextPage(page, mode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
       "must go from add departure means of transport yes/no page" - {
@@ -70,7 +70,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
                   .onPageLoad(arrivalId, houseConsignmentIndex, Index(0), mode, NormalMode)
               )
@@ -84,7 +84,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         }
       }
@@ -99,7 +99,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.documents.routes.TypeController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
               )
@@ -113,7 +113,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         }
       }
@@ -128,7 +128,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
               )
@@ -142,7 +142,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         }
       }
@@ -157,7 +157,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.items.routes.DescriptionController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
               )
@@ -171,7 +171,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         }
       }
@@ -188,7 +188,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
           navigator
             .nextPage(page, mode, userAnswers)
-            .mustBe(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+            .mustEqual(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
         }
 
       }
@@ -202,7 +202,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
           navigator
             .nextPage(page, mode, userAnswers)
-            .mustBe(controllers.houseConsignment.index.routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+            .mustEqual(controllers.houseConsignment.index.routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
 
       }
@@ -216,7 +216,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.routes.UniqueConsignmentReferenceController
                   .onPageLoad(arrivalId, houseConsignmentIndex, mode)
               )
@@ -229,7 +229,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController
                   .onPageLoad(arrivalId, houseConsignmentIndex, mode)
               )
@@ -245,7 +245,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           .setValue(page, "ucr123")
         navigator
           .nextPage(page, mode, userAnswers)
-          .mustBe(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
+          .mustEqual(controllers.houseConsignment.index.routes.AddDepartureTransportMeansYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
 
       }
 
@@ -259,7 +259,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
                   .onPageLoad(arrivalId, houseConsignmentIndex, Index(0), mode, NormalMode)
               )
@@ -273,7 +273,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.routes.AddDocumentsYesNoController
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex)
               )
@@ -291,7 +291,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.documents.routes.TypeController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
               )
@@ -305,7 +305,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.routes.AddAdditionalReferenceYesNoController
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex)
               )
@@ -323,7 +323,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
               )
@@ -337,7 +337,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.routes.AddItemYesNoController
                   .onPageLoad(arrivalId, houseConsignmentIndex, mode)
               )
@@ -355,7 +355,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.items.routes.DescriptionController
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
               )
@@ -369,7 +369,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
             navigator
               .nextPage(page, mode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.routes.AddAnotherHouseConsignmentController
                   .onPageLoad(arrivalId, mode)
               )
