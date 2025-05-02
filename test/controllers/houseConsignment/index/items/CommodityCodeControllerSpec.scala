@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CommodityCodeFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.FakeHouseConsignmentItemNavigatorProviderProvider
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import pages.houseConsignment.index.items.CommodityCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.houseConsignment.index.items.CommodityCodeViewModel
 import viewModels.houseConsignment.index.items.CommodityCodeViewModel.CommodityCodeViewModelProvider
 import views.html.houseConsignment.index.items.CommodityCodeView
@@ -54,7 +55,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
+        bind[HouseConsignmentItemNavigatorProvider].toProvider(classOf[FakeHouseConsignmentItemNavigatorProviderProvider]),
         bind(classOf[CommodityCodeViewModelProvider]).toInstance(mockViewModelProvider)
       )
 

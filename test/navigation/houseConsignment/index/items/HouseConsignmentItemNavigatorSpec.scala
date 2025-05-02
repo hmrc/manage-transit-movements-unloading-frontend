@@ -17,19 +17,23 @@
 package navigation.houseConsignment.index.items
 
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.houseConsignment.index.items.routes
 import generators.Generators
-import models._
+import models.*
 import models.reference.PackageType
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.*
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val navigatorProvider = new HouseConsignmentItemNavigatorProvider
+  private val mockConfig = mock[FrontendAppConfig]
+
+  private val navigatorProvider = new HouseConsignmentItemNavigatorProvider(mockConfig)
 
   "HouseConsignmentItemNavigator" - {
 
@@ -101,16 +105,31 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           )
       }
 
-      "must go from NetWeightPage to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
+      "must go from NetWeightPage " - {
+        "when phase-6 disabled must go to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
 
-        val userAnswers = emptyUserAnswers
-          .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
+          navigator
+            .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+            )
+        }
 
-        navigator
-          .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-          .mustBe(
-            routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-          )
+        "when phase-6 enabled UniqueConsignmentReferenceNumberYesNoPage " in {
+          val mockConfig = mock[FrontendAppConfig]
+          when(mockConfig.phase6Enabled).thenReturn(true)
+          val userAnswers = emptyUserAnswers
+            .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
+
+          navigator
+            .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+            )
+        }
+
       }
 
       "must go from AddCustomsUnionAndStatisticsCodeYesNoPage to CustomsUnionAndStatisticsCodePage when answer is true" in {

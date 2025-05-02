@@ -16,15 +16,18 @@
 
 package navigation.houseConsignment.index.items
 
+import config.FrontendAppConfig
 import controllers.houseConsignment.index.items.routes
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.Page
-import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.*
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.mvc.Call
 
-class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigator {
+import javax.inject.Inject
+
+class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: FrontendAppConfig) extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(houseConsignmentIndex, itemIndex) =>
@@ -204,9 +207,11 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
 
 object HouseConsignmentItemNavigator {
 
-  class HouseConsignmentItemNavigatorProvider {
+  class HouseConsignmentItemNavigatorProvider @Inject() (
+    config: FrontendAppConfig
+  ) {
 
     def apply(houseConsignmentMode: Mode): HouseConsignmentItemNavigator =
-      new HouseConsignmentItemNavigator(houseConsignmentMode)
+      new HouseConsignmentItemNavigator(houseConsignmentMode, config)
   }
 }
