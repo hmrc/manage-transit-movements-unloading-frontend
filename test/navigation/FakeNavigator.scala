@@ -16,12 +16,15 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{DocumentNavigator as ItemDocumentNavigator, HouseConsignmentItemNavigator, PackagesNavigator}
 import navigation.houseConsignment.index.{HouseConsignmentDocumentNavigator, HouseConsignmentNavigator}
 import pages.*
 import play.api.mvc.Call
+
+import javax.inject.{Inject, Named, Provider}
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
 
@@ -97,7 +100,16 @@ class FakePackagesNavigator(desiredRoute: Call, houseConsignmentMode: Mode, item
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHouseConsignmentNavigator(desiredRoute: Call) extends HouseConsignmentNavigator {
+class FakeHouseConsignmentNavigatorProvider @Inject() (
+  appConfig: FrontendAppConfig,
+  @Named("onwardRoute") desiredRoute: Call
+) extends Provider[HouseConsignmentNavigator] {
+
+  override def get(): HouseConsignmentNavigator =
+    new FakeHouseConsignmentNavigator(desiredRoute, appConfig)
+}
+
+class FakeHouseConsignmentNavigator(desiredRoute: Call, appConfig: FrontendAppConfig) extends HouseConsignmentNavigator(appConfig) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

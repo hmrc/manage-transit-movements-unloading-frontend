@@ -17,7 +17,7 @@
 package views.houseConsignment.index
 
 import forms.UniqueConsignmentReferenceFormProvider
-import models.{Mode, NormalMode}
+import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -29,9 +29,9 @@ import views.html.houseConsignment.index.UniqueConsignmentReferenceView
 
 class UniqueConsignmentReferenceViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "houseConsignment.uniqueConsignmentReference"
+  private val mode = NormalMode
 
-  private val mode: Mode = NormalMode
+  override val prefix: String = "houseConsignment.uniqueConsignmentReference"
 
   override def form: Form[String] = new UniqueConsignmentReferenceFormProvider()(prefix, viewModel.requiredError)
 

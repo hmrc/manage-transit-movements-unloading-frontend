@@ -19,7 +19,6 @@ package controllers.houseConsignment.index
 import controllers.actions.Actions
 import forms.UniqueConsignmentReferenceFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigation
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import pages.houseConsignment.index.UniqueConsignmentReferencePage
 import play.api.data.Form

@@ -107,9 +107,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 
-    val fakeHouseConsignmentNavigator: HouseConsignmentNavigator =
-      new FakeHouseConsignmentNavigator(onwardRoute)
-
     val fakeAdditionalReferenceNavigatorProvider: AdditionalReferenceNavigatorProvider =
       new AdditionalReferenceNavigatorProvider {
 
@@ -175,7 +172,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[AsyncCacheApi].to[FakeAsyncCacheApi]
+        bind[AsyncCacheApi].to[FakeAsyncCacheApi],
+        bind[Call].qualifiedWith("onwardRoute").toInstance(onwardRoute)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
