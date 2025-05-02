@@ -24,7 +24,7 @@ import navigation.houseConsignment.index.{HouseConsignmentDocumentNavigator, Hou
 import pages.*
 import play.api.mvc.Call
 
-import javax.inject.{Inject, Provider}
+import javax.inject.{Inject, Named, Provider}
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
 
@@ -100,14 +100,17 @@ class FakePackagesNavigator(desiredRoute: Call, houseConsignmentMode: Mode, item
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHouseConsignmentNavigator(desiredRoute: Call, appConfig: FrontendAppConfig) extends HouseConsignmentNavigator(appConfig) {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
-}
-
-class FakeHouseConsignmentNavigatorProvider @Inject() (appConfig: FrontendAppConfig) extends Provider[HouseConsignmentNavigator] {
+class FakeHouseConsignmentNavigatorProvider @Inject() (
+  appConfig: FrontendAppConfig,
+  @Named("onwardRoute") desiredRoute: Call
+) extends Provider[HouseConsignmentNavigator] {
 
   override def get(): HouseConsignmentNavigator =
-    new FakeHouseConsignmentNavigator(Call("GET", "/foo"), appConfig)
+    new FakeHouseConsignmentNavigator(desiredRoute, appConfig)
+}
+
+class FakeHouseConsignmentNavigator(desiredRoute: Call, appConfig: FrontendAppConfig) extends HouseConsignmentNavigator(appConfig) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
 class FakeHouseConsignmentDepartureTransportMeansNavigator(desiredRoute: Call, houseConsignmentMode: Mode)

@@ -172,7 +172,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[AsyncCacheApi].to[FakeAsyncCacheApi]
+        bind[AsyncCacheApi].to[FakeAsyncCacheApi],
+        bind[Call].qualifiedWith("onwardRoute").toInstance(onwardRoute)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
