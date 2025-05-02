@@ -27,7 +27,7 @@ class UniqueConsignmentReferenceYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[UniqueConsignmentReferenceYesNoView]
-      .apply(form, mrn, arrivalId, hcIndex, itemIndex, NormalMode, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, hcIndex, itemIndex, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.item.uniqueConsignmentReferenceYesNo"
 
