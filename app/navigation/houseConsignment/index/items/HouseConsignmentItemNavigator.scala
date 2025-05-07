@@ -75,8 +75,6 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
       ua => addNetWeightYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, CheckMode)
     case NetWeightPage(houseConsignmentIndex, itemIndex) =>
       ua => netWeightPageRoute(ua, CheckMode, houseConsignmentIndex, itemIndex)
-    case UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex) =>
-      ua => addUniqueConsignmentReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex, CheckMode)
     case UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex) =>
       ua => uniqueConsignmentReferenceRoute(ua, houseConsignmentMode, CheckMode, houseConsignmentIndex, itemIndex)
     case PackageTypePage(houseConsignmentIndex, _, _) =>

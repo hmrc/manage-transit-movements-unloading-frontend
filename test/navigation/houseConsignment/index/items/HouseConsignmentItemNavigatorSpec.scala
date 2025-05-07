@@ -412,22 +412,6 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         }
 
       }
-      "must go from UniqueConsignmentReferenceYesNoPage" - {
-        "when user selects yes or no must go to HouseConsignmentCrossCheckPage " in {
-          forAll(arbitrary[Boolean]) {
-            value =>
-              val mockConfig = mock[FrontendAppConfig]
-              when(mockConfig.phase6Enabled).thenReturn(true)
-              val page        = UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex)
-              val userAnswers = emptyUserAnswers.setValue(page, value)
-
-              navigator
-                .nextPage(page, itemMode, userAnswers)
-                .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
-          }
-
-        }
-      }
 
       "must go from UniqueConsignmentReferencePage to HouseConsignmentPage" - {
         "when user selects continue" in {
