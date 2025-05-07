@@ -21,9 +21,10 @@ import controllers.routes
 import forms.DescriptionFormProvider
 import generators.Generators
 import models.{NormalMode, UserAnswers}
+import navigation.FakeHouseConsignmentItemNavigatorProviderProvider
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
@@ -62,7 +63,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
+        bind[HouseConsignmentItemNavigatorProvider].toProvider(classOf[FakeHouseConsignmentItemNavigatorProviderProvider]),
         bind(classOf[DescriptionViewModelProvider]).toInstance(mockViewModelProvider),
         bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
       )
