@@ -30,8 +30,8 @@ class UniqueConsignmentReferenceViewModelSpec extends SpecBase with ScalaCheckPr
 
       val result = viewModelProvider(NormalMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "What is the Unique Consignment Reference (UCR) for this house consignment?"
-      result.heading mustBe "What is the Unique Consignment Reference (UCR) for this house consignment?"
+      result.title mustBe s"What is the Unique Consignment Reference (UCR) for house consignment ${houseConsignmentIndex.display}?"
+      result.heading mustBe s"What is the Unique Consignment Reference (UCR) for house consignment ${houseConsignmentIndex.display}?"
     }
   }
 
@@ -40,8 +40,8 @@ class UniqueConsignmentReferenceViewModelSpec extends SpecBase with ScalaCheckPr
 
     val result = viewModelProvider(CheckMode, houseConsignmentIndex)(messages)
 
-    result.title mustBe "What is the new Unique Consignment Reference (UCR) for this house consignment?"
-    result.heading mustBe "What is the new Unique Consignment Reference (UCR) for this house consignment?"
+    result.title mustBe s"What is the new Unique Consignment Reference (UCR) for house consignment ${houseConsignmentIndex.display}?"
+    result.heading mustBe s"What is the new Unique Consignment Reference (UCR) for house consignment ${houseConsignmentIndex.display}?"
   }
 
 }

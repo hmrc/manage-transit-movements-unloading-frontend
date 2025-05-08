@@ -34,7 +34,7 @@ class UniqueConsignmentReferenceViewModelSpec extends SpecBase with ScalaCheckPr
 
       result.title mustBe "What is the Unique Consignment Reference (UCR) for item 2 in house consignment 1?"
       result.heading mustBe "What is the Unique Consignment Reference (UCR) for item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the Unique Consignment Reference (UCR) for this item"
+      result.requiredError mustBe "Enter the Unique Consignment Reference (UCR) for item 2 in house consignment 1"
     }
 
     "when Check mode" in {
@@ -44,7 +44,7 @@ class UniqueConsignmentReferenceViewModelSpec extends SpecBase with ScalaCheckPr
 
       result.title mustBe "What is the new Unique Consignment Reference (UCR) for item 2 in house consignment 1?"
       result.heading mustBe "What is the new Unique Consignment Reference (UCR) for item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the new Unique Consignment Reference (UCR) for this item"
+      result.requiredError mustBe "Enter the new Unique Consignment Reference (UCR) for item 2 in house consignment 1"
     }
   }
 }
