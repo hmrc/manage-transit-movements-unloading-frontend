@@ -241,18 +241,18 @@ houseConsignment.item.grossWeight.error.invalidValue = The gross weight must be 
 houseConsignment.item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 
-houseConsignment.item.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
-houseConsignment.item.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for this item?
+houseConsignment.item.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for this item?
 houseConsignment.item.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
-houseConsignment.item.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for item {1} in house consignment {0}
+houseConsignment.item.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for this item
 
-houseConsignment.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR) for this house consignment?
-houseConsignment.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for this house consignment?
-houseConsignment.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for this house consignment?
-houseConsignment.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR) for this house consignment?
+houseConsignment.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR) for house consignment {0}?
 houseConsignment.uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
-houseConsignment.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR) for this house consignment
-houseConsignment.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR) for this house consignment
+houseConsignment.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR) for house consignment {0}
+houseConsignment.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR) for house consignment {0}
 houseConsignment.uniqueConsignmentReference.error.invalid = The Unique Consignment Reference (UCR) must only include letters a to z and numbers 0 to 9
 houseConsignment.uniqueConsignmentReference.error.length = The Unique Consignment Reference (UCR) must be 70 characters or less
 
@@ -833,8 +833,8 @@ houseConsignment.item.uniqueConsignmentReference.CheckMode.heading = What is the
 houseConsignment.item.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
 houseConsignment.item.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
 houseConsignment.item.uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
-houseConsignment.item.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR) for this item
-houseConsignment.item.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR) for this item
+houseConsignment.item.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR) for item {1} in house consignment {0}
+houseConsignment.item.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}
 houseConsignment.item.uniqueConsignmentReference.error.invalid = The Unique Consignment Reference (UCR) must only include letters a to z and numbers 0 to 9
 houseConsignment.item.uniqueConsignmentReference.error.length = The Unique Consignment Reference (UCR) must be 70 characters or less
 
@@ -1269,10 +1269,10 @@ houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross
 houseConsignment.index.grossWeight.NormalMode.error.zero = The gross weight must be more than 0
 houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight must be more than 0
 
-houseConsignment.index.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for house consignment {0}?
-houseConsignment.index.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.index.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for this house consignment?
+houseConsignment.index.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for this house consignment?
 houseConsignment.index.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
-houseConsignment.index.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for house consignment {0}
+houseConsignment.index.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for this house consignment
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
