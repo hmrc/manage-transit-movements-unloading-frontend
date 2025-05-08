@@ -37,10 +37,11 @@
 @(
     title: String,
     timeoutEnabled: Boolean = true,
-    canSignOut: Boolean = true,
     showBackLink: Boolean = false,
     arrivalId: Option[ArrivalId] = None
 )(mainContent: Html)(implicit request: Request[?], messages: Messages)
+
+@canSignOut = @{request.session.get("authToken").isDefined}
 
 @headScripts = {
     @if(canSignOut) {
@@ -70,7 +71,7 @@
     HmrcStandardPageParams(
         serviceURLs = ServiceURLs(
             serviceUrl = Some(appConfig.serviceUrl),
-            signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None
+            signOutUrl = Option.when(canSignOut)(appConfig.signOutUrl)
         ),
         banners = Banners(
             phaseBanner = Some(betaBanner()),
