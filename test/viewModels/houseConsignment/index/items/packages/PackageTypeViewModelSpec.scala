@@ -29,8 +29,8 @@ class PackageTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val viewModelProvider = new PackageTypeViewModelProvider()
       val result            = viewModelProvider.apply(itemIndex, houseConsignmentIndex, NormalMode)
 
-      result.title mustBe "What type of package are you using for the item?"
-      result.heading mustBe "What type of package are you using for the item?"
+      result.title mustBe "What type of package are you using for item 1 in house consignment 1?"
+      result.heading mustBe "What type of package are you using for item 1 in house consignment 1?"
     }
 
     "when Check mode" in {

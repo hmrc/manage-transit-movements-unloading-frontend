@@ -53,7 +53,13 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   private val itemMode                = NormalMode
   private val additionalReferenceMode = NormalMode
 
-  private val form = formProvider(additionalReferenceMode, "houseConsignment.index.items.additionalReference.additionalReferenceType", additionalReferenceList)
+  private val form = formProvider(
+    additionalReferenceMode,
+    "houseConsignment.index.items.additionalReference.additionalReferenceType",
+    additionalReferenceList,
+    houseConsignmentIndex.display,
+    itemIndex.display
+  )
 
   private lazy val additionalReferenceRoute =
     routes.AdditionalReferenceTypeController

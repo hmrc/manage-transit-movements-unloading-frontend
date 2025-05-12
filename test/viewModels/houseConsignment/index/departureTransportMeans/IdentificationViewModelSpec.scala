@@ -29,8 +29,8 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
       val viewModelProvider = new IdentificationViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "Which identification do you want to use for the departure means of transport?"
-      result.heading mustBe "Which identification do you want to use for the departure means of transport?"
+      result.title mustBe "Which identification do you want to use for the departure means of transport in house consignment 1?"
+      result.heading mustBe "Which identification do you want to use for the departure means of transport in house consignment 1?"
       result.paragraph mustBe None
     }
 

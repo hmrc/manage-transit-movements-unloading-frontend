@@ -76,7 +76,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val itemMode             = NormalMode
   private val packageMode          = NormalMode
 
-  private val form = formProvider(packageMode, "houseConsignment.index.item.packageType", packageTypeList)
+  private val form = formProvider(packageMode, "houseConsignment.index.item.packageType", packageTypeList, itemIndex.display, houseConsignmentIndex.display)
 
   "PackageType Controller" - {
 
