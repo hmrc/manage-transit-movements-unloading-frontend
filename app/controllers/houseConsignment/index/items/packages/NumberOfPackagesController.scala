@@ -44,7 +44,7 @@ class NumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val prefix = "houseConsignment.index.item.packageType"
+  val prefix = "houseConsignment.index.item.numberOfPackages"
 
   def onPageLoad(
     arrivalId: ArrivalId,

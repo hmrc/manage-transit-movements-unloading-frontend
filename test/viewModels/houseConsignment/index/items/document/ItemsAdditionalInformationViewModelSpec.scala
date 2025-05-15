@@ -29,16 +29,16 @@ class ItemsAdditionalInformationViewModelSpec extends SpecBase with ScalaCheckPr
       val viewModelProvider = new ItemsAdditionalInformationViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, hcIndex, itemIndex)
 
-      result.title mustBe "Enter the additional information"
-      result.heading mustBe "Enter the additional information"
+      result.title mustBe s"Enter the additional information for item ${itemIndex.display} in house consignment ${hcIndex.display}"
+      result.heading mustBe s"Enter the additional information for item ${itemIndex.display} in house consignment ${hcIndex.display}"
     }
 
     "when Check mode" in {
       val viewModelProvider = new ItemsAdditionalInformationViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode, hcIndex, itemIndex)
 
-      result.title mustBe s"Enter the new additional information for item ${itemIndex.display} in house consignment ${hcIndex.display}?"
-      result.heading mustBe s"Enter the new additional information for item ${itemIndex.display} in house consignment ${hcIndex.display}?"
+      result.title mustBe s"Enter the new additional information for item ${itemIndex.display} in house consignment ${hcIndex.display}"
+      result.heading mustBe s"Enter the new additional information for item ${itemIndex.display} in house consignment ${hcIndex.display}"
     }
   }
 }

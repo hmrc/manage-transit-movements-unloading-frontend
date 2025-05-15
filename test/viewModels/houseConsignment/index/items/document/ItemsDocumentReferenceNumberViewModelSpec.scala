@@ -29,8 +29,8 @@ class ItemsDocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheck
       val viewModelProvider = new ItemsDocumentReferenceNumberViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, hcIndex, itemIndex)
 
-      result.title mustBe "What is the document’s reference number?"
-      result.heading mustBe "What is the document’s reference number?"
+      result.title mustBe s"What is the document’s reference number for item ${itemIndex.display} in house consignment ${hcIndex.display}?"
+      result.heading mustBe s"What is the document’s reference number for item ${itemIndex.display} in house consignment ${hcIndex.display}?"
     }
 
     "when Check mode" in {
