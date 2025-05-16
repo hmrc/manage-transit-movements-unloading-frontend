@@ -75,6 +75,8 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
       ua => addNetWeightYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, CheckMode)
     case NetWeightPage(houseConsignmentIndex, itemIndex) =>
       ua => netWeightPageRoute(ua, CheckMode, houseConsignmentIndex, itemIndex)
+    case UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex) =>
+      ua => addUniqueConsignmentReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex, CheckMode)
     case UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex) =>
       ua => uniqueConsignmentReferenceRoute(ua, houseConsignmentMode, CheckMode, houseConsignmentIndex, itemIndex)
     case PackageTypePage(houseConsignmentIndex, _, _) =>
@@ -233,7 +235,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
       case false =>
         itemMode match {
           case NormalMode =>
-            controllers.houseConsignment.index.items.routes.AddCommodityCodeYesNoController
+            controllers.houseConsignment.index.items.routes.AddCustomsUnionAndStatisticsCodeYesNoController
               .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           case CheckMode => controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
@@ -249,7 +251,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
     itemMode match {
       case NormalMode =>
         Some(
-          controllers.houseConsignment.index.items.routes.AddCommodityCodeYesNoController
+          controllers.houseConsignment.index.items.routes.AddCustomsUnionAndStatisticsCodeYesNoController
             .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
         )
       case CheckMode => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
