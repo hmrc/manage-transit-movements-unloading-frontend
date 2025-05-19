@@ -37,7 +37,7 @@ import views.html.houseConsignment.index.items.packages.NumberOfPackagesView
 import scala.concurrent.Future
 
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
-  val prefix = "houseConsignment.index.item.packageType"
+  val prefix = "houseConsignment.index.item.numberOfPackages"
 
   private val mockViewModelProvider = mock[NumberOfPackagesViewModelProvider]
   private val viewModel             = arbitrary[NumberOfPackagesViewModel].sample.value

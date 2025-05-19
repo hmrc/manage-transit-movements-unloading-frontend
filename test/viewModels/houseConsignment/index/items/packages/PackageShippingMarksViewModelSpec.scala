@@ -30,8 +30,8 @@ class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckProperty
 
       val result = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
 
-      result.title mustBe "What is the shipping mark?"
-      result.heading mustBe "What is the shipping mark?"
+      result.title mustBe "What is the shipping mark for item 1 in house consignment 1?"
+      result.heading mustBe "What is the shipping mark for item 1 in house consignment 1?"
     }
 
     "when CheckMode" in {
