@@ -19,7 +19,7 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.TransitOperationType14
 import generators.Generators
-import models.SecurityType
+import models.reference.SecurityType
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

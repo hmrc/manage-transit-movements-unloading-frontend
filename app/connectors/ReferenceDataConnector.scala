@@ -23,7 +23,7 @@ import connectors.ReferenceDataConnector.*
 import models.DocType.{Previous, Support, Transport}
 import models.reference.*
 import models.reference.TransportMode.InlandMode
-import models.{DocType, SecurityType}
+import models.DocType
 import play.api.Logging
 import play.api.cache.*
 import play.api.http.Status.OK
@@ -167,14 +167,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getDocument(Previous, "PreviousDocumentExportType", typeValue)
 
   def getDocuments(dt: DocType, path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[DocumentType]] = {
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)(config)
 
     val url = url"${config.referenceDataUrl}/lists/$path"
     get[DocumentType](url)
   }
 
   private def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[DocumentType]] = {
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)(config)
 
     val queryParameters = Seq("data.code" -> typeValue)
     val url             = url"${config.referenceDataUrl}/lists/$path?$queryParameters"

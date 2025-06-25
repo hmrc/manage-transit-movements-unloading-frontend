@@ -17,19 +17,25 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import config.FrontendAppConfig
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class CUSCode(code: String) extends Selectable {
 
   override def toString: String = code
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-
   override val value: String = code
 }
 
 object CUSCode {
+
+  def reads(config: FrontendAppConfig): Reads[CUSCode] =
+    if (config.phase6Enabled) {
+      (__ \ "key").read[String].map(CUSCode(_))
+    } else {
+      Json.reads[CUSCode]
+    }
+
   implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
 
   implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => (x, y).compareBy(_.code)

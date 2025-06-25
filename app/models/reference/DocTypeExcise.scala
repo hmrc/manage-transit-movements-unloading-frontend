@@ -17,11 +17,24 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json.{Json, OFormat}
+import config.FrontendAppConfig
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class DocTypeExcise(code: String, description: String)
 
 object DocTypeExcise {
+
+  def reads(config: FrontendAppConfig): Reads[DocTypeExcise] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(DocTypeExcise.apply)
+    } else {
+      Json.reads[DocTypeExcise]
+    }
+
   implicit val format: OFormat[DocTypeExcise] = Json.format[DocTypeExcise]
 
   implicit val order: Order[DocTypeExcise] = (x: DocTypeExcise, y: DocTypeExcise) => (x, y).compareBy(_.code)

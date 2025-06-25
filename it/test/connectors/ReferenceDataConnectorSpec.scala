@@ -22,7 +22,6 @@ import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec.*
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.DocType.{Previous, Support, Transport}
-import models.SecurityType
 import models.reference.*
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen

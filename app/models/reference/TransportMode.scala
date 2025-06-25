@@ -17,9 +17,11 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.json.{Format, Json}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 trait TransportMode[T] extends Radioable[T] {
 
@@ -36,6 +38,17 @@ object TransportMode {
   }
 
   object InlandMode extends DynamicEnumerableType[InlandMode] {
+
+    def reads(config: FrontendAppConfig): Reads[InlandMode] =
+      if (config.phase6Enabled) {
+        (
+          (__ \ "key").read[String] and
+            (__ \ "value").read[String]
+        )(InlandMode.apply)
+      } else {
+        Json.reads[InlandMode]
+      }
+
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
     implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
@@ -48,6 +61,17 @@ object TransportMode {
   }
 
   object BorderMode extends DynamicEnumerableType[BorderMode] {
+
+    def reads(config: FrontendAppConfig): Reads[BorderMode] =
+      if (config.phase6Enabled) {
+        (
+          (__ \ "key").read[String] and
+            (__ \ "value").read[String]
+        )(BorderMode.apply)
+      } else {
+        Json.reads[BorderMode]
+      }
+
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
     implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => (x, y).compareBy(_.code)

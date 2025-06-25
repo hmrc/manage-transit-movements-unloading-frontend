@@ -17,7 +17,9 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json.{Json, OFormat}
+import config.FrontendAppConfig
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class PackageType(code: String, description: String) extends Selectable {
 
@@ -27,6 +29,17 @@ case class PackageType(code: String, description: String) extends Selectable {
 }
 
 object PackageType {
+
+  def reads(config: FrontendAppConfig): Reads[PackageType] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(PackageType.apply)
+    } else {
+      Json.reads[PackageType]
+    }
+
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
   implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => (x, y).compareBy(_.description, _.code)

@@ -17,7 +17,9 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json.{Format, Json}
+import config.FrontendAppConfig
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 case class AdditionalInformationCode(code: String, description: String) extends Selectable {
 
@@ -27,6 +29,16 @@ case class AdditionalInformationCode(code: String, description: String) extends 
 }
 
 object AdditionalInformationCode {
+
+  def reads(config: FrontendAppConfig): Reads[AdditionalInformationCode] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(AdditionalInformationCode.apply)
+    } else {
+      Json.reads[AdditionalInformationCode]
+    }
 
   implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
 

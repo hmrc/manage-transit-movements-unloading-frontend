@@ -16,7 +16,7 @@
 
 package pages
 
-import models.SecurityType
+import models.reference.SecurityType
 import pages.behaviours.PageBehaviours
 
 class SecurityTypePageSpec extends PageBehaviours {

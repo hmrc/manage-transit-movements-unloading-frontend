@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
+import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.json.{Format, Json}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 case class SecurityType(
   code: String,
@@ -31,8 +34,20 @@ case class SecurityType(
 }
 
 object SecurityType extends DynamicEnumerableType[SecurityType] {
+
+  def reads(config: FrontendAppConfig): Reads[SecurityType] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(SecurityType.apply)
+    } else {
+      Json.reads[SecurityType]
+    }
+
   implicit val format: Format[SecurityType] = Json.format[SecurityType]
-  implicit val order: Order[SecurityType]   = (x: SecurityType, y: SecurityType) => x.code.compareToIgnoreCase(y.code)
+
+  implicit val order: Order[SecurityType] = (x: SecurityType, y: SecurityType) => x.code.compareToIgnoreCase(y.code)
 
   val messageKeyPrefix = "securityDetailsType"
 }
