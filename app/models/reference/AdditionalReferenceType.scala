@@ -45,4 +45,8 @@ object AdditionalReferenceType {
   implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
     (x, y).compareBy(_.description, _.documentType)
 
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.documentType"
+    Seq(key -> code)
+  }
 }

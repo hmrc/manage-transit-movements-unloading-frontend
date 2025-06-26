@@ -43,4 +43,9 @@ object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdenti
   implicit val format: Format[QualifierOfIdentification] = Json.format[QualifierOfIdentification]
 
   implicit val order: Order[QualifierOfIdentification] = (x: QualifierOfIdentification, y: QualifierOfIdentification) => (x, y).compareBy(_.qualifier)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.qualifier"
+    Seq(key -> code)
+  }
 }

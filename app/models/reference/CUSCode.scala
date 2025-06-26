@@ -39,4 +39,9 @@ object CUSCode {
   implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
 
   implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => (x, y).compareBy(_.code)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }

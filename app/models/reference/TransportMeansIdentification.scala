@@ -49,4 +49,9 @@ object TransportMeansIdentification extends DynamicEnumerableType[TransportMeans
   implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) => (x, y).compareBy(_.`type`)
 
   val messageKeyPrefix = "departureMeansOfTransport.identification"
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.type"
+    Seq(key -> code)
+  }
 }

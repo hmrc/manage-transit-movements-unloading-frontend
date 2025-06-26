@@ -43,4 +43,9 @@ object PackageType {
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
   implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => (x, y).compareBy(_.description, _.code)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }

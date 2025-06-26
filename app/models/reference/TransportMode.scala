@@ -54,6 +54,11 @@ object TransportMode {
     implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
 
     val messageKeyPrefix = "transport.inlandModeOfTransport"
+
+    def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+      val key = if (config.phase6Enabled) "keys" else "data.code"
+      Seq(key -> code)
+    }
   }
 
   case class BorderMode(code: String, description: String) extends TransportMode[BorderMode] {

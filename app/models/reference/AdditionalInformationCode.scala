@@ -44,4 +44,8 @@ object AdditionalInformationCode {
 
   implicit val order: Order[AdditionalInformationCode] = (x: AdditionalInformationCode, y: AdditionalInformationCode) => (x, y).compareBy(_.code)
 
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }
