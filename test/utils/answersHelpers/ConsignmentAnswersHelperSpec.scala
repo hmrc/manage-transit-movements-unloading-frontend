@@ -19,8 +19,8 @@ package utils.answersHelpers
 import generated._
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
-import models.reference._
-import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
+import models.reference.*
+import models.{CheckMode, Coordinates, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.transportEquipment.index.ItemPage

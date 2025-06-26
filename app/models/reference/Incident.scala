@@ -17,7 +17,9 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json.{Json, OFormat}
+import config.FrontendAppConfig
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class Incident(code: String, description: String) extends Selectable {
 
@@ -27,7 +29,23 @@ case class Incident(code: String, description: String) extends Selectable {
 }
 
 object Incident {
+
+  def reads(config: FrontendAppConfig): Reads[Incident] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(Incident.apply)
+    } else {
+      Json.reads[Incident]
+    }
+
   implicit val format: OFormat[Incident] = Json.format[Incident]
 
   implicit val order: Order[Incident] = (x: Incident, y: Incident) => (x, y).compareBy(_.code)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }

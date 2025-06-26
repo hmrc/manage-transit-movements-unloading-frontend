@@ -17,9 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.DocType
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 case class DocumentType(`type`: DocType, code: String, description: String) extends Selectable {
 
@@ -30,15 +31,23 @@ case class DocumentType(`type`: DocType, code: String, description: String) exte
 
 object DocumentType {
 
-  def reads(`type`: DocType): Reads[DocumentType] = (
-    (__ \ "code").read[String] and
-      (__ \ "description").read[String]
-  ).apply {
-    (code, description) =>
-      DocumentType(`type`, code, description)
+  def reads(`type`: DocType)(config: FrontendAppConfig): Reads[DocumentType] = {
+    val (key, value) = if (config.phase6Enabled) ("key", "value") else ("code", "description")
+    (
+      (__ \ key).read[String] and
+        (__ \ value).read[String]
+    ).apply {
+      (code, description) =>
+        DocumentType(`type`, code, description)
+    }
   }
 
   implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 
   implicit val order: Order[DocumentType] = (x: DocumentType, y: DocumentType) => (x, y).compareBy(_.code, _.description, _.`type`.display)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }

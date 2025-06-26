@@ -16,7 +16,7 @@
 
 package pages
 
-import models.SecurityType
+import models.reference.SecurityType
 import play.api.libs.json.JsPath
 
 case object SecurityTypePage extends QuestionPage[SecurityType] {

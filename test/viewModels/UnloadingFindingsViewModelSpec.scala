@@ -19,8 +19,8 @@ package viewModels
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
-import models.reference._
-import models.{Index, SecurityType, UserAnswers}
+import models.reference.*
+import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._

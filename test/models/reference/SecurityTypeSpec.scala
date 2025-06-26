@@ -25,20 +25,20 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
 
-class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SecurityTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "DocTypeExcise" - {
+  "SecurityType" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val value = DocTypeExcise(code, description)
+          val value = SecurityType(code, description)
           Json.toJson(value) mustEqual Json.parse(s"""
-                                                     |{
-                                                     |  "code": "$code",
-                                                     |  "description": "$description"
-                                                     |}
-                                                     |""".stripMargin)
+              |{
+              |  "code": "$code",
+              |  "description": "$description"
+              |}
+              |""".stripMargin)
       }
     }
 
@@ -46,15 +46,15 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val value = DocTypeExcise(code, description)
+            val value = SecurityType(code, description)
             Json
               .parse(s"""
-                        |{
-                        |  "code": "$code",
-                        |  "description": "$description"
-                        |}
-                        |""".stripMargin)
-              .as[DocTypeExcise] mustEqual value
+                   |{
+                   |  "code": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[SecurityType] mustEqual value
         }
       }
 
@@ -65,15 +65,15 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = DocTypeExcise(code, description)
+                  val value = SecurityType(code, description)
                   Json
                     .parse(s"""
-                              |{
-                              |  "code": "$code",
-                              |  "description": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[DocTypeExcise](DocTypeExcise.reads(config)) mustEqual value
+                         |{
+                         |  "code": "$code",
+                         |  "description": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[SecurityType](SecurityType.reads(config)) mustEqual value
               }
           }
         }
@@ -84,25 +84,30 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = DocTypeExcise(code, description)
+                  val value = SecurityType(code, description)
                   Json
                     .parse(s"""
-                              |{
-                              |  "key": "$code",
-                              |  "value": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[DocTypeExcise](DocTypeExcise.reads(config)) mustEqual value
+                         |{
+                         |  "key": "$code",
+                         |  "value": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[SecurityType](SecurityType.reads(config)) mustEqual value
               }
           }
         }
       }
     }
 
+    "must format as string" in {
+      val value = SecurityType("3", "ENS &amp; EXS")
+      value.toString mustEqual "ENS & EXS"
+    }
+
     "must order" in {
-      val value1 = DocTypeExcise("RS", "Serbia")
-      val value2 = DocTypeExcise("XS", "Serbia")
-      val value3 = DocTypeExcise("FR", "France")
+      val value1 = SecurityType("RS", "Serbia")
+      val value2 = SecurityType("XS", "Serbia")
+      val value3 = SecurityType("FR", "France")
 
       val values = NonEmptySet.of(value1, value2, value3)
 
@@ -115,4 +120,5 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       )
     }
   }
+
 }

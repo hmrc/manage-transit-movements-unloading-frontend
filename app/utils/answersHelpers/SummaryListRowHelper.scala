@@ -17,12 +17,11 @@
 package utils.answersHelpers
 
 import generated.{Flag, Number1}
-import models.Identification
 import models.reference.{Country, PackageType}
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.html.components._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Format.cyaDateFormatter
 
@@ -64,9 +63,6 @@ class SummaryListRowHelper(implicit messages: Messages) {
     HtmlContent(answer.toString)
 
   protected def formatAsCountry(country: Country): Content = country.description.toText
-
-  protected def formatIdentificationTypeAsText(xmlString: String): String =
-    s"${Identification.messageKeyPrefix}.${Identification(xmlString)}"
 
   protected def formatEnumAsText[T](messageKeyPrefix: String)(answer: T): Content =
     formatEnumAsString(messageKeyPrefix)(answer).toText

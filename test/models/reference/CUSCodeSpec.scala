@@ -27,18 +27,17 @@ import play.api.libs.json.Json
 import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class CUSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "Country" - {
+  "CUSCode" - {
 
     "must serialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val value = Country(code, description)
+      forAll(Gen.alphaNumStr) {
+        code =>
+          val value = CUSCode(code)
           Json.toJson(value) mustEqual Json.parse(s"""
               |{
-              |  "code": "$code",
-              |  "description": "$description"
+              |  "code": "$code"
               |}
               |""".stripMargin)
       }
@@ -46,17 +45,16 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
 
     "must deserialise" - {
       "when reading from mongo" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val value = Country(code, description)
+        forAll(Gen.alphaNumStr) {
+          code =>
+            val value = CUSCode(code)
             Json
               .parse(s"""
                    |{
-                   |  "code": "$code",
-                   |  "description": "$description"
+                   |  "code": "$code"
                    |}
                    |""".stripMargin)
-              .as[Country] mustEqual value
+              .as[CUSCode] mustEqual value
         }
       }
 
@@ -65,17 +63,16 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
           running(_.configure("feature-flags.phase-6-enabled" -> false)) {
             app =>
               val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = Country(code, description)
+              forAll(Gen.alphaNumStr) {
+                code =>
+                  val value = CUSCode(code)
                   Json
                     .parse(s"""
                          |{
-                         |  "code": "$code",
-                         |  "description": "$description"
+                         |  "code": "$code"
                          |}
                          |""".stripMargin)
-                    .as[Country](Country.reads(config)) mustEqual value
+                    .as[CUSCode](CUSCode.reads(config)) mustEqual value
               }
           }
         }
@@ -84,17 +81,16 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
           running(_.configure("feature-flags.phase-6-enabled" -> true)) {
             app =>
               val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = Country(code, description)
+              forAll(Gen.alphaNumStr) {
+                code =>
+                  val value = CUSCode(code)
                   Json
                     .parse(s"""
                          |{
-                         |  "key": "$code",
-                         |  "value": "$description"
+                         |  "key": "$code"
                          |}
                          |""".stripMargin)
-                    .as[Country](Country.reads(config)) mustEqual value
+                    .as[CUSCode](CUSCode.reads(config)) mustEqual value
               }
           }
         }
@@ -102,23 +98,23 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
     }
 
     "must convert to select item" in {
-      forAll(arbitrary[Country], arbitrary[Boolean]) {
+      forAll(arbitrary[CUSCode], arbitrary[Boolean]) {
         (value, selected) =>
-          value.toSelectItem(selected) mustEqual SelectItem(Some(value.code), s"${value.description} - ${value.code}", selected)
+          value.toSelectItem(selected) mustEqual SelectItem(Some(value.code), value.code, selected)
       }
     }
 
     "must format as string" in {
-      forAll(arbitrary[Country]) {
+      forAll(arbitrary[CUSCode]) {
         value =>
-          value.toString mustEqual s"${value.description} - ${value.code}"
+          value.toString mustEqual value.code
       }
     }
 
     "must order" in {
-      val value1 = Country("RS", "Serbia")
-      val value2 = Country("XS", "Serbia")
-      val value3 = Country("FR", "France")
+      val value1 = CUSCode("0041353-6")
+      val value2 = CUSCode("0151094-7")
+      val value3 = CUSCode("0010001-6")
 
       val values = NonEmptySet.of(value1, value2, value3)
 

@@ -19,7 +19,7 @@ package generators
 import models.*
 import models.P5.ArrivalMessageType
 import models.reference.*
-import models.reference.TransportMode.InlandMode
+import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -97,6 +97,21 @@ trait ModelGenerators {
         refType     <- nonEmptyString
         description <- nonEmptyString
       } yield AdditionalReferenceType(refType, description)
+    }
+
+  implicit lazy val arbitraryCusCode: Arbitrary[CUSCode] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+      } yield CUSCode(code)
+    }
+
+  implicit lazy val arbitraryDocTypeExcise: Arbitrary[DocTypeExcise] =
+    Arbitrary {
+      for {
+        code        <- nonEmptyString
+        description <- nonEmptyString
+      } yield DocTypeExcise(code, description)
     }
 
   implicit lazy val arbitraryAdditionalInformationCode: Arbitrary[AdditionalInformationCode] =
@@ -245,6 +260,14 @@ trait ModelGenerators {
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
       Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
+    }
+
+  implicit lazy val arbitraryBorderMode: Arbitrary[BorderMode] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield BorderMode(code, desc)
     }
 
   implicit lazy val arbitraryProcedure: Arbitrary[Procedure] =

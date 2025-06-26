@@ -20,25 +20,26 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
 
-class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportMeansIdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "DocTypeExcise" - {
+  "TransportMeansIdentification" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val value = DocTypeExcise(code, description)
+          val value = TransportMeansIdentification(code, description)
           Json.toJson(value) mustEqual Json.parse(s"""
-                                                     |{
-                                                     |  "code": "$code",
-                                                     |  "description": "$description"
-                                                     |}
-                                                     |""".stripMargin)
+              |{
+              |  "type": "$code",
+              |  "description": "$description"
+              |}
+              |""".stripMargin)
       }
     }
 
@@ -46,15 +47,15 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val value = DocTypeExcise(code, description)
+            val value = TransportMeansIdentification(code, description)
             Json
               .parse(s"""
-                        |{
-                        |  "code": "$code",
-                        |  "description": "$description"
-                        |}
-                        |""".stripMargin)
-              .as[DocTypeExcise] mustEqual value
+                   |{
+                   |  "type": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[TransportMeansIdentification] mustEqual value
         }
       }
 
@@ -65,15 +66,15 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = DocTypeExcise(code, description)
+                  val value = TransportMeansIdentification(code, description)
                   Json
                     .parse(s"""
-                              |{
-                              |  "code": "$code",
-                              |  "description": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[DocTypeExcise](DocTypeExcise.reads(config)) mustEqual value
+                         |{
+                         |  "type": "$code",
+                         |  "description": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TransportMeansIdentification](TransportMeansIdentification.reads(config)) mustEqual value
               }
           }
         }
@@ -84,25 +85,32 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = DocTypeExcise(code, description)
+                  val value = TransportMeansIdentification(code, description)
                   Json
                     .parse(s"""
-                              |{
-                              |  "key": "$code",
-                              |  "value": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[DocTypeExcise](DocTypeExcise.reads(config)) mustEqual value
+                         |{
+                         |  "key": "$code",
+                         |  "value": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TransportMeansIdentification](TransportMeansIdentification.reads(config)) mustEqual value
               }
           }
         }
       }
     }
 
+    "must format as string" in {
+      forAll(arbitrary[TransportMeansIdentification]) {
+        value =>
+          value.toString mustEqual value.description
+      }
+    }
+
     "must order" in {
-      val value1 = DocTypeExcise("RS", "Serbia")
-      val value2 = DocTypeExcise("XS", "Serbia")
-      val value3 = DocTypeExcise("FR", "France")
+      val value1 = TransportMeansIdentification("RS", "Serbia")
+      val value2 = TransportMeansIdentification("XS", "Serbia")
+      val value3 = TransportMeansIdentification("FR", "France")
 
       val values = NonEmptySet.of(value1, value2, value3)
 
@@ -115,4 +123,5 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       )
     }
   }
+
 }
