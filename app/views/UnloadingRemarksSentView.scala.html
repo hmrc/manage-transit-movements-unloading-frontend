@@ -40,4 +40,7 @@
     <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
     <p class="govuk-body">@{viewModel.fetch}</p>
     <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
+
+    <h2 class = "govuk-heading-m">@messages("unloadingRemarksSent.survey.subheading")</h2>
+    <p class = "govuk-body">@messages("unloadingRemarksSent.survey.firstContent")<a id ="takeSurvey" class ="govuk-link" href = @config.feedbackUrl>@messages("unloadingRemarksSent.survey.secondContent")</a> @messages("unloadingRemarksSent.survey.thirdContent")</p>
 }

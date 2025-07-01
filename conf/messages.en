@@ -637,6 +637,10 @@ unloadingRemarksSent.telephoneAvailable = If the goods are not released when exp
 unloadingRemarksSent.telephoneNotAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0}.
 unloadingRemarksSent.teleAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0} on {1}.
 unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0}.
+unloadingRemarksSent.survey.subheading = Before you go
+unloadingRemarksSent.survey.firstContent = Your feedback helps us make our service better.
+unloadingRemarksSent.survey.secondContent = Take a short survey
+unloadingRemarksSent.survey.thirdContent = to share your feedback on this service.
 
 checkYourAnswers.rowHeadings.goodsUnloadedDate = Goods’ unloaded date
 checkYourAnswers.rowHeadings.goodsUnloadedDate.change.hidden = goods’ unloaded date

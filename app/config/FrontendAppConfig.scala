@@ -57,6 +57,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val signOutUrl: String = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
 
+  lazy val feedbackUrl: String = configuration.get[String]("urls.feedback")
+
   lazy val loginUrl: String         = configuration.get[String]("microservice.services.auth.login")
   lazy val loginContinueUrl: String = configuration.get[String]("microservice.services.auth.loginContinue")
 
