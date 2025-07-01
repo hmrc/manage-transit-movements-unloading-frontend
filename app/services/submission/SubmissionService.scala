@@ -77,7 +77,6 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC044CType]
   }
 
-  // TODO - add tests
   def attributes: Map[String, DataRecord[?]] = {
     val phaseId = if (config.phase6Enabled) NCTS6 else NCTS5u461
     Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(phaseId.toString, scope)))
@@ -217,7 +216,7 @@ class SubmissionService @Inject() (
         }
       } yield identifier.map {
         value =>
-          // TODO - think about backwards compatibility
+          // TODO - update in CTCP-6435. Needs to be backwards compatible with phase 5 where identifier is a mandatory field
           SealType02(
             sequenceNumber = sequenceNumber,
             identifier = Some(value)
@@ -237,7 +236,7 @@ class SubmissionService @Inject() (
         }
       } yield declarationGoodsItemNumber.map {
         value =>
-          // TODO - think about backwards compatibility
+          // TODO - update in CTCP-6435. Needs to be backwards compatible with phase 5 where identifier is a mandatory field
           GoodsReferenceType02(
             sequenceNumber = sequenceNumber,
             declarationGoodsItemNumber = Some(value)

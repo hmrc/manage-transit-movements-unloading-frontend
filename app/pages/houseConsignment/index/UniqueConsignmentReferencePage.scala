@@ -28,7 +28,7 @@ case class UniqueConsignmentReferencePage(houseConsignmentIndex: Index) extends 
 
   override def toString: String = "ucr"
 
-  // TODO - update once using P5/P6 hybrid XSD (CTCP-6438)
+  // TODO - update in CTCP-6435
   override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[String] =
     None
 }

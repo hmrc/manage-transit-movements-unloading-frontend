@@ -29,6 +29,7 @@ case class CountryOfRoutingPage(countryIndex: Index) extends DiscrepancyQuestion
 
   override def toString: String = "country"
 
+  // TODO - update in CTCP-6435
   override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
-    None // TODO Update when we run this into submission logic
+    None
 }

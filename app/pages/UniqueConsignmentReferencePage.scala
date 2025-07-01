@@ -26,6 +26,7 @@ case object UniqueConsignmentReferencePage extends DiscrepancyQuestionPage[Strin
 
   override def toString: String = "ucr"
 
+  // TODO - update in CTCP-6435
   override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
     None
 }

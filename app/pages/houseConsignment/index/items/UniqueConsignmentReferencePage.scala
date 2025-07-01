@@ -29,6 +29,8 @@ case class UniqueConsignmentReferencePage(houseConsignmentIndex: Index, itemInde
 
   override def toString: String = "ucr"
 
-  override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[String] = None
+  // TODO - update in CTCP-6435
+  override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[String] =
+    None
 
 }
