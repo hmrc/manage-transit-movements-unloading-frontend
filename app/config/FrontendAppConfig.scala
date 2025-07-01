@@ -103,6 +103,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val feedbackForm: String  = configuration.get[String]("trader-test.feedback.link")
 
   val asyncCacheApiExpiration: Int = configuration.get[Int]("async-cache-api.expiration")
+  lazy val replaceIndexes: Boolean = configuration.get[Boolean]("feature-flags.replace-indexes")
 
   def mailto(implicit request: Request[?], messages: Messages): String = {
     val subject = messages("site.email.subject")

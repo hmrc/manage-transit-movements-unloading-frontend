@@ -52,7 +52,8 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
-    call = Some(routes.DescriptionController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex))
+    call = Some(routes.DescriptionController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex)),
+    args = itemIndex.display
   )
 
   def ucrRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](

@@ -29,8 +29,8 @@ class NumberOfPackagesViewModelSpec extends SpecBase with ScalaCheckPropertyChec
       val viewModelProvider = new NumberOfPackagesViewModelProvider()
       val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)(messages)
 
-      result.title mustBe "How many of this package are you using?"
-      result.heading mustBe "How many of this package are you using?"
+      result.title mustBe "How many of this package are you using for item 1 in house consignment 1?"
+      result.heading mustBe "How many of this package are you using for item 1 in house consignment 1?"
     }
 
     "when CheckMode" in {

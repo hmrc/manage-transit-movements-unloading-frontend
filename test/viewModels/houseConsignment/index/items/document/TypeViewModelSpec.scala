@@ -30,8 +30,8 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       val viewModelProvider = new TypeViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, HouseConsignmentLevelDocuments(0, 0), houseConsignmentIndex, itemIndex)
 
-      result.title mustBe "What type of document do you want to add?"
-      result.heading mustBe "What type of document do you want to add?"
+      result.title mustBe s"What type of document do you want to add for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
+      result.heading mustBe s"What type of document do you want to add for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
     }
 
     "when Check mode" in {
