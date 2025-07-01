@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.CUSTOM_ConsignmentItemType04
+import generated.ConsignmentItemType04
 import models._
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage}
 import pages.sections.ItemSection
@@ -36,7 +36,7 @@ class ConsignmentItemTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignmentItems: Seq[CUSTOM_ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+  def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers =>
       consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (consignmentItem, i)) =>
@@ -53,7 +53,7 @@ class ConsignmentItemTransformer @Inject() (
                   documentsTransformer.transform(
                     consignmentItem.SupportingDocument,
                     consignmentItem.TransportDocument,
-                    consignmentItem.PreviousDocument.toPreviousDocumentType06,
+                    consignmentItem.PreviousDocument,
                     hcIndex,
                     itemIndex
                   ) andThen

@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
+import generated.{CUSTOM_DepartureTransportMeansType01, DepartureTransportMeansType01}
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import services.ReferenceDataService
@@ -39,7 +39,7 @@ class DepartureTransportMeansTransformer @Inject() (
 
   private object GenericDepartureTransportMeans {
 
-    def apply(dtm: DepartureTransportMeansType02): GenericDepartureTransportMeans =
+    def apply(dtm: DepartureTransportMeansType01): GenericDepartureTransportMeans =
       new GenericDepartureTransportMeans(
         sequenceNumber = dtm.sequenceNumber,
         typeOfIdentification = Some(dtm.typeOfIdentification),
@@ -47,7 +47,7 @@ class DepartureTransportMeansTransformer @Inject() (
         nationality = Some(dtm.nationality)
       )
 
-    def apply(dtm: CUSTOM_DepartureTransportMeansType02): GenericDepartureTransportMeans =
+    def apply(dtm: CUSTOM_DepartureTransportMeansType01): GenericDepartureTransportMeans =
       new GenericDepartureTransportMeans(
         sequenceNumber = dtm.sequenceNumber,
         typeOfIdentification = dtm.typeOfIdentification,
@@ -63,7 +63,7 @@ class DepartureTransportMeansTransformer @Inject() (
   )
 
   def transform(
-    departureTransportMeans: Seq[CUSTOM_DepartureTransportMeansType02]
+    departureTransportMeans: Seq[CUSTOM_DepartureTransportMeansType01]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.departureMeansOfTransport.*
     import pages.sections.TransportMeansSection
@@ -78,7 +78,7 @@ class DepartureTransportMeansTransformer @Inject() (
   }
 
   def transform(
-    departureTransportMeans: Seq[DepartureTransportMeansType02],
+    departureTransportMeans: Seq[DepartureTransportMeansType01],
     hcIndex: Index
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.departureMeansOfTransport.*

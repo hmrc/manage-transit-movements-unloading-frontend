@@ -15,8 +15,8 @@
  */
 
 import config.Constants.CountryCode
-import generated._
-import play.api.libs.json._
+import generated.*
+import play.api.libs.json.*
 import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import utils.transformers.Removed
@@ -246,33 +246,5 @@ package object models {
     def length: Int = arr.getOrElse(JsArray()).value.length
 
     def nextIndex: Index = Index(length)
-  }
-
-  implicit class RichPreviousDocument04(previousDocument: PreviousDocumentType04) {
-
-    def toPreviousDocumentType06: PreviousDocumentType06 = {
-      import previousDocument._
-      PreviousDocumentType06(sequenceNumber, typeValue, referenceNumber, complementOfInformation)
-    }
-  }
-
-  implicit class RichPreviousDocument07(previousDocument: PreviousDocumentType07) {
-
-    def toPreviousDocumentType06: PreviousDocumentType06 = {
-      import previousDocument._
-      PreviousDocumentType06(sequenceNumber, typeValue, referenceNumber, complementOfInformation)
-    }
-  }
-
-  implicit class RichPreviousDocuments04(previousDocuments: Seq[PreviousDocumentType04]) {
-
-    def toPreviousDocumentType06: Seq[PreviousDocumentType06] =
-      previousDocuments.map(_.toPreviousDocumentType06)
-  }
-
-  implicit class RichPreviousDocuments07(previousDocuments: Seq[PreviousDocumentType07]) {
-
-    def toPreviousDocumentType06: Seq[PreviousDocumentType06] =
-      previousDocuments.map(_.toPreviousDocumentType06)
   }
 }

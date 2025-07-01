@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.TransitOperationType14
+import generated.TransitOperationType10
 import generators.Generators
 import models.SecurityType
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
@@ -51,14 +51,14 @@ class TransitOperationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
   "must transform data" in {
 
-    val transitOperationType14: TransitOperationType14 = arbitrary[TransitOperationType14].sample.value
+    val TransitOperationType10: TransitOperationType10 = arbitrary[TransitOperationType10].sample.value
 
-    when(mockReferenceDataService.getSecurityType(eqTo(transitOperationType14.security))(any()))
-      .thenReturn(Future.successful(SecurityType(transitOperationType14.security, "test2")))
+    when(mockReferenceDataService.getSecurityType(eqTo(TransitOperationType10.security))(any()))
+      .thenReturn(Future.successful(SecurityType(TransitOperationType10.security, "test2")))
 
-    val result = transformer.transform(transitOperationType14).apply(emptyUserAnswers).futureValue
+    val result = transformer.transform(TransitOperationType10).apply(emptyUserAnswers).futureValue
 
-    result.getValue(SecurityTypePage).code mustBe transitOperationType14.security
+    result.getValue(SecurityTypePage).code mustBe TransitOperationType10.security
     result.getValue(SecurityTypePage).description mustBe "test2"
 
   }

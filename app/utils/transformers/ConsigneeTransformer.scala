@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.{AddressType07, AddressType09, ConsigneeType03, ConsigneeType04}
+import generated.{AddressType01, AddressType14, ConsigneeType01, ConsigneeType05}
 import models.{DynamicAddress, Index, UserAnswers}
 import pages.houseConsignment.index.items.{
   ConsigneeAddressPage as ItemConsigneeAddressPage,
@@ -36,12 +36,12 @@ class ConsigneeTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignee: Option[ConsigneeType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+  def transform(consignee: Option[ConsigneeType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.consignee.*
 
     userAnswers =>
       consignee match {
-        case Some(ConsigneeType04(_, _, address)) =>
+        case Some(ConsigneeType05(_, _, address)) =>
           for {
             country <- address.map(_.country).lookup(referenceDataService.getCountry)
             userAnswers <- {
@@ -56,11 +56,11 @@ class ConsigneeTransformer @Inject() (
       }
   }
 
-  def transform(consignee: Option[ConsigneeType04], hcIndex: Index)(implicit
+  def transform(consignee: Option[ConsigneeType05], hcIndex: Index)(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignee match {
-      case Some(ConsigneeType04(identificationNumber, name, address)) =>
+      case Some(ConsigneeType05(identificationNumber, name, address)) =>
         val pipeline: UserAnswers => Future[UserAnswers] =
           set(ConsigneeIdentifierPage(hcIndex), identificationNumber) andThen
             set(ConsigneeNamePage(hcIndex), name) andThen
@@ -71,11 +71,11 @@ class ConsigneeTransformer @Inject() (
         Future.successful(userAnswers)
     }
 
-  private def transformAddress(address: Option[AddressType07], hcIndex: Index)(implicit
+  private def transformAddress(address: Option[AddressType14], hcIndex: Index)(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     address match {
-      case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
+      case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
         referenceDataService.getCountry(country).flatMap {
           countryVal =>
             val pipeline: UserAnswers => Future[UserAnswers] =
@@ -87,11 +87,11 @@ class ConsigneeTransformer @Inject() (
       case None => Future.successful(userAnswers)
     }
 
-  def transform(consignee: Option[ConsigneeType03], hcIndex: Index, itemIndex: Index)(implicit
+  def transform(consignee: Option[ConsigneeType01], hcIndex: Index, itemIndex: Index)(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignee match {
-      case Some(ConsigneeType03(identificationNumber, name, address)) =>
+      case Some(ConsigneeType01(identificationNumber, name, address)) =>
         val pipeline: UserAnswers => Future[UserAnswers] =
           set(ItemConsigneeIdentifierPage(hcIndex, itemIndex), identificationNumber) andThen
             set(ItemConsigneeNamePage(hcIndex, itemIndex), name) andThen
@@ -102,11 +102,11 @@ class ConsigneeTransformer @Inject() (
         Future.successful(userAnswers)
     }
 
-  private def transformItemConsigneeAddress(address: Option[AddressType09], hcIndex: Index, itemIndex: Index)(implicit
+  private def transformItemConsigneeAddress(address: Option[AddressType01], hcIndex: Index, itemIndex: Index)(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     address match {
-      case Some(AddressType09(streetAndNumber, postcode, city, country)) =>
+      case Some(AddressType01(streetAndNumber, postcode, city, country)) =>
         referenceDataService.getCountry(country).flatMap {
           countryVal =>
             val pipeline: UserAnswers => Future[UserAnswers] =

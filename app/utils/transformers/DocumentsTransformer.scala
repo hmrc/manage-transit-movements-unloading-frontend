@@ -16,7 +16,8 @@
 
 package utils.transformers
 
-import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
+import generated.*
+import models.Document.PreviousDocumentType
 import models.reference.DocumentType
 import models.{Document, Index, UserAnswers}
 import services.ReferenceDataService
@@ -32,13 +33,13 @@ class DocumentsTransformer @Inject() (
 
   def transform(
     supportingDocuments: Seq[SupportingDocumentType02],
-    transportDocuments: Seq[TransportDocumentType02],
-    previousDocuments: Seq[PreviousDocumentType06]
+    transportDocuments: Seq[TransportDocumentType01],
+    previousDocuments: Seq[PreviousDocumentType05]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.documents.*
     import pages.sections.documents.DocumentSection
 
-    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments.map(PreviousDocumentType(_))) {
       previousDocument =>
         referenceDataService.getPreviousDocument(previousDocument.typeValue)
     } {
@@ -64,15 +65,15 @@ class DocumentsTransformer @Inject() (
 
   def transform(
     supportingDocuments: Seq[SupportingDocumentType02],
-    transportDocuments: Seq[TransportDocumentType02],
-    previousDocuments: Seq[PreviousDocumentType06],
+    transportDocuments: Seq[TransportDocumentType01],
+    previousDocuments: Seq[PreviousDocumentType03],
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.document.*
     import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
-    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments.map(PreviousDocumentType(_))) {
       previousDocument =>
         referenceDataService.getPreviousDocument(previousDocument.typeValue)
     } {
@@ -98,14 +99,14 @@ class DocumentsTransformer @Inject() (
 
   def transform(
     supportingDocuments: Seq[SupportingDocumentType02],
-    transportDocuments: Seq[TransportDocumentType02],
+    transportDocuments: Seq[TransportDocumentType01],
     previousDocuments: Seq[PreviousDocumentType06],
     hcIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.documents.*
     import pages.sections.houseConsignment.index.documents.DocumentSection
 
-    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments.map(PreviousDocumentType(_))) {
       previousDocument =>
         referenceDataService.getPreviousDocumentExport(previousDocument.typeValue)
     } {
@@ -131,10 +132,10 @@ class DocumentsTransformer @Inject() (
 
   private def genericTransform(
     supportingDocuments: Seq[SupportingDocumentType02],
-    transportDocuments: Seq[TransportDocumentType02],
-    previousDocuments: Seq[PreviousDocumentType06]
+    transportDocuments: Seq[TransportDocumentType01],
+    previousDocuments: Seq[PreviousDocumentType]
   )(
-    previousDocumentLookup: PreviousDocumentType06 => Future[DocumentType]
+    previousDocumentLookup: PreviousDocumentType => Future[DocumentType]
   )(
     pipeline: (Document, Index) => UserAnswers => Future[UserAnswers]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {

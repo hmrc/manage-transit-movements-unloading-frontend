@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.EndorsementType03
+import generated.EndorsementType02
 import models.{Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import services.ReferenceDataService
@@ -30,9 +30,9 @@ class IncidentEndorsementTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(endorsement: Option[EndorsementType03], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(endorsement: Option[EndorsementType02], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     endorsement match {
-      case Some(EndorsementType03(date, authority, place, countryCode)) =>
+      case Some(EndorsementType02(date, authority, place, countryCode)) =>
         val countryF = referenceDataService.getCountry(countryCode)
 
         for {

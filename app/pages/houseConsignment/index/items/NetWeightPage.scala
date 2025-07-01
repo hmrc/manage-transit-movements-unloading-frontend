@@ -16,18 +16,18 @@
 
 package pages.houseConsignment.index.items
 
-import generated.CUSTOM_GoodsMeasureType03
+import generated.CUSTOM_GoodsMeasureType05
 import models.Index
 import pages.DiscrepancyQuestionPage
 import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends DiscrepancyQuestionPage[BigDecimal, Option[CUSTOM_GoodsMeasureType03], BigDecimal] {
+case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends DiscrepancyQuestionPage[BigDecimal, Option[CUSTOM_GoodsMeasureType05], BigDecimal] {
 
   override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
 
   override def toString: String = "netMass"
 
-  override def valueInIE043(ie043: Option[CUSTOM_GoodsMeasureType03], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
+  override def valueInIE043(ie043: Option[CUSTOM_GoodsMeasureType05], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
     ie043.flatMap(_.netMass)
 }

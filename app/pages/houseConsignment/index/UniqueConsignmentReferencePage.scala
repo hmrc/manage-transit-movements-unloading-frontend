@@ -16,19 +16,19 @@
 
 package pages.houseConsignment.index
 
-import generated.CUSTOM_HouseConsignmentType04
+import generated.HouseConsignmentType04
 import models.Index
 import pages.DiscrepancyQuestionPage
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class UniqueConsignmentReferencePage(houseConsignmentIndex: Index) extends DiscrepancyQuestionPage[String, Seq[CUSTOM_HouseConsignmentType04], String] {
+case class UniqueConsignmentReferencePage(houseConsignmentIndex: Index) extends DiscrepancyQuestionPage[String, Seq[HouseConsignmentType04], String] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
   override def toString: String = "ucr"
 
   // TODO - update once using P5/P6 hybrid XSD (CTCP-6438)
-  override def valueInIE043(ie043: Seq[CUSTOM_HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[String] =
     None
 }

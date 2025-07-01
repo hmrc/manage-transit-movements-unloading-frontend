@@ -17,7 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{CUSTOM_ConsignmentType05, Number0, SealType04, TransportEquipmentType05}
+import generated.{ConsignmentType05, Number0, SealType01, TransportEquipmentType03}
 import generators.Generators
 import models.NormalMode
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -69,13 +69,13 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
         emptyUserAnswers.copy(ie043Data =
           basicIe043.copy(Consignment =
             Some(
-              CUSTOM_ConsignmentType05(
+              ConsignmentType05(
                 containerIndicator = Number0,
                 TransportEquipment = Seq(
-                  TransportEquipmentType05(
+                  TransportEquipmentType03(
                     sequenceNumber = 1,
                     numberOfSeals = 1,
-                    Seal = Seq(SealType04(1, "1"))
+                    Seal = Seq(SealType01(1, "1"))
                   )
                 )
               )
@@ -99,10 +99,10 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                CUSTOM_ConsignmentType05(
+                ConsignmentType05(
                   containerIndicator = Number0,
                   TransportEquipment = Seq(
-                    TransportEquipmentType05(
+                    TransportEquipmentType03(
                       sequenceNumber = 1,
                       numberOfSeals = 0
                     )

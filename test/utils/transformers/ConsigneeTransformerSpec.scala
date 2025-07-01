@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{AddressType07, ConsigneeType03, ConsigneeType04}
+import generated.{AddressType14, ConsigneeType01, ConsigneeType05}
 import generators.Generators
 import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
@@ -61,7 +61,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "at consignment level" - {
       "when consignee defined" in {
-        forAll(arbitrary[ConsigneeType04], arbitrary[AddressType07], arbitrary[Country]) {
+        forAll(arbitrary[ConsigneeType05], arbitrary[AddressType14], arbitrary[Country]) {
           (consignor, address, country) =>
             beforeEach()
 
@@ -90,7 +90,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         when(mockReferenceDataService.getCountry(any())(any()))
           .thenReturn(Future.successful(country))
 
-        forAll(arbitrary[ConsigneeType04]) {
+        forAll(arbitrary[ConsigneeType05]) {
           consignee =>
             val result = transformer.transform(Some(consignee), hcIndex).apply(emptyUserAnswers).futureValue
 
@@ -119,7 +119,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         when(mockReferenceDataService.getCountry(any())(any()))
           .thenReturn(Future.successful(country))
 
-        forAll(arbitrary[ConsigneeType03]) {
+        forAll(arbitrary[ConsigneeType01]) {
           consignee =>
             val result = transformer.transform(Some(consignee), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 

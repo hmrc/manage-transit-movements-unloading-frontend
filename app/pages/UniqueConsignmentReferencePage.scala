@@ -16,16 +16,16 @@
 
 package pages
 
-import generated.CUSTOM_ConsignmentType05
+import generated.ConsignmentType05
 import pages.sections.ConsignmentSection
 import play.api.libs.json.JsPath
 
-case object UniqueConsignmentReferencePage extends DiscrepancyQuestionPage[String, Option[CUSTOM_ConsignmentType05], String] {
+case object UniqueConsignmentReferencePage extends DiscrepancyQuestionPage[String, Option[ConsignmentType05], String] {
 
   override def path: JsPath = ConsignmentSection.path \ toString
 
   override def toString: String = "ucr"
 
-  override def valueInIE043(ie043: Option[CUSTOM_ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
     None
 }

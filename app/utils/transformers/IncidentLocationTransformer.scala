@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.LocationType02
+import generated.LocationType
 import models.{Index, UserAnswers}
 import pages.incident.location.*
 import services.ReferenceDataService
@@ -30,9 +30,9 @@ class IncidentLocationTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(location: LocationType02, incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(location: LocationType, incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     location match {
-      case LocationType02(qualifier, unLocode, countryCode, _, _) =>
+      case LocationType(qualifier, unLocode, countryCode, _, _) =>
         val countryF                   = referenceDataService.getCountry(countryCode)
         val qualifierOfIdentificationF = referenceDataService.getQualifierOfIdentificationIncident(qualifier)
 

@@ -30,12 +30,12 @@ class ConsignorTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignor: Option[ConsignorType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+  def transform(consignor: Option[ConsignorType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.consignor.*
 
     userAnswers =>
       consignor match {
-        case Some(ConsignorType05(_, _, address)) =>
+        case Some(ConsignorType04(_, _, address)) =>
           for {
             country <- address.map(_.country).lookup(referenceDataService.getCountry)
             userAnswers <- {
@@ -50,12 +50,12 @@ class ConsignorTransformer @Inject() (
       }
   }
 
-  def transform(consignor: Option[ConsignorType06], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+  def transform(consignor: Option[ConsignorType05], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.{ConsignorIdentifierPage, ConsignorNamePage}
 
     userAnswers =>
       consignor match {
-        case Some(ConsignorType06(identificationNumber, name, address)) =>
+        case Some(ConsignorType05(identificationNumber, name, address)) =>
           for {
             userAnswers <- {
               val pipeline: UserAnswers => Future[UserAnswers] =
@@ -72,14 +72,14 @@ class ConsignorTransformer @Inject() (
       }
   }
 
-  private def transformAddress(address: Option[AddressType07], hcIndex: Index)(implicit
+  private def transformAddress(address: Option[AddressType14], hcIndex: Index)(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers => {
     import pages.ConsignorAddressPage
 
     address match {
 
-      case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
+      case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
         referenceDataService.getCountry(country).flatMap {
           countryVal =>
             val pipeline: UserAnswers => Future[UserAnswers] =

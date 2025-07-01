@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.TranshipmentType02
+import generated.TranshipmentType
 import models.{Index, UserAnswers}
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import services.ReferenceDataService
@@ -30,9 +30,9 @@ class ReplacementMeansOfTransportTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(transhipment: Option[TranshipmentType02], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(transhipment: Option[TranshipmentType], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     transhipment match {
-      case Some(TranshipmentType02(_, transportMeans)) =>
+      case Some(TranshipmentType(_, transportMeans)) =>
         val transportMeansIdentificationF = referenceDataService.getMeansOfTransportIdentificationType(transportMeans.typeOfIdentification)
         val countryF                      = referenceDataService.getCountry(transportMeans.nationality)
 

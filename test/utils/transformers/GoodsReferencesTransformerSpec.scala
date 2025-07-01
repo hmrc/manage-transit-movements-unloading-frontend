@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.GoodsReferenceType02
+import generated.GoodsReferenceType01
 import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,7 +30,7 @@ class GoodsReferencesTransformerSpec extends SpecBase with AppWithDefaultMockFix
   private val transformer = app.injector.instanceOf[GoodsReferencesTransformer]
 
   "must transform data" in {
-    forAll(arbitrary[Seq[GoodsReferenceType02]]) {
+    forAll(arbitrary[Seq[GoodsReferenceType01]]) {
       goodsReferences =>
         val result = transformer.transform(goodsReferences, equipmentIndex).apply(emptyUserAnswers).futureValue
 

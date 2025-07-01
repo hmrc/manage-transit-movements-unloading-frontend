@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.CUSTOM_ConsignmentType05
+import generated.ConsignmentType05
 import models.UserAnswers
 import pages.GrossWeightPage
 import pages.countryOfDestination.CountryOfDestinationPage
@@ -41,7 +41,7 @@ class ConsignmentTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignment: Option[CUSTOM_ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
       case Some(consignment05) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
@@ -51,7 +51,6 @@ class ConsignmentTransformer @Inject() (
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
-            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
             set(GrossWeightPage, consignment05.grossMass) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
