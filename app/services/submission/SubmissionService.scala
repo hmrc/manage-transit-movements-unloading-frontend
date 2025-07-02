@@ -169,19 +169,30 @@ class SubmissionService @Inject() (
 
     for {
       grossMass               <- pages.GrossWeightPage.readNullable(identity).apply(ie043)
+      referenceNumberUCR      <- pages.UniqueConsignmentReferencePage.readNullable(identity).apply(ie043)
       transportEquipment      <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
       departureTransportMeans <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
       supportingDocuments     <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))
       transportDocuments      <- DocumentsSection.readArray(consignmentTransportDocumentReads(transportDocuments))
       additionalReferences    <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
       houseConsignments       <- HouseConsignmentsSection.readArray(houseConsignmentReads(houseConsignments))
-    } yield (grossMass, transportEquipment, departureTransportMeans, supportingDocuments, transportDocuments, additionalReferences, houseConsignments) match {
-      case (None, Nil, Nil, Nil, Nil, Nil, Nil) =>
+    } yield (
+      grossMass,
+      referenceNumberUCR,
+      transportEquipment,
+      departureTransportMeans,
+      supportingDocuments,
+      transportDocuments,
+      additionalReferences,
+      houseConsignments
+    ) match {
+      case (None, None, Nil, Nil, Nil, Nil, Nil, Nil) =>
         None
       case _ =>
         Some(
           ConsignmentType06(
             grossMass = grossMass,
+            referenceNumberUCR = referenceNumberUCR,
             TransportEquipment = transportEquipment,
             DepartureTransportMeans = departureTransportMeans,
             SupportingDocument = supportingDocuments,
@@ -207,40 +218,60 @@ class SubmissionService @Inject() (
       ie043: Seq[SealType01]
     )(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
       for {
-        removed <- (__ \ Removed).readNullable[Boolean]
-        identifier <- removed match {
-          case Some(true) =>
-            Reads.pure(SealIdentificationNumberPage(index, sealIndex).valueInIE043(ie043, Some(sequenceNumber)))
-          case _ =>
-            SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043)
-        }
-      } yield identifier.map {
-        value =>
-          // TODO - update in CTCP-6435. Needs to be backwards compatible with phase 5 where identifier is a mandatory field
-          SealType02(
-            sequenceNumber = sequenceNumber,
-            identifier = Some(value)
+        removed    <- (__ \ Removed).readNullable[Boolean]
+        identifier <- SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043)
+      } yield removed match {
+        case Some(true) if config.phase6Enabled =>
+          Some(
+            SealType02(
+              sequenceNumber = sequenceNumber
+            )
           )
+        case Some(true) =>
+          Some(
+            SealType02(
+              sequenceNumber = sequenceNumber,
+              identifier = SealIdentificationNumberPage(index, sealIndex).valueInIE043(ie043, Some(sequenceNumber))
+            )
+          )
+        case _ =>
+          identifier.map {
+            value =>
+              SealType02(
+                sequenceNumber = sequenceNumber,
+                identifier = Some(value)
+              )
+          }
       }
 
     def goodsReferenceReads(
       ie043: Seq[GoodsReferenceType01]
     )(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType02]] =
       for {
-        removed <- (__ \ Removed).readNullable[Boolean]
-        declarationGoodsItemNumber <- removed match {
-          case Some(true) =>
-            Reads.pure(ItemPage(index, goodsReferenceIndex).valueInIE043(ie043, Some(sequenceNumber)))
-          case _ =>
-            ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043)
-        }
-      } yield declarationGoodsItemNumber.map {
-        value =>
-          // TODO - update in CTCP-6435. Needs to be backwards compatible with phase 5 where identifier is a mandatory field
-          GoodsReferenceType02(
-            sequenceNumber = sequenceNumber,
-            declarationGoodsItemNumber = Some(value)
+        removed                    <- (__ \ Removed).readNullable[Boolean]
+        declarationGoodsItemNumber <- ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043)
+      } yield removed match {
+        case Some(true) if config.phase6Enabled =>
+          Some(
+            GoodsReferenceType02(
+              sequenceNumber = sequenceNumber
+            )
           )
+        case Some(true) =>
+          Some(
+            GoodsReferenceType02(
+              sequenceNumber = sequenceNumber,
+              declarationGoodsItemNumber = ItemPage(index, goodsReferenceIndex).valueInIE043(ie043, Some(sequenceNumber))
+            )
+          )
+        case _ =>
+          declarationGoodsItemNumber.map {
+            value =>
+              GoodsReferenceType02(
+                sequenceNumber = sequenceNumber,
+                declarationGoodsItemNumber = Some(value)
+              )
+          }
       }
 
     lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber)
@@ -441,7 +472,8 @@ class SubmissionService @Inject() (
 
     for {
       removed                 <- (__ \ Removed).readNullable[Boolean]
-      grossMass               <- GrossWeightPage(index).readNullable(identity).apply(ie043)
+      grossMass               <- GrossWeightPage(index).readNullable(identity).apply(houseConsignment)
+      referenceNumberUCR      <- UniqueConsignmentReferencePage(index).readNullable(identity).apply(houseConsignment)
       departureTransportMeans <- TransportMeansListSection(index).readArray(houseConsignmentDepartureTransportMeansReads(departureTransportMeans)(index))
       supportingDocuments     <- DocumentsSection(index).readArray(houseConsignmentSupportingDocumentReads(supportingDocuments)(index))
       transportDocuments      <- DocumentsSection(index).readArray(houseConsignmentTransportDocumentReads(transportDocuments)(index))
@@ -455,14 +487,15 @@ class SubmissionService @Inject() (
           )
         )
       case _ =>
-        (grossMass, departureTransportMeans, supportingDocuments, transportDocuments, additionalReferences, consignmentItems) match {
-          case (None, Nil, Nil, Nil, Nil, Nil) =>
+        (grossMass, referenceNumberUCR, departureTransportMeans, supportingDocuments, transportDocuments, additionalReferences, consignmentItems) match {
+          case (None, None, Nil, Nil, Nil, Nil, Nil) =>
             None
           case _ =>
             Some(
               HouseConsignmentType05(
                 sequenceNumber = sequenceNumber,
                 grossMass = grossMass,
+                referenceNumberUCR = referenceNumberUCR,
                 DepartureTransportMeans = departureTransportMeans,
                 SupportingDocument = supportingDocuments,
                 TransportDocument = transportDocuments,
@@ -645,6 +678,7 @@ class SubmissionService @Inject() (
     for {
       removed                    <- (__ \ Removed).readNullable[Boolean]
       declarationGoodsItemNumber <- DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex).path.last.read[BigInt]
+      referenceNumberUCR         <- UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(consignmentItem)
       commodity                  <- (__ \ "Commodity").readSafe(consignmentItemCommodityReads(commodity)(houseConsignmentIndex, itemIndex))
       packaging <- PackagingListSection(houseConsignmentIndex, itemIndex).readArray(
         consignmentItemPackagingReads(packaging)(houseConsignmentIndex, itemIndex)
@@ -667,14 +701,15 @@ class SubmissionService @Inject() (
           )
         )
       case _ =>
-        (commodity, packaging, supportingDocuments, transportDocuments, additionalReferences) match {
-          case (None, Nil, Nil, Nil, Nil) =>
+        (referenceNumberUCR, commodity, packaging, supportingDocuments, transportDocuments, additionalReferences) match {
+          case (None, None, Nil, Nil, Nil, Nil) =>
             None
           case _ =>
             Some(
               ConsignmentItemType05(
                 goodsItemNumber = sequenceNumber,
                 declarationGoodsItemNumber = declarationGoodsItemNumber,
+                referenceNumberUCR = referenceNumberUCR,
                 Commodity = commodity,
                 Packaging = packaging,
                 SupportingDocument = supportingDocuments,
