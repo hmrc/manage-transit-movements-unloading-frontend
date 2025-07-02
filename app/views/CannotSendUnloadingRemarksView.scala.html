@@ -42,4 +42,8 @@
         <a id="viewStatus" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("cannotSendUnloadingRemarks.linkText")</a>
     </p>
 
+    <h2 class = "govuk-heading-m">@messages("unloadingRemarksSent.survey.subheading")</h2>
+    <p class = "govuk-body">@messages("unloadingRemarksSent.survey.firstContent")<a id ="takeSurvey" class ="govuk-link" href = @config.feedbackUrl>@messages("unloadingRemarksSent.survey.secondContent")
+    </a> @messages("unloadingRemarksSent.survey.thirdContent")</p>
+
 }

@@ -51,6 +51,14 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
     expectedHref = "http://localhost:9485/manage-transit-movements/view-arrival-notifications"
   )
 
+  behave like pageWithContent("h2", "Before you go")
+
+  behave like pageWithLink(
+    id = "takeSurvey",
+    expectedText = "Take a short survey",
+    expectedHref = frontendAppConfig.feedbackUrl
+  )
+
   "Customs office with a name and no telephone" - {
     val view = injector
       .instanceOf[CannotSendUnloadingRemarksView]
