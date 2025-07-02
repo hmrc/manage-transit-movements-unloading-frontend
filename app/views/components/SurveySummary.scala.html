@@ -15,16 +15,16 @@
  *@
 
 @import config.FrontendAppConfig
+
 @this(
-        config: FrontendAppConfig
+    config: FrontendAppConfig
 )
 
-@(
-        surveyHeading: String,
-        firstContent: String,
-        secondContent: String,
-        thirdContent: String)
+@()(implicit messages: Messages)
 
-<h2 class = "govuk-heading-m">@surveyHeading</h2>
-<p class = "govuk-body">@firstContent<a id = "takeSurvey" class = "govuk-link" href = @config.feedbackUrl>
-    @secondContent</a> @thirdContent</p>
+<h2 class="govuk-heading-m">@messages("site.survey.subheading")</h2>
+
+<p class="govuk-body">@messages("site.survey.firstContent")
+    <a id="takeSurvey" class="govuk-link" href=@config.feedbackUrl>@messages("site.survey.secondContent")</a>
+    @messages("site.survey.thirdContent")
+</p>

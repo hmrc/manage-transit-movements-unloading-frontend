@@ -18,12 +18,12 @@
 @import views.html.components.{Button, Heading, SurveySummary}
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        heading: Heading,
-        button: Button,
-        surveyComponent: SurveySummary,
-        config: FrontendAppConfig
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    button: Button,
+    survey: SurveySummary,
+    config: FrontendAppConfig
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CannotSendUnloadingRemarksViewModel)(implicit request: Request[?], messages: Messages)
@@ -37,20 +37,12 @@
 
     <p class="govuk-body">@messages("cannotSendUnloadingRemarks.paragraph1")</p>
 
-    <p class="govuk-body"> @{
-        viewModel.fetch
-    } </p>
+    <p class="govuk-body">@{viewModel.fetch}</p>
 
     <p>
         <a id="viewStatus" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("cannotSendUnloadingRemarks.linkText")</a>
     </p>
 
-    @surveyComponent(
-        surveyHeading = messages("unloadingRemarksSent.survey.subheading"),
-        firstContent = messages("unloadingRemarksSent.survey.firstContent"),
-        secondContent = messages("unloadingRemarksSent.survey.secondContent"),
-        thirdContent = messages("unloadingRemarksSent.survey.thirdContent")
-
-    )
+    @survey()
 
 }

@@ -19,10 +19,10 @@ package views
 import models.CannotSendUnloadingRemarksViewModel
 import models.reference.CustomsOffice
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import views.behaviours.SurveyViewBehaviours
 import views.html.CannotSendUnloadingRemarksView
 
-class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
+class CannotSendUnloadingRemarksViewSpec extends SurveyViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
     injector
@@ -41,8 +41,9 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
 
   behave like pageWithoutHint()
 
-  behave like pageWithContent("p",
-                              s"This may be because the unloading remarks have already been sent or the office of destination has rejected the notification."
+  behave like pageWithContent(
+    "p",
+    s"This may be because the unloading remarks have already been sent or the office of destination has rejected the notification."
   )
 
   behave like pageWithLink(
@@ -51,13 +52,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
     expectedHref = "http://localhost:9485/manage-transit-movements/view-arrival-notifications"
   )
 
-  behave like pageWithContent("h2", "Before you go")
-
-  behave like pageWithLink(
-    id = "takeSurvey",
-    expectedText = "Take a short survey",
-    expectedHref = frontendAppConfig.feedbackUrl
-  )
+  behave like pageWithSurvey()
 
   "Customs office with a name and no telephone" - {
     val view = injector

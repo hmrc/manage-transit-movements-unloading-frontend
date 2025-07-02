@@ -20,11 +20,11 @@
 @import views.html.components.SurveySummary
 
 @this(
-        mainTemplate: MainTemplate,
-        heading: Heading,
-        config: FrontendAppConfig,
-        govukPanel: GovukPanel,
-        surveyComponent: SurveySummary
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    config: FrontendAppConfig,
+    govukPanel: GovukPanel,
+    survey: SurveySummary
 )
 
 @(mrn: String, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[?], messages: Messages)
@@ -40,15 +40,8 @@
 
     <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
     <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
-    <p class="govuk-body">@{
-        viewModel.fetch
-    }</p>
+    <p class="govuk-body">@{viewModel.fetch}</p>
     <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
-    @surveyComponent(
-        surveyHeading = messages("unloadingRemarksSent.survey.subheading"),
-        firstContent = messages("unloadingRemarksSent.survey.firstContent"),
-        secondContent = messages("unloadingRemarksSent.survey.secondContent"),
-        thirdContent = messages("unloadingRemarksSent.survey.thirdContent")
 
-    )
+    @survey()
 }
