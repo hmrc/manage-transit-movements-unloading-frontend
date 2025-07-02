@@ -20,10 +20,10 @@ import base.SpecBase
 import models.UnloadingRemarksSentViewModel
 import models.reference.CustomsOffice
 import play.twirl.api.HtmlFormat
-import views.behaviours.{PanelViewBehaviours, SurveyViewBehaviours}
+import views.behaviours.{FeedbackViewBehaviours, PanelViewBehaviours}
 import views.html.UnloadingRemarksSentView
 
-class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SurveyViewBehaviours with SpecBase {
+class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with FeedbackViewBehaviours with SpecBase {
 
   override val prefix: String = "unloadingRemarksSent"
 
@@ -61,7 +61,7 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SurveyViewBe
     expectedHref = frontendAppConfig.arrivalsFrontendUrl
   )
 
-  behave like pageWithSurvey()
+  behave like pageWithFeedback()
 
   "Customs office with a name and no telephone" - {
     val view = injector.instanceOf[UnloadingRemarksSentView].apply(mrn.value, UnloadingRemarksSentViewModel(noTelephone, "GB000060"))(fakeRequest, messages)

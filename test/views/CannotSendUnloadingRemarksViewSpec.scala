@@ -19,10 +19,10 @@ package views
 import models.CannotSendUnloadingRemarksViewModel
 import models.reference.CustomsOffice
 import play.twirl.api.HtmlFormat
-import views.behaviours.SurveyViewBehaviours
+import views.behaviours.FeedbackViewBehaviours
 import views.html.CannotSendUnloadingRemarksView
 
-class CannotSendUnloadingRemarksViewSpec extends SurveyViewBehaviours {
+class CannotSendUnloadingRemarksViewSpec extends FeedbackViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
     injector
@@ -52,7 +52,7 @@ class CannotSendUnloadingRemarksViewSpec extends SurveyViewBehaviours {
     expectedHref = "http://localhost:9485/manage-transit-movements/view-arrival-notifications"
   )
 
-  behave like pageWithSurvey()
+  behave like pageWithFeedback()
 
   "Customs office with a name and no telephone" - {
     val view = injector

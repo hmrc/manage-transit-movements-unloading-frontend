@@ -15,14 +15,14 @@
  *@
 
 @import config.FrontendAppConfig
-@import views.html.components.{Button, Heading, SurveySummary}
+@import views.html.components.{Button, Feedback, Heading}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
-    survey: SurveySummary,
+    feedback: Feedback,
     config: FrontendAppConfig
 )
 
@@ -43,6 +43,5 @@
         <a id="viewStatus" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("cannotSendUnloadingRemarks.linkText")</a>
     </p>
 
-    @survey()
-
+    @feedback()
 }

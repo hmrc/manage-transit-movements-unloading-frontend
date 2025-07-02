@@ -16,10 +16,10 @@
 
 package views.behaviours
 
-trait SurveyViewBehaviours extends ViewBehaviours {
+trait FeedbackViewBehaviours extends ViewBehaviours {
 
-  def pageWithSurvey(): Unit =
-    "page with a survey" - {
+  def pageWithFeedback(): Unit =
+    "page with a feedback summary" - {
       "when rendered" - {
         "must have a h2" - {
           behave like pageWithContent("h2", "Before you go")
@@ -34,7 +34,7 @@ trait SurveyViewBehaviours extends ViewBehaviours {
 
         "must have a link" - {
           behave like pageWithLink(
-            id = "takeSurvey",
+            id = "feedback",
             expectedText = "Take a short survey",
             expectedHref = frontendAppConfig.feedbackUrl
           )
