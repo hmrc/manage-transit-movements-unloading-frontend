@@ -17,9 +17,11 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
-import play.api.libs.json.{Format, Json}
 import org.apache.commons.text.StringEscapeUtils
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Format, Json, Reads}
 
 case class TransportMeansIdentification(`type`: String, description: String) extends Radioable[TransportMeansIdentification] {
 
@@ -28,13 +30,28 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
   override val messageKeyPrefix: String = TransportMeansIdentification.messageKeyPrefix
 
   override val code: String = `type`
-
 }
 
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
+
+  def reads(config: FrontendAppConfig): Reads[TransportMeansIdentification] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(TransportMeansIdentification.apply)
+    } else {
+      Json.reads[TransportMeansIdentification]
+    }
+
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
 
   implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) => (x, y).compareBy(_.`type`)
 
   val messageKeyPrefix = "departureMeansOfTransport.identification"
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.phase6Enabled) "keys" else "data.type"
+    Seq(key -> code)
+  }
 }

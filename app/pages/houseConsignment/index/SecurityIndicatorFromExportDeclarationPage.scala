@@ -16,7 +16,8 @@
 
 package pages.houseConsignment.index
 
-import models.{Index, SecurityType}
+import models.Index
+import models.reference.SecurityType
 import pages.QuestionPage
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
