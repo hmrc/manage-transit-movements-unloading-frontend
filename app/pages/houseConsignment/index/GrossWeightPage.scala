@@ -16,19 +16,19 @@
 
 package pages.houseConsignment.index
 
-import generated.CUSTOM_HouseConsignmentType04
+import generated.HouseConsignmentType04
 import models.Index
 import pages.DiscrepancyQuestionPage
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class GrossWeightPage(houseConsignmentIndex: Index) extends DiscrepancyQuestionPage[BigDecimal, Seq[CUSTOM_HouseConsignmentType04], BigDecimal] {
+case class GrossWeightPage(houseConsignmentIndex: Index) extends DiscrepancyQuestionPage[BigDecimal, Seq[HouseConsignmentType04], BigDecimal] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
   override def toString: String = "grossMass"
 
-  override def valueInIE043(ie043: Seq[CUSTOM_HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
+  override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
     ie043
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

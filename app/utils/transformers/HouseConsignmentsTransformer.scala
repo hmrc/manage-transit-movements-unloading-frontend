@@ -16,8 +16,8 @@
 
 package utils.transformers
 
-import generated.CUSTOM_HouseConsignmentType04
-import models.{Index, RichPreviousDocuments07, UserAnswers}
+import generated.HouseConsignmentType04
+import models.{Index, UserAnswers}
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.HouseConsignmentSection
 import services.ReferenceDataService
@@ -38,7 +38,7 @@ class HouseConsignmentsTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(houseConsignments: Seq[CUSTOM_HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+  def transform(houseConsignments: Seq[HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers =>
       houseConsignments.zipWithIndex
         .foldLeft(Future.successful(userAnswers)) {
@@ -55,7 +55,7 @@ class HouseConsignmentsTransformer @Inject() (
                     documentsTransformer.transform(
                       houseConsignment.SupportingDocument,
                       houseConsignment.TransportDocument,
-                      houseConsignment.PreviousDocument.toPreviousDocumentType06,
+                      houseConsignment.PreviousDocument,
                       hcIndex
                     ) andThen
                     additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen

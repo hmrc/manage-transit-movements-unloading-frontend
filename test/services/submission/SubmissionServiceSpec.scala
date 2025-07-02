@@ -29,6 +29,7 @@ import pages.NewAuthYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{__, Reads}
+import play.api.test.Helpers.running
 import scalaxb.XMLCalendar
 import services.DateTimeService
 
@@ -62,10 +63,26 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "attributes" - {
-    "must assign phase ID" in {
-      val result = service.attributes
-      result.keys.size mustBe 1
-      result.get("@PhaseID").value.value.toString mustBe "NCTS5.1"
+    "must assign phase ID" - {
+      "when phase6 disabled" in {
+        val app = guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false).build()
+        running(app) {
+          val service = app.injector.instanceOf[SubmissionService]
+          val result  = service.attributes
+          result.keys.size mustEqual 1
+          result.get("@PhaseID").value.value.toString mustEqual "NCTS5.1"
+        }
+      }
+
+      "when phase6 enabled" in {
+        val app = guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> true).build()
+        running(app) {
+          val service = app.injector.instanceOf[SubmissionService]
+          val result  = service.attributes
+          result.keys.size mustEqual 1
+          result.get("@PhaseID").value.value.toString mustEqual "NCTS6"
+        }
+      }
     }
   }
 
@@ -110,9 +127,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(OtherThingsToReportPage, otherThingsToReport)
 
             val reads  = service.transitOperationReads(userAnswers)
-            val result = userAnswers.data.as[TransitOperationType15](reads)
+            val result = userAnswers.data.as[TransitOperationType11](reads)
 
-            result mustBe TransitOperationType15(
+            result mustBe TransitOperationType11(
               MRN = userAnswers.mrn.value,
               otherThingsToReport = Some(otherThingsToReport)
             )
@@ -123,9 +140,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         val userAnswers = emptyUserAnswers
 
         val reads  = service.transitOperationReads(userAnswers)
-        val result = userAnswers.data.as[TransitOperationType15](reads)
+        val result = userAnswers.data.as[TransitOperationType11](reads)
 
-        result mustBe TransitOperationType15(
+        result mustBe TransitOperationType11(
           MRN = userAnswers.mrn.value,
           otherThingsToReport = None
         )
@@ -140,7 +157,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       "when RevisedUnloadingPermission is true" - {
         "and seals exist" - {
           "revised procedure route" in {
-            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+            forAll(arbitrary[ConsignmentType05], arbitrary[TransportEquipmentType03], arbitrary[SealType01]) {
               (consignment, transportEquipment, seal) =>
                 val ie043Data = basicIe043
                   .copy(
@@ -177,7 +194,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           }
 
           "unrevised procedure route" in {
-            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+            forAll(arbitrary[ConsignmentType05], arbitrary[TransportEquipmentType03], arbitrary[SealType01]) {
               (consignment, transportEquipment, seal) =>
                 val ie043Data = basicIe043
                   .copy(
@@ -216,7 +233,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           }
 
           "cannot use revised unloading procedure due to conditions route" in {
-            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+            forAll(arbitrary[ConsignmentType05], arbitrary[TransportEquipmentType03], arbitrary[SealType01]) {
               (consignment, transportEquipment, seal) =>
                 val ie043Data = basicIe043
                   .copy(
@@ -256,7 +273,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           }
 
           "cannot use revised unloading procedure due to discrepancies route" in {
-            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[TransportEquipmentType05], arbitrary[SealType04]) {
+            forAll(arbitrary[ConsignmentType05], arbitrary[TransportEquipmentType03], arbitrary[SealType01]) {
               (consignment, transportEquipment, seal) =>
                 val ie043Data = basicIe043
                   .copy(
@@ -295,7 +312,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           }
 
           "at incident level" in {
-            forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[IncidentType04], arbitrary[TransportEquipmentType07], arbitrary[SealType04]) {
+            forAll(arbitrary[ConsignmentType05], arbitrary[IncidentType03], arbitrary[TransportEquipmentType06], arbitrary[SealType01]) {
               (consignment, incident, transportEquipment, seal) =>
                 val ie043Data = basicIe043
                   .copy(
@@ -561,7 +578,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       "when there are discrepancies" - {
         "when values defined in IE043" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+          forAll(arbitrary[ConsignmentType05]) {
             consignment =>
               val ie043 = consignment.copy(
                 grossMass = Some(50)
@@ -579,7 +596,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
         }
 
         "when values undefined in IE043" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+          forAll(arbitrary[ConsignmentType05]) {
             consignment =>
               val ie043 = consignment.copy(
                 grossMass = None
@@ -598,7 +615,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val ie043 = consignment.copy(grossMass = Some(grossMass))
 
@@ -622,70 +639,70 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.{ContainerIdentificationNumberPage, NewAuthYesNoPage}
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val transportEquipment = Seq(
-              TransportEquipmentType05(
+              TransportEquipmentType03(
                 sequenceNumber = 1,
                 containerIdentificationNumber = Some("originalTransportEquipment1ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 1,
                     identifier = "originalTransportEquipment1SealIdentifier1"
                   ),
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 2,
                     identifier = "originalTransportEquipment1SealIdentifier2"
                   ),
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 3,
                     identifier = "originalTransportEquipment1SealIdentifier3"
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 1,
                     declarationGoodsItemNumber = 1
                   ),
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 2,
                     declarationGoodsItemNumber = 2
                   ),
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 3,
                     declarationGoodsItemNumber = 3
                   )
                 )
               ),
-              TransportEquipmentType05(
+              TransportEquipmentType03(
                 sequenceNumber = 2,
                 containerIdentificationNumber = Some("originalTransportEquipment2ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 1,
                     identifier = "originalTransportEquipment2SealIdentifier1"
                   ),
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 2,
                     identifier = "originalTransportEquipment2SealIdentifier2"
                   ),
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 3,
                     identifier = "originalTransportEquipment2SealIdentifier3"
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 1,
                     declarationGoodsItemNumber = 4
                   ),
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 2,
                     declarationGoodsItemNumber = 5
                   ),
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 3,
                     declarationGoodsItemNumber = 6
                   )
@@ -777,93 +794,93 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.TransportEquipment
 
             result mustBe Seq(
-              TransportEquipmentType03(
+              TransportEquipmentType04(
                 sequenceNumber = 1,
                 containerIdentificationNumber = None,
                 numberOfSeals = Some(3),
                 Seal = Seq(
                   SealType02(
                     sequenceNumber = 2,
-                    identifier = "newTransportEquipment1SealIdentifier2"
+                    identifier = Some("newTransportEquipment1SealIdentifier2")
                   ),
                   SealType02(
                     sequenceNumber = 3,
-                    identifier = "originalTransportEquipment1SealIdentifier3"
+                    identifier = Some("originalTransportEquipment1SealIdentifier3")
                   ),
                   SealType02(
                     sequenceNumber = 4,
-                    identifier = "newTransportEquipment1SealIdentifier4"
+                    identifier = Some("newTransportEquipment1SealIdentifier4")
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 2,
-                    declarationGoodsItemNumber = 7
+                    declarationGoodsItemNumber = Some(7)
                   ),
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 3,
-                    declarationGoodsItemNumber = 3
+                    declarationGoodsItemNumber = Some(3)
                   ),
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 4,
-                    declarationGoodsItemNumber = 8
+                    declarationGoodsItemNumber = Some(8)
                   )
                 )
               ),
-              TransportEquipmentType03(
+              TransportEquipmentType04(
                 sequenceNumber = 2,
                 containerIdentificationNumber = Some("newTransportEquipment2ContainerIdentificationNumber"),
                 numberOfSeals = Some(3),
                 Seal = Seq(
                   SealType02(
                     sequenceNumber = 1,
-                    identifier = "newTransportEquipment2SealIdentifier1"
+                    identifier = Some("newTransportEquipment2SealIdentifier1")
                   ),
                   SealType02(
                     sequenceNumber = 3,
-                    identifier = "originalTransportEquipment2SealIdentifier3"
+                    identifier = Some("originalTransportEquipment2SealIdentifier3")
                   ),
                   SealType02(
                     sequenceNumber = 4,
-                    identifier = "newTransportEquipment2SealIdentifier4"
+                    identifier = Some("newTransportEquipment2SealIdentifier4")
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 2,
-                    declarationGoodsItemNumber = 9
+                    declarationGoodsItemNumber = Some(9)
                   ),
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 3,
-                    declarationGoodsItemNumber = 6
+                    declarationGoodsItemNumber = Some(6)
                   ),
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 4,
-                    declarationGoodsItemNumber = 10
+                    declarationGoodsItemNumber = Some(10)
                   )
                 )
               ),
-              TransportEquipmentType03(
+              TransportEquipmentType04(
                 sequenceNumber = 3,
                 containerIdentificationNumber = None,
                 numberOfSeals = None,
                 Seal = Nil,
                 GoodsReference = Nil
               ),
-              TransportEquipmentType03(
+              TransportEquipmentType04(
                 sequenceNumber = 4,
                 containerIdentificationNumber = Some("newTransportEquipment4ContainerIdentificationNumber"),
                 numberOfSeals = Some(1),
                 Seal = Seq(
                   SealType02(
                     sequenceNumber = 1,
-                    identifier = "newTransportEquipment4SealIdentifier1"
+                    identifier = Some("newTransportEquipment4SealIdentifier1")
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType01(
+                  GoodsReferenceType02(
                     sequenceNumber = 1,
-                    declarationGoodsItemNumber = 9
+                    declarationGoodsItemNumber = Some(9)
                   )
                 )
               )
@@ -872,54 +889,54 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val transportEquipment = Seq(
-              TransportEquipmentType05(
+              TransportEquipmentType03(
                 sequenceNumber = 1,
                 containerIdentificationNumber = Some("originalTransportEquipment1ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 1,
                     identifier = "originalTransportEquipment1SealIdentifier1"
                   ),
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 2,
                     identifier = "originalTransportEquipment1SealIdentifier2"
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 1,
                     declarationGoodsItemNumber = 1
                   ),
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 2,
                     declarationGoodsItemNumber = 2
                   )
                 )
               ),
-              TransportEquipmentType05(
+              TransportEquipmentType03(
                 sequenceNumber = 2,
                 containerIdentificationNumber = Some("originalTransportEquipment2ContainerIdentificationNumber"),
                 numberOfSeals = 2,
                 Seal = Seq(
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 1,
                     identifier = "originalTransportEquipment2SealIdentifier1"
                   ),
-                  SealType04(
+                  SealType01(
                     sequenceNumber = 2,
                     identifier = "originalTransportEquipment2SealIdentifier2"
                   )
                 ),
                 GoodsReference = Seq(
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 1,
                     declarationGoodsItemNumber = 3
                   ),
-                  GoodsReferenceType02(
+                  GoodsReferenceType01(
                     sequenceNumber = 2,
                     declarationGoodsItemNumber = 4
                   )
@@ -986,28 +1003,28 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.TransportMeansSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val departureTransportMeans = Seq(
-              CUSTOM_DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType01(
                 sequenceNumber = 1,
                 typeOfIdentification = Some("originalTypeOfIdentification1"),
                 identificationNumber = Some("originalIdentificationNumber1"),
                 nationality = Some("originalNationality1")
               ),
-              CUSTOM_DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType01(
                 sequenceNumber = 2,
                 typeOfIdentification = Some("originalTypeOfIdentification2"),
                 identificationNumber = Some("originalIdentificationNumber2"),
                 nationality = Some("originalNationality2")
               ),
-              CUSTOM_DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType01(
                 sequenceNumber = 3,
                 typeOfIdentification = Some("originalTypeOfIdentification3"),
                 identificationNumber = Some("originalIdentificationNumber3"),
                 nationality = Some("originalNationality3")
               ),
-              CUSTOM_DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType01(
                 sequenceNumber = 4,
                 typeOfIdentification = Some("originalTypeOfIdentification4"),
                 identificationNumber = Some("originalIdentificationNumber4"),
@@ -1056,25 +1073,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.DepartureTransportMeans
 
             result mustBe Seq(
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 1,
                 typeOfIdentification = Some("newTypeOfIdentification1"),
                 identificationNumber = None,
                 nationality = None
               ),
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 2,
                 typeOfIdentification = None,
                 identificationNumber = Some("newIdentificationNumber2"),
                 nationality = Some("newNationality2")
               ),
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 3,
                 typeOfIdentification = None,
                 identificationNumber = None,
                 nationality = None
               ),
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 5,
                 typeOfIdentification = Some("newTypeOfIdentification5"),
                 identificationNumber = Some("newIdentificationNumber5"),
@@ -1085,16 +1102,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val departureTransportMeans = Seq(
-              CUSTOM_DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType01(
                 sequenceNumber = 1,
                 typeOfIdentification = Some("originalTypeOfIdentification1"),
                 identificationNumber = Some("originalIdentificationNumber1"),
                 nationality = Some("originalNationality1")
               ),
-              CUSTOM_DepartureTransportMeansType02(
+              CUSTOM_DepartureTransportMeansType01(
                 sequenceNumber = 2,
                 typeOfIdentification = Some("originalTypeOfIdentification2"),
                 identificationNumber = Some("originalIdentificationNumber2"),
@@ -1134,7 +1151,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.documents.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
@@ -1197,25 +1214,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.SupportingDocument
 
             result mustBe Seq(
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None,
                 complementOfInformation = None
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2"),
                 complementOfInformation = Some("newComplementOfInformation2")
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None,
                 complementOfInformation = None
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5"),
@@ -1226,7 +1243,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
@@ -1273,25 +1290,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.documents.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val transportDocuments = Seq(
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 3,
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 4,
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4"
@@ -1328,22 +1345,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.TransportDocument
 
             result mustBe Seq(
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
@@ -1353,15 +1370,15 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val transportDocuments = Seq(
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
@@ -1396,25 +1413,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val additionalReferences = Seq(
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 3,
                 typeValue = "originalTypeValue3",
                 referenceNumber = Some("originalReferenceNumber3")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 4,
                 typeValue = "originalTypeValue4",
                 referenceNumber = Some("originalReferenceNumber4")
@@ -1450,22 +1467,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.AdditionalReference
 
             result mustBe Seq(
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
@@ -1475,15 +1492,15 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+        forAll(arbitrary[ConsignmentType05]) {
           consignment =>
             val additionalReferences = Seq(
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
@@ -1528,7 +1545,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       "when there are discrepancies" - {
         "when values defined in IE043" in {
-          forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+          forAll(arbitrary[HouseConsignmentType04]) {
             houseConsignment =>
               val ie043 = houseConsignment.copy(
                 sequenceNumber = sequenceNumber,
@@ -1549,7 +1566,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val ie043 = houseConsignment.copy(
               sequenceNumber = sequenceNumber,
@@ -1574,28 +1591,28 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.departureTransportMeans.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val departureTransportMeans = Seq(
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType01(
                 sequenceNumber = 1,
                 typeOfIdentification = "originalTypeOfIdentification1",
                 identificationNumber = "originalIdentificationNumber1",
                 nationality = "originalNationality1"
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType01(
                 sequenceNumber = 2,
                 typeOfIdentification = "originalTypeOfIdentification2",
                 identificationNumber = "originalIdentificationNumber2",
                 nationality = "originalNationality2"
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType01(
                 sequenceNumber = 3,
                 typeOfIdentification = "originalTypeOfIdentification3",
                 identificationNumber = "originalIdentificationNumber3",
                 nationality = "originalNationality3"
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType01(
                 sequenceNumber = 4,
                 typeOfIdentification = "originalTypeOfIdentification4",
                 identificationNumber = "originalIdentificationNumber4",
@@ -1651,25 +1668,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.DepartureTransportMeans
 
             result mustBe Seq(
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 1,
                 typeOfIdentification = Some("newTypeOfIdentification1"),
                 identificationNumber = None,
                 nationality = None
               ),
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 2,
                 typeOfIdentification = None,
                 identificationNumber = Some("newIdentificationNumber2"),
                 nationality = Some("newNationality2")
               ),
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 3,
                 typeOfIdentification = None,
                 identificationNumber = None,
                 nationality = None
               ),
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = 5,
                 typeOfIdentification = Some("newTypeOfIdentification5"),
                 identificationNumber = Some("newIdentificationNumber5"),
@@ -1680,16 +1697,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val departureTransportMeans = Seq(
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType01(
                 sequenceNumber = 1,
                 typeOfIdentification = "originalTypeOfIdentification1",
                 identificationNumber = "originalIdentificationNumber1",
                 nationality = "originalNationality1"
               ),
-              DepartureTransportMeansType02(
+              DepartureTransportMeansType01(
                 sequenceNumber = 2,
                 typeOfIdentification = "originalTypeOfIdentification2",
                 identificationNumber = "originalIdentificationNumber2",
@@ -1735,7 +1752,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.documents.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
@@ -1803,25 +1820,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.SupportingDocument
 
             result mustBe Seq(
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None,
                 complementOfInformation = None
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2"),
                 complementOfInformation = Some("newComplementOfInformation2")
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None,
                 complementOfInformation = None
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5"),
@@ -1832,7 +1849,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
@@ -1883,25 +1900,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.documents.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val transportDocuments = Seq(
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 3,
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 4,
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4"
@@ -1943,22 +1960,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.TransportDocument
 
             result mustBe Seq(
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
@@ -1968,15 +1985,15 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val transportDocuments = Seq(
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
@@ -2015,25 +2032,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val additionalReferences = Seq(
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 3,
                 typeValue = "originalTypeValue3",
                 referenceNumber = Some("originalReferenceNumber3")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 4,
                 typeValue = "originalTypeValue4",
                 referenceNumber = Some("originalReferenceNumber4")
@@ -2078,22 +2095,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.AdditionalReference
 
             result mustBe Seq(
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
@@ -2103,15 +2120,15 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val additionalReferences = Seq(
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
-              AdditionalReferenceType03(
+              AdditionalReferenceType02(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
@@ -2154,27 +2171,27 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.ItemSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val consignmentItems = Seq(
-              CUSTOM_ConsignmentItemType04(
+              ConsignmentItemType04(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CUSTOM_CommodityType08(
+                Commodity = CommodityType09(
                   descriptionOfGoods = "originalDescriptionOfGoods1"
                 )
               ),
-              CUSTOM_ConsignmentItemType04(
+              ConsignmentItemType04(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CUSTOM_CommodityType08(
+                Commodity = CommodityType09(
                   descriptionOfGoods = "originalDescriptionOfGoods2"
                 )
               ),
-              CUSTOM_ConsignmentItemType04(
+              ConsignmentItemType04(
                 goodsItemNumber = 3,
                 declarationGoodsItemNumber = 3,
-                Commodity = CUSTOM_CommodityType08(
+                Commodity = CommodityType09(
                   descriptionOfGoods = "originalDescriptionOfGoods3"
                 )
               )
@@ -2216,7 +2233,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
                 Commodity = Some(
-                  CommodityType03(
+                  CommodityType02(
                     descriptionOfGoods = Some("newDescriptionOfGoods1")
                   )
                 )
@@ -2229,7 +2246,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 goodsItemNumber = 4,
                 declarationGoodsItemNumber = 4,
                 Commodity = Some(
-                  CommodityType03(
+                  CommodityType02(
                     descriptionOfGoods = Some("newDescriptionOfGoods4")
                   )
                 )
@@ -2239,20 +2256,20 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_HouseConsignmentType04]) {
+        forAll(arbitrary[HouseConsignmentType04]) {
           houseConsignment =>
             val consignmentItems = Seq(
-              CUSTOM_ConsignmentItemType04(
+              ConsignmentItemType04(
                 goodsItemNumber = 1,
                 declarationGoodsItemNumber = 1,
-                Commodity = CUSTOM_CommodityType08(
+                Commodity = CommodityType09(
                   descriptionOfGoods = "originalDescriptionOfGoods1"
                 )
               ),
-              CUSTOM_ConsignmentItemType04(
+              ConsignmentItemType04(
                 goodsItemNumber = 2,
                 declarationGoodsItemNumber = 2,
-                Commodity = CUSTOM_CommodityType08(
+                Commodity = CommodityType09(
                   descriptionOfGoods = "originalDescriptionOfGoods2"
                 )
               )
@@ -2298,9 +2315,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must create commodity" - {
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
-            val commodity = CUSTOM_CommodityType08(
+            val commodity = CommodityType09(
               descriptionOfGoods = "originalDescriptionOfGoods",
               cusCode = Some("originalCusCode"),
               CommodityCode = Some(
@@ -2311,7 +2328,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               ),
               DangerousGoods = Nil,
               GoodsMeasure = Some(
-                CUSTOM_GoodsMeasureType03(
+                CUSTOM_GoodsMeasureType05(
                   grossMass = Some(100),
                   netMass = Some(50)
                 )
@@ -2336,17 +2353,17 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads).value.Commodity.value
 
-            result mustBe CommodityType03(
+            result mustBe CommodityType02(
               descriptionOfGoods = Some("newDescriptionOfGoods"),
               cusCode = Some("newCusCode"),
               CommodityCode = Some(
-                CommodityCodeType03(
+                CommodityCodeType01(
                   harmonizedSystemSubHeadingCode = "newHarmonizedSystemSubHeadingCode",
                   combinedNomenclatureCode = Some("newCombinedNomenclatureCode")
                 )
               ),
               GoodsMeasure = Some(
-                GoodsMeasureType04(
+                GoodsMeasureType02(
                   grossMass = Some(1000),
                   netMass = Some(500)
                 )
@@ -2356,9 +2373,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
-            val commodity = CUSTOM_CommodityType08(
+            val commodity = CommodityType09(
               descriptionOfGoods = "originalDescriptionOfGoods",
               cusCode = Some("originalCusCode"),
               CommodityCode = Some(
@@ -2369,7 +2386,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               ),
               DangerousGoods = Nil,
               GoodsMeasure = Some(
-                CUSTOM_GoodsMeasureType03(
+                CUSTOM_GoodsMeasureType05(
                   grossMass = Some(100),
                   netMass = Some(50)
                 )
@@ -2404,28 +2421,28 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.PackagingSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val packaging = Seq(
-              PackagingType02(
+              PackagingType01(
                 sequenceNumber = 1,
                 typeOfPackages = "originalTypeOfPackages1",
                 numberOfPackages = Some(100),
                 shippingMarks = Some("originalShippingMarks1")
               ),
-              PackagingType02(
+              PackagingType01(
                 sequenceNumber = 2,
                 typeOfPackages = "originalTypeOfPackages2",
                 numberOfPackages = Some(200),
                 shippingMarks = Some("originalShippingMarks2")
               ),
-              PackagingType02(
+              PackagingType01(
                 sequenceNumber = 3,
                 typeOfPackages = "originalTypeOfPackages3",
                 numberOfPackages = Some(300),
                 shippingMarks = Some("originalShippingMarks3")
               ),
-              PackagingType02(
+              PackagingType01(
                 sequenceNumber = 4,
                 typeOfPackages = "originalTypeOfPackages4",
                 numberOfPackages = Some(400),
@@ -2471,25 +2488,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.Packaging
 
             result mustBe Seq(
-              PackagingType04(
+              PackagingType02(
                 sequenceNumber = 1,
                 typeOfPackages = Some("newTypeOfPackages1"),
                 numberOfPackages = None,
                 shippingMarks = None
               ),
-              PackagingType04(
+              PackagingType02(
                 sequenceNumber = 2,
                 typeOfPackages = None,
                 numberOfPackages = Some(2000),
                 shippingMarks = Some("newShippingMarks2")
               ),
-              PackagingType04(
+              PackagingType02(
                 sequenceNumber = 3,
                 typeOfPackages = None,
                 numberOfPackages = None,
                 shippingMarks = None
               ),
-              PackagingType04(
+              PackagingType02(
                 sequenceNumber = 5,
                 typeOfPackages = Some("newTypeOfPackages5"),
                 numberOfPackages = Some(5000),
@@ -2500,16 +2517,16 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val packaging = Seq(
-              PackagingType02(
+              PackagingType01(
                 sequenceNumber = 1,
                 typeOfPackages = "originalTypeOfPackages1",
                 numberOfPackages = Some(100),
                 shippingMarks = Some("originalShippingMarks1")
               ),
-              PackagingType02(
+              PackagingType01(
                 sequenceNumber = 2,
                 typeOfPackages = "originalTypeOfPackages2",
                 numberOfPackages = Some(200),
@@ -2551,7 +2568,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.items.documents.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
@@ -2619,25 +2636,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.SupportingDocument
 
             result mustBe Seq(
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None,
                 complementOfInformation = None
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2"),
                 complementOfInformation = Some("newComplementOfInformation2")
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None,
                 complementOfInformation = None
               ),
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5"),
@@ -2648,7 +2665,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val supportingDocuments = Seq(
               SupportingDocumentType02(
@@ -2699,25 +2716,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.items.documents.*
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val transportDocuments = Seq(
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 3,
                 typeValue = "originalTypeValue3",
                 referenceNumber = "originalReferenceNumber3"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 4,
                 typeValue = "originalTypeValue4",
                 referenceNumber = "originalReferenceNumber4"
@@ -2759,22 +2776,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.TransportDocument
 
             result mustBe Seq(
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None
               ),
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
@@ -2784,15 +2801,15 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val transportDocuments = Seq(
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = "originalReferenceNumber1"
               ),
-              TransportDocumentType02(
+              TransportDocumentType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = "originalReferenceNumber2"
@@ -2831,25 +2848,25 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val additionalReferences = Seq(
-              AdditionalReferenceType02(
+              AdditionalReferenceType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
-              AdditionalReferenceType02(
+              AdditionalReferenceType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")
               ),
-              AdditionalReferenceType02(
+              AdditionalReferenceType01(
                 sequenceNumber = 3,
                 typeValue = "originalTypeValue3",
                 referenceNumber = Some("originalReferenceNumber3")
               ),
-              AdditionalReferenceType02(
+              AdditionalReferenceType01(
                 sequenceNumber = 4,
                 typeValue = "originalTypeValue4",
                 referenceNumber = Some("originalReferenceNumber4")
@@ -2894,22 +2911,22 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val result = getResult(userAnswers, reads).value.AdditionalReference
 
             result mustBe Seq(
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 1,
                 typeValue = Some("newTypeValue1"),
                 referenceNumber = None
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 2,
                 typeValue = None,
                 referenceNumber = Some("newReferenceNumber2")
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 3,
                 typeValue = None,
                 referenceNumber = None
               ),
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = 5,
                 typeValue = Some("newTypeValue5"),
                 referenceNumber = Some("newReferenceNumber5")
@@ -2919,15 +2936,15 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CUSTOM_ConsignmentItemType04]) {
+        forAll(arbitrary[ConsignmentItemType04]) {
           consignmentItem =>
             val additionalReferences = Seq(
-              AdditionalReferenceType02(
+              AdditionalReferenceType01(
                 sequenceNumber = 1,
                 typeValue = "originalTypeValue1",
                 referenceNumber = Some("originalReferenceNumber1")
               ),
-              AdditionalReferenceType02(
+              AdditionalReferenceType01(
                 sequenceNumber = 2,
                 typeValue = "originalTypeValue2",
                 referenceNumber = Some("originalReferenceNumber2")

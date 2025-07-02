@@ -16,8 +16,8 @@
 
 package utils.answersHelpers
 
-import generated.AddressType10
-import models._
+import generated.AddressType15
+import models.*
 import models.reference.Country
 import pages.holderOfTheTransitProcedure.CountryPage
 import play.api.i18n.Messages
@@ -46,7 +46,7 @@ class HolderOfTheTransitProcedureHelper(
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name"
   )
 
-  def address(answer: AddressType10): Option[SummaryListRow] = buildRowWithNoChangeLink[DynamicAddress](
+  def address(answer: AddressType15): Option[SummaryListRow] = buildRowWithNoChangeLink[DynamicAddress](
     data = Option(DynamicAddress(answer)),
     formatAnswer = formatAsHtmlContent,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address"

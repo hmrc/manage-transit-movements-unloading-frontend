@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
+import generated.{AdditionalReferenceType01, AdditionalReferenceType02}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import services.ReferenceDataService
@@ -36,7 +36,7 @@ class AdditionalReferencesTransformer @Inject() (
   )
 
   def transform(
-    additionalReferences: Seq[AdditionalReferenceType03]
+    additionalReferences: Seq[AdditionalReferenceType02]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
     import pages.sections.additionalReference.AdditionalReferenceSection
@@ -50,7 +50,7 @@ class AdditionalReferencesTransformer @Inject() (
   }
 
   def transform(
-    additionalReferences: Seq[AdditionalReferenceType03],
+    additionalReferences: Seq[AdditionalReferenceType02],
     hcIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.additionalReference.*
@@ -65,7 +65,7 @@ class AdditionalReferencesTransformer @Inject() (
   }
 
   def transform(
-    additionalReferences: Seq[AdditionalReferenceType02],
+    additionalReferences: Seq[AdditionalReferenceType01],
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {

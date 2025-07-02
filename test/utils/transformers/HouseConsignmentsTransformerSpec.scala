@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.CUSTOM_HouseConsignmentType04
+import generated.HouseConsignmentType04
 import generators.Generators
 import models.reference.{Country, SecurityType}
 import models.Index
@@ -93,7 +93,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
   "must transform data" in {
     val country = Country("GB", "country")
-    forAll(arbitrary[Seq[CUSTOM_HouseConsignmentType04]]) {
+    forAll(arbitrary[Seq[HouseConsignmentType04]]) {
       houseConsignments =>
         houseConsignments.zipWithIndex.map {
           case (_, i) =>

@@ -40,7 +40,7 @@ object Document {
       complementOfInformation = document.complementOfInformation
     )
 
-  def apply(document: TransportDocumentType02, documentType: DocumentType): TransportDocument =
+  def apply(document: TransportDocumentType01, documentType: DocumentType): TransportDocument =
     TransportDocument(
       sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
@@ -51,19 +51,7 @@ object Document {
       referenceNumber = document.referenceNumber
     )
 
-  def apply(document: PreviousDocumentType06, documentType: DocumentType): PreviousDocument =
-    PreviousDocument(
-      sequenceNumber = document.sequenceNumber,
-      documentType = DocumentType(
-        `type` = Previous,
-        code = documentType.code,
-        description = documentType.description
-      ),
-      referenceNumber = document.referenceNumber,
-      complementOfInformation = document.complementOfInformation
-    )
-
-  def apply(document: PreviousDocumentType04, documentType: DocumentType): PreviousDocument =
+  def apply(document: PreviousDocumentType, documentType: DocumentType): PreviousDocument =
     PreviousDocument(
       sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
@@ -94,4 +82,38 @@ object Document {
     referenceNumber: String,
     complementOfInformation: Option[String]
   ) extends Document
+
+  case class PreviousDocumentType(
+    sequenceNumber: BigInt,
+    typeValue: String,
+    referenceNumber: String,
+    complementOfInformation: Option[String]
+  )
+
+  object PreviousDocumentType {
+
+    def apply(document: PreviousDocumentType05): PreviousDocumentType =
+      new PreviousDocumentType(
+        document.sequenceNumber,
+        document.typeValue,
+        document.referenceNumber,
+        document.complementOfInformation
+      )
+
+    def apply(document: PreviousDocumentType03): PreviousDocumentType =
+      new PreviousDocumentType(
+        document.sequenceNumber,
+        document.typeValue,
+        document.referenceNumber,
+        document.complementOfInformation
+      )
+
+    def apply(document: PreviousDocumentType06): PreviousDocumentType =
+      new PreviousDocumentType(
+        document.sequenceNumber,
+        document.typeValue,
+        document.referenceNumber,
+        document.complementOfInformation
+      )
+  }
 }

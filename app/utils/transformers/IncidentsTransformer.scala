@@ -16,6 +16,7 @@
 
 package utils.transformers
 
+import generated.IncidentType03
 import models.reference.Incident
 import models.{Index, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
@@ -39,7 +40,7 @@ class IncidentsTransformer @Inject() (
     typeValue: Incident
   )
 
-  def transform(incidents: Seq[generated.IncidentType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+  def transform(incidents: Seq[IncidentType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
     lazy val incidentRefLookups = incidents.map {
       incidentType0 =>

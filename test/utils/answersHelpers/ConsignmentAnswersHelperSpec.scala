@@ -38,14 +38,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return static section" in {
         val ie043 = basicIe043.copy(
-          TransitOperation = TransitOperationType14(
+          TransitOperation = TransitOperationType10(
             MRN = Gen.alphaNumStr.sample.value,
             declarationType = Some(Gen.alphaNumStr.sample.value),
             declarationAcceptanceDate = Some(arbitrary[XMLGregorianCalendar].sample.value),
             security = Gen.alphaNumStr.sample.value,
             reducedDatasetIndicator = arbitrary[Flag].sample.value
           ),
-          TraderAtDestination = arbitrary[TraderAtDestinationType03].sample.value
+          TraderAtDestination = arbitrary[TraderAtDestinationType02].sample.value
         )
         val answers = emptyUserAnswers
           .copy(ie043Data = ie043)
@@ -65,7 +65,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return row" in {
         forAll(Gen.alphaNumStr) {
           value =>
-            val traderAtDestination = TraderAtDestinationType03(value)
+            val traderAtDestination = TraderAtDestinationType02(value)
             val ie043               = basicIe043.copy(TraderAtDestination = traderAtDestination)
             val answers             = emptyUserAnswers.copy(ie043Data = ie043)
 
@@ -83,7 +83,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return no section" - {
         "when consignor is undefined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+          forAll(arbitrary[ConsignmentType05]) {
             consignment =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -103,7 +103,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return section" - {
         "when consignor is defined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[ConsignorType05]) {
+          forAll(arbitrary[ConsignmentType05], arbitrary[ConsignorType04]) {
             (consignment, consignor) =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -128,7 +128,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return no section" - {
         "when consignee is undefined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+          forAll(arbitrary[ConsignmentType05]) {
             consignment =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -148,7 +148,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return section" - {
         "when consignee is defined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[ConsigneeType04]) {
+          forAll(arbitrary[ConsignmentType05], arbitrary[ConsigneeType05]) {
             (consignment, consignee) =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -273,7 +273,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           Some("identificationNumber"),
           Some("TIRHolderIdentificationNumber"),
           "name",
-          AddressType10("streetAndNumber", Some("postcode"), "city", "GB")
+          AddressType15("streetAndNumber", Some("postcode"), "city", "GB")
         )
 
         val userAnswers = emptyUserAnswers
@@ -540,25 +540,25 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       import pages.incident.location.*
 
       "must generate accordion sections" in {
-        val incident           = arbitrary[IncidentType04].sample.value
-        val endorsement        = arbitrary[EndorsementType03].sample.value
+        val incident           = arbitrary[IncidentType03].sample.value
+        val endorsement        = arbitrary[EndorsementType02].sample.value
         val inc                = arbitrary[Incident].sample.value
         val qualifier          = arbitrary[QualifierOfIdentification].sample.value
         val country            = arbitrary[Country].sample.value
-        val locationType02     = arbitrary[LocationType02].sample.value
+        val LocationType       = arbitrary[LocationType].sample.value
         val coordinate         = arbitrary[Coordinates].sample.value
         val unLocode           = Gen.alphaNumStr.sample.value
         val description        = Gen.alphaNumStr.sample.value
-        val arbitraryTransport = arbitrary[TransportEquipmentType07].sample.value
+        val arbitraryTransport = arbitrary[TransportEquipmentType06].sample.value
 
-        val addressType18 = AddressType18("streetAndNumber", Some("postcode"), "city")
+        val address = AddressType21("streetAndNumber", Some("postcode"), "city")
 
-        val locationType = locationType02.copy(
+        val locationType = LocationType.copy(
           UNLocode = Some(unLocode),
           GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)),
-          Address = Some(addressType18)
+          Address = Some(address)
         )
-        val consignment = CUSTOM_ConsignmentType05(
+        val consignment = ConsignmentType05(
           containerIndicator = Number0,
           Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType, TransportEquipment = Seq(arbitraryTransport)))
         )
@@ -586,7 +586,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.rows(3).value.value mustBe qualifier.toString
         result.children.head.rows(4).value.value mustBe coordinate.toString
         result.children.head.rows(5).value.value mustBe unLocode
-        result.children.head.rows(6).value.value mustBe s"${addressType18.streetAndNumber}<br>${addressType18.city}<br>${addressType18.postcode.get}"
+        result.children.head.rows(6).value.value mustBe s"${address.streetAndNumber}<br>${address.city}<br>${address.postcode.get}"
 
         result.children.head.children.head.sectionTitle.value mustBe "Endorsements"
         result.children.head.children.head.rows.head.key.value mustBe "Endorsement date"

@@ -143,7 +143,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
                   Some("identificationNumber"),
                   Some("TIRHolderIdentificationNumber"),
                   "name",
-                  AddressType10("streetAndNumber", Some("postcode"), "city", "GB")
+                  AddressType15("streetAndNumber", Some("postcode"), "city", "GB")
                 )
               )
             )
@@ -178,7 +178,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                CUSTOM_ConsignmentType05(
+                ConsignmentType05(
                   containerIndicator = arbitraryFlag.arbitrary.sample.get,
                   inlandModeOfTransport = Some("Mode")
                 )
@@ -200,7 +200,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                CUSTOM_ConsignmentType05(
+                ConsignmentType05(
                   containerIndicator = arbitraryFlag.arbitrary.sample.get,
                   inlandModeOfTransport = None
                 )

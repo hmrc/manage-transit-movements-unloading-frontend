@@ -31,10 +31,10 @@ package object submission {
   implicit class RichJsPath(value: JsPath) {
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
-      value.readNullable[T] orElse None
+      value.readNullable[T] orElse Reads.pure(None)
 
     def readSafe[T](implicit reads: Reads[Option[T]]): Reads[Option[T]] =
-      value.read[Option[T]] orElse None
+      value.read[Option[T]] orElse Reads.pure(None)
 
     /** @param pathNodes
       *   number of path nodes to take from the right
@@ -77,10 +77,6 @@ package object submission {
   implicit def localDateTimeToXMLGregorianCalendar(localDateTime: LocalDateTime): XMLGregorianCalendar = {
     val formatterNoMillis: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     localDateTime.format(formatterNoMillis)
-  }
-
-  implicit def successfulReads[T](value: T): Reads[T] = Reads {
-    _ => JsSuccess(value)
   }
 
   implicit class RichOption[A](value: Option[A]) {

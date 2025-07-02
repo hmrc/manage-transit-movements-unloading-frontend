@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import generated.AddressType10
+import generated.AddressType15
 import models.reference.Country
 import pages.holderOfTheTransitProcedure.CountryPage
 
@@ -84,7 +84,7 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
 
     "address must return Some(Row)" in {
       val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
-      val result = helper.address(AddressType10("streetAndNumber", Some("postcode"), "city", "GB")).value
+      val result = helper.address(AddressType15("streetAndNumber", Some("postcode"), "city", "GB")).value
 
       result.key.value mustBe "Address"
       result.value.value mustBe "streetAndNumber<br>city<br>postcode"

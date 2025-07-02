@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.CUSTOM_CommodityType08
+import generated.CommodityType09
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items._
 
@@ -29,10 +29,10 @@ class CommodityTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(commodity: CUSTOM_CommodityType08, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
+  def transform(commodity: CommodityType09, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
     userAnswers =>
       commodity match {
-        case CUSTOM_CommodityType08(descriptionOfGoods, cusCode, commodityCode, dangerousGoods, goodsMeasure) =>
+        case CommodityType09(descriptionOfGoods, cusCode, commodityCode, dangerousGoods, goodsMeasure) =>
           lazy val pipeline: UserAnswers => Future[UserAnswers] =
             set(ItemDescriptionPage(hcIndex, itemIndex), descriptionOfGoods) andThen
               set(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode) andThen

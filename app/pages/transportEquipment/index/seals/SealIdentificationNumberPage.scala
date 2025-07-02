@@ -16,19 +16,19 @@
 
 package pages.transportEquipment.index.seals
 
-import generated.SealType04
+import generated.SealType01
 import models.Index
 import pages.DiscrepancyQuestionPage
 import pages.sections.SealSection
 import play.api.libs.json.JsPath
 
-case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends DiscrepancyQuestionPage[String, Seq[SealType04], String] {
+case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends DiscrepancyQuestionPage[String, Seq[SealType01], String] {
 
   override def path: JsPath = SealSection(equipmentIndex, sealIndex).path \ toString
 
   override def toString: String = "identifier"
 
-  override def valueInIE043(transportEquipment: Seq[SealType04], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(transportEquipment: Seq[SealType01], sequenceNumber: Option[BigInt]): Option[String] =
     transportEquipment
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

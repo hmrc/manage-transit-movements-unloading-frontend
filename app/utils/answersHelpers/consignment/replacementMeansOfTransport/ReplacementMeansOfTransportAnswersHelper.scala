@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment.replacementMeansOfTransport
 
-import generated.TranshipmentType02
+import generated.TranshipmentType
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
@@ -26,7 +26,7 @@ import utils.answersHelpers.AnswersHelper
 
 class ReplacementMeansOfTransportAnswersHelper(
   userAnswers: UserAnswers,
-  transhipment: Option[TranshipmentType02],
+  transhipment: Option[TranshipmentType],
   incidentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {

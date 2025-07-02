@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.PackagingType02
+import generated.PackagingType01
 import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
@@ -37,7 +37,7 @@ class PackagingTransformer @Inject() (
     typeValue: PackageType
   )
 
-  def transform(packages: Seq[PackagingType02], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+  def transform(packages: Seq[PackagingType01], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers => {
 
       lazy val packageTypeRefLookups = packages.map {

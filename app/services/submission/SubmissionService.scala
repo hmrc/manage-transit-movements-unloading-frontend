@@ -16,6 +16,7 @@
 
 package services.submission
 
+import config.FrontendAppConfig
 import connectors.ApiConnector
 import generated.*
 import models.Procedure.*
@@ -36,7 +37,8 @@ import scala.xml.{NamespaceBinding, NodeSeq}
 class SubmissionService @Inject() (
   dateTimeService: DateTimeService,
   messageIdentificationService: MessageIdentificationService,
-  connector: ApiConnector
+  connector: ApiConnector,
+  config: FrontendAppConfig
 ) {
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
@@ -52,7 +54,7 @@ class SubmissionService @Inject() (
 
     implicit val reads: Reads[CC044CType] =
       for {
-        transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
+        transitOperation <- __.read[TransitOperationType11](transitOperationReads(userAnswers))
         unloadingRemark  <- __.read[UnloadingRemarkType](unloadingRemarkReads(userAnswers))
         consignment      <- ConsignmentSection.path.readSafe(consignmentReads(userAnswers.ie043Data.Consignment))
       } yield {
@@ -75,8 +77,10 @@ class SubmissionService @Inject() (
     userAnswers.data.as[CC044CType]
   }
 
-  def attributes: Map[String, DataRecord[?]] =
-    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(NCTS5u461Value.toString, scope)))
+  def attributes: Map[String, DataRecord[?]] = {
+    val phaseId = if (config.phase6Enabled) NCTS6 else NCTS5u461
+    Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(phaseId.toString, scope)))
+  }
 
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
@@ -88,12 +92,12 @@ class SubmissionService @Inject() (
       correlationIdentifier = None
     )
 
-  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
+  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType11] = {
     import pages.OtherThingsToReportPage
 
     OtherThingsToReportPage.path.readNullable[String].map {
       otherThingsToReport =>
-        TransitOperationType15(
+        TransitOperationType11(
           MRN = userAnswers.mrn.value,
           otherThingsToReport = otherThingsToReport
         )
@@ -151,7 +155,7 @@ class SubmissionService @Inject() (
     }
   }
 
-  def consignmentReads(ie043: Option[CUSTOM_ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
+  def consignmentReads(ie043: Option[ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
     import pages.sections.*
     import pages.sections.additionalReference.AdditionalReferencesSection
     import pages.sections.documents.DocumentsSection
@@ -191,8 +195,8 @@ class SubmissionService @Inject() (
 
   // scalastyle:off method.length
   private def consignmentTransportEquipmentReads(
-    ie043: Seq[TransportEquipmentType05]
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportEquipmentType03]] = {
+    ie043: Seq[TransportEquipmentType03]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportEquipmentType04]] = {
     import pages.ContainerIdentificationNumberPage
     import pages.sections.SealsSection
     import pages.sections.transport.equipment.ItemsSection
@@ -200,40 +204,42 @@ class SubmissionService @Inject() (
     import pages.transportEquipment.index.seals.*
 
     def sealReads(
-      ie043: Seq[SealType04]
+      ie043: Seq[SealType01]
     )(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
       for {
         removed <- (__ \ Removed).readNullable[Boolean]
         identifier <- removed match {
           case Some(true) =>
-            successfulReads(SealIdentificationNumberPage(index, sealIndex).valueInIE043(ie043, Some(sequenceNumber)))
+            Reads.pure(SealIdentificationNumberPage(index, sealIndex).valueInIE043(ie043, Some(sequenceNumber)))
           case _ =>
             SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043)
         }
       } yield identifier.map {
         value =>
+          // TODO - update in CTCP-6435. Needs to be backwards compatible with phase 5 where identifier is a mandatory field
           SealType02(
             sequenceNumber = sequenceNumber,
-            identifier = value
+            identifier = Some(value)
           )
       }
 
     def goodsReferenceReads(
-      ie043: Seq[GoodsReferenceType02]
-    )(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType01]] =
+      ie043: Seq[GoodsReferenceType01]
+    )(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType02]] =
       for {
         removed <- (__ \ Removed).readNullable[Boolean]
         declarationGoodsItemNumber <- removed match {
           case Some(true) =>
-            successfulReads(ItemPage(index, goodsReferenceIndex).valueInIE043(ie043, Some(sequenceNumber)))
+            Reads.pure(ItemPage(index, goodsReferenceIndex).valueInIE043(ie043, Some(sequenceNumber)))
           case _ =>
             ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043)
         }
       } yield declarationGoodsItemNumber.map {
         value =>
-          GoodsReferenceType01(
+          // TODO - update in CTCP-6435. Needs to be backwards compatible with phase 5 where identifier is a mandatory field
+          GoodsReferenceType02(
             sequenceNumber = sequenceNumber,
-            declarationGoodsItemNumber = value
+            declarationGoodsItemNumber = Some(value)
           )
       }
 
@@ -252,7 +258,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          TransportEquipmentType03(
+          TransportEquipmentType04(
             sequenceNumber = sequenceNumber
           )
         )
@@ -262,7 +268,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              TransportEquipmentType03(
+              TransportEquipmentType04(
                 sequenceNumber = sequenceNumber,
                 containerIdentificationNumber = containerIdentificationNumber,
                 numberOfSeals = Some(numberOfSeals),
@@ -276,8 +282,8 @@ class SubmissionService @Inject() (
   // scalastyle:on method.length
 
   private def consignmentDepartureTransportMeansReads(
-    ie043: Seq[CUSTOM_DepartureTransportMeansType02]
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
+    ie043: Seq[CUSTOM_DepartureTransportMeansType01]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType02]] = {
     import pages.departureMeansOfTransport.*
 
     for {
@@ -288,7 +294,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          DepartureTransportMeansType04(
+          DepartureTransportMeansType02(
             sequenceNumber = sequenceNumber
           )
         )
@@ -298,7 +304,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = sequenceNumber,
                 typeOfIdentification = typeOfIdentification,
                 identificationNumber = identificationNumber,
@@ -311,7 +317,7 @@ class SubmissionService @Inject() (
 
   private def consignmentSupportingDocumentReads(
     ie043: Seq[SupportingDocumentType02]
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType04]] = {
     import pages.documents.*
 
     (TypePage(index).path.last \ "type").read[DocType].flatMap {
@@ -324,7 +330,7 @@ class SubmissionService @Inject() (
         } yield removed match {
           case Some(true) =>
             Some(
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = sequenceNumber
               )
             )
@@ -334,7 +340,7 @@ class SubmissionService @Inject() (
                 None
               case _ =>
                 Some(
-                  SupportingDocumentType03(
+                  SupportingDocumentType04(
                     sequenceNumber = sequenceNumber,
                     typeValue = typeValue,
                     referenceNumber = referenceNumber,
@@ -344,13 +350,13 @@ class SubmissionService @Inject() (
             }
         }
       case _ =>
-        None
+        Reads.pure(None)
     }
   }
 
   private def consignmentTransportDocumentReads(
-    ie043: Seq[TransportDocumentType02]
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
+    ie043: Seq[TransportDocumentType01]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType04]] = {
     import pages.documents.*
 
     (TypePage(index).path.last \ "type").read[DocType].flatMap {
@@ -362,7 +368,7 @@ class SubmissionService @Inject() (
         } yield removed match {
           case Some(true) =>
             Some(
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = sequenceNumber
               )
             )
@@ -372,7 +378,7 @@ class SubmissionService @Inject() (
                 None
               case _ =>
                 Some(
-                  TransportDocumentType03(
+                  TransportDocumentType04(
                     sequenceNumber = sequenceNumber,
                     typeValue = typeValue,
                     referenceNumber = referenceNumber
@@ -381,13 +387,13 @@ class SubmissionService @Inject() (
             }
         }
       case _ =>
-        None
+        Reads.pure(None)
     }
   }
 
   private def consignmentAdditionalReferenceReads(
-    ie043: Seq[AdditionalReferenceType03]
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
+    ie043: Seq[AdditionalReferenceType02]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType03]] = {
     import pages.additionalReference.*
 
     for {
@@ -397,7 +403,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          AdditionalReferenceType06(
+          AdditionalReferenceType03(
             sequenceNumber = sequenceNumber
           )
         )
@@ -407,7 +413,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = sequenceNumber,
                 typeValue = typeValue,
                 referenceNumber = referenceNumber
@@ -418,7 +424,7 @@ class SubmissionService @Inject() (
   }
 
   def houseConsignmentReads(
-    ie043: Seq[CUSTOM_HouseConsignmentType04]
+    ie043: Seq[HouseConsignmentType04]
   )(index: Index, sequenceNumber: BigInt): Reads[Option[HouseConsignmentType05]] = {
     import pages.houseConsignment.index.*
     import pages.sections.ItemsSection
@@ -469,10 +475,10 @@ class SubmissionService @Inject() (
   }
 
   private def houseConsignmentDepartureTransportMeansReads(
-    ie043: Seq[DepartureTransportMeansType02]
+    ie043: Seq[DepartureTransportMeansType01]
   )(
     houseConsignmentIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType02]] = {
     import pages.houseConsignment.index.departureMeansOfTransport.*
 
     for {
@@ -483,7 +489,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          DepartureTransportMeansType04(
+          DepartureTransportMeansType02(
             sequenceNumber = sequenceNumber
           )
         )
@@ -493,7 +499,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              DepartureTransportMeansType04(
+              DepartureTransportMeansType02(
                 sequenceNumber = sequenceNumber,
                 typeOfIdentification = typeOfIdentification,
                 identificationNumber = identificationNumber,
@@ -508,7 +514,7 @@ class SubmissionService @Inject() (
     ie043: Seq[SupportingDocumentType02]
   )(
     houseConsignmentIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType04]] = {
     import pages.houseConsignment.index.documents.*
 
     (TypePage(houseConsignmentIndex, index).path.last \ "type").read[DocType].flatMap {
@@ -521,7 +527,7 @@ class SubmissionService @Inject() (
         } yield removed match {
           case Some(true) =>
             Some(
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = sequenceNumber
               )
             )
@@ -531,7 +537,7 @@ class SubmissionService @Inject() (
                 None
               case _ =>
                 Some(
-                  SupportingDocumentType03(
+                  SupportingDocumentType04(
                     sequenceNumber = sequenceNumber,
                     typeValue = typeValue,
                     referenceNumber = referenceNumber,
@@ -541,15 +547,15 @@ class SubmissionService @Inject() (
             }
         }
       case _ =>
-        None
+        Reads.pure(None)
     }
   }
 
   private def houseConsignmentTransportDocumentReads(
-    ie043: Seq[TransportDocumentType02]
+    ie043: Seq[TransportDocumentType01]
   )(
     houseConsignmentIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType04]] = {
     import pages.houseConsignment.index.documents.*
 
     (TypePage(houseConsignmentIndex, index).path.last \ "type").read[DocType].flatMap {
@@ -561,7 +567,7 @@ class SubmissionService @Inject() (
         } yield removed match {
           case Some(true) =>
             Some(
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = sequenceNumber
               )
             )
@@ -571,7 +577,7 @@ class SubmissionService @Inject() (
                 None
               case _ =>
                 Some(
-                  TransportDocumentType03(
+                  TransportDocumentType04(
                     sequenceNumber = sequenceNumber,
                     typeValue = typeValue,
                     referenceNumber = referenceNumber
@@ -580,15 +586,15 @@ class SubmissionService @Inject() (
             }
         }
       case _ =>
-        None
+        Reads.pure(None)
     }
   }
 
   private def houseConsignmentAdditionalReferenceReads(
-    ie043: Seq[AdditionalReferenceType03]
+    ie043: Seq[AdditionalReferenceType02]
   )(
     houseConsignmentIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType03]] = {
     import pages.houseConsignment.index.additionalReference.*
 
     for {
@@ -598,7 +604,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          AdditionalReferenceType06(
+          AdditionalReferenceType03(
             sequenceNumber = sequenceNumber
           )
         )
@@ -608,7 +614,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = sequenceNumber,
                 typeValue = typeValue,
                 referenceNumber = referenceNumber
@@ -620,7 +626,7 @@ class SubmissionService @Inject() (
 
   // scalastyle:off method.length
   def consignmentItemReads(
-    ie043: Seq[CUSTOM_ConsignmentItemType04]
+    ie043: Seq[ConsignmentItemType04]
   )(
     houseConsignmentIndex: Index
   )(itemIndex: Index, sequenceNumber: BigInt): Reads[Option[ConsignmentItemType05]] = {
@@ -683,29 +689,29 @@ class SubmissionService @Inject() (
 
   // scalastyle:off method.length
   private def consignmentItemCommodityReads(
-    ie043: Option[CUSTOM_CommodityType08]
+    ie043: Option[CommodityType09]
   )(
     houseConsignmentIndex: Index,
     itemIndex: Index
-  ): Reads[Option[CommodityType03]] = {
+  ): Reads[Option[CommodityType02]] = {
     import pages.houseConsignment.index.items.*
 
     lazy val commodityCode = ie043.flatMap(_.CommodityCode)
     lazy val goodsMeasure  = ie043.flatMap(_.GoodsMeasure)
 
-    def commodityCodeReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType03]] =
+    def commodityCodeReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType01]] =
       for {
         harmonizedSystemSubHeadingCode <- CommodityCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
         combinedNomenclatureCode       <- CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
       } yield harmonizedSystemSubHeadingCode.map {
         value =>
-          CommodityCodeType03(
+          CommodityCodeType01(
             harmonizedSystemSubHeadingCode = value,
             combinedNomenclatureCode = combinedNomenclatureCode
           )
       }
 
-    def goodsMeasureReads(ie043: Option[CUSTOM_GoodsMeasureType03]): Reads[Option[GoodsMeasureType04]] =
+    def goodsMeasureReads(ie043: Option[CUSTOM_GoodsMeasureType05]): Reads[Option[GoodsMeasureType02]] =
       for {
         grossMass <- GrossWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
         netMass   <- NetWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
@@ -714,7 +720,7 @@ class SubmissionService @Inject() (
           None
         case _ =>
           Some(
-            GoodsMeasureType04(
+            GoodsMeasureType02(
               grossMass = grossMass,
               netMass = netMass
             )
@@ -731,7 +737,7 @@ class SubmissionService @Inject() (
         None
       case _ =>
         Some(
-          CommodityType03(
+          CommodityType02(
             descriptionOfGoods = descriptionOfGoods,
             cusCode = cusCode,
             CommodityCode = commodityCode,
@@ -743,11 +749,11 @@ class SubmissionService @Inject() (
   // scalastyle:on method.length
 
   private def consignmentItemPackagingReads(
-    ie043: Seq[PackagingType02]
+    ie043: Seq[PackagingType01]
   )(
     houseConsignmentIndex: Index,
     itemIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[PackagingType04]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[PackagingType02]] = {
     import pages.houseConsignment.index.items.packages.*
 
     for {
@@ -758,7 +764,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          PackagingType04(
+          PackagingType02(
             sequenceNumber = sequenceNumber
           )
         )
@@ -768,7 +774,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              PackagingType04(
+              PackagingType02(
                 sequenceNumber = sequenceNumber,
                 typeOfPackages = typeOfPackages,
                 numberOfPackages = numberOfPackages,
@@ -784,7 +790,7 @@ class SubmissionService @Inject() (
   )(
     houseConsignmentIndex: Index,
     itemIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType04]] = {
     import pages.houseConsignment.index.items.document.*
 
     (TypePage(houseConsignmentIndex, itemIndex, index).path.last \ "type").read[DocType].flatMap {
@@ -797,7 +803,7 @@ class SubmissionService @Inject() (
         } yield removed match {
           case Some(true) =>
             Some(
-              SupportingDocumentType03(
+              SupportingDocumentType04(
                 sequenceNumber = sequenceNumber
               )
             )
@@ -807,7 +813,7 @@ class SubmissionService @Inject() (
                 None
               case _ =>
                 Some(
-                  SupportingDocumentType03(
+                  SupportingDocumentType04(
                     sequenceNumber = sequenceNumber,
                     typeValue = typeValue,
                     referenceNumber = referenceNumber,
@@ -817,16 +823,16 @@ class SubmissionService @Inject() (
             }
         }
       case _ =>
-        None
+        Reads.pure(None)
     }
   }
 
   private def consignmentItemTransportDocumentReads(
-    ie043: Seq[TransportDocumentType02]
+    ie043: Seq[TransportDocumentType01]
   )(
     houseConsignmentIndex: Index,
     itemIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType04]] = {
     import pages.houseConsignment.index.items.document.*
 
     (TypePage(houseConsignmentIndex, itemIndex, index).path.last \ "type").read[DocType].flatMap {
@@ -838,7 +844,7 @@ class SubmissionService @Inject() (
         } yield removed match {
           case Some(true) =>
             Some(
-              TransportDocumentType03(
+              TransportDocumentType04(
                 sequenceNumber = sequenceNumber
               )
             )
@@ -848,7 +854,7 @@ class SubmissionService @Inject() (
                 None
               case _ =>
                 Some(
-                  TransportDocumentType03(
+                  TransportDocumentType04(
                     sequenceNumber = sequenceNumber,
                     typeValue = typeValue,
                     referenceNumber = referenceNumber
@@ -857,16 +863,16 @@ class SubmissionService @Inject() (
             }
         }
       case _ =>
-        None
+        Reads.pure(None)
     }
   }
 
   private def consignmentItemAdditionalReferenceReads(
-    ie043: Seq[AdditionalReferenceType02]
+    ie043: Seq[AdditionalReferenceType01]
   )(
     houseConsignmentIndex: Index,
     itemIndex: Index
-  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType03]] = {
     import pages.houseConsignment.index.items.additionalReference.*
 
     for {
@@ -876,7 +882,7 @@ class SubmissionService @Inject() (
     } yield removed match {
       case Some(true) =>
         Some(
-          AdditionalReferenceType06(
+          AdditionalReferenceType03(
             sequenceNumber = sequenceNumber
           )
         )
@@ -886,7 +892,7 @@ class SubmissionService @Inject() (
             None
           case _ =>
             Some(
-              AdditionalReferenceType06(
+              AdditionalReferenceType03(
                 sequenceNumber = sequenceNumber,
                 typeValue = typeValue,
                 referenceNumber = referenceNumber

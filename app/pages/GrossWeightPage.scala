@@ -16,16 +16,16 @@
 
 package pages
 
-import generated.CUSTOM_ConsignmentType05
+import generated.ConsignmentType05
 import pages.sections.ConsignmentSection
 import play.api.libs.json.JsPath
 
-case object GrossWeightPage extends DiscrepancyQuestionPage[BigDecimal, Option[CUSTOM_ConsignmentType05], BigDecimal] {
+case object GrossWeightPage extends DiscrepancyQuestionPage[BigDecimal, Option[ConsignmentType05], BigDecimal] {
 
   override def path: JsPath = ConsignmentSection.path \ toString
 
   override def toString: String = "grossMass"
 
-  override def valueInIE043(ie043: Option[CUSTOM_ConsignmentType05], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
+  override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
     ie043.flatMap(_.grossMass)
 }
