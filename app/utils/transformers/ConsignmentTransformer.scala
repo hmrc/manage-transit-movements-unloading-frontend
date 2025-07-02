@@ -18,7 +18,7 @@ package utils.transformers
 
 import generated.ConsignmentType05
 import models.UserAnswers
-import pages.GrossWeightPage
+import pages.{GrossWeightPage, UniqueConsignmentReferencePage}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import services.ReferenceDataService
@@ -55,6 +55,7 @@ class ConsignmentTransformer @Inject() (
             houseConsignmentsTransformer.transform(value.HouseConsignment) andThen
             additionalInformationTransformer.transform(value.AdditionalInformation) andThen
             set(GrossWeightPage, value.grossMass) andThen
+            set(UniqueConsignmentReferencePage, value.referenceNumberUCR) andThen
             additionalReferencesTransformer.transform(value.AdditionalReference) andThen
             incidentsTransformer.transform(value.Incident) andThen
             transformCountryOfDestination(value.countryOfDestination) andThen

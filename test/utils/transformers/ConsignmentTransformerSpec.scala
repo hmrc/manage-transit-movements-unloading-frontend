@@ -27,7 +27,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
-import pages.{GrossWeightPage, QuestionPage}
+import pages.{GrossWeightPage, QuestionPage, UniqueConsignmentReferencePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -170,7 +170,12 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           when(mockReferenceDataService.getTransportModeCode(any())(any()))
             .thenReturn(Future.successful(inlandMode))
 
-          val updatedConsignment = consignment.copy(countryOfDestination = Some("country - GB"), inlandModeOfTransport = Some("mode"))
+          val updatedConsignment = consignment.copy(
+            countryOfDestination = Some("country - GB"),
+            inlandModeOfTransport = Some("mode"),
+            grossMass = Some(2),
+            referenceNumberUCR = Some("ucr")
+          )
 
           val result = transformer.transform(Some(updatedConsignment))(hc).apply(emptyUserAnswers).futureValue
 
@@ -184,6 +189,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           result.getValue(FakeAdditionalReferenceSection) mustEqual Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalInformationSection) mustEqual Json.obj("foo" -> "bar")
           result.get(GrossWeightPage) mustEqual updatedConsignment.grossMass
+          result.get(UniqueConsignmentReferencePage) mustEqual updatedConsignment.referenceNumberUCR
           result.getValue(FakeIncidentSection) mustEqual Json.obj("foo" -> "bar")
           result.getValue(CountryOfDestinationPage) mustEqual country
           result.getValue(InlandModeOfTransportPage) mustEqual inlandMode
@@ -197,6 +203,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       result.get(FakeConsigneeSection) must not be defined
       result.get(FakeTransportEquipmentSection) must not be defined
       result.get(FakeDepartureTransportMeansSection) must not be defined
+      result.get(FakeCountriesOfRoutingSection) must not be defined
       result.get(FakeDocumentsSection) must not be defined
       result.get(FakeHouseConsignmentSection) must not be defined
       result.get(FakeAdditionalReferenceSection) must not be defined
