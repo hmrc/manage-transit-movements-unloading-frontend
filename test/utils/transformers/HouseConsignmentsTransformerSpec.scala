@@ -19,8 +19,8 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.HouseConsignmentType04
 import generators.Generators
-import models.reference.Country
-import models.{Index, SecurityType}
+import models.reference.{Country, SecurityType}
+import models.Index
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

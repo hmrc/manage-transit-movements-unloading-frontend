@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Support, Transport}
 import models.reference.*
-import models.{CheckMode, Index, SecurityType}
+import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.*
