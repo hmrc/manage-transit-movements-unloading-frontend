@@ -32,6 +32,7 @@ class ConsignmentTransformer @Inject() (
   consigneeTransformer: ConsigneeTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
+  countriesOfRoutingTransformer: CountriesOfRoutingTransformer,
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
@@ -43,20 +44,21 @@ class ConsignmentTransformer @Inject() (
 
   def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
-      case Some(consignment05) =>
+      case Some(value) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          consignorTransformer.transform(consignment05.Consignor) andThen
-            consigneeTransformer.transform(consignment05.Consignee) andThen
-            transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
-            departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
-            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
-            houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
-            additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
-            set(GrossWeightPage, consignment05.grossMass) andThen
-            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
-            incidentsTransformer.transform(consignment05.Incident) andThen
-            transformCountryOfDestination(consignment05.countryOfDestination) andThen
-            transformInlandModeOfTransport(consignment05.inlandModeOfTransport)
+          consignorTransformer.transform(value.Consignor) andThen
+            consigneeTransformer.transform(value.Consignee) andThen
+            transportEquipmentTransformer.transform(value.TransportEquipment) andThen
+            departureTransportMeansTransformer.transform(value.DepartureTransportMeans) andThen
+            countriesOfRoutingTransformer.transform(value.CountryOfRoutingOfConsignment) andThen
+            documentsTransformer.transform(value.SupportingDocument, value.TransportDocument, value.PreviousDocument) andThen
+            houseConsignmentsTransformer.transform(value.HouseConsignment) andThen
+            additionalInformationTransformer.transform(value.AdditionalInformation) andThen
+            set(GrossWeightPage, value.grossMass) andThen
+            additionalReferencesTransformer.transform(value.AdditionalReference) andThen
+            incidentsTransformer.transform(value.Incident) andThen
+            transformCountryOfDestination(value.countryOfDestination) andThen
+            transformInlandModeOfTransport(value.inlandModeOfTransport)
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)

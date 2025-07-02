@@ -43,6 +43,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockConsigneeTransformer               = mock[ConsigneeTransformer]
   private lazy val mockTransportEquipmentTransformer      = mock[TransportEquipmentTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
+  private lazy val mockCountriesOfRoutingTransformer      = mock[CountriesOfRoutingTransformer]
   private lazy val mockDocumentsTransformer               = mock[DocumentsTransformer]
   private lazy val mockHouseConsignmentsTransformer       = mock[HouseConsignmentsTransformer]
   private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
@@ -59,6 +60,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[ConsigneeTransformer].toInstance(mockConsigneeTransformer),
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
+        bind[CountriesOfRoutingTransformer].toInstance(mockCountriesOfRoutingTransformer),
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
@@ -81,6 +83,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private case object FakeDepartureTransportMeansSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "departureTransportMeans"
+  }
+
+  private case object FakeCountriesOfRoutingSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "countriesOfRouting"
   }
 
   private case object FakeDocumentsSection extends QuestionPage[JsObject] {
@@ -111,6 +117,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeConsignorSection, Json.obj("foo" -> "bar")))
             }
+
           when(mockConsigneeTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeConsigneeSection, Json.obj("foo" -> "bar")))
@@ -124,6 +131,11 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           when(mockDepartureTransportMeansTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection, Json.obj("foo" -> "bar")))
+            }
+
+          when(mockCountriesOfRoutingTransformer.transform(any())(any()))
+            .thenReturn {
+              ua => Future.successful(ua.setValue(FakeCountriesOfRoutingSection, Json.obj("foo" -> "bar")))
             }
 
           when(mockDocumentsTransformer.transform(any(), any(), any())(any()))
@@ -162,18 +174,19 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
           val result = transformer.transform(Some(updatedConsignment))(hc).apply(emptyUserAnswers).futureValue
 
-          result.getValue(FakeConsignorSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeConsigneeSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeTransportEquipmentSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeDepartureTransportMeansSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeDocumentsSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeAdditionalReferenceSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(FakeAdditionalInformationSection) mustBe Json.obj("foo" -> "bar")
-          result.get(GrossWeightPage) mustBe updatedConsignment.grossMass
-          result.getValue(FakeIncidentSection) mustBe Json.obj("foo" -> "bar")
-          result.getValue(CountryOfDestinationPage) mustBe country
-          result.getValue(InlandModeOfTransportPage) mustBe inlandMode
+          result.getValue(FakeConsignorSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeConsigneeSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeTransportEquipmentSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeDepartureTransportMeansSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeCountriesOfRoutingSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeDocumentsSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeHouseConsignmentSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeAdditionalReferenceSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(FakeAdditionalInformationSection) mustEqual Json.obj("foo" -> "bar")
+          result.get(GrossWeightPage) mustEqual updatedConsignment.grossMass
+          result.getValue(FakeIncidentSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(CountryOfDestinationPage) mustEqual country
+          result.getValue(InlandModeOfTransportPage) mustEqual inlandMode
       }
     }
 
