@@ -160,33 +160,36 @@ class SubmissionService @Inject() (
     import pages.sections.additionalReference.AdditionalReferencesSection
     import pages.sections.documents.DocumentsSection
 
-    lazy val transportEquipment      = ie043.getList(_.TransportEquipment)
-    lazy val departureTransportMeans = ie043.getList(_.DepartureTransportMeans)
-    lazy val supportingDocuments     = ie043.getList(_.SupportingDocument)
-    lazy val transportDocuments      = ie043.getList(_.TransportDocument)
-    lazy val additionalReferences    = ie043.getList(_.AdditionalReference)
-    lazy val houseConsignments       = ie043.getList(_.HouseConsignment)
+    lazy val transportEquipment              = ie043.getList(_.TransportEquipment)
+    lazy val departureTransportMeans         = ie043.getList(_.DepartureTransportMeans)
+    lazy val countriesOfRoutingOfConsignment = ie043.getList(_.CountryOfRoutingOfConsignment)
+    lazy val supportingDocuments             = ie043.getList(_.SupportingDocument)
+    lazy val transportDocuments              = ie043.getList(_.TransportDocument)
+    lazy val additionalReferences            = ie043.getList(_.AdditionalReference)
+    lazy val houseConsignments               = ie043.getList(_.HouseConsignment)
 
     for {
-      grossMass               <- pages.GrossWeightPage.readNullable(identity).apply(ie043)
-      referenceNumberUCR      <- pages.UniqueConsignmentReferencePage.readNullable(identity).apply(ie043)
-      transportEquipment      <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
-      departureTransportMeans <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
-      supportingDocuments     <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))
-      transportDocuments      <- DocumentsSection.readArray(consignmentTransportDocumentReads(transportDocuments))
-      additionalReferences    <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
-      houseConsignments       <- HouseConsignmentsSection.readArray(houseConsignmentReads(houseConsignments))
+      grossMass                       <- pages.GrossWeightPage.readNullable(identity).apply(ie043)
+      referenceNumberUCR              <- pages.UniqueConsignmentReferencePage.readNullable(identity).apply(ie043)
+      transportEquipment              <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
+      departureTransportMeans         <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
+      countriesOfRoutingOfConsignment <- CountriesOfRoutingSection.readArray(consignmentCountriesOfRoutingReads(countriesOfRoutingOfConsignment))
+      supportingDocuments             <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))
+      transportDocuments              <- DocumentsSection.readArray(consignmentTransportDocumentReads(transportDocuments))
+      additionalReferences            <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
+      houseConsignments               <- HouseConsignmentsSection.readArray(houseConsignmentReads(houseConsignments))
     } yield (
       grossMass,
       referenceNumberUCR,
       transportEquipment,
       departureTransportMeans,
+      countriesOfRoutingOfConsignment,
       supportingDocuments,
       transportDocuments,
       additionalReferences,
       houseConsignments
     ) match {
-      case (None, None, Nil, Nil, Nil, Nil, Nil, Nil) =>
+      case (None, None, Nil, Nil, Nil, Nil, Nil, Nil, Nil) =>
         None
       case _ =>
         Some(
@@ -195,6 +198,7 @@ class SubmissionService @Inject() (
             referenceNumberUCR = referenceNumberUCR,
             TransportEquipment = transportEquipment,
             DepartureTransportMeans = departureTransportMeans,
+            CountryOfRoutingOfConsignment = countriesOfRoutingOfConsignment,
             SupportingDocument = supportingDocuments,
             TransportDocument = transportDocuments,
             AdditionalReference = additionalReferences,
@@ -341,6 +345,32 @@ class SubmissionService @Inject() (
                 identificationNumber = identificationNumber,
                 nationality = nationality
               )
+            )
+        }
+    }
+  }
+
+  private def consignmentCountriesOfRoutingReads(
+    ie043: Seq[CountryOfRoutingOfConsignmentType02]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[CountryOfRoutingOfConsignmentType03]] = {
+    import pages.countriesOfRouting.*
+
+    for {
+      removed <- (__ \ Removed).readNullable[Boolean]
+      country <- CountryOfRoutingPage(index).readNullable(_.code).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          CountryOfRoutingOfConsignmentType03(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        country.map {
+          value =>
+            CountryOfRoutingOfConsignmentType03(
+              sequenceNumber = sequenceNumber,
+              country = country
             )
         }
     }

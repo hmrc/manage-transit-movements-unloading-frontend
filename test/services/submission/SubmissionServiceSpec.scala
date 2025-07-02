@@ -637,7 +637,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -1263,7 +1263,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -1411,7 +1411,105 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
+        }
+      }
+    }
+
+    "must create countries of routing" - {
+      import pages.NewAuthYesNoPage
+      import pages.countriesOfRouting.*
+      import pages.sections.CountryOfRoutingSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
+            val countriesOfRouting = Seq(
+              CountryOfRoutingOfConsignmentType02(
+                sequenceNumber = 1,
+                country = "originalCountry1"
+              ),
+              CountryOfRoutingOfConsignmentType02(
+                sequenceNumber = 2,
+                country = "originalCountry2"
+              ),
+              CountryOfRoutingOfConsignmentType02(
+                sequenceNumber = 3,
+                country = "originalCountry3"
+              ),
+              CountryOfRoutingOfConsignmentType02(
+                sequenceNumber = 4,
+                country = "originalCountry4"
+              )
+            )
+            val ie043 = consignment.copy(CountryOfRoutingOfConsignment = countriesOfRouting)
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
+              // Country of routing 1 - Changed country value
+              .setSequenceNumber(CountryOfRoutingSection(Index(0)), 1)
+              .setNotRemoved(CountryOfRoutingSection(Index(0)))
+              .setValue(CountryOfRoutingPage(Index(0)), Country("newCountry1", "newCountry1Description"))
+              // Country of routing 2 - Removed
+              .setSequenceNumber(CountryOfRoutingSection(Index(1)), 2)
+              .setRemoved(CountryOfRoutingSection(Index(1)))
+              // Country of routing 3 - Unchanged
+              .setSequenceNumber(CountryOfRoutingSection(Index(2)), 3)
+              .setNotRemoved(CountryOfRoutingSection(Index(2)))
+              .setValue(CountryOfRoutingPage(Index(2)), Country("originalCountry3", "originalCountry3Description"))
+              // Country of routing 4 - Added
+              .setValue(CountryOfRoutingPage(Index(3)), Country("newCountry4", "newCountry4Description"))
+
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).value.CountryOfRoutingOfConsignment
+
+            result mustEqual Seq(
+              CountryOfRoutingOfConsignmentType03(
+                sequenceNumber = 1,
+                country = Some("newCountry1")
+              ),
+              CountryOfRoutingOfConsignmentType03(
+                sequenceNumber = 2,
+                country = None
+              ),
+              CountryOfRoutingOfConsignmentType03(
+                sequenceNumber = 4,
+                country = Some("newCountry4")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
+            val countriesOfRouting = Seq(
+              CountryOfRoutingOfConsignmentType02(
+                sequenceNumber = 1,
+                country = "originalCountry1"
+              ),
+              CountryOfRoutingOfConsignmentType02(
+                sequenceNumber = 2,
+                country = "originalCountry2"
+              )
+            )
+            val ie043 = consignment.copy(CountryOfRoutingOfConsignment = countriesOfRouting)
+
+            val userAnswers = emptyUserAnswers
+              .setValue(NewAuthYesNoPage, false)
+              // Country of routing 1 - Unchanged
+              .setSequenceNumber(CountryOfRoutingSection(Index(0)), 1)
+              .setNotRemoved(CountryOfRoutingSection(Index(0)))
+              .setValue(CountryOfRoutingPage(Index(0)), Country("originalCountry1", "originalCountry1Description"))
+              // Country of routing 2 - Unchanged
+              .setSequenceNumber(CountryOfRoutingSection(Index(1)), 2)
+              .setNotRemoved(CountryOfRoutingSection(Index(1)))
+              .setValue(CountryOfRoutingPage(Index(1)), Country("originalCountry2", "originalCountry2Description"))
+
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads)
+
+            result must not be defined
         }
       }
     }
@@ -1550,7 +1648,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -1673,7 +1771,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -1795,7 +1893,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -1858,7 +1956,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2019,7 +2117,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2167,7 +2265,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2299,7 +2397,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2438,7 +2536,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2574,7 +2672,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2637,7 +2735,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2741,7 +2839,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -2888,7 +2986,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -3036,7 +3134,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -3168,7 +3266,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
@@ -3307,7 +3405,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
-            result mustEqual None
+            result must not be defined
         }
       }
     }
