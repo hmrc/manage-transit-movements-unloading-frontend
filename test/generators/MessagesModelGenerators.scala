@@ -691,6 +691,17 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryCountryOfRoutingOfConsignmentType02: Arbitrary[CountryOfRoutingOfConsignmentType02] =
+    Arbitrary {
+      for {
+        sequenceNumber <- positiveBigInts
+        country        <- Gen.alphaNumStr
+      } yield CountryOfRoutingOfConsignmentType02(
+        sequenceNumber = sequenceNumber,
+        country = country
+      )
+    }
+
   implicit lazy val arbitraryXMLGregorianCalendar: Arbitrary[XMLGregorianCalendar] =
     Arbitrary {
       Gen.const(XMLCalendar("2022-07-15"))
