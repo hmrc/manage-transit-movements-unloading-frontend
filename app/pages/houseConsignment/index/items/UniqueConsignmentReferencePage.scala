@@ -16,21 +16,19 @@
 
 package pages.houseConsignment.index.items
 
-import generated.HouseConsignmentType04
+import generated.ConsignmentItemType04
 import models.Index
 import pages.DiscrepancyQuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 
 case class UniqueConsignmentReferencePage(houseConsignmentIndex: Index, itemIndex: Index)
-    extends DiscrepancyQuestionPage[String, Seq[HouseConsignmentType04], String] {
+    extends DiscrepancyQuestionPage[String, Option[ConsignmentItemType04], String] {
 
   override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
 
   override def toString: String = "ucr"
 
-  // TODO - update in CTCP-6435
-  override def valueInIE043(ie043: Seq[HouseConsignmentType04], sequenceNumber: Option[BigInt]): Option[String] =
-    None
-
+  override def valueInIE043(ie043: Option[ConsignmentItemType04], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043.flatMap(_.referenceNumberUCR)
 }

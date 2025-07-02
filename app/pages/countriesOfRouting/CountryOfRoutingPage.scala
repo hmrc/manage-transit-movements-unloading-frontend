@@ -16,20 +16,23 @@
 
 package pages.countriesOfRouting
 
-import generated.ConsignmentType05
+import generated.CountryOfRoutingOfConsignmentType02
 import models.Index
 import models.reference.Country
 import pages.DiscrepancyQuestionPage
 import pages.sections.CountryOfRoutingSection
 import play.api.libs.json.JsPath
 
-case class CountryOfRoutingPage(countryIndex: Index) extends DiscrepancyQuestionPage[Country, Option[ConsignmentType05], String] {
+case class CountryOfRoutingPage(countryIndex: Index) extends DiscrepancyQuestionPage[Country, Seq[CountryOfRoutingOfConsignmentType02], String] {
 
   override def path: JsPath = CountryOfRoutingSection(countryIndex).path \ toString
 
   override def toString: String = "country"
 
-  // TODO - update in CTCP-6435
-  override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: Option[BigInt]): Option[String] =
-    None
+  override def valueInIE043(ie043: Seq[CountryOfRoutingOfConsignmentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.country)
 }
