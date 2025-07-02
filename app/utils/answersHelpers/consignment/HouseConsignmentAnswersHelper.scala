@@ -18,8 +18,8 @@ package utils.answersHelpers.consignment
 
 import controllers.houseConsignment.index.routes
 import models.DocType.Previous
-import models.reference.Country
-import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.reference.{Country, SecurityType}
+import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
 import pages.sections.ItemsSection

@@ -20,6 +20,7 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import generators.Generators
+import models.DocType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -27,16 +28,17 @@ import play.api.libs.json.Json
 import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "Country" - {
+  "DocumentType" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val value = Country(code, description)
+          val value = DocumentType(DocType.Previous, code, description)
           Json.toJson(value) mustEqual Json.parse(s"""
               |{
+              |  "type": "Previous",
               |  "code": "$code",
               |  "description": "$description"
               |}
@@ -48,15 +50,16 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val value = Country(code, description)
+            val value = DocumentType(DocType.Support, code, description)
             Json
               .parse(s"""
                    |{
+                   |  "type": "Supporting",
                    |  "code": "$code",
                    |  "description": "$description"
                    |}
                    |""".stripMargin)
-              .as[Country] mustEqual value
+              .as[DocumentType] mustEqual value
         }
       }
 
@@ -67,15 +70,16 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = Country(code, description)
+                  val value = DocumentType(DocType.Transport, code, description)
                   Json
                     .parse(s"""
                          |{
+                         |  "type": "Transport",
                          |  "code": "$code",
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[Country](Country.reads(config)) mustEqual value
+                    .as[DocumentType](DocumentType.reads(DocType.Transport)(config)) mustEqual value
               }
           }
         }
@@ -86,15 +90,16 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
               val config = app.injector.instanceOf[FrontendAppConfig]
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val value = Country(code, description)
+                  val value = DocumentType(DocType.Previous, code, description)
                   Json
                     .parse(s"""
                          |{
+                         |  "type": "Previous",
                          |  "key": "$code",
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                    .as[Country](Country.reads(config)) mustEqual value
+                    .as[DocumentType](DocumentType.reads(DocType.Previous)(config)) mustEqual value
               }
           }
         }
@@ -102,23 +107,23 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
     }
 
     "must convert to select item" in {
-      forAll(arbitrary[Country], arbitrary[Boolean]) {
+      forAll(arbitrary[DocumentType], arbitrary[Boolean]) {
         (value, selected) =>
-          value.toSelectItem(selected) mustEqual SelectItem(Some(value.code), s"${value.description} - ${value.code}", selected)
+          value.toSelectItem(selected) mustEqual SelectItem(Some(value.code), s"${value.`type`.display} - (${value.code}) ${value.description}", selected)
       }
     }
 
     "must format as string" in {
-      forAll(arbitrary[Country]) {
+      forAll(arbitrary[DocumentType]) {
         value =>
-          value.toString mustEqual s"${value.description} - ${value.code}"
+          value.toString mustEqual s"${value.`type`.display} - (${value.code}) ${value.description}"
       }
     }
 
     "must order" in {
-      val value1 = Country("RS", "Serbia")
-      val value2 = Country("XS", "Serbia")
-      val value3 = Country("FR", "France")
+      val value1 = DocumentType(DocType.Support, "RS", "Serbia")
+      val value2 = DocumentType(DocType.Support, "XS", "Serbia")
+      val value3 = DocumentType(DocType.Support, "FR", "France")
 
       val values = NonEmptySet.of(value1, value2, value3)
 

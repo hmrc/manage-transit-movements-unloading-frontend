@@ -19,7 +19,7 @@ package services
 import connectors.ReferenceDataConnector
 import models.reference.*
 import models.reference.TransportMode.InlandMode
-import models.{SecurityType, SelectableList}
+import models.SelectableList
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

@@ -19,8 +19,8 @@ package utils.answersHelpers
 import controllers.routes
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
-import models.reference.{Country, CustomsOffice}
-import models.{CheckMode, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.reference.{Country, CustomsOffice, SecurityType}
+import models.{CheckMode, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage

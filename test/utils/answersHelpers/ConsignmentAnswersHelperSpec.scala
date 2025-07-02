@@ -20,7 +20,7 @@ import generated.*
 import models.DocType.Previous
 import models.reference.*
 import models.reference.TransportMode.InlandMode
-import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
+import models.{CheckMode, Coordinates, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.countriesOfRouting.CountryOfRoutingPage
