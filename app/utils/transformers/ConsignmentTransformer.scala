@@ -66,7 +66,6 @@ class ConsignmentTransformer @Inject() (
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     countryOfDestination match {
-
       case Some(country) =>
         referenceDataService.getCountry(country).flatMap {
           countryVal =>
