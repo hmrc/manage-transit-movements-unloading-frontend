@@ -560,12 +560,14 @@ trait MessagesModelGenerators {
       for {
         goodsItemNumber            <- positiveBigInts
         declarationGoodsItemNumber <- positiveBigInts
+        referenceNumberUCR         <- Gen.option(nonEmptyString)
         commodity                  <- arbitrary[CommodityType09]
       } yield ConsignmentItemType04(
         goodsItemNumber = goodsItemNumber,
         declarationGoodsItemNumber = declarationGoodsItemNumber,
         declarationType = None,
         countryOfDestination = None,
+        referenceNumberUCR = referenceNumberUCR,
         Consignee = None,
         Commodity = commodity,
         Packaging = Nil,

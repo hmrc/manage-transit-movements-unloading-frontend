@@ -20,12 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.ConsignmentItemType04
 import generators.Generators
 import models.Index
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage}
+import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage, UniqueConsignmentReferencePage}
 import pages.sections.ItemSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -113,15 +113,15 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
           case (consignmentItem, i) =>
             val itemIndex = Index(i)
 
-            result.getSequenceNumber(ItemSection(hcIndex, itemIndex)) mustBe consignmentItem.goodsItemNumber
-            result.getValue(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustBe consignmentItem.declarationGoodsItemNumber
-            result.get(DeclarationTypePage(hcIndex, itemIndex)) mustBe consignmentItem.declarationType
-            result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakePackagingSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeDocumentsSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalReferencesSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalInformationSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-
+            result.getSequenceNumber(ItemSection(hcIndex, itemIndex)) mustEqual consignmentItem.goodsItemNumber
+            result.getValue(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustEqual consignmentItem.declarationGoodsItemNumber
+            result.get(DeclarationTypePage(hcIndex, itemIndex)) mustEqual consignmentItem.declarationType
+            result.get(UniqueConsignmentReferencePage(hcIndex, itemIndex)) mustEqual consignmentItem.referenceNumberUCR
+            result.getValue(FakeCommoditySection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakePackagingSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeDocumentsSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeAdditionalReferencesSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeAdditionalInformationSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
         }
     }
   }

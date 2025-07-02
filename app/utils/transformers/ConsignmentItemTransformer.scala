@@ -17,8 +17,8 @@
 package utils.transformers
 
 import generated.ConsignmentItemType04
-import models._
-import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage}
+import models.*
+import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage, UniqueConsignmentReferencePage}
 import pages.sections.ItemSection
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -47,6 +47,7 @@ class ConsignmentItemTransformer @Inject() (
                 setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
                   set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
                   set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
+                  set(UniqueConsignmentReferencePage(hcIndex, itemIndex), consignmentItem.referenceNumberUCR) andThen
                   countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
                   commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
                   packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
