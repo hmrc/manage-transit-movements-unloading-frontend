@@ -29,6 +29,7 @@ object UnloadingRemarksRequest {
   val alphaNumericRegex                             = "^[a-zA-Z0-9 ]*$"
   val alphaNumericWithHyphenRegex: Regex            = "^[a-zA-Z0-9\\-]*$".r
   val alphaNumericWithSpacesRegex: Regex            = "^[a-zA-Z\\s0-9]*$".r
+  val alphaNumericWithFullStopsRegex: Regex         = "^[a-zA-Z0-9.]*$".r
   val stringFieldRegexComma: Regex                  = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
   val weightRegex                                   = "^(\\d{1,16}|(\\d{0,15}\\.{1}\\d{1,6}){1})$"
   val weightIntegerLength                           = 16

@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.maxDocumentRefNumberLength
 import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
+import models.messages.UnloadingRemarksRequest.alphaNumericWithFullStopsRegex
 import models.{Index, RichString}
 import play.api.data.Form
 
@@ -31,7 +31,7 @@ class ReferenceNumberFormProvider @Inject() extends Mappings {
       "value" -> adaptedText(s"$requiredError", args = Seq(houseConsignmentIndex.display))(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericWithSpacesRegex, "houseConsignment.index.documents.referenceNumber.error.invalidCharacters"),
+            regexp(alphaNumericWithFullStopsRegex, "houseConsignment.index.documents.referenceNumber.error.invalidCharacters"),
             maxLength(maxDocumentRefNumberLength, "houseConsignment.index.documents.referenceNumber.error.length"),
             valueIsNotInList(otherDocumentReferenceNumbers, "houseConsignment.index.documents.referenceNumber.error.duplicate")
           )
