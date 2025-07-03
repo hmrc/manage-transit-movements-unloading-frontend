@@ -54,7 +54,7 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 70 characters long and include letters, numbers and full stops.")
 
   behave like pageWithInputText()
 

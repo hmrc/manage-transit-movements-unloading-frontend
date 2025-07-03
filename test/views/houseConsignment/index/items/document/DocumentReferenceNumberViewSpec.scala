@@ -56,7 +56,7 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading(text = viewModel.heading)
 
-  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 70 characters long and include letters, numbers and full stops.")
 
   behave like pageWithInputText()
 
