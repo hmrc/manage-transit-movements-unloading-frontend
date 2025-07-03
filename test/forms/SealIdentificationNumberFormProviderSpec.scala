@@ -16,12 +16,15 @@
 
 package forms
 
+import base.AppWithDefaultMockFixtures
+import config.FrontendAppConfig
 import forms.Constants.maxSealIdentificationLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
 import play.api.data.FormError
+import play.api.test.Helpers.running
 
-class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
+class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours with AppWithDefaultMockFixtures {
 
   private val prefix               = "transportEquipment.index.seal.identificationNumber"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
@@ -30,7 +33,8 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
   val duplicateKey                 = s"$prefix.error.duplicate"
   private val maxLength            = 20
 
-  val form = new SealIdentificationNumberFormProvider()(requiredKey, Seq.empty)
+  private val formProvider = app.injector.instanceOf[SealIdentificationNumberFormProvider]
+  private val form         = formProvider.apply(requiredKey, Seq.empty)
 
   ".value" - {
 
@@ -68,12 +72,32 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
       lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
     )
 
-    "must not bind if value exists in the list of other ids" in {
-      val otherIds  = Seq("foo", "bar")
-      val form      = new SealIdentificationNumberFormProvider()(prefix, otherIds)
-      val boundForm = form.bind(Map("value" -> "foo"))
-      val field     = boundForm("value")
-      field.errors mustEqual Seq(FormError(fieldName, duplicateKey))
+    "when phase 5" - {
+      "must not bind if value exists in the list of other ids" in {
+        running(phase5App) {
+          app =>
+            val config   = app.injector.instanceOf[FrontendAppConfig]
+            val otherIds = Seq("foo", "bar")
+            val form     = new SealIdentificationNumberFormProvider(config).apply(prefix, otherIds)
+            val result   = form.bind(Map(fieldName -> "foo")).apply(fieldName)
+            result.errors mustEqual Seq(FormError(fieldName, duplicateKey))
+        }
+      }
+    }
+
+    "when phase 6" - {
+      "must bind if value exists in the list of other ids" in {
+        running(phase6App) {
+          app =>
+            val config   = app.injector.instanceOf[FrontendAppConfig]
+            val otherIds = Seq("foo", "bar")
+            val form     = new SealIdentificationNumberFormProvider(config).apply(prefix, otherIds)
+            val dataItem = "foo"
+            val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
+            result.value.value mustBe dataItem
+            result.errors must be(empty)
+        }
+      }
     }
   }
 }
