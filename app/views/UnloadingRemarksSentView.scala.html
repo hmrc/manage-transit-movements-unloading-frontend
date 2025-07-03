@@ -15,14 +15,15 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.Heading
+@import views.html.components.{Feedback, Heading}
 @import config.FrontendAppConfig
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     config: FrontendAppConfig,
-    govukPanel: GovukPanel
+    govukPanel: GovukPanel,
+    feedback: Feedback
 )
 
 @(mrn: String, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[?], messages: Messages)
@@ -40,4 +41,6 @@
     <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
     <p class="govuk-body">@{viewModel.fetch}</p>
     <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
+
+    @feedback()
 }
