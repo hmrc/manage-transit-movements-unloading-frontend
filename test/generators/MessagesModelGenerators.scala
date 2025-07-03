@@ -206,6 +206,7 @@ trait MessagesModelGenerators {
       for {
         sequenceNumber          <- positiveBigInts
         grossMass               <- positiveBigDecimals
+        referenceNumberUCR      <- Gen.option(nonEmptyString)
         consignor               <- Gen.option(arbitrary[ConsignorType05])
         consignee               <- Gen.option(arbitrary[ConsigneeType05])
         departureTransportMeans <- arbitrary[Seq[DepartureTransportMeansType01]]
@@ -215,6 +216,7 @@ trait MessagesModelGenerators {
         sequenceNumber = sequenceNumber,
         countryOfDestination = Some("GB"),
         grossMass = grossMass,
+        referenceNumberUCR = referenceNumberUCR,
         securityIndicatorFromExportDeclaration = securityIndicator,
         Consignor = consignor,
         Consignee = consignee,
