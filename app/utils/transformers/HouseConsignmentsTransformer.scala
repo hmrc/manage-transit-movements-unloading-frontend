@@ -18,7 +18,7 @@ package utils.transformers
 
 import generated.HouseConsignmentType04
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
 import pages.sections.HouseConsignmentSection
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -49,6 +49,7 @@ class HouseConsignmentsTransformer @Inject() (
                 val pipeline =
                   setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
                     set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
+                    set(UniqueConsignmentReferencePage(hcIndex), houseConsignment.referenceNumberUCR) andThen
                     consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
                     consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
                     departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen

@@ -26,7 +26,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage}
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, UniqueConsignmentReferencePage}
 import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -151,6 +151,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
             result.getValue(GrossWeightPage(hcIndex)) mustBe hc.grossMass
+            result.get(UniqueConsignmentReferencePage(hcIndex)) mustBe hc.referenceNumberUCR
             result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustBe
               Json.obj("code" -> "code", "description" -> "description")
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
