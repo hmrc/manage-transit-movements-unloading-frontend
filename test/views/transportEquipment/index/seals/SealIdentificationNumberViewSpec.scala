@@ -31,7 +31,9 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   private val viewModel: SealIdentificationNumberViewModel =
     arbitrary[SealIdentificationNumberViewModel].sample.value
 
-  override def form: Form[String] = new SealIdentificationNumberFormProvider()(viewModel.requiredError, Seq.empty)
+  private val formProvider = app.injector.instanceOf[SealIdentificationNumberFormProvider]
+
+  override def form: Form[String] = formProvider.apply(viewModel.requiredError, Seq.empty)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector

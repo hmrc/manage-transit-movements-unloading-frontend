@@ -16,6 +16,7 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.Constants.maxSealIdentificationLength
 import forms.mappings.Mappings
 import models.RichString
@@ -24,7 +25,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class SealIdentificationNumberFormProvider @Inject() extends Mappings {
+class SealIdentificationNumberFormProvider @Inject() (config: FrontendAppConfig) extends Mappings {
 
   def apply(requiredError: String, otherSealIdentificationNumbers: Seq[String]): Form[String] =
     Form(
@@ -33,7 +34,11 @@ class SealIdentificationNumberFormProvider @Inject() extends Mappings {
           forms.StopOnFirstFail[String](
             regexp(alphaNumericWithSpacesRegex, "transportEquipment.index.seal.identificationNumber.error.invalidCharacters"),
             maxLength(maxSealIdentificationLength, "transportEquipment.index.seal.identificationNumber.error.length"),
-            valueIsNotInList(otherSealIdentificationNumbers, "transportEquipment.index.seal.identificationNumber.error.duplicate")
+            if (config.phase6Enabled) {
+              valid
+            } else {
+              valueIsNotInList(otherSealIdentificationNumbers, "transportEquipment.index.seal.identificationNumber.error.duplicate")
+            }
           )
         )
     )
