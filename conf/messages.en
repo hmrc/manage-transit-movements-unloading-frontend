@@ -20,6 +20,11 @@ site.warning.procedure = Based on the answers you’ve given us, you cannot use 
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
+survey.h2 = Before you go
+survey.link = Take a short survey
+survey.prelink = Your feedback helps us make our service better.
+survey.postlink = to share your feedback on this service.
+
 unloadingFindings.noInformationProvided = No information provided
 
 error.title.prefix = Error:

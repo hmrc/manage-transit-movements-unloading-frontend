@@ -15,13 +15,14 @@
  *@
 
 @import config.FrontendAppConfig
-@import views.html.components.{Button, Heading}
+@import views.html.components.{Button, Feedback, Heading}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
+    feedback: Feedback,
     config: FrontendAppConfig
 )
 
@@ -36,10 +37,11 @@
 
     <p class="govuk-body">@messages("cannotSendUnloadingRemarks.paragraph1")</p>
 
-    <p class="govuk-body"> @{viewModel.fetch} </p>
+    <p class="govuk-body">@{viewModel.fetch}</p>
 
-    <p>
+    <p class="govuk-body">
         <a id="viewStatus" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("cannotSendUnloadingRemarks.linkText")</a>
     </p>
 
+    @feedback()
 }
