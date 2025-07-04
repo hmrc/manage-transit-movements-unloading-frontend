@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.Actions
 import forms.UniqueConsignmentReferenceFormProvider
 import models.{ArrivalId, Mode}
-import navigation.Navigation
+import navigation.ConsignmentNavigator
 import pages.UniqueConsignmentReferencePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UniqueConsignmentReferenceController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigation,
+  navigator: ConsignmentNavigator,
   actions: Actions,
   viewModelProvider: UniqueConsignmentReferenceViewModelProvider,
   ucrFormProvider: UniqueConsignmentReferenceFormProvider,

@@ -62,41 +62,17 @@ class HouseConsignmentsTransformer @Inject() (
                     additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
                     additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
                     consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
-                    transformSecurityIndicatorFromExportDeclaration(houseConsignment.securityIndicatorFromExportDeclaration, hcIndex) andThen
-                    transformCountryOfDestination(houseConsignment.countryOfDestination, hcIndex)
+                    set(
+                      SecurityIndicatorFromExportDeclarationPage(hcIndex),
+                      houseConsignment.securityIndicatorFromExportDeclaration,
+                      referenceDataService.getSecurityType
+                    ) andThen
+                    set(
+                      CountryOfDestinationPage(hcIndex),
+                      houseConsignment.countryOfDestination,
+                      referenceDataService.getCountry
+                    )
                 pipeline(userAnswers)
             }
         }
-
-  private def transformSecurityIndicatorFromExportDeclaration(securityIndicatorFromExportDeclaration: Option[String], hcIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    securityIndicatorFromExportDeclaration match {
-      case Some(securityIndicator) =>
-        referenceDataService.getSecurityType(securityIndicator).flatMap {
-          indicator =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(SecurityIndicatorFromExportDeclarationPage(hcIndex), indicator)
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
-    }
-
-  private def transformCountryOfDestination(countryOfDestination: Option[String], hcIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    countryOfDestination match {
-
-      case Some(country) =>
-        referenceDataService.getCountry(country).flatMap {
-          countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(CountryOfDestinationPage(hcIndex), countryVal)
-            pipeline(userAnswers)
-        }
-
-      case None =>
-        Future.successful(userAnswers)
-    }
 }

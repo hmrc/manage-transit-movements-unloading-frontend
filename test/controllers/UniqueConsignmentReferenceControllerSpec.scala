@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UniqueConsignmentReferenceFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.Navigation
+import navigation.ConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -57,7 +57,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       .guiceApplicationBuilder()
       .configure("feature-flags.phase-6-enabled" -> true)
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation),
+        bind[ConsignmentNavigator].toInstance(FakeConsignmentNavigators.fakeConsignmentNavigator),
         bind[UniqueConsignmentReferenceViewModelProvider].toInstance(mockViewModelProvider)
       )
 

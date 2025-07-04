@@ -76,6 +76,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   object FakeConsignmentNavigators {
     import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 
+    val fakeConsignmentNavigator: ConsignmentNavigator =
+      new FakeConsignmentNavigator(onwardRoute)
+
     val fakeTransportEquipmentNavigator: TransportEquipmentNavigator =
       new FakeTransportEquipmentNavigator(onwardRoute)
 
