@@ -18,21 +18,22 @@ package utils.transformers
 
 import generated.ConsignmentItemType04
 import models.*
-import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage, UniqueConsignmentReferencePage}
+import pages.houseConsignment.index.items.*
 import pages.sections.ItemSection
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
-  countryOfDestinationTransformer: CountryOfDestinationTransformer,
   commodityTransformer: CommodityTransformer,
   packagingTransformer: PackagingTransformer,
   documentsTransformer: DocumentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
   consigneeTransformer: ConsigneeTransformer,
-  additionalInformationTransformer: AdditionalInformationTransformer
+  additionalInformationTransformer: AdditionalInformationTransformer,
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -40,28 +41,25 @@ class ConsignmentItemTransformer @Inject() (
     userAnswers =>
       consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
         case (acc, (consignmentItem, i)) =>
+          val itemIndex: Index = Index(i)
           acc.flatMap {
-            userAnswers =>
-              val itemIndex: Index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
-                  set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
-                  set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
-                  set(UniqueConsignmentReferencePage(hcIndex, itemIndex), consignmentItem.referenceNumberUCR) andThen
-                  countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
-                  commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
-                  packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
-                  documentsTransformer.transform(
-                    consignmentItem.SupportingDocument,
-                    consignmentItem.TransportDocument,
-                    consignmentItem.PreviousDocument,
-                    hcIndex,
-                    itemIndex
-                  ) andThen
-                  additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
-                  consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
-                  additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
-              pipeline(userAnswers)
+            setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
+              set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
+              set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
+              set(UniqueConsignmentReferencePage(hcIndex, itemIndex), consignmentItem.referenceNumberUCR) andThen
+              set(CountryOfDestinationPage(hcIndex, itemIndex), consignmentItem.countryOfDestination, referenceDataService.getCountry) andThen
+              commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+              packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
+              documentsTransformer.transform(
+                consignmentItem.SupportingDocument,
+                consignmentItem.TransportDocument,
+                consignmentItem.PreviousDocument,
+                hcIndex,
+                itemIndex
+              ) andThen
+              additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
+              consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
+              additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
           }
       }
 }

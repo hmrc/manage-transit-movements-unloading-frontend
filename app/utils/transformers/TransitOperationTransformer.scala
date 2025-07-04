@@ -30,11 +30,6 @@ class TransitOperationTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(transitOperation: TransitOperationType10)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    referenceDataService.getSecurityType(transitOperation.security).flatMap {
-      secType =>
-        lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          set(SecurityTypePage, secType)
-        pipeline(userAnswers)
-    }
+  def transform(transitOperation: TransitOperationType10)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    set(SecurityTypePage, transitOperation.security, referenceDataService.getSecurityType)
 }

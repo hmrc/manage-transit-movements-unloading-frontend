@@ -43,36 +43,33 @@ class HouseConsignmentsTransformer @Inject() (
       houseConsignments.zipWithIndex
         .foldLeft(Future.successful(userAnswers)) {
           case (acc, (houseConsignment, i)) =>
+            val hcIndex = Index(i)
             acc.flatMap {
-              userAnswers =>
-                val hcIndex = Index(i)
-                val pipeline =
-                  setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
-                    set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
-                    set(UniqueConsignmentReferencePage(hcIndex), houseConsignment.referenceNumberUCR) andThen
-                    consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
-                    consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
-                    departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
-                    documentsTransformer.transform(
-                      houseConsignment.SupportingDocument,
-                      houseConsignment.TransportDocument,
-                      houseConsignment.PreviousDocument,
-                      hcIndex
-                    ) andThen
-                    additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
-                    additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
-                    consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
-                    set(
-                      SecurityIndicatorFromExportDeclarationPage(hcIndex),
-                      houseConsignment.securityIndicatorFromExportDeclaration,
-                      referenceDataService.getSecurityType
-                    ) andThen
-                    set(
-                      CountryOfDestinationPage(hcIndex),
-                      houseConsignment.countryOfDestination,
-                      referenceDataService.getCountry
-                    )
-                pipeline(userAnswers)
+              setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
+                set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
+                set(UniqueConsignmentReferencePage(hcIndex), houseConsignment.referenceNumberUCR) andThen
+                consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
+                consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
+                departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
+                documentsTransformer.transform(
+                  houseConsignment.SupportingDocument,
+                  houseConsignment.TransportDocument,
+                  houseConsignment.PreviousDocument,
+                  hcIndex
+                ) andThen
+                additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
+                additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
+                consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
+                set(
+                  SecurityIndicatorFromExportDeclarationPage(hcIndex),
+                  houseConsignment.securityIndicatorFromExportDeclaration,
+                  referenceDataService.getSecurityType
+                ) andThen
+                set(
+                  CountryOfDestinationPage(hcIndex),
+                  houseConsignment.countryOfDestination,
+                  referenceDataService.getCountry
+                )
             }
         }
 }

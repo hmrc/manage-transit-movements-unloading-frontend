@@ -25,31 +25,33 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait PageTransformer {
 
-  def set[T](page: QuestionPage[T], value: Option[T])(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] = userAnswers =>
-    value match {
-      case Some(t) => set(page, t).apply(userAnswers)
-      case None    => Future.successful(userAnswers)
-    }
+  def set[T](page: QuestionPage[T], value: Option[T])(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      value match {
+        case Some(t) => set(page, t).apply(userAnswers)
+        case None    => Future.successful(userAnswers)
+      }
 
-  def set[T](page: QuestionPage[T], t: T)(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] = userAnswers =>
-    Future.fromTry(userAnswers.set(page, t))
+  def set[T](page: QuestionPage[T], t: T)(implicit writes: Writes[T], reads: Reads[T]): UserAnswers => Future[UserAnswers] =
+    userAnswers => Future.fromTry(userAnswers.set(page, t))
 
   def set[T](
     page: QuestionPage[T],
     value: Option[String],
     lookup: String => Future[T]
-  )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] = userAnswers =>
-    value match {
-      case Some(t) => set(page, t, lookup).apply(userAnswers)
-      case None    => Future.successful(userAnswers)
-    }
+  )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      value match {
+        case Some(t) => set(page, t, lookup).apply(userAnswers)
+        case None    => Future.successful(userAnswers)
+      }
 
   def set[T](
     page: QuestionPage[T],
     value: String,
     lookup: String => Future[T]
-  )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] = userAnswers =>
-    lookup(value).flatMap(set(page, _).apply(userAnswers))
+  )(implicit writes: Writes[T], reads: Reads[T], ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+    userAnswers => lookup(value).flatMap(set(page, _).apply(userAnswers))
 
   /** @param section
     *   a JsObject within a JsArray

@@ -562,13 +562,14 @@ trait MessagesModelGenerators {
       for {
         goodsItemNumber            <- positiveBigInts
         declarationGoodsItemNumber <- positiveBigInts
+        countryOfDestination       <- nonEmptyString
         referenceNumberUCR         <- Gen.option(nonEmptyString)
         commodity                  <- arbitrary[CommodityType09]
       } yield ConsignmentItemType04(
         goodsItemNumber = goodsItemNumber,
         declarationGoodsItemNumber = declarationGoodsItemNumber,
         declarationType = None,
-        countryOfDestination = None,
+        countryOfDestination = Some(countryOfDestination),
         referenceNumberUCR = referenceNumberUCR,
         Consignee = None,
         Commodity = commodity,
@@ -664,6 +665,51 @@ trait MessagesModelGenerators {
         sequenceNumber = sequenceNumber,
         typeValue = typeValue,
         referenceNumber = referenceNumber
+      )
+    }
+
+  implicit lazy val arbitraryPreviousDocumentType03: Arbitrary[PreviousDocumentType03] =
+    Arbitrary {
+      for {
+        sequenceNumber          <- positiveBigInts
+        typeValue               <- Gen.alphaNumStr
+        referenceNumber         <- Gen.alphaNumStr
+        complementOfInformation <- Gen.option(Gen.alphaNumStr)
+      } yield PreviousDocumentType03(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeValue,
+        referenceNumber = referenceNumber,
+        complementOfInformation = complementOfInformation
+      )
+    }
+
+  implicit lazy val arbitraryPreviousDocumentType05: Arbitrary[PreviousDocumentType05] =
+    Arbitrary {
+      for {
+        sequenceNumber          <- positiveBigInts
+        typeValue               <- Gen.alphaNumStr
+        referenceNumber         <- Gen.alphaNumStr
+        complementOfInformation <- Gen.option(Gen.alphaNumStr)
+      } yield PreviousDocumentType05(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeValue,
+        referenceNumber = referenceNumber,
+        complementOfInformation = complementOfInformation
+      )
+    }
+
+  implicit lazy val arbitraryPreviousDocumentType06: Arbitrary[PreviousDocumentType06] =
+    Arbitrary {
+      for {
+        sequenceNumber          <- positiveBigInts
+        typeValue               <- Gen.alphaNumStr
+        referenceNumber         <- Gen.alphaNumStr
+        complementOfInformation <- Gen.option(Gen.alphaNumStr)
+      } yield PreviousDocumentType06(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeValue,
+        referenceNumber = referenceNumber,
+        complementOfInformation = complementOfInformation
       )
     }
 

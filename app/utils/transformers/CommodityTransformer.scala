@@ -30,17 +30,13 @@ class CommodityTransformer @Inject() (
     extends PageTransformer {
 
   def transform(commodity: CommodityType09, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      commodity match {
-        case CommodityType09(descriptionOfGoods, cusCode, commodityCode, dangerousGoods, goodsMeasure) =>
-          lazy val pipeline: UserAnswers => Future[UserAnswers] =
-            set(ItemDescriptionPage(hcIndex, itemIndex), descriptionOfGoods) andThen
-              set(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode) andThen
-              set(CommodityCodePage(hcIndex, itemIndex), commodityCode.map(_.harmonizedSystemSubHeadingCode)) andThen
-              set(CombinedNomenclatureCodePage(hcIndex, itemIndex), commodityCode.flatMap(_.combinedNomenclatureCode)) andThen
-              dangerousGoodsTransformer.transform(dangerousGoods, hcIndex, itemIndex) andThen
-              goodsMeasureTransformer.transform(goodsMeasure, hcIndex, itemIndex)
-
-          pipeline(userAnswers)
-      }
+    commodity match {
+      case CommodityType09(descriptionOfGoods, cusCode, commodityCode, dangerousGoods, goodsMeasure) =>
+        set(ItemDescriptionPage(hcIndex, itemIndex), descriptionOfGoods) andThen
+          set(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode) andThen
+          set(CommodityCodePage(hcIndex, itemIndex), commodityCode.map(_.harmonizedSystemSubHeadingCode)) andThen
+          set(CombinedNomenclatureCodePage(hcIndex, itemIndex), commodityCode.flatMap(_.combinedNomenclatureCode)) andThen
+          dangerousGoodsTransformer.transform(dangerousGoods, hcIndex, itemIndex) andThen
+          goodsMeasureTransformer.transform(goodsMeasure, hcIndex, itemIndex)
+    }
 }

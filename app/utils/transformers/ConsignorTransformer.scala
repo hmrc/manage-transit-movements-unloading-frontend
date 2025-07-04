@@ -32,63 +32,36 @@ class ConsignorTransformer @Inject() (
 
   def transform(consignor: Option[ConsignorType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.consignor.*
-
-    userAnswers =>
-      consignor match {
-        case Some(ConsignorType04(_, _, address)) =>
-          for {
-            country <- address.map(_.country).lookup(referenceDataService.getCountry)
-            userAnswers <- {
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                set(CountryPage, country)
-
-              pipeline(userAnswers)
-            }
-          } yield userAnswers
-        case None =>
-          Future.successful(userAnswers)
-      }
+    consignor match {
+      case Some(ConsignorType04(_, _, address)) =>
+        set(CountryPage, address.map(_.country), referenceDataService.getCountry)
+      case None =>
+        Future.successful
+    }
   }
 
   def transform(consignor: Option[ConsignorType05], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.{ConsignorIdentifierPage, ConsignorNamePage}
-
-    userAnswers =>
-      consignor match {
-        case Some(ConsignorType05(identificationNumber, name, address)) =>
-          for {
-            userAnswers <- {
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                transformAddress(address, hcIndex) andThen
-                  set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
-                  set(ConsignorNamePage(hcIndex), name)
-
-              pipeline(userAnswers)
-            }
-          } yield userAnswers
-
-        case None =>
-          Future.successful(userAnswers)
-      }
+    consignor match {
+      case Some(ConsignorType05(identificationNumber, name, address)) =>
+        transformAddress(address, hcIndex) andThen
+          set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
+          set(ConsignorNamePage(hcIndex), name)
+      case None =>
+        Future.successful
+    }
   }
 
   private def transformAddress(address: Option[AddressType14], hcIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers => {
+  ): UserAnswers => Future[UserAnswers] = {
     import pages.ConsignorAddressPage
-
     address match {
-
       case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
-        referenceDataService.getCountry(country).flatMap {
-          countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(HouseCountryPage(hcIndex), countryVal) andThen
-                set(ConsignorAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
+        set(HouseCountryPage(hcIndex), country, referenceDataService.getCountry) andThen
+          set(ConsignorAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
+      case None =>
+        Future.successful
     }
   }
 }

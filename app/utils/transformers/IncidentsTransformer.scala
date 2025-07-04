@@ -17,7 +17,6 @@
 package utils.transformers
 
 import generated.IncidentType03
-import models.reference.Incident
 import models.{Index, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.sections.incidents.IncidentSection
@@ -35,38 +34,19 @@ class IncidentsTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class TempIncident[T](
-    underlying: T,
-    typeValue: Incident
-  )
-
-  def transform(incidents: Seq[IncidentType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
-
-    lazy val incidentRefLookups = incidents.map {
-      incidentType0 =>
-        val incidentF = referenceDataService.getIncidentType(incidentType0.code)
-        for {
-          incident <- incidentF
-        } yield TempIncident(incidentType0, incident)
-    }
-
-    Future.sequence(incidentRefLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (TempIncident(underlying, typeValue), i)) =>
-          val incidentIndex: Index = Index(i)
-          acc.flatMap {
-            userAnswers =>
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                setSequenceNumber(IncidentSection(incidentIndex), underlying.sequenceNumber) andThen
-                  set(IncidentCodePage(incidentIndex), typeValue) andThen
-                  set(IncidentTextPage(incidentIndex), underlying.text) andThen
-                  incidentEndorsementTransformer.transform(underlying.Endorsement, incidentIndex) andThen
-                  incidentLocationTransformer.transform(underlying.Location, incidentIndex) andThen
-                  replacementMeansOfTransportTransformer.transform(underlying.Transhipment, incidentIndex)
-
-              pipeline(userAnswers)
-          }
-      }
-    }
-  }
+  def transform(incidents: Seq[IncidentType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      incidents.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
+            val incidentIndex: Index = Index(i)
+            acc.flatMap {
+              setSequenceNumber(IncidentSection(incidentIndex), value.sequenceNumber) andThen
+                set(IncidentCodePage(incidentIndex), value.code, referenceDataService.getIncidentType) andThen
+                set(IncidentTextPage(incidentIndex), value.text) andThen
+                incidentEndorsementTransformer.transform(value.Endorsement, incidentIndex) andThen
+                incidentLocationTransformer.transform(value.Location, incidentIndex) andThen
+                replacementMeansOfTransportTransformer.transform(value.Transhipment, incidentIndex)
+            }
+        }
 }

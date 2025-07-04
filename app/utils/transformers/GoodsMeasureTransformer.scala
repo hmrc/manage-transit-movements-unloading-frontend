@@ -25,15 +25,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsMeasureTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(goodsMeasure: Option[CUSTOM_GoodsMeasureType05], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(goodsMeasure: Option[CUSTOM_GoodsMeasureType05], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
     goodsMeasure match {
       case Some(CUSTOM_GoodsMeasureType05(grossMass, netMass)) =>
-        val pipeline: UserAnswers => Future[UserAnswers] =
-          set(GrossWeightPage(hcIndex, itemIndex), grossMass) andThen
-            set(NetWeightPage(hcIndex, itemIndex), netMass)
-
-        pipeline(userAnswers)
+        set(GrossWeightPage(hcIndex, itemIndex), grossMass) andThen
+          set(NetWeightPage(hcIndex, itemIndex), netMass)
       case None =>
-        Future.successful(userAnswers)
+        Future.successful
     }
 }

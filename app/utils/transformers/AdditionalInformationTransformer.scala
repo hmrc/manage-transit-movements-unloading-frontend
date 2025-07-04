@@ -17,7 +17,6 @@
 package utils.transformers
 
 import generated.AdditionalInformationType02
-import models.reference.AdditionalInformationCode
 import models.{Index, UserAnswers}
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,23 +29,22 @@ class AdditionalInformationTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class TempAdditionalInformation(
-    underlying: AdditionalInformationType02,
-    code: AdditionalInformationCode
-  )
-
   def transform(
     additionalInformation: Seq[AdditionalInformationType02]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.additionalInformation.*
     import pages.sections.additionalInformation.AdditionalInformationSection
-
-    genericTransform(additionalInformation) {
-      case (TempAdditionalInformation(underlying, code), index) =>
-        setSequenceNumber(AdditionalInformationSection(index), underlying.sequenceNumber) andThen
-          set(AdditionalInformationCodePage(index), code) andThen
-          set(AdditionalInformationTextPage(index), underlying.text)
-    }
+    userAnswers =>
+      additionalInformation.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
+            val index = Index(i)
+            acc.flatMap {
+              setSequenceNumber(AdditionalInformationSection(index), value.sequenceNumber) andThen
+                set(AdditionalInformationCodePage(index), value.code, referenceDataService.getAdditionalInformationCode) andThen
+                set(AdditionalInformationTextPage(index), value.text)
+            }
+        }
   }
 
   def transform(
@@ -55,13 +53,17 @@ class AdditionalInformationTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.additionalinformation.*
     import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
-
-    genericTransform(additionalInformation) {
-      case (TempAdditionalInformation(underlying, code), index) =>
-        setSequenceNumber(AdditionalInformationSection(hcIndex, index), underlying.sequenceNumber) andThen
-          set(HouseConsignmentAdditionalInformationCodePage(hcIndex, index), code) andThen
-          set(HouseConsignmentAdditionalInformationTextPage(hcIndex, index), underlying.text)
-    }
+    userAnswers =>
+      additionalInformation.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
+            val index = Index(i)
+            acc.flatMap {
+              setSequenceNumber(AdditionalInformationSection(hcIndex, index), value.sequenceNumber) andThen
+                set(HouseConsignmentAdditionalInformationCodePage(hcIndex, index), value.code, referenceDataService.getAdditionalInformationCode) andThen
+                set(HouseConsignmentAdditionalInformationTextPage(hcIndex, index), value.text)
+            }
+        }
   }
 
   def transform(
@@ -71,32 +73,20 @@ class AdditionalInformationTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.additionalinformation.*
     import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
-
-    genericTransform(additionalInformation) {
-      case (TempAdditionalInformation(underlying, code), index) =>
-        setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-          set(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, index), code) andThen
-          set(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, index), underlying.text)
-    }
-  }
-
-  private def genericTransform(
-    additionalInformation: Seq[AdditionalInformationType02]
-  )(
-    pipeline: (TempAdditionalInformation, Index) => UserAnswers => Future[UserAnswers]
-  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
-    lazy val referenceDataLookups = additionalInformation.map {
-      additionalInformation =>
-        referenceDataService
-          .getAdditionalInformationCode(additionalInformation.code)
-          .map(TempAdditionalInformation(additionalInformation, _))
-    }
-
-    Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (additionalInformation, i)) =>
-          acc.flatMap(pipeline(additionalInformation, Index(i)))
-      }
-    }
+    userAnswers =>
+      additionalInformation.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
+            val index = Index(i)
+            acc.flatMap {
+              setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
+                set(
+                  HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, index),
+                  value.code,
+                  referenceDataService.getAdditionalInformationCode
+                ) andThen
+                set(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, index), value.text)
+            }
+        }
   }
 }

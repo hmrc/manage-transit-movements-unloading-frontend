@@ -20,16 +20,18 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.ConsignmentItemType04
 import generators.Generators
 import models.Index
+import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, DeclarationTypePage, UniqueConsignmentReferencePage}
+import pages.houseConsignment.index.items.{CountryOfDestinationPage, DeclarationGoodsItemNumberPage, DeclarationTypePage, UniqueConsignmentReferencePage}
 import pages.sections.ItemSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
+import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -43,6 +45,8 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
   private lazy val mockAdditionalReferencesTransformer  = mock[AdditionalReferencesTransformer]
   private lazy val mockAdditionalInformationTransformer = mock[AdditionalInformationTransformer]
 
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
@@ -51,7 +55,8 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
         bind[PackagingTransformer].toInstance(mockPackagingTransformer),
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
-        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer)
+        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
@@ -78,7 +83,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
     forAll(arbitrary[Seq[ConsignmentItemType04]]) {
       consignmentItems =>
         consignmentItems.zipWithIndex.map {
-          case (_, i) =>
+          case (consignmentItem, i) =>
             val itemIndex = Index(i)
 
             when(mockCommodityTransformer.transform(any(), any(), eqTo(itemIndex)))
@@ -105,6 +110,9 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeAdditionalInformationSection(itemIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockReferenceDataService.getCountry(eqTo(consignmentItem.countryOfDestination.value))(any()))
+              .thenReturn(Future.successful(Country("foo", i.toString)))
         }
 
         val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
@@ -116,6 +124,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             result.getSequenceNumber(ItemSection(hcIndex, itemIndex)) mustEqual consignmentItem.goodsItemNumber
             result.getValue(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustEqual consignmentItem.declarationGoodsItemNumber
             result.get(DeclarationTypePage(hcIndex, itemIndex)) mustEqual consignmentItem.declarationType
+            result.getValue(CountryOfDestinationPage(hcIndex, itemIndex)) mustEqual Country("foo", i.toString)
             result.get(UniqueConsignmentReferencePage(hcIndex, itemIndex)) mustEqual consignmentItem.referenceNumberUCR
             result.getValue(FakeCommoditySection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
             result.getValue(FakePackagingSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)

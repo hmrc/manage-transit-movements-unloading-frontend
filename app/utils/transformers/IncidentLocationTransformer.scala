@@ -30,21 +30,11 @@ class IncidentLocationTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(location: LocationType, incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(location: LocationType, incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     location match {
-      case LocationType(qualifier, unLocode, countryCode, _, _) =>
-        val countryF                   = referenceDataService.getCountry(countryCode)
-        val qualifierOfIdentificationF = referenceDataService.getQualifierOfIdentificationIncident(qualifier)
-
-        for {
-          country                   <- countryF
-          qualifierOfIdentification <- qualifierOfIdentificationF
-          userAnswers <- {
-            val pipeline = set(QualifierOfIdentificationPage(incidentIndex), qualifierOfIdentification) andThen
-              set(UNLocodePage(incidentIndex), unLocode) andThen
-              set(CountryPage(incidentIndex), country)
-            pipeline(userAnswers)
-          }
-        } yield userAnswers
+      case LocationType(qualifierOfIdentification, unLocode, country, _, _) =>
+        set(QualifierOfIdentificationPage(incidentIndex), qualifierOfIdentification, referenceDataService.getQualifierOfIdentificationIncident) andThen
+          set(UNLocodePage(incidentIndex), unLocode) andThen
+          set(CountryPage(incidentIndex), country, referenceDataService.getCountry)
     }
 }

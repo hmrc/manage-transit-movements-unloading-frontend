@@ -17,7 +17,6 @@
 package utils.transformers
 
 import generated.PackagingType01
-import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.sections.PackagingSection
@@ -32,36 +31,17 @@ class PackagingTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class TempPackaging[T](
-    underlying: T,
-    typeValue: PackageType
-  )
-
   def transform(packages: Seq[PackagingType01], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers => {
-
-      lazy val packageTypeRefLookups = packages.map {
-        `package` =>
-          referenceDataService
-            .getPackageType(`package`.typeOfPackages)
-            .map(TempPackaging(`package`, _))
-      }
-
-      Future.sequence(packageTypeRefLookups).flatMap {
-        _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-          case (acc, (TempPackaging(underlying, typeValue), i)) =>
+    userAnswers =>
+      packages.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
             val packageIndex: Index = Index(i)
             acc.flatMap {
-              userAnswers =>
-                val pipeline: UserAnswers => Future[UserAnswers] =
-                  setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), underlying.sequenceNumber) andThen
-                    set(PackageTypePage(hcIndex, itemIndex, packageIndex), typeValue) andThen
-                    set(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), underlying.numberOfPackages) andThen
-                    set(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), underlying.shippingMarks)
-
-                pipeline(userAnswers)
+              setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), value.sequenceNumber) andThen
+                set(PackageTypePage(hcIndex, itemIndex, packageIndex), value.typeOfPackages, referenceDataService.getPackageType) andThen
+                set(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), value.numberOfPackages) andThen
+                set(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), value.shippingMarks)
             }
         }
-      }
-    }
 }

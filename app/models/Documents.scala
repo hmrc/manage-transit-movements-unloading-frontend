@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.language.implicitConversions
+import models.Document.*
 
-package object transformers {
+case class Documents(
+  supportingDocuments: Seq[SupportingDocument],
+  transportDocuments: Seq[TransportDocument],
+  previousDocuments: Seq[PreviousDocument]
+) {
 
-  final val SequenceNumber             = "sequenceNumber"
-  final val Removed                    = "removed"
-  final val DeclarationGoodsItemNumber = "declarationGoodsItemNumber"
-
-  implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
+  val documents: Seq[Document] = supportingDocuments ++ transportDocuments ++ previousDocuments
 }

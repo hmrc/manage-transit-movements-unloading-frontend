@@ -30,22 +30,12 @@ class ReplacementMeansOfTransportTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(transhipment: Option[TranshipmentType], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(transhipment: Option[TranshipmentType], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     transhipment match {
       case Some(TranshipmentType(_, transportMeans)) =>
-        val transportMeansIdentificationF = referenceDataService.getMeansOfTransportIdentificationType(transportMeans.typeOfIdentification)
-        val countryF                      = referenceDataService.getCountry(transportMeans.nationality)
-
-        for {
-          identification <- transportMeansIdentificationF
-          country        <- countryF
-          userAnswers <- {
-            val pipeline = set(IdentificationPage(incidentIndex), identification) andThen
-              set(NationalityPage(incidentIndex), country)
-
-            pipeline(userAnswers)
-          }
-        } yield userAnswers
-      case None => Future.successful(userAnswers)
+        set(IdentificationPage(incidentIndex), transportMeans.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
+          set(NationalityPage(incidentIndex), transportMeans.nationality, referenceDataService.getCountry)
+      case None =>
+        Future.successful
     }
 }

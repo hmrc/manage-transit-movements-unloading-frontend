@@ -17,7 +17,6 @@
 package utils.transformers
 
 import generated.CountryOfRoutingOfConsignmentType02
-import models.reference.Country
 import models.{Index, UserAnswers}
 import pages.countriesOfRouting.CountryOfRoutingPage
 import pages.sections.CountryOfRoutingSection
@@ -32,32 +31,15 @@ class CountriesOfRoutingTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class TempCountry(
-    underlying: CountryOfRoutingOfConsignmentType02,
-    country: Country
-  )
-
-  def transform(countriesOfRouting: Seq[CountryOfRoutingOfConsignmentType02])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
-    val lookups = countriesOfRouting.map {
-      countryOfRouting =>
-        referenceDataService.getCountry(countryOfRouting.country).map {
-          value => TempCountry(countryOfRouting, value)
+  def transform(countriesOfRouting: Seq[CountryOfRoutingOfConsignmentType02])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      countriesOfRouting.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
+            val index: Index = Index(i)
+            acc.flatMap {
+              setSequenceNumber(CountryOfRoutingSection(index), value.sequenceNumber) andThen
+                set(CountryOfRoutingPage(index), value.country, referenceDataService.getCountry)
+            }
         }
-    }
-
-    Future.sequence(lookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (TempCountry(underlying, country), i)) =>
-          val index: Index = Index(i)
-          acc.flatMap {
-            userAnswers =>
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                setSequenceNumber(CountryOfRoutingSection(index), underlying.sequenceNumber) andThen
-                  set(CountryOfRoutingPage(index), country)
-
-              pipeline(userAnswers)
-          }
-      }
-    }
-  }
 }
