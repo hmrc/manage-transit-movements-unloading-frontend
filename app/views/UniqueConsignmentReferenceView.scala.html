@@ -23,22 +23,22 @@
 @import views.html.helper.form
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputText: InputText,
-        errorSummary: ErrorSummary,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputText: InputText,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode:Mode, viewModel:UniqueConsignmentReferenceViewModel)(implicit request: Request[?], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: UniqueConsignmentReferenceViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true,
 ) {
 
-    @formHelper(action = routes.UniqueConsignmentReferenceController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.UniqueConsignmentReferenceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

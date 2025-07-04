@@ -59,7 +59,7 @@ class UniqueConsignmentReferenceController @Inject() (
           case None        => form(viewModel)
           case Some(value) => form(viewModel).fill(value)
         }
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -69,7 +69,7 @@ class UniqueConsignmentReferenceController @Inject() (
         form(viewModel)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, viewModel))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(UniqueConsignmentReferencePage, value))

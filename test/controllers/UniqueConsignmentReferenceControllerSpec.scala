@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UniqueConsignmentReferenceFormProvider
 import generators.Generators
-import models.NormalMode
 import navigation.ConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -40,11 +39,10 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
   private val formProvider                                   = new UniqueConsignmentReferenceFormProvider()
   private val viewModel: UniqueConsignmentReferenceViewModel = arbitrary[UniqueConsignmentReferenceViewModel].sample.value
   private val mockViewModelProvider                          = mock[UniqueConsignmentReferenceViewModelProvider]
-  private val mode                                           = NormalMode
   private val form                                           = formProvider("uniqueConsignmentReference", viewModel.requiredError)
   private val validAnswer                                    = "ucr123"
 
-  lazy val ucrRoute: String = routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, mode).url
+  lazy val ucrRoute: String = routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -75,7 +73,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, viewModel)(request, messages).toString
+        view(form, mrn, arrivalId, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -94,7 +92,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel)(request, messages).toString
+        view(filledForm, mrn, arrivalId, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -128,7 +126,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[UniqueConsignmentReferenceView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, mode, viewModel)(request, messages).toString
+        view(boundForm, mrn, arrivalId, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

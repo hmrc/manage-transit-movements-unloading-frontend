@@ -250,7 +250,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           result.value.value mustBe "foo"
           val action = result.actions.value.items.head
           action.content.value mustBe "Change"
-          action.href mustBe controllers.routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, CheckMode).url
+          action.href mustBe controllers.routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId).url
           action.visuallyHiddenText.value mustBe "reference number UCR"
           action.id mustBe "change-unique-consignment-reference"
         }

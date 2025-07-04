@@ -20,7 +20,7 @@ import controllers.routes
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice, SecurityType}
-import models.{CheckMode, Link, NormalMode, RichOptionalJsArray, UserAnswers}
+import models.{Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
@@ -160,7 +160,7 @@ class ConsignmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.ucr",
     id = Some(s"change-unique-consignment-reference"),
-    call = Some(routes.UniqueConsignmentReferenceController.onPageLoad(userAnswers.id, CheckMode))
+    call = Some(routes.UniqueConsignmentReferenceController.onPageLoad(userAnswers.id))
   )
 
   def inlandModeOfTransportRow: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
