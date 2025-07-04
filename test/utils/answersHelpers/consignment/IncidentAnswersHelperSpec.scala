@@ -151,9 +151,9 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when endorsement defined" in {
-          forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03]) {
+          forAll(arbitrary[IncidentType03], arbitrary[EndorsementType02]) {
             (incident, endorsement) =>
-              val consignment = CUSTOM_ConsignmentType05(
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Endorsement = Some(endorsement)))
               )
@@ -182,9 +182,9 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when endorsement defined" in {
-          forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03]) {
+          forAll(arbitrary[IncidentType03], arbitrary[EndorsementType02]) {
             (incident, endorsement) =>
-              val consignment = CUSTOM_ConsignmentType05(
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Endorsement = Some(endorsement)))
               )
@@ -213,9 +213,9 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when endorsement defined" in {
-          forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03]) {
+          forAll(arbitrary[IncidentType03], arbitrary[EndorsementType02]) {
             (incident, endorsement) =>
-              val consignment = CUSTOM_ConsignmentType05(
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Endorsement = Some(endorsement)))
               )
@@ -271,15 +271,13 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when location address defined" in {
-          forAll(arbitrary[IncidentType04], arbitrary[LocationType02]) {
+          forAll(arbitrary[IncidentType03], arbitrary[LocationType]) {
             (incident, location) =>
-              val addressType18 = Some(AddressType18("streetAndNumber", Some("postcode"), "city"))
-              val consignment = CUSTOM_ConsignmentType05(
+              val address = Some(AddressType21("streetAndNumber", Some("postcode"), "city"))
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(
-                  incident.copy(Location =
-                    LocationType02(location.qualifierOfIdentification, location.UNLocode, location.country, location.GNSS, addressType18)
-                  )
+                  incident.copy(Location = LocationType(location.qualifierOfIdentification, location.UNLocode, location.country, location.GNSS, address))
                 )
               )
 
@@ -289,7 +287,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val result = helper.incidentLocationAddressRow.value
 
               result.key.value mustBe "Address"
-              result.value.value mustBe s"${addressType18.value.streetAndNumber}<br>${addressType18.value.city}<br>${addressType18.value.postcode.get}"
+              result.value.value mustBe s"${address.value.streetAndNumber}<br>${address.value.city}<br>${address.value.postcode.get}"
               val action = result.actions
               action mustBe None
           }
@@ -307,10 +305,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when incident defined" in {
-          forAll(arbitrary[IncidentType04], arbitrary[Coordinates], arbitrary[LocationType02]) {
-            (incident, coordinate, locationType02) =>
-              val locationType = locationType02.copy(GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)))
-              val consignment = CUSTOM_ConsignmentType05(
+          forAll(arbitrary[IncidentType03], arbitrary[Coordinates], arbitrary[LocationType]) {
+            (incident, coordinate, LocationType) =>
+              val locationType = LocationType.copy(GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)))
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Location = locationType))
               )
@@ -341,7 +339,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
           forAll(arbitrary[Flag]) {
             containerIndicator =>
-              val consignment = CUSTOM_ConsignmentType05(containerIndicator = containerIndicator)
+              val consignment = ConsignmentType05(containerIndicator = containerIndicator)
               val answers     = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
               val helper      = new IncidentAnswersHelper(answers, index)
               val result      = helper.containerIndicator.value
@@ -365,10 +363,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when incident defined" in {
-          forAll(arbitrary[IncidentType04], Gen.alphaNumStr, arbitrary[LocationType02]) {
-            (incident, unLocode, locationType02) =>
-              val locationType = locationType02.copy(UNLocode = Some(unLocode))
-              val consignment = CUSTOM_ConsignmentType05(
+          forAll(arbitrary[IncidentType03], Gen.alphaNumStr, arbitrary[LocationType]) {
+            (incident, unLocode, LocationType) =>
+              val locationType = LocationType.copy(UNLocode = Some(unLocode))
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Location = locationType))
               )
@@ -398,35 +396,35 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "when there are transport equipment" - {
         "must return children" in {
-          val transportEquipment = TransportEquipmentType07(
+          val transportEquipment = TransportEquipmentType06(
             sequenceNumber = 1,
             containerIdentificationNumber = Some("cin"),
             numberOfSeals = Some(2),
             Seal = Seq(
-              SealType04(
+              SealType01(
                 sequenceNumber = 1,
                 identifier = "seal1"
               ),
-              SealType04(
+              SealType01(
                 sequenceNumber = 2,
                 identifier = "seal2"
               )
             ),
             GoodsReference = Seq(
-              GoodsReferenceType01(
+              GoodsReferenceType03(
                 sequenceNumber = 1,
                 declarationGoodsItemNumber = 1
               ),
-              GoodsReferenceType01(
+              GoodsReferenceType03(
                 sequenceNumber = 2,
                 declarationGoodsItemNumber = 2
               )
             )
           )
 
-          forAll(arbitrary[IncidentType04]) {
+          forAll(arbitrary[IncidentType03]) {
             incident =>
-              val consignment = CUSTOM_ConsignmentType05(
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(TransportEquipment = Seq(transportEquipment)))
               )
@@ -455,9 +453,9 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when incident defined" in {
-          forAll(arbitrary[IncidentType04], arbitrary[TranshipmentType02], arbitrary[Country], arbitrary[TransportMeansIdentification]) {
+          forAll(arbitrary[IncidentType03], arbitrary[TranshipmentType], arbitrary[Country], arbitrary[TransportMeansIdentification]) {
             (incident, transhipment, country, identification) =>
-              val consignment = CUSTOM_ConsignmentType05(
+              val consignment = ConsignmentType05(
                 containerIndicator = Number0,
                 Incident = Seq(incident.copy(Transhipment = Some(transhipment)))
               )

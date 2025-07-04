@@ -52,6 +52,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val maxHouseConsignments: Int = configuration.get[Int]("limits.maxHouseConsignments")
 
+  lazy val maxCountriesOfRouting: Int = configuration.get[Int]("limits.maxCountriesOfRouting")
+
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")
   val userResearchUrl: String         = configuration.get[String]("urls.userResearch")
   val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")

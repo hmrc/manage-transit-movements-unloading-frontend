@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{AddressType10, HolderOfTheTransitProcedureType06}
+import generated.{AddressType15, HolderOfTheTransitProcedureType06}
 import generators.Generators
 import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
@@ -53,7 +53,7 @@ class HolderOfTheTransitProcedureTransformerSpec extends SpecBase with AppWithDe
     Some("identificationNumber"),
     Some("TIRHolderIdentificationNumber"),
     "name",
-    AddressType10("streetAndNumber", Some("postcode"), "city", "GB")
+    AddressType15("streetAndNumber", Some("postcode"), "city", "GB")
   )
 
   "must update country page when it is in ref data" in {

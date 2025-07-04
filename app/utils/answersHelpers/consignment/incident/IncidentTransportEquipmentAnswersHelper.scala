@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment.incident
 
-import generated.TransportEquipmentType07
+import generated.TransportEquipmentType06
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,7 +26,7 @@ import viewModels.sections.Section.AccordionSection
 
 class IncidentTransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
-  transportEquipmentType7: TransportEquipmentType07
+  transportEquipmentType7: TransportEquipmentType06
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 

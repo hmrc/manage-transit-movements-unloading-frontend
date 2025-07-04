@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.PackagingType02
+import generated.PackagingType01
 import generators.Generators
 import models.Index
 import models.reference.PackageType
@@ -53,9 +53,9 @@ class PackagingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   "must transform data" in {
 
-    val packagingType02: Seq[PackagingType02] = arbitrary[Seq[PackagingType02]].sample.value
+    val PackagingType01: Seq[PackagingType01] = arbitrary[Seq[PackagingType01]].sample.value
 
-    packagingType02.map {
+    PackagingType01.map {
       type0 =>
         when(mockReferenceDataService.getPackageType(eqTo(type0.typeOfPackages))(any()))
           .thenReturn(
@@ -63,9 +63,9 @@ class PackagingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
           )
     }
 
-    val result = transformer.transform(packagingType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+    val result = transformer.transform(PackagingType01, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-    packagingType02.zipWithIndex.map {
+    PackagingType01.zipWithIndex.map {
       case (packagingType0, i) =>
         val ind = Index(i)
 

@@ -16,9 +16,9 @@
 
 package utils.transformers
 
-import generated.CUSTOM_HouseConsignmentType04
-import models.{Index, RichPreviousDocuments07, UserAnswers}
-import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
+import generated.HouseConsignmentType04
+import models.{Index, UserAnswers}
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
 import pages.sections.HouseConsignmentSection
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,64 +38,38 @@ class HouseConsignmentsTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(houseConsignments: Seq[CUSTOM_HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+  def transform(houseConsignments: Seq[HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers =>
       houseConsignments.zipWithIndex
         .foldLeft(Future.successful(userAnswers)) {
           case (acc, (houseConsignment, i)) =>
+            val hcIndex = Index(i)
             acc.flatMap {
-              userAnswers =>
-                val hcIndex = Index(i)
-                val pipeline =
-                  setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
-                    set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
-                    consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
-                    consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
-                    departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
-                    documentsTransformer.transform(
-                      houseConsignment.SupportingDocument,
-                      houseConsignment.TransportDocument,
-                      houseConsignment.PreviousDocument.toPreviousDocumentType06,
-                      hcIndex
-                    ) andThen
-                    additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
-                    additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
-                    consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
-                    transformSecurityIndicatorFromExportDeclaration(houseConsignment.securityIndicatorFromExportDeclaration, hcIndex) andThen
-                    transformCountryOfDestination(houseConsignment.countryOfDestination, hcIndex)
-                pipeline(userAnswers)
+              setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
+                set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
+                set(UniqueConsignmentReferencePage(hcIndex), houseConsignment.referenceNumberUCR) andThen
+                consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
+                consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
+                departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
+                documentsTransformer.transform(
+                  houseConsignment.SupportingDocument,
+                  houseConsignment.TransportDocument,
+                  houseConsignment.PreviousDocument,
+                  hcIndex
+                ) andThen
+                additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
+                additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
+                consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
+                set(
+                  SecurityIndicatorFromExportDeclarationPage(hcIndex),
+                  houseConsignment.securityIndicatorFromExportDeclaration,
+                  referenceDataService.getSecurityType
+                ) andThen
+                set(
+                  CountryOfDestinationPage(hcIndex),
+                  houseConsignment.countryOfDestination,
+                  referenceDataService.getCountry
+                )
             }
         }
-
-  private def transformSecurityIndicatorFromExportDeclaration(securityIndicatorFromExportDeclaration: Option[String], hcIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    securityIndicatorFromExportDeclaration match {
-      case Some(securityIndicator) =>
-        referenceDataService.getSecurityType(securityIndicator).flatMap {
-          indicator =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(SecurityIndicatorFromExportDeclarationPage(hcIndex), indicator)
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
-    }
-
-  private def transformCountryOfDestination(countryOfDestination: Option[String], hcIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    countryOfDestination match {
-
-      case Some(country) =>
-        referenceDataService.getCountry(country).flatMap {
-          countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(CountryOfDestinationPage(hcIndex), countryVal)
-            pipeline(userAnswers)
-        }
-
-      case None =>
-        Future.successful(userAnswers)
-    }
 }

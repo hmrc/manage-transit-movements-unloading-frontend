@@ -16,15 +16,8 @@
 
 package utils.transformers
 
-import generated.{AddressType07, AddressType09, ConsigneeType03, ConsigneeType04}
+import generated.{AddressType01, AddressType14, ConsigneeType01, ConsigneeType05}
 import models.{DynamicAddress, Index, UserAnswers}
-import pages.houseConsignment.index.items.{
-  ConsigneeAddressPage as ItemConsigneeAddressPage,
-  ConsigneeCountryPage as ItemConsigneeCountryPage,
-  ConsigneeIdentifierPage as ItemConsigneeIdentifierPage,
-  ConsigneeNamePage as ItemConsigneeNamePage
-}
-import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -36,85 +29,74 @@ class ConsigneeTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignee: Option[ConsigneeType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages.consignee.*
+  def transform(consignee: Option[ConsigneeType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    consignee match {
+      case Some(ConsigneeType05(_, _, address)) =>
+        transformAddress(address)
+      case _ =>
+        Future.successful
+    }
 
-    userAnswers =>
-      consignee match {
-        case Some(ConsigneeType04(_, _, address)) =>
-          for {
-            country <- address.map(_.country).lookup(referenceDataService.getCountry)
-            userAnswers <- {
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                set(CountryPage, country)
-
-              pipeline(userAnswers)
-            }
-          } yield userAnswers
-        case None =>
-          Future.successful(userAnswers)
-      }
+  private def transformAddress(address: Option[AddressType14])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.consignee.CountryPage
+    address match {
+      case Some(AddressType14(_, _, _, country)) =>
+        set(CountryPage, country, referenceDataService.getCountry)
+      case None =>
+        Future.successful
+    }
   }
 
-  def transform(consignee: Option[ConsigneeType04], hcIndex: Index)(implicit
+  def transform(consignee: Option[ConsigneeType05], hcIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+  ): UserAnswers => Future[UserAnswers] = {
+    import pages.{ConsigneeIdentifierPage, ConsigneeNamePage}
     consignee match {
-      case Some(ConsigneeType04(identificationNumber, name, address)) =>
-        val pipeline: UserAnswers => Future[UserAnswers] =
-          set(ConsigneeIdentifierPage(hcIndex), identificationNumber) andThen
-            set(ConsigneeNamePage(hcIndex), name) andThen
-            transformAddress(address, hcIndex)
-
-        pipeline(userAnswers)
+      case Some(ConsigneeType05(identificationNumber, name, address)) =>
+        set(ConsigneeIdentifierPage(hcIndex), identificationNumber) andThen
+          set(ConsigneeNamePage(hcIndex), name) andThen
+          transformAddress(address, hcIndex)
       case None =>
-        Future.successful(userAnswers)
+        Future.successful
     }
+  }
 
-  private def transformAddress(address: Option[AddressType07], hcIndex: Index)(implicit
+  private def transformAddress(address: Option[AddressType14], hcIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+  ): UserAnswers => Future[UserAnswers] = {
+    import pages.{ConsigneeAddressPage, ConsigneeCountryPage}
     address match {
-      case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
-        referenceDataService.getCountry(country).flatMap {
-          countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(ConsigneeCountryPage(hcIndex), countryVal) andThen
-                set(ConsigneeAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
+      case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
+        set(ConsigneeCountryPage(hcIndex), country, referenceDataService.getCountry) andThen
+          set(ConsigneeAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
+      case None =>
+        Future.successful
     }
+  }
 
-  def transform(consignee: Option[ConsigneeType03], hcIndex: Index, itemIndex: Index)(implicit
+  def transform(consignee: Option[ConsigneeType01], hcIndex: Index, itemIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+  ): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.items.*
     consignee match {
-      case Some(ConsigneeType03(identificationNumber, name, address)) =>
-        val pipeline: UserAnswers => Future[UserAnswers] =
-          set(ItemConsigneeIdentifierPage(hcIndex, itemIndex), identificationNumber) andThen
-            set(ItemConsigneeNamePage(hcIndex, itemIndex), name) andThen
-            transformItemConsigneeAddress(address, hcIndex, itemIndex)
-
-        pipeline(userAnswers)
+      case Some(ConsigneeType01(identificationNumber, name, address)) =>
+        set(ConsigneeIdentifierPage(hcIndex, itemIndex), identificationNumber) andThen
+          set(ConsigneeNamePage(hcIndex, itemIndex), name) andThen
+          transformAddress(address, hcIndex, itemIndex)
       case None =>
-        Future.successful(userAnswers)
+        Future.successful
     }
+  }
 
-  private def transformItemConsigneeAddress(address: Option[AddressType09], hcIndex: Index, itemIndex: Index)(implicit
+  private def transformAddress(address: Option[AddressType01], hcIndex: Index, itemIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+  ): UserAnswers => Future[UserAnswers] =
+    import pages.houseConsignment.index.items.*
     address match {
-      case Some(AddressType09(streetAndNumber, postcode, city, country)) =>
-        referenceDataService.getCountry(country).flatMap {
-          countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(ItemConsigneeCountryPage(hcIndex, itemIndex), countryVal) andThen
-                set(ItemConsigneeAddressPage(hcIndex, itemIndex), DynamicAddress(streetAndNumber, city, postcode))
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
+      case Some(AddressType01(streetAndNumber, postcode, city, country)) =>
+        set(ConsigneeCountryPage(hcIndex, itemIndex), country, referenceDataService.getCountry) andThen
+          set(ConsigneeAddressPage(hcIndex, itemIndex), DynamicAddress(streetAndNumber, city, postcode))
+      case None =>
+        Future.successful
     }
 }

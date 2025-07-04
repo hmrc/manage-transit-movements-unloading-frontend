@@ -16,7 +16,7 @@
 
 package pages.houseConsignment.index.items.packages
 
-import generated.PackagingType02
+import generated.PackagingType01
 import models.Index
 import models.reference.PackageType
 import pages.DiscrepancyQuestionPage
@@ -24,13 +24,13 @@ import pages.sections.PackagingSection
 import play.api.libs.json.JsPath
 
 case class PackageTypePage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)
-    extends DiscrepancyQuestionPage[PackageType, Seq[PackagingType02], String] {
+    extends DiscrepancyQuestionPage[PackageType, Seq[PackagingType01], String] {
 
   override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
   override def toString: String = "typeOfPackages"
 
-  override def valueInIE043(ie043: Seq[PackagingType02], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(ie043: Seq[PackagingType01], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

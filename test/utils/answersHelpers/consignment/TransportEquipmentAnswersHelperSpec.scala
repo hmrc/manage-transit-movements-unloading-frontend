@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{CUSTOM_ConsignmentType05, Number1}
+import generated.{ConsignmentType05, Number1}
 import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -67,7 +67,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .copy(ie043Data =
             basicIe043.copy(Consignment =
               Some(
-                CUSTOM_ConsignmentType05(
+                ConsignmentType05(
                   containerIndicator = Number1,
                   inlandModeOfTransport = Some("Mode")
                 )

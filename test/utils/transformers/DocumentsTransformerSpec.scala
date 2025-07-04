@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
+import generated.{PreviousDocumentType03, PreviousDocumentType05, PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType01}
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.Index
@@ -70,13 +70,13 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
       val previousDocuments = Seq(
-        PreviousDocumentType06(
+        PreviousDocumentType05(
           sequenceNumber = 1,
           typeValue = "pd1 tv",
           referenceNumber = "pd1 rn",
           complementOfInformation = Some("pd1 coi")
         ),
-        PreviousDocumentType06(
+        PreviousDocumentType05(
           sequenceNumber = 2,
           typeValue = "pd2 tv",
           referenceNumber = "pd2 rn",
@@ -85,12 +85,12 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
       val transportDocuments = Seq(
-        TransportDocumentType02(
+        TransportDocumentType01(
           sequenceNumber = 1,
           typeValue = "td1 tv",
           referenceNumber = "td1 rn"
         ),
-        TransportDocumentType02(
+        TransportDocumentType01(
           sequenceNumber = 2,
           typeValue = "td2 tv",
           referenceNumber = "td2 rn"
@@ -168,12 +168,12 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
       val transportDocuments = Seq(
-        TransportDocumentType02(
+        TransportDocumentType01(
           sequenceNumber = 1,
           typeValue = "td1 tv",
           referenceNumber = "td1 rn"
         ),
-        TransportDocumentType02(
+        TransportDocumentType01(
           sequenceNumber = 2,
           typeValue = "td2 tv",
           referenceNumber = "td2 rn"
@@ -181,13 +181,13 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
       val previousDocuments = Seq(
-        PreviousDocumentType06(
+        PreviousDocumentType03(
           sequenceNumber = 1,
           typeValue = "pd1 tv",
           referenceNumber = "pd1 rn",
           complementOfInformation = Some("pd1 coi")
         ),
-        PreviousDocumentType06(
+        PreviousDocumentType03(
           sequenceNumber = 2,
           typeValue = "pd2 tv",
           referenceNumber = "pd2 rn",
@@ -264,12 +264,12 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
       val transportDocuments = Seq(
-        TransportDocumentType02(
+        TransportDocumentType01(
           sequenceNumber = 1,
           typeValue = "td1 tv",
           referenceNumber = "td1 rn"
         ),
-        TransportDocumentType02(
+        TransportDocumentType01(
           sequenceNumber = 2,
           typeValue = "td2 tv",
           referenceNumber = "td2 rn"

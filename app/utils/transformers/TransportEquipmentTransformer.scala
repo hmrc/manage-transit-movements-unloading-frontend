@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.TransportEquipmentType05
+import generated.TransportEquipmentType03
 import models.{Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentSection
@@ -30,19 +30,16 @@ class TransportEquipmentTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(transportEquipment: Seq[TransportEquipmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-      case (acc, (TransportEquipmentType05(sequenceNumber, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
-        acc.flatMap {
-          userAnswers =>
-            val equipmentIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              setSequenceNumber(TransportEquipmentSection(equipmentIndex), sequenceNumber) andThen
-                set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
-                sealsTransformer.transform(seals, equipmentIndex) andThen
-                goodsReferencesTransformer.transform(goodsReferences, equipmentIndex)
-
-            pipeline(userAnswers)
-        }
-    }
+  def transform(transportEquipment: Seq[TransportEquipmentType03]): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
+        case (acc, (TransportEquipmentType03(sequenceNumber, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
+          val equipmentIndex: Index = Index(i)
+          acc.flatMap {
+            setSequenceNumber(TransportEquipmentSection(equipmentIndex), sequenceNumber) andThen
+              set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
+              sealsTransformer.transform(seals, equipmentIndex) andThen
+              goodsReferencesTransformer.transform(goodsReferences, equipmentIndex)
+          }
+      }
 }

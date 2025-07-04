@@ -55,7 +55,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       "when consignor defined" - {
         "when address defined" in {
-          forAll(arbitrary[ConsignorType05], arbitrary[AddressType07], arbitrary[Country]) {
+          forAll(arbitrary[ConsignorType04], arbitrary[AddressType14], arbitrary[Country]) {
             (consignor, address, country) =>
               beforeEach()
 
@@ -71,7 +71,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         }
 
         "when address undefined" in {
-          forAll(arbitrary[ConsignorType05]) {
+          forAll(arbitrary[ConsignorType04]) {
             consignor =>
               beforeEach()
 
@@ -99,7 +99,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       import pages.{ConsignorAddressPage, ConsignorIdentifierPage, ConsignorNamePage}
 
       "when consignor defined" in {
-        forAll(arbitrary[ConsignorType06], arbitrary[AddressType07], arbitrary[Country]) {
+        forAll(arbitrary[ConsignorType05], arbitrary[AddressType14], arbitrary[Country]) {
           (consignor, address, country) =>
             beforeEach()
 

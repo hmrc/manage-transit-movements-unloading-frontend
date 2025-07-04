@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = InputYesNoViewModel(
-                heading = messages("houseConsignment.index.items.document.removeDocumentYesNo.title", houseConsignmentIndex.display, itemIndex.display),
+                heading = messages("houseConsignment.index.items.document.removeDocumentYesNo.heading", houseConsignmentIndex.display, itemIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = document.map(insetText(_))
             )

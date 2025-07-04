@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.SealType04
+import generated.SealType01
 import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,7 +30,7 @@ class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
   private val transformer = app.injector.instanceOf[SealsTransformer]
 
   "must transform data" in {
-    forAll(arbitrary[Seq[SealType04]]) {
+    forAll(arbitrary[Seq[SealType01]]) {
       seals =>
         val result = transformer.transform(seals, equipmentIndex).apply(emptyUserAnswers).futureValue
 

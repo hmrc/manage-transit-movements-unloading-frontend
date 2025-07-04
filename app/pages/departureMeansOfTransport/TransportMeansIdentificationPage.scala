@@ -16,7 +16,7 @@
 
 package pages.departureMeansOfTransport
 
-import generated.CUSTOM_DepartureTransportMeansType02
+import generated.CUSTOM_DepartureTransportMeansType01
 import models.Index
 import models.reference.TransportMeansIdentification
 import pages.DiscrepancyQuestionPage
@@ -24,13 +24,13 @@ import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
 case class TransportMeansIdentificationPage(transportMeansIndex: Index)
-    extends DiscrepancyQuestionPage[TransportMeansIdentification, Seq[CUSTOM_DepartureTransportMeansType02], String] {
+    extends DiscrepancyQuestionPage[TransportMeansIdentification, Seq[CUSTOM_DepartureTransportMeansType01], String] {
 
   override def path: JsPath = TransportMeansSection(transportMeansIndex).path \ toString
 
   override def toString: String = "identification"
 
-  override def valueInIE043(ie043: Seq[CUSTOM_DepartureTransportMeansType02], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(ie043: Seq[CUSTOM_DepartureTransportMeansType01], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

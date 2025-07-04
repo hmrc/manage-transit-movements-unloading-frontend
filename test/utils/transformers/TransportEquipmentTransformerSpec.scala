@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.TransportEquipmentType05
+import generated.TransportEquipmentType03
 import generators.Generators
 import models.Index
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -56,7 +56,7 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
   }
 
   "must transform data" in {
-    forAll(arbitrary[Seq[TransportEquipmentType05]]) {
+    forAll(arbitrary[Seq[TransportEquipmentType03]]) {
       transportEquipment =>
         transportEquipment.zipWithIndex.map {
           case (_, i) =>

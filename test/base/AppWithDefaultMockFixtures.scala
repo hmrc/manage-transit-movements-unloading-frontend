@@ -76,6 +76,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   object FakeConsignmentNavigators {
     import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 
+    val fakeConsignmentNavigator: ConsignmentNavigator =
+      new FakeConsignmentNavigator(onwardRoute)
+
     val fakeTransportEquipmentNavigator: TransportEquipmentNavigator =
       new FakeTransportEquipmentNavigator(onwardRoute)
 
@@ -90,6 +93,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     val fakeDocumentNavigator: DocumentNavigator =
       new FakeDocumentNavigator(onwardRoute)
 
+    val fakeCountryOfRoutingNavigator: CountryOfRoutingNavigator =
+      new FakeCountryOfRoutingNavigator(onwardRoute)
+
     val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator =
       new FakeDepartureTransportMeansNavigator(onwardRoute)
 
@@ -103,9 +109,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
-
-    val fakeHouseConsignmentNavigator: HouseConsignmentNavigator =
-      new FakeHouseConsignmentNavigator(onwardRoute)
 
     val fakeAdditionalReferenceNavigatorProvider: AdditionalReferenceNavigatorProvider =
       new AdditionalReferenceNavigatorProvider {
@@ -134,12 +137,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     import navigation.houseConsignment.index.items.*
     import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
     import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
-    import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
     import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
-
-    val fakeConsignmentItemNavigatorProvider: HouseConsignmentItemNavigatorProvider = new HouseConsignmentItemNavigatorProvider {
-      override def apply(houseConsignmentMode: Mode): HouseConsignmentItemNavigator = new FakeHouseConsignmentItemNavigator(onwardRoute, houseConsignmentMode)
-    }
 
     val fakeAdditionalReferenceNavigatorProvider: AdditionalReferenceNavigatorProvider =
       new AdditionalReferenceNavigatorProvider {
@@ -172,9 +170,16 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[AsyncCacheApi].to[FakeAsyncCacheApi]
+        bind[AsyncCacheApi].to[FakeAsyncCacheApi],
+        bind[Call].qualifiedWith("onwardRoute").toInstance(onwardRoute)
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     defaultApplicationBuilder()
+
+  def phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder =
+    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false)
+
+  def phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder =
+    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> true)
 }

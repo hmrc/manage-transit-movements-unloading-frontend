@@ -16,11 +16,11 @@
 
 package utils.answersHelpers.consignment.incident
 
-import generated.{Flag, TranshipmentType02}
+import generated.{Flag, TranshipmentType}
 import models.reference.{Country, Incident, QualifierOfIdentification}
 import models.{Coordinates, DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
-import pages.incident.location._
+import pages.incident.location.*
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -194,11 +194,11 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     }
 
   def incidentReplacementMeansOfTransport: Seq[SummaryListRow] = {
-    val maybeTranshipmentType0: Option[TranshipmentType02] = userAnswers.ie043Data.Consignment
+    val transhipment: Option[TranshipmentType] = userAnswers.ie043Data.Consignment
       .flatMap(_.Incident.lift(incidentIndex.position))
       .flatMap(_.Transhipment)
 
-    val helper = new ReplacementMeansOfTransportAnswersHelper(userAnswers, maybeTranshipmentType0, incidentIndex)
+    val helper = new ReplacementMeansOfTransportAnswersHelper(userAnswers, transhipment, incidentIndex)
 
     Seq(
       helper.typeOfIdentification,

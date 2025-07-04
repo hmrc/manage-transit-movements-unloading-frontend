@@ -17,8 +17,9 @@
 package utils.transformers
 
 import models.UserAnswers
+import pages.CustomsOfficeOfDestinationActualPage
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,18 +27,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class IE043Transformer @Inject() (
   consignmentTransformer: ConsignmentTransformer,
   transitOperationTransformer: TransitOperationTransformer,
-  hotPTransformer: HolderOfTheTransitProcedureTransformer,
-  customsOfficeOfDestinationActualTransformer: CustomsOfficeOfDestinationActualTransformer
-) extends FrontendHeaderCarrierProvider {
+  holderOfTheTransitProcedureTransformer: HolderOfTheTransitProcedureTransformer,
+  referenceDataService: ReferenceDataService
+) extends PageTransformer {
 
   def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
-
-    val transformerPipeline =
+    val pipeline =
       transitOperationTransformer.transform(userAnswers.ie043Data.TransitOperation) andThen
         consignmentTransformer.transform(userAnswers.ie043Data.Consignment) andThen
-        hotPTransformer.transform(userAnswers.ie043Data.HolderOfTheTransitProcedure) andThen
-        customsOfficeOfDestinationActualTransformer.transform(userAnswers.ie043Data.CustomsOfficeOfDestinationActual)
+        holderOfTheTransitProcedureTransformer.transform(userAnswers.ie043Data.HolderOfTheTransitProcedure) andThen
+        set(CustomsOfficeOfDestinationActualPage, userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber, referenceDataService.getCustomsOffice)
 
-    transformerPipeline(userAnswers)
+    pipeline(userAnswers)
   }
 }

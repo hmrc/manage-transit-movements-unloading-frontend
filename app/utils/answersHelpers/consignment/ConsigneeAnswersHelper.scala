@@ -16,10 +16,10 @@
 
 package utils.answersHelpers.consignment
 
-import generated.AddressType07
+import generated.AddressType14
 import models.reference.Country
 import models.{DynamicAddress, UserAnswers}
-import pages.consignee._
+import pages.consignee.*
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -51,7 +51,7 @@ class ConsigneeAnswersHelper(
     call = None
   )
 
-  def address(answer: Option[AddressType07]): Option[SummaryListRow] =
+  def address(answer: Option[AddressType14]): Option[SummaryListRow] =
     buildRowWithNoChangeLink[DynamicAddress](
       data = answer.map(DynamicAddress(_)),
       formatAnswer = formatAsHtmlContent,

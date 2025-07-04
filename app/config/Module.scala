@@ -17,8 +17,8 @@
 package config
 
 import com.google.inject.AbstractModule
-import controllers.actions._
-import services._
+import controllers.actions.*
+import services.*
 
 import java.time.Clock
 
@@ -32,6 +32,8 @@ class Module extends AbstractModule {
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     bind(classOf[IndexRequiredActionProvider]).to(classOf[IndexRequiredActionProviderImpl]).asEagerSingleton()
+
+    bind(classOf[Phase6ActionProvider]).to(classOf[Phase6ActionProviderImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()

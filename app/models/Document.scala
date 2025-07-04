@@ -16,82 +16,92 @@
 
 package models
 
-import generated._
-import models.DocType.{Previous, Support, Transport}
-import models.reference.DocumentType
+import generated.*
+import models.DocType.*
 
 sealed trait Document {
+  val `type`: DocType
   val sequenceNumber: BigInt
-  val documentType: DocumentType
+  val typeValue: String
   val referenceNumber: String
 }
 
 object Document {
 
-  def apply(document: SupportingDocumentType02, documentType: DocumentType): SupportingDocument =
-    SupportingDocument(
-      sequenceNumber = document.sequenceNumber,
-      documentType = DocumentType(
-        `type` = Support,
-        code = documentType.code,
-        description = documentType.description
-      ),
-      referenceNumber = document.referenceNumber,
-      complementOfInformation = document.complementOfInformation
-    )
-
-  def apply(document: TransportDocumentType02, documentType: DocumentType): TransportDocument =
-    TransportDocument(
-      sequenceNumber = document.sequenceNumber,
-      documentType = DocumentType(
-        `type` = Transport,
-        code = documentType.code,
-        description = documentType.description
-      ),
-      referenceNumber = document.referenceNumber
-    )
-
-  def apply(document: PreviousDocumentType06, documentType: DocumentType): PreviousDocument =
-    PreviousDocument(
-      sequenceNumber = document.sequenceNumber,
-      documentType = DocumentType(
-        `type` = Previous,
-        code = documentType.code,
-        description = documentType.description
-      ),
-      referenceNumber = document.referenceNumber,
-      complementOfInformation = document.complementOfInformation
-    )
-
-  def apply(document: PreviousDocumentType04, documentType: DocumentType): PreviousDocument =
-    PreviousDocument(
-      sequenceNumber = document.sequenceNumber,
-      documentType = DocumentType(
-        `type` = Previous,
-        code = documentType.code,
-        description = documentType.description
-      ),
-      referenceNumber = document.referenceNumber,
-      complementOfInformation = document.complementOfInformation
-    )
-
   case class SupportingDocument(
     sequenceNumber: BigInt,
-    documentType: DocumentType,
+    typeValue: String,
     referenceNumber: String,
     complementOfInformation: Option[String]
-  ) extends Document
+  ) extends Document {
+
+    override val `type`: DocType = Support
+  }
+
+  object SupportingDocument {
+
+    def apply(document: SupportingDocumentType02): SupportingDocument =
+      new SupportingDocument(
+        sequenceNumber = document.sequenceNumber,
+        typeValue = document.typeValue,
+        referenceNumber = document.referenceNumber,
+        complementOfInformation = document.complementOfInformation
+      )
+  }
 
   case class TransportDocument(
     sequenceNumber: BigInt,
-    documentType: DocumentType,
+    typeValue: String,
     referenceNumber: String
-  ) extends Document
+  ) extends Document {
+
+    override val `type`: DocType = Transport
+  }
+
+  object TransportDocument {
+
+    def apply(document: TransportDocumentType01): TransportDocument =
+      new TransportDocument(
+        sequenceNumber = document.sequenceNumber,
+        typeValue = document.typeValue,
+        referenceNumber = document.referenceNumber
+      )
+  }
 
   case class PreviousDocument(
     sequenceNumber: BigInt,
-    documentType: DocumentType,
+    typeValue: String,
     referenceNumber: String,
     complementOfInformation: Option[String]
-  ) extends Document
+  ) extends Document {
+
+    override val `type`: DocType = Previous
+  }
+
+  object PreviousDocument {
+
+    def apply(document: PreviousDocumentType03): PreviousDocument =
+      new PreviousDocument(
+        sequenceNumber = document.sequenceNumber,
+        typeValue = document.typeValue,
+        referenceNumber = document.referenceNumber,
+        complementOfInformation = document.complementOfInformation
+      )
+
+    def apply(document: PreviousDocumentType05): PreviousDocument =
+      new PreviousDocument(
+        sequenceNumber = document.sequenceNumber,
+        typeValue = document.typeValue,
+        referenceNumber = document.referenceNumber,
+        complementOfInformation = document.complementOfInformation
+      )
+
+    def apply(document: PreviousDocumentType06): PreviousDocument =
+      new PreviousDocument(
+        sequenceNumber = document.sequenceNumber,
+        typeValue = document.typeValue,
+        referenceNumber = document.referenceNumber,
+        complementOfInformation = document.complementOfInformation
+      )
+  }
 }

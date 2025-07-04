@@ -17,121 +17,92 @@
 package models
 
 import base.SpecBase
-import generated._
+import generated.*
+import generators.Generators
 import models.DocType.{Previous, Support, Transport}
-import models.Document._
-import models.reference.DocumentType
+import models.Document.*
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
+class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "apply" - {
     "must convert SupportingDocumentType02 to SupportingDocument" in {
-      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
-        (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
-          val ie043Document = SupportingDocumentType02(
-            sequenceNumber = sequenceNumber,
-            typeValue = typeValue,
-            referenceNumber = referenceNumber,
-            complementOfInformation = complementOfInformation
+      forAll(arbitrary[SupportingDocumentType02]) {
+        document =>
+          val result = SupportingDocument(document)
+
+          result mustEqual SupportingDocument(
+            sequenceNumber = document.sequenceNumber,
+            typeValue = document.typeValue,
+            referenceNumber = document.referenceNumber,
+            complementOfInformation = document.complementOfInformation
           )
 
-          val documentType = DocumentType(
-            `type` = Support,
-            code = typeValue,
-            description = description
-          )
-
-          val result = Document.apply(ie043Document, documentType)
-
-          result mustBe SupportingDocument(
-            sequenceNumber = sequenceNumber,
-            documentType = documentType,
-            referenceNumber = referenceNumber,
-            complementOfInformation = complementOfInformation
-          )
+          result.`type` mustEqual Support
       }
     }
 
-    "must convert TransportDocumentType02 to TransportDocument" in {
-      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-        (sequenceNumber, typeValue, referenceNumber, description) =>
-          val ie043Document = TransportDocumentType02(
-            sequenceNumber = sequenceNumber,
-            typeValue = typeValue,
-            referenceNumber = referenceNumber
+    "must convert TransportDocumentType01 to TransportDocument" in {
+      forAll(arbitrary[TransportDocumentType01]) {
+        document =>
+          val result = TransportDocument(document)
+
+          result mustEqual TransportDocument(
+            sequenceNumber = document.sequenceNumber,
+            typeValue = document.typeValue,
+            referenceNumber = document.referenceNumber
           )
 
-          val documentType = DocumentType(
-            `type` = Transport,
-            code = typeValue,
-            description = description
-          )
-
-          val result = Document.apply(ie043Document, documentType)
-
-          result mustBe TransportDocument(
-            sequenceNumber = sequenceNumber,
-            documentType = documentType,
-            referenceNumber = referenceNumber
-          )
+          result.`type` mustEqual Transport
       }
     }
 
-    "must convert PreviousDocumentType06 to PreviousDocumentType" in {
-      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
-        (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
-          val ie043Document = PreviousDocumentType06(
-            sequenceNumber = sequenceNumber,
-            typeValue = typeValue,
-            referenceNumber = referenceNumber,
-            complementOfInformation = complementOfInformation
+    "must convert PreviousDocumentType03 to PreviousDocument" in {
+      forAll(arbitrary[PreviousDocumentType03]) {
+        document =>
+          val result = PreviousDocument(document)
+
+          result mustEqual PreviousDocument(
+            sequenceNumber = document.sequenceNumber,
+            typeValue = document.typeValue,
+            referenceNumber = document.referenceNumber,
+            complementOfInformation = document.complementOfInformation
           )
 
-          val documentType = DocumentType(
-            `type` = Previous,
-            code = typeValue,
-            description = description
-          )
-
-          val result = Document.apply(ie043Document, documentType)
-
-          result mustBe PreviousDocument(
-            sequenceNumber = sequenceNumber,
-            documentType = documentType,
-            referenceNumber = referenceNumber,
-            complementOfInformation = complementOfInformation
-          )
+          result.`type` mustEqual Previous
       }
     }
 
-    "must convert PreviousDocumentType04 to PreviousDocumentType" in {
-      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(arbitrary[BigInt]), Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
-        (sequenceNumber, typeValue, referenceNumber, goodsItemNumber, complementOfInformation, description) =>
-          val ie043Document = PreviousDocumentType04(
-            sequenceNumber = sequenceNumber,
-            typeValue = typeValue,
-            referenceNumber = referenceNumber,
-            goodsItemNumber = goodsItemNumber,
-            complementOfInformation = complementOfInformation
+    "must convert PreviousDocumentType05 to PreviousDocument" in {
+      forAll(arbitrary[PreviousDocumentType05]) {
+        document =>
+          val result = PreviousDocument(document)
+
+          result mustEqual PreviousDocument(
+            sequenceNumber = document.sequenceNumber,
+            typeValue = document.typeValue,
+            referenceNumber = document.referenceNumber,
+            complementOfInformation = document.complementOfInformation
           )
 
-          val documentType = DocumentType(
-            `type` = Previous,
-            code = typeValue,
-            description = description
+          result.`type` mustEqual Previous
+      }
+    }
+
+    "must convert PreviousDocumentType06 to PreviousDocument" in {
+      forAll(arbitrary[PreviousDocumentType06]) {
+        document =>
+          val result = PreviousDocument(document)
+
+          result mustEqual PreviousDocument(
+            sequenceNumber = document.sequenceNumber,
+            typeValue = document.typeValue,
+            referenceNumber = document.referenceNumber,
+            complementOfInformation = document.complementOfInformation
           )
 
-          val result = Document.apply(ie043Document, documentType)
-
-          result mustBe PreviousDocument(
-            sequenceNumber = sequenceNumber,
-            documentType = documentType,
-            referenceNumber = referenceNumber,
-            complementOfInformation = complementOfInformation
-          )
+          result.`type` mustEqual Previous
       }
     }
   }

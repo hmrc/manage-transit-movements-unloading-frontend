@@ -23,19 +23,24 @@ import models.reference.*
 import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.houseConsignment.index.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import pages.houseConsignment.index.items.{
-  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
-  ConsigneeNamePage => ItemConsigneeNamePage,
-  GrossWeightPage,
+  ConsigneeIdentifierPage as ItemConsigneeIdentifierPage,
+  ConsigneeNamePage as ItemConsigneeNamePage,
+  GrossWeightPage as ItemGrossWeightPage,
   ItemDescriptionPage,
   NetWeightPage
 }
-import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
+import pages.houseConsignment.index.{
+  CountryOfDestinationPage,
+  GrossWeightPage as HouseConsignmentGrossWeightPage,
+  SecurityIndicatorFromExportDeclarationPage,
+  UniqueConsignmentReferencePage as HouseConsignmentUniqueConsignmentReferencePage
+}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -265,21 +270,25 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ConsigneeNamePage(hcIndex), "John Smith")
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
-          .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
+          .setValue(ItemGrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee2")
           .setValue(SecurityIndicatorFromExportDeclarationPage(hcIndex), SecurityType("Code", "Description"))
           .setValue(CountryOfDestinationPage(hcIndex), Country("FR", "France"))
+          .setValue(HouseConsignmentGrossWeightPage(hcIndex), BigDecimal(123.45))
+          .setValue(HouseConsignmentUniqueConsignmentReferencePage(hcIndex), "ucr")
 
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = app.injector.instanceOf[HouseConsignmentViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.section.rows.size mustBe 2
+        result.section.rows.size mustBe 4
         result.section.rows(0).value.value mustBe "France"
         result.section.rows(1).value.value mustBe "Description"
+        result.section.rows(2).value.value mustBe "123.45kg"
+        result.section.rows(3).value.value mustBe "ucr"
 
         result.section.children(6) mustBe a[AccordionSection]
         result.section.children(6).sectionTitle.value mustBe "Items"
@@ -307,7 +316,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       "when there is one" in {
         val userAnswers = emptyUserAnswers
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
-          .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
+          .setValue(ItemGrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
 
         setExistingUserAnswers(userAnswers)
@@ -328,10 +337,10 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ConsigneeNamePage(hcIndex), "John Smith")
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(ItemDescriptionPage(hcIndex, Index(0)), "shirts")
-          .setValue(GrossWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
+          .setValue(ItemGrossWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
           .setValue(ItemDescriptionPage(hcIndex, Index(1)), "shirts")
-          .setValue(GrossWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
+          .setValue(ItemGrossWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
           .setValue(ItemConsigneeNamePage(hcIndex, Index(0)), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, Index(0)), "csgee2")

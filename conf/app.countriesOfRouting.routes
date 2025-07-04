@@ -1,0 +1,14 @@
+GET        /:arrivalId/transit-route/:index/country                                     controllers.countriesOfRouting.CountryController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/transit-route/:index/country                                     controllers.countriesOfRouting.CountryController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/change-transit-route/:index/country                              controllers.countriesOfRouting.CountryController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/change-transit-route/:index/country                              controllers.countriesOfRouting.CountryController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+
+GET        /:arrivalId/transit-route/add-another                                        controllers.countriesOfRouting.AddAnotherCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/transit-route/add-another                                        controllers.countriesOfRouting.AddAnotherCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-transit-route/add-another                                 controllers.countriesOfRouting.AddAnotherCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-transit-route/add-another                                 controllers.countriesOfRouting.AddAnotherCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
+GET        /:arrivalId/transit-route/:index/remove                                      controllers.countriesOfRouting.RemoveCountryYesNoController.onPageLoad(arrivalId: ArrivalId, mode:Mode = NormalMode, index: Index)
+POST       /:arrivalId/transit-route/:index/remove                                      controllers.countriesOfRouting.RemoveCountryYesNoController.onSubmit(arrivalId: ArrivalId, mode:Mode = NormalMode, index: Index)
+GET        /:arrivalId/change-transit-route/:index/remove                               controllers.countriesOfRouting.RemoveCountryYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode, index: Index)
+POST       /:arrivalId/change-transit-route/:index/remove                               controllers.countriesOfRouting.RemoveCountryYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode, index: Index)

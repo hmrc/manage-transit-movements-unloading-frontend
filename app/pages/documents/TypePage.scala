@@ -16,7 +16,7 @@
 
 package pages.documents
 
-import generated.{SupportingDocumentType02, TransportDocumentType02}
+import generated.{SupportingDocumentType02, TransportDocumentType01}
 import models.Index
 import models.reference.DocumentType
 import pages.sections.documents.DocumentSection
@@ -49,9 +49,9 @@ case class SupportingTypePage(documentIndex: Index) extends BaseTypePage[Support
       .map(_.typeValue)
 }
 
-case class TransportTypePage(documentIndex: Index) extends BaseTypePage[TransportDocumentType02] {
+case class TransportTypePage(documentIndex: Index) extends BaseTypePage[TransportDocumentType01] {
 
-  override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(ie043: Seq[TransportDocumentType01], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

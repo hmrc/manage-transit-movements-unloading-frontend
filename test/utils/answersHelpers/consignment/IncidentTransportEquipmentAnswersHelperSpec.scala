@@ -29,7 +29,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
     "containerIdentificationNumber" - {
 
       "must return None when containerIdentificationNumber undefined" in {
-        forAll(arbitrary[TransportEquipmentType07].map(_.copy(containerIdentificationNumber = None))) {
+        forAll(arbitrary[TransportEquipmentType06].map(_.copy(containerIdentificationNumber = None))) {
           transportEquipment =>
             val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
@@ -42,7 +42,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
       "return a SummaryListRow for containerIdentificationNumber" in {
         val containerIdentificationNumber = "Container123"
 
-        forAll(arbitrary[TransportEquipmentType07].map(_.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))) {
+        forAll(arbitrary[TransportEquipmentType06].map(_.copy(containerIdentificationNumber = Some(containerIdentificationNumber)))) {
           transportEquipment =>
             val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
@@ -57,9 +57,9 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
     "transportEquipmentSeals" - {
       "must generate row for each seal" in {
-        val seals = Seq(SealType04(1, "Seal1"), SealType04(2, "Seal2"))
+        val seals = Seq(SealType01(1, "Seal1"), SealType01(2, "Seal2"))
 
-        forAll(arbitrary[TransportEquipmentType07].map(_.copy(Seal = seals))) {
+        forAll(arbitrary[TransportEquipmentType06].map(_.copy(Seal = seals))) {
           transportEquipment =>
             val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 
@@ -82,9 +82,9 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
     "itemNumber" - {
       "must generate row for item" in {
-        val goodsReferences = Seq(GoodsReferenceType01(1, 123), GoodsReferenceType01(2, 234))
+        val goodsReferences = Seq(GoodsReferenceType03(1, 123), GoodsReferenceType03(2, 234))
 
-        forAll(arbitrary[TransportEquipmentType07].map(_.copy(GoodsReference = goodsReferences))) {
+        forAll(arbitrary[TransportEquipmentType06].map(_.copy(GoodsReference = goodsReferences))) {
           transportEquipment =>
             val helper = new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers, transportEquipment)
 

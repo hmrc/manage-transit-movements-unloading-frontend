@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.LocationType02
+import generated.LocationType
 import generators.Generators
 import models.reference.{Country, QualifierOfIdentification}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
@@ -51,7 +51,7 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
   }
 
   "must transform data" in {
-    forAll(arbitrary[LocationType02], Gen.alphaNumStr, Gen.alphaNumStr) {
+    forAll(arbitrary[LocationType], Gen.alphaNumStr, Gen.alphaNumStr) {
       (location, qualifierDescription, countryDescription) =>
         beforeEach()
 

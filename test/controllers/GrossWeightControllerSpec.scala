@@ -20,14 +20,14 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.WeightFormProvider
 import generators.Generators
 import models.CheckMode
-import navigation.Navigation
+import navigation.ConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.GrossWeightPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.GrossWeightView
 
 import scala.concurrent.Future
@@ -48,7 +48,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation)
+        bind[ConsignmentNavigator].toInstance(FakeConsignmentNavigators.fakeConsignmentNavigator)
       )
 
   "GrossWeightAmount Controller" - {

@@ -27,7 +27,6 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
-import viewModels.departureTransportMeans.*
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel
 import viewModels.houseConsignment.index.additionalReference.AdditionalReferenceTypeViewModel as HCAdditionalReferenceTypeViewModel
@@ -40,6 +39,7 @@ import viewModels.houseConsignment.index.documents.{
   AddAnotherHouseConsignmentDocumentViewModel as DocumentsAddAnotherHouseConsignmentDocumentViewModel,
   ReferenceNumberViewModel
 }
+import viewModels.houseConsignment.index.UniqueConsignmentReferenceViewModel as HouseConsignmentUCRViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel as AdditionalReferenceTypeItemViewModel
@@ -63,13 +63,14 @@ import viewModels.houseConsignment.index.items.{
   CustomsUnionAndStatisticsCodeViewModel,
   DescriptionViewModel,
   GrossWeightViewModel,
-  NetWeightViewModel
+  NetWeightViewModel,
+  UniqueConsignmentReferenceViewModel as ItemUniqueConsignmentReferenceViewModel
 }
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
-import viewModels.{CheckYourAnswersViewModel, ListItem, OtherThingsToReportViewModel, UnloadingFindingsViewModel}
+import viewModels.*
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -267,12 +268,20 @@ trait ViewModelGenerators {
     } yield AddAnotherItemViewModel(listItems, onSubmitCall, Index(0), nextIndex)
   }
 
-  implicit lazy val arbitraryCountryViewModel: Arbitrary[CountryViewModel] = Arbitrary {
+  implicit lazy val arbitraryDepartureTransportMeansCountryViewModel: Arbitrary[departureTransportMeans.CountryViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-    } yield CountryViewModel(heading, title, requiredError)
+    } yield departureTransportMeans.CountryViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryCountriesOfRoutingCountryViewModel: Arbitrary[countriesOfRouting.CountryViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield countriesOfRouting.CountryViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryHouseConsignmentCountryViewModel: Arbitrary[HouseConsignmentCountryViewModel] = Arbitrary {
@@ -283,20 +292,20 @@ trait ViewModelGenerators {
     } yield HouseConsignmentCountryViewModel(heading, title, requiredError)
   }
 
-  implicit lazy val arbitraryIdentificationViewModel: Arbitrary[IdentificationViewModel] = Arbitrary {
+  implicit lazy val arbitraryIdentificationViewModel: Arbitrary[departureTransportMeans.IdentificationViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-    } yield IdentificationViewModel(heading, title, requiredError)
+    } yield departureTransportMeans.IdentificationViewModel(heading, title, requiredError)
   }
 
-  implicit lazy val arbitraryIdentificationNumberViewModel: Arbitrary[IdentificationNumberViewModel] = Arbitrary {
+  implicit lazy val arbitraryIdentificationNumberViewModel: Arbitrary[departureTransportMeans.IdentificationNumberViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-    } yield IdentificationNumberViewModel(heading, title, requiredError)
+    } yield departureTransportMeans.IdentificationNumberViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryHCIdentificationNumberViewModel: Arbitrary[HCIdentificationNumberViewModel] = Arbitrary {
@@ -323,13 +332,23 @@ trait ViewModelGenerators {
     } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false, nextIndex)
   }
 
-  implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportViewModel: Arbitrary[AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
-    for {
-      listItems    <- arbitrary[Seq[ListItem]]
-      onSubmitCall <- arbitrary[Call]
-      nextIndex    <- arbitrary[Index]
-    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex)
-  }
+  implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportViewModel: Arbitrary[departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel] =
+    Arbitrary {
+      for {
+        listItems    <- arbitrary[Seq[ListItem]]
+        onSubmitCall <- arbitrary[Call]
+        nextIndex    <- arbitrary[Index]
+      } yield departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex)
+    }
+
+  implicit lazy val arbitraryAddAnotherCountryOfRoutingViewModel: Arbitrary[countriesOfRouting.AddAnotherCountryViewModel] =
+    Arbitrary {
+      for {
+        listItems    <- arbitrary[Seq[ListItem]]
+        onSubmitCall <- arbitrary[Call]
+        nextIndex    <- arbitrary[Index]
+      } yield countriesOfRouting.AddAnotherCountryViewModel(listItems, onSubmitCall, nextIndex)
+    }
 
   implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportHCViewModel
     : Arbitrary[viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
@@ -658,6 +677,15 @@ trait ViewModelGenerators {
     } yield CustomsUnionAndStatisticsCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
   }
 
+  implicit lazy val arbitraryItemUniqueConsignmentReferenceViewModel: Arbitrary[ItemUniqueConsignmentReferenceViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- arbitrary[ArrivalId]
+    } yield ItemUniqueConsignmentReferenceViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+  }
+
   implicit lazy val arbitraryItemCommodityCodeViewModel: Arbitrary[CommodityCodeViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
@@ -665,6 +693,22 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       arrivalId     <- arbitrary[ArrivalId]
     } yield CommodityCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryConsignmentUniqueReferenceNumberViewModel: Arbitrary[UniqueConsignmentReferenceViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield UniqueConsignmentReferenceViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryHouseConsignmentUniqueReferenceNumberViewModel: Arbitrary[HouseConsignmentUCRViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield HouseConsignmentUCRViewModel(heading, title, requiredError, Index(0))
   }
 
   implicit lazy val arbitraryItemCombinedNomenclatureCodeViewModel: Arbitrary[CombinedNomenclatureCodeViewModel] = Arbitrary {

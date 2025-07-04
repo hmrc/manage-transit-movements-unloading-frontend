@@ -88,9 +88,9 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "must go from date goods unloaded page" - {
         "to can seals be read page when seals exist in transport equipment" in {
-          val transportEquipment = arbitrary[TransportEquipmentType05].retryUntil(_.Seal.nonEmpty).sample.value
+          val transportEquipment = arbitrary[TransportEquipmentType03].retryUntil(_.Seal.nonEmpty).sample.value
 
-          val consignment = arbitrary[CUSTOM_ConsignmentType05].sample.value.copy(
+          val consignment = arbitrary[ConsignmentType05].sample.value.copy(
             TransportEquipment = Seq(transportEquipment),
             Incident = Nil
           )
@@ -105,11 +105,11 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
 
         "to can seals be read page when seals exist in incident transport equipment" in {
-          val transportEquipment = arbitrary[TransportEquipmentType07].retryUntil(_.Seal.nonEmpty).sample.value
+          val transportEquipment = arbitrary[TransportEquipmentType06].retryUntil(_.Seal.nonEmpty).sample.value
 
-          val incident = arbitrary[IncidentType04].sample.value.copy(TransportEquipment = Seq(transportEquipment))
+          val incident = arbitrary[IncidentType03].sample.value.copy(TransportEquipment = Seq(transportEquipment))
 
-          val consignment = arbitrary[CUSTOM_ConsignmentType05].sample.value.copy(
+          val consignment = arbitrary[ConsignmentType05].sample.value.copy(
             TransportEquipment = Nil,
             Incident = Seq(incident)
           )
@@ -761,15 +761,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             navigator
               .nextPage(UnknownPage, mode, answers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-      }
-
-      "must go from gross weight page to Unloading findings page" in {
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(pages.GrossWeightPage, mode, answers)
-              .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }
 

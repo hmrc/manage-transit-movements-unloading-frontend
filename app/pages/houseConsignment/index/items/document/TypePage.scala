@@ -16,7 +16,7 @@
 
 package pages.houseConsignment.index.items.document
 
-import generated.{SupportingDocumentType02, TransportDocumentType02}
+import generated.{SupportingDocumentType02, TransportDocumentType01}
 import models.Index
 import models.reference.DocumentType
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
@@ -51,9 +51,9 @@ case class SupportingTypePage(houseConsignmentIndex: Index, itemIndex: Index, do
       .map(_.typeValue)
 }
 
-case class TransportTypePage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends BaseTypePage[TransportDocumentType02] {
+case class TransportTypePage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends BaseTypePage[TransportDocumentType01] {
 
-  override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+  override def valueInIE043(ie043: Seq[TransportDocumentType01], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

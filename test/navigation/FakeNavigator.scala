@@ -16,12 +16,16 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
-import navigation.houseConsignment.index.items.{DocumentNavigator => ItemDocumentNavigator, HouseConsignmentItemNavigator, PackagesNavigator}
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
+import navigation.houseConsignment.index.items.{DocumentNavigator as ItemDocumentNavigator, HouseConsignmentItemNavigator, PackagesNavigator}
 import navigation.houseConsignment.index.{HouseConsignmentDocumentNavigator, HouseConsignmentNavigator}
-import pages._
+import pages.*
 import play.api.mvc.Call
+
+import javax.inject.{Inject, Named, Provider}
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
 
@@ -47,6 +51,10 @@ class FakeNavigation(desiredRoute: Call) extends Navigation {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeConsignmentNavigator(desiredRoute: Call) extends ConsignmentNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeItemDocumentNavigator(desiredRoute: Call, houseConsignmentMode: Mode, itemMode: Mode) extends ItemDocumentNavigator(houseConsignmentMode, itemMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
@@ -63,11 +71,31 @@ class FakeGoodsReferenceNavigator(desiredRoute: Call, equipmentMode: Mode) exten
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeCountryOfRoutingNavigator(desiredRoute: Call) extends CountryOfRoutingNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends navigation.DepartureTransportMeansNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHouseConsignmentItemNavigator(desiredRoute: Call, houseConsignmentMode: Mode) extends HouseConsignmentItemNavigator(houseConsignmentMode) {
+class FakeHouseConsignmentItemNavigatorProviderProvider @Inject() (
+  appConfig: FrontendAppConfig,
+  @Named("onwardRoute") desiredRoute: Call
+) extends Provider[HouseConsignmentItemNavigatorProvider] {
+
+  override def get(): HouseConsignmentItemNavigatorProvider =
+    new FakeHouseConsignmentItemNavigatorProvider(desiredRoute, appConfig)
+}
+
+class FakeHouseConsignmentItemNavigatorProvider(desiredRoute: Call, config: FrontendAppConfig) extends HouseConsignmentItemNavigatorProvider(config) {
+
+  override def apply(houseConsignmentMode: Mode): HouseConsignmentItemNavigator =
+    new FakeHouseConsignmentItemNavigator(desiredRoute, houseConsignmentMode, config)
+}
+
+class FakeHouseConsignmentItemNavigator(desiredRoute: Call, houseConsignmentMode: Mode, config: FrontendAppConfig)
+    extends HouseConsignmentItemNavigator(houseConsignmentMode, config) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
@@ -93,7 +121,16 @@ class FakePackagesNavigator(desiredRoute: Call, houseConsignmentMode: Mode, item
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHouseConsignmentNavigator(desiredRoute: Call) extends HouseConsignmentNavigator {
+class FakeHouseConsignmentNavigatorProvider @Inject() (
+  appConfig: FrontendAppConfig,
+  @Named("onwardRoute") desiredRoute: Call
+) extends Provider[HouseConsignmentNavigator] {
+
+  override def get(): HouseConsignmentNavigator =
+    new FakeHouseConsignmentNavigator(desiredRoute, appConfig)
+}
+
+class FakeHouseConsignmentNavigator(desiredRoute: Call, appConfig: FrontendAppConfig) extends HouseConsignmentNavigator(appConfig) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

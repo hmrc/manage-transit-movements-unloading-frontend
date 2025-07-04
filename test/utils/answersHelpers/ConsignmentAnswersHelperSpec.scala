@@ -16,13 +16,14 @@
 
 package utils.answersHelpers
 
-import generated._
+import generated.*
 import models.DocType.Previous
-import models.reference.TransportMode.InlandMode
 import models.reference.*
+import models.reference.TransportMode.InlandMode
 import models.{CheckMode, Coordinates, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.countriesOfRouting.CountryOfRoutingPage
 import pages.transportEquipment.index.ItemPage
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -33,18 +34,18 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
   "ConsignmentAnswersHelper" - {
 
     "headerSection" - {
-      import pages._
+      import pages.*
 
       "must return static section" in {
         val ie043 = basicIe043.copy(
-          TransitOperation = TransitOperationType14(
+          TransitOperation = TransitOperationType10(
             MRN = Gen.alphaNumStr.sample.value,
             declarationType = Some(Gen.alphaNumStr.sample.value),
             declarationAcceptanceDate = Some(arbitrary[XMLGregorianCalendar].sample.value),
             security = Gen.alphaNumStr.sample.value,
             reducedDatasetIndicator = arbitrary[Flag].sample.value
           ),
-          TraderAtDestination = arbitrary[TraderAtDestinationType03].sample.value
+          TraderAtDestination = arbitrary[TraderAtDestinationType02].sample.value
         )
         val answers = emptyUserAnswers
           .copy(ie043Data = ie043)
@@ -64,7 +65,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return row" in {
         forAll(Gen.alphaNumStr) {
           value =>
-            val traderAtDestination = TraderAtDestinationType03(value)
+            val traderAtDestination = TraderAtDestinationType02(value)
             val ie043               = basicIe043.copy(TraderAtDestination = traderAtDestination)
             val answers             = emptyUserAnswers.copy(ie043Data = ie043)
 
@@ -82,7 +83,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return no section" - {
         "when consignor is undefined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+          forAll(arbitrary[ConsignmentType05]) {
             consignment =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -102,7 +103,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return section" - {
         "when consignor is defined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[ConsignorType05]) {
+          forAll(arbitrary[ConsignmentType05], arbitrary[ConsignorType04]) {
             (consignment, consignor) =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -127,7 +128,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return no section" - {
         "when consignee is undefined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05]) {
+          forAll(arbitrary[ConsignmentType05]) {
             consignment =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -147,7 +148,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return section" - {
         "when consignee is defined" in {
-          forAll(arbitrary[CUSTOM_ConsignmentType05], arbitrary[ConsigneeType04]) {
+          forAll(arbitrary[ConsignmentType05], arbitrary[ConsigneeType05]) {
             (consignment, consignee) =>
               val userAnswers = emptyUserAnswers.copy(
                 ie043Data = basicIe043.copy(
@@ -164,6 +165,34 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.sectionTitle.value mustBe "Consignee"
           }
+        }
+      }
+    }
+
+    "countriesOfRouting" - {
+      "must generate accordion section" in {
+        forAll(arbitrary[Country], arbitrary[Country]) {
+          (value1, value2) =>
+            val answers = emptyUserAnswers
+              .setValue(CountryOfRoutingPage(Index(0)), value1)
+              .setValue(CountryOfRoutingPage(Index(1)), value2)
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.countriesOfRoutingSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Countries of routing"
+            result.id.value mustBe "countries-of-routing"
+
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-countries-of-routing"
+            addOrRemoveLink.text mustBe "Add or remove country of routing"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe controllers.countriesOfRouting.routes.AddAnotherCountryController.onPageLoad(arrivalId, NormalMode).url
+
+            result.rows.size mustEqual 2
+            result.rows.head.value.value mustEqual value1.toString
+            result.rows(1).value.value mustEqual value2.toString
         }
       }
     }
@@ -198,6 +227,36 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "ucrRow" - {
+      import pages.UniqueConsignmentReferencePage
+
+      "must return None" - {
+        s"when $UniqueConsignmentReferencePage is undefined" in {
+          val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
+          val result = helper.ucrRow
+          result.isEmpty mustEqual true
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $UniqueConsignmentReferencePage is defined" in {
+          val answers = emptyUserAnswers
+            .setValue(UniqueConsignmentReferencePage, "foo")
+
+          val helper = new ConsignmentAnswersHelper(answers)
+          val result = helper.ucrRow.value
+
+          result.key.value mustBe "Reference number UCR"
+          result.value.value mustBe "foo"
+          val action = result.actions.value.items.head
+          action.content.value mustBe "Change"
+          action.href mustBe controllers.routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId).url
+          action.visuallyHiddenText.value mustBe "reference number UCR"
+          action.id mustBe "change-unique-consignment-reference"
+        }
+      }
+    }
+
     "holderOfTheTransitProcedureSection" - {
       import pages.holderOfTheTransitProcedure.CountryPage
 
@@ -214,7 +273,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           Some("identificationNumber"),
           Some("TIRHolderIdentificationNumber"),
           "name",
-          AddressType10("streetAndNumber", Some("postcode"), "city", "GB")
+          AddressType15("streetAndNumber", Some("postcode"), "city", "GB")
         )
 
         val userAnswers = emptyUserAnswers
@@ -233,7 +292,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "departureTransportMeansSections" - {
-      import pages.departureMeansOfTransport._
+      import pages.departureMeansOfTransport.*
 
       "must generate accordion sections" in {
         forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Country]) {
@@ -263,7 +322,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "transportEquipmentSections" - {
-      import pages._
+      import pages.*
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
       "must generate accordion section with accordion and static children sections" in {
@@ -302,7 +361,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalReferencesSections" - {
-      import pages.additionalReference._
+      import pages.additionalReference.*
 
       "must generate accordion sections" in {
         forAll(arbitrary[AdditionalReferenceType], Gen.alphaNumStr) {
@@ -328,7 +387,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalInformationSections" - {
-      import pages.additionalInformation._
+      import pages.additionalInformation.*
 
       "must generate accordion section with children when additional information defined" in {
         forAll(arbitrary[AdditionalInformationCode], Gen.alphaNumStr) {
@@ -361,7 +420,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "documentSections" - {
-      import pages.documents._
+      import pages.documents.*
 
       "must generate accordion sections" in {
         forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
@@ -412,7 +471,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "houseConsignmentSections" - {
-      import pages._
+      import pages.*
       "and there are house consignments" - {
         "must generate accordion sections with add/remove link" in {
           forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
@@ -476,30 +535,30 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "incidentSection" - {
-      import pages.incident._
-      import pages.incident.endorsement._
-      import pages.incident.location._
+      import pages.incident.*
+      import pages.incident.endorsement.*
+      import pages.incident.location.*
 
       "must generate accordion sections" in {
-        val incident           = arbitrary[IncidentType04].sample.value
-        val endorsement        = arbitrary[EndorsementType03].sample.value
+        val incident           = arbitrary[IncidentType03].sample.value
+        val endorsement        = arbitrary[EndorsementType02].sample.value
         val inc                = arbitrary[Incident].sample.value
         val qualifier          = arbitrary[QualifierOfIdentification].sample.value
         val country            = arbitrary[Country].sample.value
-        val locationType02     = arbitrary[LocationType02].sample.value
+        val LocationType       = arbitrary[LocationType].sample.value
         val coordinate         = arbitrary[Coordinates].sample.value
         val unLocode           = Gen.alphaNumStr.sample.value
         val description        = Gen.alphaNumStr.sample.value
-        val arbitraryTransport = arbitrary[TransportEquipmentType07].sample.value
+        val arbitraryTransport = arbitrary[TransportEquipmentType06].sample.value
 
-        val addressType18 = AddressType18("streetAndNumber", Some("postcode"), "city")
+        val address = AddressType21("streetAndNumber", Some("postcode"), "city")
 
-        val locationType = locationType02.copy(
+        val locationType = LocationType.copy(
           UNLocode = Some(unLocode),
           GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)),
-          Address = Some(addressType18)
+          Address = Some(address)
         )
-        val consignment = CUSTOM_ConsignmentType05(
+        val consignment = ConsignmentType05(
           containerIndicator = Number0,
           Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType, TransportEquipment = Seq(arbitraryTransport)))
         )
@@ -527,7 +586,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.rows(3).value.value mustBe qualifier.toString
         result.children.head.rows(4).value.value mustBe coordinate.toString
         result.children.head.rows(5).value.value mustBe unLocode
-        result.children.head.rows(6).value.value mustBe s"${addressType18.streetAndNumber}<br>${addressType18.city}<br>${addressType18.postcode.get}"
+        result.children.head.rows(6).value.value mustBe s"${address.streetAndNumber}<br>${address.city}<br>${address.postcode.get}"
 
         result.children.head.children.head.sectionTitle.value mustBe "Endorsements"
         result.children.head.children.head.rows.head.key.value mustBe "Endorsement date"

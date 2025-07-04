@@ -139,8 +139,43 @@ grossWeight.error.invalidCharacters = The new gross weight must only include num
 grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
+
+uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR)?
+uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
+uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR)
+uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR)
+uniqueConsignmentReference.error.invalid = The Unique Consignment Reference (UCR) must only include letters a to z and numbers 0 to 9
+uniqueConsignmentReference.error.length = The Unique Consignment Reference (UCR) must be 70 characters or less
+
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
+
+countriesOfRouting.country.NormalMode.title = Which country do you want to add to the transit route?
+countriesOfRouting.country.CheckMode.title = Which new country do you want to add to the transit route?
+countriesOfRouting.country.NormalMode.heading = Which country do you want to add to the transit route?
+countriesOfRouting.country.CheckMode.heading = Which new country do you want to add to the transit route?
+countriesOfRouting.country.NormalMode.error.required = Select the country you want to add to the transit route
+countriesOfRouting.country.CheckMode.error.required = Select the new country you want to add to the transit route
+countriesOfRouting.country.placeholder = Select a country
+countriesOfRouting.country.hint = Enter the country or code, like Austria or AT.
+
+countriesOfRouting.removeCountryYesNo.title = Are you sure you want to remove this country from the transit route?
+countriesOfRouting.removeCountryYesNo.heading = Are you sure you want to remove this country from the transit route?
+countriesOfRouting.removeCountryYesNo.error.required = Select yes if you want to remove this country from the transit route
+
+countriesOfRouting.addAnotherCountry.empty.title = You have added 0 countries to the transit route
+countriesOfRouting.addAnotherCountry.singular.title = You have added 1 country to the transit route
+countriesOfRouting.addAnotherCountry.plural.title = You have added {0} countries to the transit route
+countriesOfRouting.addAnotherCountry.empty.heading = You have added 0 countries to the transit route
+countriesOfRouting.addAnotherCountry.singular.heading = You have added 1 country to the transit route
+countriesOfRouting.addAnotherCountry.plural.heading = You have added {0} countries to the transit route
+countriesOfRouting.addAnotherCountry.empty.label = Do you want to add a country to the transit route?
+countriesOfRouting.addAnotherCountry.label = Do you want to add another country to the transit route?
+countriesOfRouting.addAnotherCountry.maxLimit.label = You cannot add another country to the transit route. To add another, you need to remove one first.
+countriesOfRouting.addAnotherCountry.error.required = Select yes if you want to add another country to the transit route
 
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport?
@@ -160,7 +195,7 @@ departureMeansOfTransport.country.CheckMode.heading = What country is the new de
 departureMeansOfTransport.country.NormalMode.error.required = Select the country the vehicle is registered to
 departureMeansOfTransport.country.CheckMode.error.required = Select the country the new departure means of transport is registered to
 departureMeansOfTransport.country.placeholder = Select a country
-departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
+departureMeansOfTransport.country.hint = Enter the country or code, like Austria or AT.
 
 departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport?
@@ -210,6 +245,21 @@ houseConsignment.item.grossWeight.NormalMode.error.required = Enter the gross we
 houseConsignment.item.grossWeight.error.invalidValue = The gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 houseConsignment.item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
+
+houseConsignment.item.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for this item?
+houseConsignment.item.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for this item?
+houseConsignment.item.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
+houseConsignment.item.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for this item
+
+houseConsignment.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR) for house consignment {0}?
+houseConsignment.uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
+houseConsignment.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR) for house consignment {0}
+houseConsignment.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR) for house consignment {0}
+houseConsignment.uniqueConsignmentReference.error.invalid = The Unique Consignment Reference (UCR) must only include letters a to z and numbers 0 to 9
+houseConsignment.uniqueConsignmentReference.error.length = The Unique Consignment Reference (UCR) must be 70 characters or less
 
 netWeight.CheckMode.title = What is the new net weight of item {1} in house consignment {0}?
 netWeight.NormalMode.title = What is the net weight of item {1} in house consignment {0}?
@@ -467,6 +517,7 @@ unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods i
 
 declarationType = Declaration type
 securityType = Safety and security details
+ucrType = Unique Consignment Reference Page
 reducedDatasetIndicator = Do you want to use a reduced data set?
 declarationAcceptanceDate = Declaration acceptance date
 
@@ -506,6 +557,12 @@ unloadingFindings.rowHeadings.incident.item = Goods item number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 unloadingFindings.rowHeadings.consignment.item = Item {0}
 
+unloadingFindings.rowHeadings.countryOfRouting = Country {0}
+unloadingFindings.rowHeadings.countryOfRouting.change.hidden = country {0}
+
+unloadingFindings.rowHeadings.countriesOfRouting = Countries of routing
+countriesOfRoutingLink.addRemove = Add or remove country of routing
+
 unloadingFindings.subsections.houseConsignment = House consignment {0}
 unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
@@ -529,6 +586,8 @@ unloadingFindings.subsections.item.parent.heading = Items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.description.change.hidden = description of item {0}
+unloadingFindings.rowHeadings.item.uniqueConsignmentReference = Reference Number UCR
+unloadingFindings.rowHeadings.item.uniqueConsignmentReference.change.hidden = reference number UCR of item {0}
 unloadingFindings.rowHeadings.item.declarationType = Declaration type
 unloadingFindings.rowHeadings.item.countryOfDestination = Country of destination
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
@@ -770,6 +829,16 @@ houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs U
 houseConsignment.item.customsUnionAndStatisticsCode.error.characters = The Customs Union and Statistics (CUS) code must only include letters a to z, numbers 0 to 9 and a hyphen
 houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Union and Statistics (CUS) code
 
+houseConsignment.item.uniqueConsignmentReference.NormalMode.heading = What is the Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.CheckMode.heading = What is the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.NormalMode.title = What is the Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.CheckMode.title = What is the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}?
+houseConsignment.item.uniqueConsignmentReference.hint = This can be up to 70 characters long and include both letters and numbers.
+houseConsignment.item.uniqueConsignmentReference.NormalMode.error.required = Enter the Unique Consignment Reference (UCR) for item {1} in house consignment {0}
+houseConsignment.item.uniqueConsignmentReference.CheckMode.error.required = Enter the new Unique Consignment Reference (UCR) for item {1} in house consignment {0}
+houseConsignment.item.uniqueConsignmentReference.error.invalid = The Unique Consignment Reference (UCR) must only include letters a to z and numbers 0 to 9
+houseConsignment.item.uniqueConsignmentReference.error.length = The Unique Consignment Reference (UCR) must be 70 characters or less
+
 houseConsignment.index.item.packageShippingMark.CheckMode.title = What is the new shipping mark for item {1} in house consignment {0}?
 houseConsignment.index.item.packageShippingMark.NormalMode.title = What is the shipping mark for item {1} in house consignment {0}?
 houseConsignment.index.item.packageShippingMark.CheckMode.heading = What is the new shipping mark for item {1} in house consignment {0}?
@@ -953,6 +1022,9 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
+
+unloadingFindings.ucr = Reference number UCR
+unloadingFindings.ucr.change.hidden = reference number UCR
 
 unloadingFindings.inlandModeOfTransport = Inland mode of transport
 unloadingFindings.inlandModeOfTransport.label = Mode
@@ -1197,6 +1269,11 @@ houseConsignment.index.grossWeight.NormalMode.error.invalidFormat = The gross we
 houseConsignment.index.grossWeight.CheckMode.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 houseConsignment.index.grossWeight.NormalMode.error.zero = The gross weight must be more than 0
 houseConsignment.index.grossWeight.CheckMode.error.zero = The new gross weight must be more than 0
+
+houseConsignment.index.uniqueConsignmentReferenceYesNo.title = Do you want to add a Unique Consignment Reference (UCR) for this house consignment?
+houseConsignment.index.uniqueConsignmentReferenceYesNo.heading = Do you want to add a Unique Consignment Reference (UCR) for this house consignment?
+houseConsignment.index.uniqueConsignmentReferenceYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
+houseConsignment.index.uniqueConsignmentReferenceYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR) for this house consignment
 
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?

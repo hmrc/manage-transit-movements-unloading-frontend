@@ -17,23 +17,25 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.CustomsOfficeOfDestinationActualType03
+import generated.CountryOfRoutingOfConsignmentType02
 import generators.Generators
-import models.reference.CustomsOffice
+import models.Index
+import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.CustomsOfficeOfDestinationActualPage
+import pages.countriesOfRouting.CountryOfRoutingPage
+import pages.sections.CountryOfRoutingSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
 import scala.concurrent.Future
 
-class CustomsOfficeOfDestinationActualTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class CountriesOfRoutingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer: CustomsOfficeOfDestinationActualTransformer = app.injector.instanceOf[CustomsOfficeOfDestinationActualTransformer]
+  private val transformer = app.injector.instanceOf[CountriesOfRoutingTransformer]
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
@@ -44,24 +46,24 @@ class CustomsOfficeOfDestinationActualTransformerSpec extends SpecBase with AppW
         bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-  }
-
   "must transform data" in {
+    val countriesOfRouting = arbitrary[Seq[CountryOfRoutingOfConsignmentType02]].sample.value
 
-    val customsOfficeOfDestinationActualType03: CustomsOfficeOfDestinationActualType03 = arbitrary[CustomsOfficeOfDestinationActualType03].sample.value
+    countriesOfRouting.map {
+      countryOfRouting =>
+        when(mockReferenceDataService.getCountry(eqTo(countryOfRouting.country))(any()))
+          .thenReturn(
+            Future.successful(Country(code = countryOfRouting.country, description = "describe me"))
+          )
+    }
 
-    when(mockReferenceDataService.getCustomsOffice(eqTo(customsOfficeOfDestinationActualType03.referenceNumber))(any()))
-      .thenReturn(
-        Future.successful(CustomsOffice(customsOfficeOfDestinationActualType03.referenceNumber, "name", "countryID", None))
-      )
+    val result = transformer.transform(countriesOfRouting).apply(emptyUserAnswers).futureValue
 
-    val result = transformer.transform(customsOfficeOfDestinationActualType03).apply(Future.successful(emptyUserAnswers)).futureValue
-
-    result.getValue(CustomsOfficeOfDestinationActualPage).name mustBe "name"
-    result.getValue(CustomsOfficeOfDestinationActualPage).id mustBe customsOfficeOfDestinationActualType03.referenceNumber
-
+    countriesOfRouting.zipWithIndex.map {
+      case (countryOfRouting, i) =>
+        result.getSequenceNumber(CountryOfRoutingSection(Index(i))) mustBe countryOfRouting.sequenceNumber
+        result.getValue(CountryOfRoutingPage(Index(i))).code mustBe countryOfRouting.country
+        result.getValue(CountryOfRoutingPage(Index(i))).description mustBe "describe me"
+    }
   }
 }
