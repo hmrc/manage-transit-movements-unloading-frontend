@@ -18,14 +18,6 @@ package utils.transformers
 
 import generated.{AddressType01, AddressType14, ConsigneeType01, ConsigneeType05}
 import models.{DynamicAddress, Index, UserAnswers}
-import pages.consignee.CountryPage
-import pages.houseConsignment.index.items.{
-  ConsigneeAddressPage as ItemConsigneeAddressPage,
-  ConsigneeCountryPage as ItemConsigneeCountryPage,
-  ConsigneeIdentifierPage as ItemConsigneeIdentifierPage,
-  ConsigneeNamePage as ItemConsigneeNamePage
-}
-import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -45,17 +37,20 @@ class ConsigneeTransformer @Inject() (
         Future.successful
     }
 
-  private def transformAddress(address: Option[AddressType14])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+  private def transformAddress(address: Option[AddressType14])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.consignee.CountryPage
     address match {
       case Some(AddressType14(_, _, _, country)) =>
         set(CountryPage, country, referenceDataService.getCountry)
       case None =>
         Future.successful
     }
+  }
 
   def transform(consignee: Option[ConsigneeType05], hcIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] =
+  ): UserAnswers => Future[UserAnswers] = {
+    import pages.{ConsigneeIdentifierPage, ConsigneeNamePage}
     consignee match {
       case Some(ConsigneeType05(identificationNumber, name, address)) =>
         set(ConsigneeIdentifierPage(hcIndex), identificationNumber) andThen
@@ -64,10 +59,12 @@ class ConsigneeTransformer @Inject() (
       case None =>
         Future.successful
     }
+  }
 
   private def transformAddress(address: Option[AddressType14], hcIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] =
+  ): UserAnswers => Future[UserAnswers] = {
+    import pages.{ConsigneeAddressPage, ConsigneeCountryPage}
     address match {
       case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
         set(ConsigneeCountryPage(hcIndex), country, referenceDataService.getCountry) andThen
@@ -75,26 +72,30 @@ class ConsigneeTransformer @Inject() (
       case None =>
         Future.successful
     }
+  }
 
   def transform(consignee: Option[ConsigneeType01], hcIndex: Index, itemIndex: Index)(implicit
     hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] =
+  ): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.items.*
     consignee match {
       case Some(ConsigneeType01(identificationNumber, name, address)) =>
-        set(ItemConsigneeIdentifierPage(hcIndex, itemIndex), identificationNumber) andThen
-          set(ItemConsigneeNamePage(hcIndex, itemIndex), name) andThen
+        set(ConsigneeIdentifierPage(hcIndex, itemIndex), identificationNumber) andThen
+          set(ConsigneeNamePage(hcIndex, itemIndex), name) andThen
           transformAddress(address, hcIndex, itemIndex)
       case None =>
         Future.successful
     }
+  }
 
   private def transformAddress(address: Option[AddressType01], hcIndex: Index, itemIndex: Index)(implicit
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] =
+    import pages.houseConsignment.index.items.*
     address match {
       case Some(AddressType01(streetAndNumber, postcode, city, country)) =>
-        set(ItemConsigneeCountryPage(hcIndex, itemIndex), country, referenceDataService.getCountry) andThen
-          set(ItemConsigneeAddressPage(hcIndex, itemIndex), DynamicAddress(streetAndNumber, city, postcode))
+        set(ConsigneeCountryPage(hcIndex, itemIndex), country, referenceDataService.getCountry) andThen
+          set(ConsigneeAddressPage(hcIndex, itemIndex), DynamicAddress(streetAndNumber, city, postcode))
       case None =>
         Future.successful
     }

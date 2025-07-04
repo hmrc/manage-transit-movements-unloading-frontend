@@ -18,7 +18,6 @@ package utils.transformers
 
 import generated.*
 import models.{DynamicAddress, Index, UserAnswers}
-import pages.houseConsignment.consignor.CountryPage as HouseCountryPage
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,9 +55,10 @@ class ConsignorTransformer @Inject() (
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = {
     import pages.ConsignorAddressPage
+    import pages.houseConsignment.consignor.CountryPage
     address match {
       case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
-        set(HouseCountryPage(hcIndex), country, referenceDataService.getCountry) andThen
+        set(CountryPage(hcIndex), country, referenceDataService.getCountry) andThen
           set(ConsignorAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
       case None =>
         Future.successful
