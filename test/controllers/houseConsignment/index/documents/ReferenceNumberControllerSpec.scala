@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.documents
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.ReferenceNumberFormProvider
+import forms.DocumentReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
@@ -28,7 +28,7 @@ import pages.houseConsignment.index.documents.DocumentReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, _}
+import play.api.test.Helpers.*
 import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel.ReferenceNumberViewModelProvider
 import views.html.houseConsignment.index.documents.ReferenceNumberView
@@ -38,12 +38,12 @@ import scala.concurrent.Future
 class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val viewModel    = arbitrary[ReferenceNumberViewModel].sample.value
-  private val formProvider = new ReferenceNumberFormProvider()
+  private val formProvider = new DocumentReferenceNumberFormProvider()
 
   private val houseConsignmentMode = NormalMode
   private val documentMode         = NormalMode
 
-  private val form                  = formProvider(viewModel.requiredError, hcIndex, Seq.empty)
+  private val form                  = formProvider("houseConsignment.index.documents.referenceNumber", viewModel.requiredError)
   private val mockViewModelProvider = mock[ReferenceNumberViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

@@ -50,8 +50,8 @@ class NumberOfPackagesViewSpec extends InputTextViewBehaviours[BigInt] {
 
   override val prefix: String = Gen
     .oneOf(
-      "numberOfPackages.normalMode",
-      "numberOfPackages.checkMode"
+      "numberOfPackages.NormalMode",
+      "numberOfPackages.CheckMode"
     )
     .sample
     .value

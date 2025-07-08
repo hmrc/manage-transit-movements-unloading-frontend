@@ -19,20 +19,20 @@ package forms
 import forms.Constants.maxDocumentRefNumberLength
 import forms.mappings.Mappings
 import models.RichString
-import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
+import models.messages.UnloadingRemarksRequest.alphaNumericWithFullStopsRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(requiredError: String): Form[String] =
+  def apply(prefix: String, requiredError: String): Form[String] =
     Form(
       "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericWithSpacesRegex, "document.referenceNumber.error.invalidCharacters"),
-            maxLength(maxDocumentRefNumberLength, "document.referenceNumber.error.length")
+            regexp(alphaNumericWithFullStopsRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxDocumentRefNumberLength, s"$prefix.error.length")
           )
         )
     )

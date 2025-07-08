@@ -31,7 +31,8 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
   private val viewModel: DocumentReferenceNumberViewModel =
     arbitrary[DocumentReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new DocumentReferenceNumberFormProvider()(viewModel.requiredError)
+  private val formProvider        = new DocumentReferenceNumberFormProvider()
+  override def form: Form[String] = formProvider("document.referenceNumber", viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[DocumentReferenceNumberView].apply(form, mrn, arrivalId, NormalMode, viewModel, documentIndex)(fakeRequest, messages)
@@ -54,7 +55,7 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 70 characters long and include letters, numbers and full stops.")
 
   behave like pageWithInputText()
 
