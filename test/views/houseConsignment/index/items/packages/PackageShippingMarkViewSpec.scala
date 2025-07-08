@@ -42,8 +42,8 @@ class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Gene
 
   override val prefix: String = Gen
     .oneOf(
-      "houseConsignment.index.item.packageShippingMark.normalMode",
-      "houseConsignment.index.item.packageShippingMark.checkMode"
+      "houseConsignment.index.item.packageShippingMark.NormalMode",
+      "houseConsignment.index.item.packageShippingMark.CheckMode"
     )
     .sample
     .value
