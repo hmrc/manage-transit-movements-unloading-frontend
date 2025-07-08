@@ -28,7 +28,7 @@ import pages.documents.DocumentReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.documents.DocumentReferenceNumberViewModel
 import viewModels.documents.DocumentReferenceNumberViewModel.DocumentReferenceNumberViewModelProvider
 import views.html.documents.DocumentReferenceNumberView
@@ -39,7 +39,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
   private val viewModel    = arbitrary[DocumentReferenceNumberViewModel].sample.value
   private val formProvider = new DocumentReferenceNumberFormProvider()
-  private val form         = formProvider(viewModel.requiredError)
+  private val form         = formProvider("document.referenceNumber", viewModel.requiredError)
   private val mode         = NormalMode
 
   private val mockViewModelProvider = mock[DocumentReferenceNumberViewModelProvider]

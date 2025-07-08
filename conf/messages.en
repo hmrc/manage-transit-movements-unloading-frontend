@@ -1277,7 +1277,6 @@ houseConsignment.index.documents.referenceNumber.NormalMode.error.required = Ent
 houseConsignment.index.documents.referenceNumber.CheckMode.error.required = Enter the new document’s reference number in house consignment {0}
 houseConsignment.index.documents.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z, numbers 0 to 9 and full stops
 houseConsignment.index.documents.referenceNumber.error.length = The reference number must be 70 characters or less
-houseConsignment.index.documents.referenceNumber.error.duplicate = The reference number must be unique
 
 houseConsignment.index.documents.addDocumentsYesNo.title = Do you want to add any documents for house consignment {0}?
 houseConsignment.index.documents.addDocumentsYesNo.heading = Do you want to add any documents for house consignment {0}?

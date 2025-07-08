@@ -29,7 +29,7 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
   private val maxLengthKey         = s"$prefix.error.length"
   private val maxLength            = 70
 
-  val form = new DocumentReferenceNumberFormProvider()(requiredKey)
+  val form = new DocumentReferenceNumberFormProvider()(prefix, requiredKey)
 
   ".value" - {
 

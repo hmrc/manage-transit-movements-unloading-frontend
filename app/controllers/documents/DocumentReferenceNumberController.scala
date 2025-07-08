@@ -16,16 +16,17 @@
 
 package controllers.documents
 
-import controllers.actions._
+import controllers.actions.*
 import forms.DocumentReferenceNumberFormProvider
-import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.DocumentNavigator
 import pages.documents.DocumentReferenceNumberPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.documents.DocumentReferenceNumberViewModel
 import viewModels.documents.DocumentReferenceNumberViewModel.DocumentReferenceNumberViewModelProvider
 import views.html.documents.DocumentReferenceNumberView
 
@@ -45,13 +46,16 @@ class DocumentReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private def form(viewModel: DocumentReferenceNumberViewModel): Form[String] =
+    formProvider("document.referenceNumber", viewModel.requiredError)
+
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(mode)
         val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(documentIndex)) match {
-          case None        => formProvider(viewModel.requiredError)
-          case Some(value) => formProvider(viewModel.requiredError).fill(value)
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel, documentIndex))
@@ -63,22 +67,15 @@ class DocumentReferenceNumberController @Inject() (
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(mode)
-          formProvider(viewModel.requiredError)
+          form(viewModel)
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, viewModel, documentIndex))),
-              value => redirect(mode, value, documentIndex)
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(documentIndex), value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(DocumentReferenceNumberPage(documentIndex), mode, request.userAnswers))
             )
-
       }
-
-  private def redirect(
-    mode: Mode,
-    value: String,
-    documentIndex: Index
-  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(documentIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(DocumentReferenceNumberPage(documentIndex), mode, request.userAnswers))
 }

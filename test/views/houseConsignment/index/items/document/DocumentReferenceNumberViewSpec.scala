@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.items.document
 
-import forms.ItemsDocumentReferenceNumberFormProvider
+import forms.DocumentReferenceNumberFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -31,7 +31,8 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
   private val viewModel: ItemsDocumentReferenceNumberViewModel =
     arbitrary[ItemsDocumentReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new ItemsDocumentReferenceNumberFormProvider()(viewModel.requiredError)
+  private val formProvider        = new DocumentReferenceNumberFormProvider()
+  override def form: Form[String] = formProvider("houseConsignment.index.items.document.referenceNumber", viewModel.requiredError)
 
   def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
@@ -40,8 +41,8 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = Gen
     .oneOf(
-      "houseConsignment.index.items.document.referenceNumber.normalMode",
-      "houseConsignment.index.items.document.referenceNumber.checkMode"
+      "houseConsignment.index.items.document.referenceNumber.NormalMode",
+      "houseConsignment.index.items.document.referenceNumber.CheckMode"
     )
     .sample
     .value
