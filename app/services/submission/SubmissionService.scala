@@ -17,7 +17,7 @@
 package services.submission
 
 import config.FrontendAppConfig
-import connectors.ApiConnector
+import connectors.ArrivalMovementConnector
 import generated.*
 import models.Procedure.*
 import models.UnloadingSubmissionValues.*
@@ -37,7 +37,7 @@ import scala.xml.{NamespaceBinding, NodeSeq}
 class SubmissionService @Inject() (
   dateTimeService: DateTimeService,
   messageIdentificationService: MessageIdentificationService,
-  connector: ApiConnector,
+  connector: ArrivalMovementConnector,
   config: FrontendAppConfig
 ) {
 
