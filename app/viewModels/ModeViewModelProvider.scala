@@ -23,32 +23,14 @@ trait ModeViewModelProvider {
 
   val prefix: String
 
-  def heading(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display, itemIndex.display)
+  def heading(mode: Mode, indexes: Index*)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.heading", indexes*)
 
-  def heading(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display)
+  def title(mode: Mode, indexes: Index*)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.title", indexes*)
 
-  def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.title", houseConsignmentIndex.display, itemIndex.display)
-
-  def title(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display)
-
-  def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display, itemIndex.display)
-
-  def requiredError(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display)
-
-  def heading(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.heading")
-
-  def title(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.title")
-
-  def requiredError(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.error.required")
+  def requiredError(mode: Mode, indexes: Index*)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.error.required", indexes*)
 
   def paragraph(mode: Mode)(implicit messages: Messages): Option[String] = mode match {
     case NormalMode => None

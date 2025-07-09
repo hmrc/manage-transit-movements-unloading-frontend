@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.documents
 
-import forms.ReferenceNumberFormProvider
+import forms.DocumentReferenceNumberFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -31,8 +31,10 @@ class ReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
   private val viewModel: ReferenceNumberViewModel =
     arbitrary[ReferenceNumberViewModel].sample.value
 
-  private val mode: Mode          = Gen.oneOf(NormalMode, CheckMode).sample.value
-  override def form: Form[String] = new ReferenceNumberFormProvider()(viewModel.requiredError, houseConsignmentIndex, Seq.empty)
+  private val mode: Mode = Gen.oneOf(NormalMode, CheckMode).sample.value
+
+  private val formProvider        = new DocumentReferenceNumberFormProvider()
+  override def form: Form[String] = formProvider("houseConsignment.index.documents.referenceNumber", viewModel.requiredError)
 
   def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
@@ -41,8 +43,8 @@ class ReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = Gen
     .oneOf(
-      "houseConsignment.index.documents.referenceNumber.normalMode",
-      "houseConsignment.index.documents.referenceNumber.checkMode"
+      "houseConsignment.index.documents.referenceNumber.NormalMode",
+      "houseConsignment.index.documents.referenceNumber.CheckMode"
     )
     .sample
     .value
@@ -57,7 +59,7 @@ class ReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading(text = viewModel.heading)
 
-  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 70 characters long and include letters, numbers and full stops.")
 
   behave like pageWithInputText()
 

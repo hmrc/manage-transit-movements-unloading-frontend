@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.maxSealIdentificationLength
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
+import models.messages.UnloadingRemarksRequest.alphaNumericWithFullStopsRegex
 import play.api.data.FormError
 
 class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
@@ -29,7 +29,7 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
   private val maxLengthKey         = s"$prefix.error.length"
   private val maxLength            = 70
 
-  val form = new DocumentReferenceNumberFormProvider()(requiredKey)
+  val form = new DocumentReferenceNumberFormProvider()(prefix, requiredKey)
 
   ".value" - {
 
@@ -50,7 +50,7 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithInvalidCharacters(
       form,
       fieldName,
-      error = FormError(fieldName, invalidCharactersKey, Seq(alphaNumericWithSpacesRegex.regex)),
+      error = FormError(fieldName, invalidCharactersKey, Seq(alphaNumericWithFullStopsRegex.regex)),
       maxSealIdentificationLength
     )
 

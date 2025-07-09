@@ -16,18 +16,17 @@
 
 package controllers.houseConsignment.index.documents
 
-import controllers.actions._
-import forms.ReferenceNumberFormProvider
-import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
+import controllers.actions.*
+import forms.DocumentReferenceNumberFormProvider
+import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
 import pages.houseConsignment.index.documents.DocumentReferenceNumberPage
-import pages.sections.houseConsignment.index.documents.DocumentsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel.ReferenceNumberViewModelProvider
 import views.html.houseConsignment.index.documents.ReferenceNumberView
 
@@ -39,7 +38,7 @@ class ReferenceNumberController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   navigatorProvider: HouseConsignmentDocumentNavigatorProvider,
-  formProvider: ReferenceNumberFormProvider,
+  formProvider: DocumentReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ReferenceNumberView,
   viewModelProvider: ReferenceNumberViewModelProvider
@@ -47,25 +46,16 @@ class ReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(requiredError: String, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[?]): Form[String] =
-    formProvider(requiredError, houseConsignmentIndex, otherDocumentReferenceNumbers(houseConsignmentIndex, documentIndex))
-
-  private def otherDocumentReferenceNumbers(houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
-    val numberDocuments = request.userAnswers.get(DocumentsSection(houseConsignmentIndex)).length
-    (0 until numberDocuments)
-      .filterNot(_ == documentIndex.position)
-      .map(Index(_))
-      .map(DocumentReferenceNumberPage(houseConsignmentIndex, _))
-      .flatMap(request.userAnswers.get(_))
-  }
+  private def form(viewModel: ReferenceNumberViewModel): Form[String] =
+    formProvider("houseConsignment.index.documents.referenceNumber", viewModel.requiredError)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, documentMode: Mode, houseConsignmentIndex: Index, documentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(documentMode, houseConsignmentIndex)
         val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex)) match {
-          case None        => form(viewModel.requiredError, houseConsignmentIndex, documentIndex)
-          case Some(value) => form(viewModel.requiredError, houseConsignmentIndex, documentIndex).fill(value)
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentMode, documentMode, viewModel, houseConsignmentIndex, documentIndex))
@@ -77,40 +67,32 @@ class ReferenceNumberController @Inject() (
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(documentMode, houseConsignmentIndex)
-          form(viewModel.requiredError, houseConsignmentIndex, documentIndex)
+          form(viewModel)
             .bindFromRequest()
             .fold(
               formWithErrors =>
                 Future.successful(
                   BadRequest(
-                    view(formWithErrors,
-                         request.userAnswers.mrn,
-                         arrivalId,
-                         houseConsignmentMode,
-                         documentMode,
-                         viewModel,
-                         houseConsignmentIndex,
-                         documentIndex
+                    view(
+                      formWithErrors,
+                      request.userAnswers.mrn,
+                      arrivalId,
+                      houseConsignmentMode,
+                      documentMode,
+                      viewModel,
+                      houseConsignmentIndex,
+                      documentIndex
                     )
                   )
                 ),
-              value => redirect(houseConsignmentMode, documentMode, value, houseConsignmentIndex, documentIndex)
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield {
+                  val navigator = navigatorProvider.apply(houseConsignmentMode)
+                  Redirect(navigator.nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), documentMode, request.userAnswers))
+                }
             )
-
       }
-
-  private def redirect(
-    houseConsignmentMode: Mode,
-    documentMode: Mode,
-    value: String,
-    houseConsignmentIndex: Index,
-    documentIndex: Index
-  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield {
-      val navigator = navigatorProvider.apply(houseConsignmentMode)
-      Redirect(navigator.nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), documentMode, request.userAnswers))
-    }
 }

@@ -16,16 +16,17 @@
 
 package controllers.houseConsignment.index.items.document
 
-import controllers.actions._
-import forms.ItemsDocumentReferenceNumberFormProvider
-import models.requests.MandatoryDataRequest
+import controllers.actions.*
+import forms.DocumentReferenceNumberFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.items.document.ItemsDocumentReferenceNumberViewModel
 import viewModels.houseConsignment.index.items.document.ItemsDocumentReferenceNumberViewModel.ItemsDocumentReferenceNumberViewModelProvider
 import views.html.houseConsignment.index.items.document.DocumentReferenceNumberView
 
@@ -37,13 +38,16 @@ class DocumentReferenceNumberController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   navigatorProvider: DocumentNavigatorProvider,
-  formProvider: ItemsDocumentReferenceNumberFormProvider,
+  formProvider: DocumentReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: DocumentReferenceNumberView,
   viewModelProvider: ItemsDocumentReferenceNumberViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+
+  private def form(viewModel: ItemsDocumentReferenceNumberViewModel): Form[String] =
+    formProvider("houseConsignment.index.items.document.referenceNumber", viewModel.requiredError)
 
   def onPageLoad(
     arrivalId: ArrivalId,
@@ -57,23 +61,23 @@ class DocumentReferenceNumberController @Inject() (
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(documentMode, houseConsignmentIndex, itemIndex)
-        val form      = formProvider(viewModel.requiredError)
         val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+          case None        => form(viewModel)
+          case Some(value) => form(viewModel).fill(value)
         }
 
         Ok(
-          view(preparedForm,
-               request.userAnswers.mrn,
-               arrivalId,
-               houseConsignmentMode,
-               itemMode,
-               documentMode,
-               viewModel,
-               houseConsignmentIndex,
-               itemIndex,
-               documentIndex
+          view(
+            preparedForm,
+            request.userAnswers.mrn,
+            arrivalId,
+            houseConsignmentMode,
+            itemMode,
+            documentMode,
+            viewModel,
+            houseConsignmentIndex,
+            itemIndex,
+            documentIndex
           )
         )
     }
@@ -92,44 +96,34 @@ class DocumentReferenceNumberController @Inject() (
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(documentMode, houseConsignmentIndex, itemIndex)
-          formProvider(viewModel.requiredError)
+          form(viewModel)
             .bindFromRequest()
             .fold(
               formWithErrors =>
                 Future.successful(
                   BadRequest(
-                    view(formWithErrors,
-                         request.userAnswers.mrn,
-                         arrivalId,
-                         houseConsignmentMode,
-                         itemMode,
-                         documentMode,
-                         viewModel,
-                         houseConsignmentIndex,
-                         itemIndex,
-                         documentIndex
+                    view(
+                      formWithErrors,
+                      request.userAnswers.mrn,
+                      arrivalId,
+                      houseConsignmentMode,
+                      itemMode,
+                      documentMode,
+                      viewModel,
+                      houseConsignmentIndex,
+                      itemIndex,
+                      documentIndex
                     )
                   )
                 ),
-              value => redirect(houseConsignmentMode, itemMode, documentMode, value, houseConsignmentIndex, itemIndex, documentIndex)
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield {
+                  val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+                  Redirect(navigator.nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, request.userAnswers))
+                }
             )
-
       }
-
-  private def redirect(
-    houseConsignmentMode: Mode,
-    itemMode: Mode,
-    documentMode: Mode,
-    value: String,
-    houseConsignmentIndex: Index,
-    itemIndex: Index,
-    documentIndex: Index
-  )(implicit request: MandatoryDataRequest[?]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield {
-      val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
-      Redirect(navigator.nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, request.userAnswers))
-    }
 }
