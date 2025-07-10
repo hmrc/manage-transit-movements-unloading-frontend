@@ -19,6 +19,7 @@ package controllers.houseConsignment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.{Index, NormalMode, UserAnswers}
+import navigation.FakeHouseConsignmentNavigatorProvider
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -51,7 +52,7 @@ class AddItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator),
+        bind[HouseConsignmentNavigator].toProvider(classOf[FakeHouseConsignmentNavigatorProvider]),
         bind(classOf[GoodsReferenceService]).toInstance(mockGoodsReferenceService)
       )
 

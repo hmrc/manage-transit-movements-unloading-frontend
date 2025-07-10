@@ -16,11 +16,11 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
 import forms.WeightFormProvider
 import models.{ArrivalId, Mode}
-import navigation.Navigation
+import navigation.ConsignmentNavigator
 import pages.GrossWeightPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigation,
+  navigator: ConsignmentNavigator,
   actions: Actions,
   formProvider: WeightFormProvider,
   val controllerComponents: MessagesControllerComponents,

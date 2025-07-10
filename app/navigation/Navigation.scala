@@ -50,7 +50,6 @@ class Navigation extends Navigator {
     case CanSealsBeReadPage | AreAnySealsBrokenPage          => ua => stateOfSealsNavigation(ua, CheckMode)
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage => ua => anyDiscrepanciesNavigation(ua, CheckMode)
     case DoYouHaveAnythingElseToReportYesNoPage              => ua => anythingElseToReportNavigation(ua, CheckMode)
-    case GrossWeightPage                                     => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case GoodsTooLargeForContainerYesNoPage                  => ua => goodsTooLargeForContainerNavigation(ua, CheckMode)
     case SealsReplacedByCustomsAuthorityYesNoPage            => ua => sealsReplacedNavigation(ua, CheckMode)
     case _                                                   => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))

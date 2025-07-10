@@ -16,8 +16,7 @@
 
 package utils.transformers
 
-import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
-import models.reference.{Country, TransportMeansIdentification}
+import generated.{CUSTOM_DepartureTransportMeansType01, DepartureTransportMeansType01}
 import models.{Index, UserAnswers}
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,95 +29,44 @@ class DepartureTransportMeansTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class GenericDepartureTransportMeans(
-    sequenceNumber: BigInt,
-    typeOfIdentification: Option[String],
-    identificationNumber: Option[String],
-    nationality: Option[String]
-  )
-
-  private object GenericDepartureTransportMeans {
-
-    def apply(dtm: DepartureTransportMeansType02): GenericDepartureTransportMeans =
-      new GenericDepartureTransportMeans(
-        sequenceNumber = dtm.sequenceNumber,
-        typeOfIdentification = Some(dtm.typeOfIdentification),
-        identificationNumber = Some(dtm.identificationNumber),
-        nationality = Some(dtm.nationality)
-      )
-
-    def apply(dtm: CUSTOM_DepartureTransportMeansType02): GenericDepartureTransportMeans =
-      new GenericDepartureTransportMeans(
-        sequenceNumber = dtm.sequenceNumber,
-        typeOfIdentification = dtm.typeOfIdentification,
-        identificationNumber = dtm.identificationNumber,
-        nationality = dtm.nationality
-      )
-  }
-
-  private case class TempDepartureTransportMeans[T](
-    underlying: T,
-    typeOfIdentification: Option[TransportMeansIdentification],
-    nationality: Option[Country]
-  )
-
   def transform(
-    departureTransportMeans: Seq[CUSTOM_DepartureTransportMeansType02]
+    departureTransportMeans: Seq[CUSTOM_DepartureTransportMeansType01]
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.departureMeansOfTransport.*
     import pages.sections.TransportMeansSection
-
-    genericTransform(departureTransportMeans.map(GenericDepartureTransportMeans(_))) {
-      case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
-        setSequenceNumber(TransportMeansSection(index), underlying.sequenceNumber) andThen
-          set(TransportMeansIdentificationPage(index), typeOfIdentification) andThen
-          set(VehicleIdentificationNumberPage(index), underlying.identificationNumber) andThen
-          set(CountryPage(index), nationality)
-    }
+    userAnswers =>
+      departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
+        case (acc, (value, i)) =>
+          val index = Index(i)
+          acc.flatMap {
+            setSequenceNumber(TransportMeansSection(index), value.sequenceNumber) andThen
+              set(TransportMeansIdentificationPage(index), value.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
+              set(VehicleIdentificationNumberPage(index), value.identificationNumber) andThen
+              set(CountryPage(index), value.nationality, referenceDataService.getCountry)
+          }
+      }
   }
 
   def transform(
-    departureTransportMeans: Seq[DepartureTransportMeansType02],
+    departureTransportMeans: Seq[DepartureTransportMeansType01],
     hcIndex: Index
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.departureMeansOfTransport.*
     import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
-
-    genericTransform(departureTransportMeans.map(GenericDepartureTransportMeans(_))) {
-      case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
-        setSequenceNumber(TransportMeansSection(hcIndex, index), underlying.sequenceNumber) andThen
-          set(TransportMeansIdentificationPage(hcIndex, index), typeOfIdentification) andThen
-          set(VehicleIdentificationNumberPage(hcIndex, index), underlying.identificationNumber) andThen
-          set(CountryPage(hcIndex, index), nationality)
-    }
-  }
-
-  private def genericTransform(
-    departureTransportMeans: Seq[GenericDepartureTransportMeans]
-  )(
-    pipeline: (TempDepartureTransportMeans[GenericDepartureTransportMeans], Index) => UserAnswers => Future[UserAnswers]
-  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
-    lazy val referenceDataLookups = departureTransportMeans.map {
-      dtm =>
-        // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
-        val typeOfIdentificationF = dtm.typeOfIdentification.lookup(referenceDataService.getMeansOfTransportIdentificationType)
-        val nationalityF          = dtm.nationality.lookup(referenceDataService.getCountry)
-
-        for {
-          typeOfIdentification <- typeOfIdentificationF
-          nationality          <- nationalityF
-        } yield TempDepartureTransportMeans(
-          underlying = dtm,
-          typeOfIdentification = typeOfIdentification,
-          nationality = nationality
-        )
-    }
-
-    Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (dtm, i)) =>
-          acc.flatMap(pipeline(dtm, Index(i)))
+    userAnswers =>
+      departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
+        case (acc, (value, i)) =>
+          val index = Index(i)
+          acc.flatMap {
+            setSequenceNumber(TransportMeansSection(hcIndex, index), value.sequenceNumber) andThen
+              set(
+                TransportMeansIdentificationPage(hcIndex, index),
+                value.typeOfIdentification,
+                referenceDataService.getMeansOfTransportIdentificationType
+              ) andThen
+              set(VehicleIdentificationNumberPage(hcIndex, index), value.identificationNumber) andThen
+              set(CountryPage(hcIndex, index), value.nationality, referenceDataService.getCountry)
+          }
       }
-    }
   }
 }

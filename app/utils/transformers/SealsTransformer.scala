@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import generated.SealType04
+import generated.SealType01
 import models.{Index, UserAnswers}
 import pages.sections.SealSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
@@ -26,17 +26,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(seals: Seq[SealType04], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
-    seals.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-      case (acc, (SealType04(sequenceNumber, identifier), i)) =>
-        acc.flatMap {
-          userAnswers =>
-            val sealIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              setSequenceNumber(SealSection(equipmentIndex, sealIndex), sequenceNumber) andThen
-                set(SealIdentificationNumberPage(equipmentIndex, sealIndex), identifier)
-
-            pipeline(userAnswers)
-        }
-    }
+  def transform(seals: Seq[SealType01], equipmentIndex: Index): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      seals.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
+        case (acc, (SealType01(sequenceNumber, identifier), i)) =>
+          val sealIndex: Index = Index(i)
+          acc.flatMap {
+            setSequenceNumber(SealSection(equipmentIndex, sealIndex), sequenceNumber) andThen
+              set(SealIdentificationNumberPage(equipmentIndex, sealIndex), identifier)
+          }
+      }
 }

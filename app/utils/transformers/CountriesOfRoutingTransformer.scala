@@ -16,28 +16,30 @@
 
 package utils.transformers
 
-import generated.CustomsOfficeOfDestinationActualType03
-import models.UserAnswers
-import pages.CustomsOfficeOfDestinationActualPage
+import generated.CountryOfRoutingOfConsignmentType02
+import models.{Index, UserAnswers}
+import pages.countriesOfRouting.CountryOfRoutingPage
+import pages.sections.CountryOfRoutingSection
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsOfficeOfDestinationActualTransformer @Inject() (
+class CountriesOfRoutingTransformer @Inject() (
   referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(customsOfficeOfDestination: CustomsOfficeOfDestinationActualType03)(implicit
-    hc: HeaderCarrier
-  ): Future[UserAnswers] => Future[UserAnswers] = userAnswers =>
-    referenceDataService.getCustomsOffice(customsOfficeOfDestination.referenceNumber) flatMap {
-      customsOffice =>
-        val pipeline: UserAnswers => Future[UserAnswers] =
-          set(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        pipeline(userAnswers)
-    }
+  def transform(countriesOfRouting: Seq[CountryOfRoutingOfConsignmentType02])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    userAnswers =>
+      countriesOfRouting.zipWithIndex
+        .foldLeft(Future.successful(userAnswers)) {
+          case (acc, (value, i)) =>
+            val index: Index = Index(i)
+            acc.flatMap {
+              setSequenceNumber(CountryOfRoutingSection(index), value.sequenceNumber) andThen
+                set(CountryOfRoutingPage(index), value.country, referenceDataService.getCountry)
+            }
+        }
 }

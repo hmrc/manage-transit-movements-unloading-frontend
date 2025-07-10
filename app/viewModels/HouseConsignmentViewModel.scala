@@ -36,7 +36,8 @@ object HouseConsignmentViewModel {
       val rows = Seq(
         helper.countryOfDestination,
         helper.safetyAndSecurityDetails,
-        helper.grossMassRow
+        helper.grossMassRow,
+        helper.ucrRow
       ).flatten
 
       val children: Seq[Section] = Seq(

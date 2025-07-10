@@ -19,35 +19,52 @@ package connectors
 import config.FrontendAppConfig
 import models.ArrivalId
 import models.P5.Messages
-import play.api.http.HeaderNames._
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.http.HeaderNames.{ACCEPT, CONTENT_TYPE}
+import play.api.libs.ws.XMLBodyWritables.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.xml.{Node, XML}
+import scala.xml.{Node, NodeSeq, XML}
 
 class ArrivalMovementConnector @Inject() (
   config: FrontendAppConfig,
   http: HttpClientV2
-) {
+)(implicit ec: ExecutionContext) {
 
-  def getMessageMetaData(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Messages] = {
+  private val version = config.phase6Enabled match {
+    case _ => 2.1
+  }
+
+  def getMessageMetaData(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Messages] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .get(url)
-      .setHeader(ACCEPT -> "application/vnd.hmrc.2.1+json")
+      .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+json")
       .execute[Messages]
   }
 
-  def getMessage(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {
+  def getMessage(arrivalId: ArrivalId, messageId: String)(implicit hc: HeaderCarrier): Future[Node] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId/body"
     http
       .get(url)
-      .setHeader(ACCEPT -> "application/vnd.hmrc.2.1+xml")
+      .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+xml")
       .execute[HttpResponse]
       .map(_.body)
       .map(XML.loadString)
+  }
+
+  def submit(xml: NodeSeq, arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
+    http
+      .post(url)
+      .setHeader(
+        ACCEPT       -> s"application/vnd.hmrc.$version+json",
+        CONTENT_TYPE -> "application/xml"
+      )
+      .withBody(xml)
+      .execute[HttpResponse]
   }
 }

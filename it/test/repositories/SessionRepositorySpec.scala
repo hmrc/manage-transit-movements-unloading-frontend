@@ -45,7 +45,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
       messageType = CC043C,
       correlationIdentifier = None
     ),
-    TransitOperation = TransitOperationType14(
+    TransitOperation = TransitOperationType10(
       MRN = "MRN",
       declarationType = None,
       declarationAcceptanceDate = None,
@@ -56,7 +56,7 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
       referenceNumber = "cooda"
     ),
     HolderOfTheTransitProcedure = None,
-    TraderAtDestination = TraderAtDestinationType03(
+    TraderAtDestination = TraderAtDestinationType02(
       identificationNumber = "tad"
     ),
     CTLControl = None,

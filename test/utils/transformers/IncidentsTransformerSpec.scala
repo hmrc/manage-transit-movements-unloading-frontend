@@ -76,7 +76,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   }
 
   // Because each incident has its own set of mocks, we need to ensure the values are unique
-  private val incidentsGen = arbitrary[Seq[IncidentType04]]
+  private val incidentsGen = arbitrary[Seq[IncidentType03]]
     .map {
       _.distinctBy(_.code)
         .distinctBy(_.Endorsement)

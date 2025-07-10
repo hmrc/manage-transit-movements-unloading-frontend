@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.EndorsementType03
+import generated.EndorsementType02
 import generators.Generators
 import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
@@ -52,7 +52,7 @@ class IncidentEndorsementTransformerSpec extends SpecBase with AppWithDefaultMoc
 
   "must transform data" - {
     "when endorsement defined" in {
-      forAll(arbitrary[EndorsementType03], Gen.alphaNumStr) {
+      forAll(arbitrary[EndorsementType02], Gen.alphaNumStr) {
         (endorsement, countryDescription) =>
           beforeEach()
 

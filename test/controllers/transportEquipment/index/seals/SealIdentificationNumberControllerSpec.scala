@@ -37,11 +37,11 @@ import scala.concurrent.Future
 
 class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val viewModel     = arbitrary[SealIdentificationNumberViewModel].sample.value
-  private val formProvider  = new SealIdentificationNumberFormProvider()
-  private val form          = formProvider(viewModel.requiredError, Seq.empty)
-  private val equipmentMode = NormalMode
-  private val sealMode      = NormalMode
+  private val viewModel         = arbitrary[SealIdentificationNumberViewModel].sample.value
+  private lazy val formProvider = app.injector.instanceOf[SealIdentificationNumberFormProvider]
+  private lazy val form         = formProvider(viewModel.requiredError, Seq.empty)
+  private val equipmentMode     = NormalMode
+  private val sealMode          = NormalMode
 
   private val mockViewModelProvider = mock[SealIdentificationNumberViewModelProvider]
 

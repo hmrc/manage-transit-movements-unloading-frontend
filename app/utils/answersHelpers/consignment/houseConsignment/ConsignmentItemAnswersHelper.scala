@@ -22,11 +22,11 @@ import models.reference.Country
 import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{
-  ConsigneeAddressPage => ItemConsigneeAddressPage,
-  ConsigneeCountryPage => ItemConsigneeCountryPage,
-  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
-  ConsigneeNamePage => ItemConsigneeNamePage,
-  _
+  ConsigneeAddressPage as ItemConsigneeAddressPage,
+  ConsigneeCountryPage as ItemConsigneeCountryPage,
+  ConsigneeIdentifierPage as ItemConsigneeIdentifierPage,
+  ConsigneeNamePage as ItemConsigneeNamePage,
+  *
 }
 import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
@@ -36,7 +36,7 @@ import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.item._
+import utils.answersHelpers.consignment.houseConsignment.item.*
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -53,6 +53,15 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
     call = Some(routes.DescriptionController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex)),
+    args = itemIndex.display
+  )
+
+  def ucrRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.uniqueConsignmentReference",
+    id = None,
+    call = Some(routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex)),
     args = itemIndex.display
   )
 

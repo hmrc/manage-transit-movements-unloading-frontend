@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
+import generated.{AdditionalReferenceType01, AdditionalReferenceType02}
 import generators.Generators
 import models.Index
 import models.reference.AdditionalReferenceType
@@ -54,19 +54,19 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
   "must transform data" in {
 
-    val additionalReferenceType03: Seq[AdditionalReferenceType03] = arbitrary[Seq[AdditionalReferenceType03]].sample.value
+    val additionalReferences: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
 
-    additionalReferenceType03.map {
-      type0 =>
-        when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
+    additionalReferences.map {
+      additionalReference =>
+        when(mockReferenceDataService.getAdditionalReference(eqTo(additionalReference.typeValue))(any()))
           .thenReturn(
-            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+            Future.successful(AdditionalReferenceType(documentType = additionalReference.typeValue, description = "describe me"))
           )
     }
 
-    val result = transformer.transform(additionalReferenceType03).apply(emptyUserAnswers).futureValue
+    val result = transformer.transform(additionalReferences).apply(emptyUserAnswers).futureValue
 
-    additionalReferenceType03.zipWithIndex.map {
+    additionalReferences.zipWithIndex.map {
       case (refType, i) =>
         result.getValue(AdditionalReferenceTypePage(Index(i))).documentType mustBe refType.typeValue
         result.getValue(AdditionalReferenceTypePage(Index(i))).description mustBe "describe me"
@@ -78,18 +78,18 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     import pages.houseConsignment.index.additionalReference.*
     import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
 
-    val additionalReferenceType03: Seq[AdditionalReferenceType03] = arbitrary[Seq[AdditionalReferenceType03]].sample.value
+    val additionalReferences: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
 
-    additionalReferenceType03.map {
-      type0 =>
-        when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
+    additionalReferences.map {
+      additionalReference =>
+        when(mockReferenceDataService.getAdditionalReference(eqTo(additionalReference.typeValue))(any()))
           .thenReturn(
-            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+            Future.successful(AdditionalReferenceType(documentType = additionalReference.typeValue, description = "describe me"))
           )
     }
-    val result = transformer.transform(additionalReferenceType03, hcIndex).apply(emptyUserAnswers).futureValue
+    val result = transformer.transform(additionalReferences, hcIndex).apply(emptyUserAnswers).futureValue
 
-    additionalReferenceType03.zipWithIndex.map {
+    additionalReferences.zipWithIndex.map {
       case (refType, i) =>
         result.getSequenceNumber(AdditionalReferenceSection(hcIndex, Index(i))) mustBe refType.sequenceNumber
         result.getValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(i))).documentType mustBe refType.typeValue
@@ -99,21 +99,21 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
   "must transform data at Item level" - {
 
     "when is docTypeExcise" in {
-      val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
+      val additionalReferences: Seq[AdditionalReferenceType01] = arbitrary[Seq[AdditionalReferenceType01]].sample.value
 
-      additionalReferenceType02.map {
-        type0 =>
-          when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
+      additionalReferences.map {
+        additionalReference =>
+          when(mockReferenceDataService.getAdditionalReference(eqTo(additionalReference.typeValue))(any()))
             .thenReturn(
-              Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+              Future.successful(AdditionalReferenceType(documentType = additionalReference.typeValue, description = "describe me"))
             )
       }
 
       when(mockReferenceDataService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(true))
 
-      val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+      val result = transformer.transform(additionalReferences, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-      additionalReferenceType02.zipWithIndex.map {
+      additionalReferences.zipWithIndex.map {
         case (refType, i) =>
           result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
           result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
@@ -122,21 +122,21 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     }
 
     "when is not docTypeExcise" in {
-      val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
+      val additionalReferences: Seq[AdditionalReferenceType01] = arbitrary[Seq[AdditionalReferenceType01]].sample.value
 
-      additionalReferenceType02.map {
-        type0 =>
-          when(mockReferenceDataService.getAdditionalReference(eqTo(type0.typeValue))(any()))
+      additionalReferences.map {
+        additionalReference =>
+          when(mockReferenceDataService.getAdditionalReference(eqTo(additionalReference.typeValue))(any()))
             .thenReturn(
-              Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+              Future.successful(AdditionalReferenceType(documentType = additionalReference.typeValue, description = "describe me"))
             )
       }
 
       when(mockReferenceDataService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
 
-      val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+      val result = transformer.transform(additionalReferences, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-      additionalReferenceType02.zipWithIndex.map {
+      additionalReferences.zipWithIndex.map {
         case (refType, i) =>
           result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
           result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue

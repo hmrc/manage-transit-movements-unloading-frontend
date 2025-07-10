@@ -16,12 +16,12 @@
 
 package utils.answersHelpers.consignment
 
-import generated.AddressType07
+import generated.AddressType14
 import models.DynamicAddress
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.consignor._
+import pages.consignor.*
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -110,7 +110,7 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(row)" - {
         "when address defined" in {
-          forAll(arbitrary[AddressType07]) {
+          forAll(arbitrary[AddressType14]) {
             address =>
               val helper = new ConsignorAnswersHelper(emptyUserAnswers)
               val result = helper.address(Some(address)).value

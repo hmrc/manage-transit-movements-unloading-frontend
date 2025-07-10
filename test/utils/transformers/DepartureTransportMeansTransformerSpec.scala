@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{CUSTOM_DepartureTransportMeansType02, DepartureTransportMeansType02}
+import generated.{CUSTOM_DepartureTransportMeansType01, DepartureTransportMeansType01}
 import generators.Generators
 import models.Index
 import models.reference.{Country, TransportMeansIdentification}
@@ -54,15 +54,15 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
       import pages.sections.TransportMeansSection
 
-      def departureTransportMeansGen(implicit a: Arbitrary[CUSTOM_DepartureTransportMeansType02]): Gen[Seq[CUSTOM_DepartureTransportMeansType02]] =
-        listWithMaxLength[CUSTOM_DepartureTransportMeansType02]()(a)
+      def departureTransportMeansGen(implicit a: Arbitrary[CUSTOM_DepartureTransportMeansType01]): Gen[Seq[CUSTOM_DepartureTransportMeansType01]] =
+        listWithMaxLength[CUSTOM_DepartureTransportMeansType01]()(a)
           .map {
             _.distinctBy(_.typeOfIdentification)
               .distinctBy(_.nationality)
           }
 
       "when values defined" in {
-        forAll(departureTransportMeansGen(arbitraryCUSTOM_DepartureTransportMeansType02AllDefined)) {
+        forAll(departureTransportMeansGen(arbitraryCUSTOM_DepartureTransportMeansType01AllDefined)) {
           departureTransportMeans =>
             beforeEach()
 
@@ -92,7 +92,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       }
 
       "when no values defined" in {
-        forAll(departureTransportMeansGen(arbitraryCUSTOM_DepartureTransportMeansType02NoneDefined)) {
+        forAll(departureTransportMeansGen(arbitraryCUSTOM_DepartureTransportMeansType01NoneDefined)) {
           departureTransportMeans =>
             beforeEach()
 
@@ -115,14 +115,14 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
       import pages.houseConsignment.index.departureMeansOfTransport.*
       import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
-      def departureTransportMeansGen(implicit a: Arbitrary[DepartureTransportMeansType02]): Gen[Seq[DepartureTransportMeansType02]] =
-        listWithMaxLength[DepartureTransportMeansType02]()(a)
+      def departureTransportMeansGen(implicit a: Arbitrary[DepartureTransportMeansType01]): Gen[Seq[DepartureTransportMeansType01]] =
+        listWithMaxLength[DepartureTransportMeansType01]()(a)
           .map {
             _.distinctBy(_.typeOfIdentification)
               .distinctBy(_.nationality)
           }
 
-      forAll(departureTransportMeansGen(arbitraryDepartureTransportMeansType02)) {
+      forAll(departureTransportMeansGen(arbitraryDepartureTransportMeansType01)) {
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>

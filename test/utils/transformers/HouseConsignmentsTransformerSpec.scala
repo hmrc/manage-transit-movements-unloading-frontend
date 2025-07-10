@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.CUSTOM_HouseConsignmentType04
+import generated.HouseConsignmentType04
 import generators.Generators
 import models.reference.{Country, SecurityType}
 import models.Index
@@ -26,7 +26,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage}
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, UniqueConsignmentReferencePage}
 import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -93,7 +93,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
   "must transform data" in {
     val country = Country("GB", "country")
-    forAll(arbitrary[Seq[CUSTOM_HouseConsignmentType04]]) {
+    forAll(arbitrary[Seq[HouseConsignmentType04]]) {
       houseConsignments =>
         houseConsignments.zipWithIndex.map {
           case (_, i) =>
@@ -151,6 +151,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
             result.getValue(GrossWeightPage(hcIndex)) mustBe hc.grossMass
+            result.get(UniqueConsignmentReferencePage(hcIndex)) mustBe hc.referenceNumberUCR
             result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustBe
               Json.obj("code" -> "code", "description" -> "description")
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)

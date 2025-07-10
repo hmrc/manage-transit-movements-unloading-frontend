@@ -16,11 +16,11 @@
 
 package utils.transformers
 
-import generated.CUSTOM_ConsignmentType05
+import generated.ConsignmentType05
 import models.UserAnswers
-import pages.GrossWeightPage
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
+import pages.{GrossWeightPage, UniqueConsignmentReferencePage}
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -32,6 +32,7 @@ class ConsignmentTransformer @Inject() (
   consigneeTransformer: ConsigneeTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
+  countriesOfRoutingTransformer: CountriesOfRoutingTransformer,
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
@@ -41,56 +42,24 @@ class ConsignmentTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignment: Option[CUSTOM_ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     consignment match {
-      case Some(consignment05) =>
-        lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          consignorTransformer.transform(consignment05.Consignor) andThen
-            consigneeTransformer.transform(consignment05.Consignee) andThen
-            transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
-            departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
-            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
-            houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
-            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
-            additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
-            set(GrossWeightPage, consignment05.grossMass) andThen
-            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
-            incidentsTransformer.transform(consignment05.Incident) andThen
-            transformCountryOfDestination(consignment05.countryOfDestination) andThen
-            transformInlandModeOfTransport(consignment05.inlandModeOfTransport)
-        pipeline(userAnswers)
+      case Some(value) =>
+        consignorTransformer.transform(value.Consignor) andThen
+          consigneeTransformer.transform(value.Consignee) andThen
+          transportEquipmentTransformer.transform(value.TransportEquipment) andThen
+          departureTransportMeansTransformer.transform(value.DepartureTransportMeans) andThen
+          countriesOfRoutingTransformer.transform(value.CountryOfRoutingOfConsignment) andThen
+          documentsTransformer.transform(value.SupportingDocument, value.TransportDocument, value.PreviousDocument) andThen
+          houseConsignmentsTransformer.transform(value.HouseConsignment) andThen
+          additionalInformationTransformer.transform(value.AdditionalInformation) andThen
+          set(GrossWeightPage, value.grossMass) andThen
+          set(UniqueConsignmentReferencePage, value.referenceNumberUCR) andThen
+          additionalReferencesTransformer.transform(value.AdditionalReference) andThen
+          incidentsTransformer.transform(value.Incident) andThen
+          set(CountryOfDestinationPage, value.countryOfDestination, referenceDataService.getCountry) andThen
+          set(InlandModeOfTransportPage, value.inlandModeOfTransport, referenceDataService.getTransportModeCode)
       case None =>
-        Future.successful(userAnswers)
-    }
-
-  private def transformCountryOfDestination(countryOfDestination: Option[String])(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    countryOfDestination match {
-
-      case Some(country) =>
-        referenceDataService.getCountry(country).flatMap {
-          countryVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(CountryOfDestinationPage, countryVal)
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
-    }
-
-  private def transformInlandModeOfTransport(inlandModeOfTransport: Option[String])(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    inlandModeOfTransport match {
-      case Some(inlandMode) =>
-        referenceDataService.getTransportModeCode(inlandMode).flatMap {
-          inlandModeVal =>
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              set(InlandModeOfTransportPage, inlandModeVal)
-            pipeline(userAnswers)
-        }
-
-      case None => Future.successful(userAnswers)
+        Future.successful
     }
 }

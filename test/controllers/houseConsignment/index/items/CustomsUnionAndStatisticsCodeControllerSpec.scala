@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CUSCodeFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.FakeHouseConsignmentItemNavigatorProviderProvider
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
@@ -59,7 +60,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
+        bind[HouseConsignmentItemNavigatorProvider].toProvider(classOf[FakeHouseConsignmentItemNavigatorProviderProvider]),
         bind[ReferenceDataService].toInstance(mockReferenceDataService),
         bind(classOf[CustomsUnionAndStatisticsCodeViewModelProvider]).toInstance(mockViewModelProvider)
       )

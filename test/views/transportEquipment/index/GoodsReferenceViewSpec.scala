@@ -34,8 +34,8 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[GoodsReference] {
 
   val ie043Answers: CC043CType = emptyUserAnswers.ie043Data.copy(Consignment =
     Some(
-      CUSTOM_ConsignmentType05(
-        TransportEquipment = Seq(TransportEquipmentType05(1, None, 0, Nil, Seq(GoodsReferenceType02(1, 123)))),
+      ConsignmentType05(
+        TransportEquipment = Seq(TransportEquipmentType03(1, None, 0, Nil, Seq(GoodsReferenceType01(1, 123)))),
         containerIndicator = arbitraryFlag.arbitrary.sample.get
       )
     )

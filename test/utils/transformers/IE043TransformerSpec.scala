@@ -19,35 +19,38 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.CC043CType
 import generators.Generators
-import org.mockito.ArgumentMatchers.any
+import models.reference.CustomsOffice
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
+import pages.{CustomsOfficeOfDestinationActualPage, QuestionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
-import scala.concurrent.ExecutionContext.Implicits.global
+import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val transformer = app.injector.instanceOf[IE043Transformer]
 
-  private lazy val mockConsignmentTransformer                      = mock[ConsignmentTransformer]
-  private lazy val mockCustomsOfficeOfDestinationActualTransformer = mock[CustomsOfficeOfDestinationActualTransformer]
-  private lazy val mockTransitOperationTransformer                 = mock[TransitOperationTransformer]
-  private lazy val mockHotPTransformer                             = mock[HolderOfTheTransitProcedureTransformer]
+  private lazy val mockConsignmentTransformer                 = mock[ConsignmentTransformer]
+  private lazy val mockTransitOperationTransformer            = mock[TransitOperationTransformer]
+  private lazy val mockHolderOfTheTransitProcedureTransformer = mock[HolderOfTheTransitProcedureTransformer]
+
+  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
-        bind[CustomsOfficeOfDestinationActualTransformer].toInstance(mockCustomsOfficeOfDestinationActualTransformer),
         bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer),
-        bind[HolderOfTheTransitProcedureTransformer].toInstance(mockHotPTransformer)
+        bind[HolderOfTheTransitProcedureTransformer].toInstance(mockHolderOfTheTransitProcedureTransformer),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
   private case object FakeConsignmentSection extends QuestionPage[JsObject] {
@@ -62,24 +65,24 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
     override def path: JsPath = JsPath \ "CustomsOfficeOfDestinationActual"
   }
 
-  private case object HotPSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure" \ "Address"
+  private case object FakeHolderOfTheTransitProcedureSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure"
   }
 
   "must transform data" in {
     forAll(arbitrary[CC043CType]) {
-      _ =>
+      ie043 =>
+        val customsOfficeOfDestination = ie043.CustomsOfficeOfDestinationActual.referenceNumber
+        val customsOffice              = CustomsOffice(customsOfficeOfDestination, "name", "countryID", None)
+
         when(mockConsignmentTransformer.transform(any())(any()))
           .thenReturn {
             ua => Future.successful(ua.setValue(FakeConsignmentSection, Json.obj("foo" -> "bar")))
           }
-        when(mockCustomsOfficeOfDestinationActualTransformer.transform(any())(any()))
+
+        when(mockHolderOfTheTransitProcedureTransformer.transform(any())(any()))
           .thenReturn {
-            ua => Future.successful(ua.futureValue.setValue(FakeCustomsOfficeOfDestinationActualSection, Json.obj("foo1" -> "bar1")))
-          }
-        when(mockHotPTransformer.transform(any())(any()))
-          .thenReturn {
-            ua => Future.successful(ua.setValue(HotPSection, Json.obj("country" -> "GB")))
+            ua => Future.successful(ua.setValue(FakeHolderOfTheTransitProcedureSection, Json.obj("foo" -> "bar")))
           }
 
         when(mockTransitOperationTransformer.transform(any())(any()))
@@ -87,12 +90,19 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
             ua => Future.successful(ua.setValue(FakeTransitOperationSection, Json.obj("foo" -> "bar")))
           }
 
-        val result = transformer.transform(emptyUserAnswers).futureValue
+        when(mockReferenceDataService.getCustomsOffice(eqTo(customsOfficeOfDestination))(any()))
+          .thenReturn(
+            Future.successful(customsOffice)
+          )
 
-        result.getValue(FakeConsignmentSection) mustBe Json.obj("foo" -> "bar")
-        result.getValue(FakeCustomsOfficeOfDestinationActualSection) mustBe Json.obj("foo1" -> "bar1")
-        result.getValue(FakeTransitOperationSection) mustBe Json.obj("foo" -> "bar")
-        result.getValue(HotPSection) mustBe Json.obj("country" -> "GB")
+        val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+        val result = transformer.transform(userAnswers).futureValue
+
+        result.getValue(FakeConsignmentSection) mustEqual Json.obj("foo" -> "bar")
+        result.getValue(FakeTransitOperationSection) mustEqual Json.obj("foo" -> "bar")
+        result.getValue(FakeHolderOfTheTransitProcedureSection) mustEqual Json.obj("foo" -> "bar")
+        result.getValue(CustomsOfficeOfDestinationActualPage) mustEqual customsOffice
     }
   }
 }

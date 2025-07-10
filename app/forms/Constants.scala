@@ -27,6 +27,7 @@ object Constants {
   lazy val maxSealIdentificationLength: Int      = 20
   lazy val maxDocumentRefNumberLength: Int       = 70
   lazy val maxAdditionalInfoLength: Int          = 35
+  lazy val maxUCRLength: Int                     = 70
   lazy val maxAdditionalReferenceNumLength: Int  = 70
   lazy val maxNumberOfPackages: BigInt           = 999999999
   lazy val otherThingsToReportLength: Int        = 512

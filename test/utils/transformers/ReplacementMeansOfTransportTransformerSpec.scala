@@ -17,7 +17,7 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.TranshipmentType02
+import generated.TranshipmentType
 import generators.Generators
 import models.reference.{Country, TransportMeansIdentification}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
@@ -52,7 +52,7 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
 
   "must transform data" - {
     "when replacementMeansOfTransport defined" in {
-      forAll(arbitrary[TranshipmentType02], Gen.alphaNumStr) {
+      forAll(arbitrary[TranshipmentType], Gen.alphaNumStr) {
         (transhipment, description) =>
           beforeEach()
 

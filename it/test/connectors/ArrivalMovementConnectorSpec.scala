@@ -20,12 +20,12 @@ import com.github.tomakehurst.wiremock.client.WireMock.*
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.MessageStatus
 import models.P5.*
+import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.xml.Node
+import scala.xml.{Node, NodeSeq}
 
 class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
@@ -104,6 +104,29 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
         val result = connector.getMessage(arrivalId, messageId).futureValue
 
         result mustBe xml
+      }
+    }
+
+    "submit" - {
+      val url = s"/movements/arrivals/${arrivalId.value}/messages"
+
+      val body: NodeSeq =
+        <ncts:CC044C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+          <messageSender>token</messageSender>
+        </ncts:CC044C>
+
+      "must return OK for successful response" in {
+        server.stubFor(
+          post(urlEqualTo(url))
+            .withRequestBody(equalTo(body.toString()))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.1+json"))
+            .withHeader("Content-Type", equalTo("application/xml"))
+            .willReturn(ok())
+        )
+
+        val result = connector.submit(body, arrivalId).futureValue
+
+        result.status mustEqual OK
       }
     }
   }

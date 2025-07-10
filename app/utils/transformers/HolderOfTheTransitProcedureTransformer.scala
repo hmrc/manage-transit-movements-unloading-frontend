@@ -31,17 +31,8 @@ class HolderOfTheTransitProcedureTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(holderOfTheTransitProcedureOption: Option[HolderOfTheTransitProcedureType06])(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers =>
-    holderOfTheTransitProcedureOption match {
-      case Some(holderOfTheTransitProcedure) =>
-        referenceDataService
-          .getCountry(holderOfTheTransitProcedure.Address.country)
-          .flatMap(
-            country => set(CountryPage, country).apply(userAnswers)
-          )
-      case None =>
-        Future.successful(userAnswers)
-    }
+  def transform(
+    holderOfTheTransitProcedure: Option[HolderOfTheTransitProcedureType06]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    set(CountryPage, holderOfTheTransitProcedure.map(_.Address.country), referenceDataService.getCountry)
 }
