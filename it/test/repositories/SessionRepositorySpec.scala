@@ -96,24 +96,24 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
         val result = repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue
 
-        result.value.id `mustBe` userAnswers1.id
-        result.value.eoriNumber `mustBe` userAnswers1.eoriNumber
-        result.value.ie043Data `mustBe` userAnswers1.ie043Data
-        result.value.data `mustBe` userAnswers1.data
+        result.value.id mustEqual userAnswers1.id
+        result.value.eoriNumber mustEqual userAnswers1.eoriNumber
+        result.value.ie043Data mustEqual userAnswers1.ie043Data
+        result.value.data mustEqual userAnswers1.data
       }
 
       "must return None when no UserAnswers match ArrivalId" in {
 
         val result = repository.get(ArrivalId("3"), EoriNumber("EoriNumber1")).futureValue
 
-        result `mustBe` None
+        result must not be defined
       }
 
       "must return None when no UserAnswers match EoriNumber" in {
 
         val result = repository.get(ArrivalId("0"), EoriNumber("InvalidEori")).futureValue
 
-        result `mustBe` None
+        result must not be defined
       }
     }
 
@@ -134,11 +134,11 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
         val getResult = repository.get(ArrivalId("3"), EoriNumber("EoriNumber3")).futureValue.value
 
-        setResult `mustBe` true
-        getResult.id `mustBe` userAnswers.id
-        getResult.eoriNumber `mustBe` userAnswers.eoriNumber
-        getResult.ie043Data `mustBe` userAnswers.ie043Data
-        getResult.data `mustBe` userAnswers.data
+        setResult mustEqual true
+        getResult.id mustEqual userAnswers.id
+        getResult.eoriNumber mustEqual userAnswers.eoriNumber
+        getResult.ie043Data mustEqual userAnswers.ie043Data
+        getResult.data mustEqual userAnswers.data
       }
     }
 
@@ -146,11 +146,11 @@ class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySu
 
       "must remove document when given a valid ArrivalId" in {
 
-        repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue `mustBe` defined
+        repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue mustBe defined
 
         repository.remove(ArrivalId("0")).futureValue
 
-        repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue `must` not `be` defined
+        repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue must not be defined
       }
     }
   }

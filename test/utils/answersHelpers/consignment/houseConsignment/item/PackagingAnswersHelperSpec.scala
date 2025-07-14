@@ -32,7 +32,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
-          helper.packageTypeRow mustBe None
+          helper.packageTypeRow must not be defined
         }
       }
 
@@ -45,15 +45,15 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex, packageIndex)
               val result = helper.packageTypeRow.value
 
-              result.key.value mustBe "Type"
-              result.value.value mustBe s"${value.description}"
+              result.key.value mustEqual "Type"
+              result.value.value mustEqual s"${value.description}"
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "type of package 1 for item 1"
-              action.href mustBe controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+              action.content.value mustEqual "Change"
+              action.visuallyHiddenText.value mustEqual "type of package 1 for item 1"
+              action.href mustEqual controllers.houseConsignment.index.items.packages.routes.PackageTypeController
                 .onPageLoad(arrivalId, hcIndex, packageIndex, itemIndex, CheckMode, CheckMode, CheckMode)
                 .url
-              action.id mustBe "change-package-type-1-1"
+              action.id mustEqual "change-package-type-1-1"
           }
         }
       }
@@ -64,7 +64,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
-          helper.packageCountRow mustBe None
+          helper.packageCountRow must not be defined
         }
       }
 
@@ -77,15 +77,15 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex, packageIndex)
               val result = helper.packageCountRow.value
 
-              result.key.value mustBe "Quantity"
-              result.value.value mustBe s"$value"
+              result.key.value mustEqual "Quantity"
+              result.value.value mustEqual s"$value"
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "quantity of package 1 for item 1"
-              action.href mustBe controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
+              action.content.value mustEqual "Change"
+              action.visuallyHiddenText.value mustEqual "quantity of package 1 for item 1"
+              action.href mustEqual controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
                 .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)
                 .url
-              action.id mustBe "change-package-count-1-1"
+              action.id mustEqual "change-package-count-1-1"
           }
         }
       }
@@ -96,7 +96,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
-          helper.packageMarksRow mustBe None
+          helper.packageMarksRow must not be defined
         }
       }
 
@@ -109,15 +109,15 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex, packageIndex)
               val result = helper.packageMarksRow.value
 
-              result.key.value mustBe "Shipping mark"
-              result.value.value mustBe s"$value"
+              result.key.value mustEqual "Shipping mark"
+              result.value.value mustEqual s"$value"
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "shipping mark of package 1 for item 1"
-              action.href mustBe controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
+              action.content.value mustEqual "Change"
+              action.visuallyHiddenText.value mustEqual "shipping mark of package 1 for item 1"
+              action.href mustEqual controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
                 .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)
                 .url
-              action.id mustBe "change-package-mark-1-1"
+              action.id mustEqual "change-package-mark-1-1"
           }
         }
       }

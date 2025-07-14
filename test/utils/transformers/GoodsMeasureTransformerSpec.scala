@@ -33,8 +33,8 @@ class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtur
         goodsMeasure =>
           val result = transformer.transform(Some(goodsMeasure), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-          result.get(GrossWeightPage(hcIndex, itemIndex)) mustBe goodsMeasure.grossMass
-          result.get(NetWeightPage(hcIndex, itemIndex)) mustBe goodsMeasure.netMass
+          result.get(GrossWeightPage(hcIndex, itemIndex)) mustEqual goodsMeasure.grossMass
+          result.get(NetWeightPage(hcIndex, itemIndex)) mustEqual goodsMeasure.netMass
       }
     }
 

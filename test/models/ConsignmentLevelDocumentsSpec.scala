@@ -38,8 +38,8 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(TypePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.supporting mustBe 1
-              result.transport mustBe 0
+              result.supporting mustEqual 1
+              result.transport mustEqual 0
           }
         }
 
@@ -50,8 +50,8 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(TypePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
       }
@@ -65,8 +65,8 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(TypePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.supporting mustBe 0
-              result.transport mustBe 1
+              result.supporting mustEqual 0
+              result.transport mustEqual 1
           }
         }
 
@@ -77,8 +77,8 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(TypePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
       }
@@ -92,7 +92,7 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
       val consignmentLevelDocuments =
         ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment - 1, frontendAppConfig.maxTransportDocumentsConsignment)
 
-      consignmentLevelDocuments.availableDocuments(documents) mustBe Seq(supportDoc)
+      consignmentLevelDocuments.availableDocuments(documents) mustEqual Seq(supportDoc)
     }
   }
 }

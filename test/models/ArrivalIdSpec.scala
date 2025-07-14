@@ -29,7 +29,7 @@ class ArrivalIdSpec extends AnyFreeSpec with Matchers with EitherValues {
       val arrivalId    = ArrivalId("AB123")
 
       val bind: Either[String, ArrivalId] = pathBindable.bind("arrivalId", "AB123")
-      bind.value mustBe arrivalId
+      bind.value mustEqual arrivalId
     }
 
     "unbind to path value" in {
@@ -37,7 +37,7 @@ class ArrivalIdSpec extends AnyFreeSpec with Matchers with EitherValues {
       val arrivalId    = ArrivalId("AB123")
 
       val bindValue = pathBindable.unbind("arrivalId", arrivalId)
-      bindValue mustBe "AB123"
+      bindValue mustEqual "AB123"
     }
   }
 }

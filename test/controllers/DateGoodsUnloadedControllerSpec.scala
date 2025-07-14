@@ -64,8 +64,8 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val result = route(app, request).value
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, form)(request, messages).toString
+      status(result) mustEqual OK
+      contentAsString(result) mustEqual view(mrn, arrivalId, NormalMode, form)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -91,7 +91,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       )
 
       status(result) mustEqual OK
-      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, filledForm)(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, NormalMode, filledForm)(request, messages).toString
     }
 
     "must redirect on to the next page when valid data is submitted" in {
@@ -140,7 +140,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
@@ -167,7 +167,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
   }
 }

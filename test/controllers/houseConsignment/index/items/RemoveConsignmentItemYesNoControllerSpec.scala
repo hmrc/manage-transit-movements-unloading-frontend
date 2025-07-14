@@ -89,7 +89,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustBe Json.parse("""
+        userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustEqual Json.parse("""
             |{
             |  "declarationGoodsItemNumber" : 1,
             |  "sequenceNumber" : 1,
@@ -122,7 +122,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustBe Json.parse("""
+        userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustEqual Json.parse("""
             |{
             |  "declarationGoodsItemNumber" : 1,
             |  "sequenceNumber" : 1,

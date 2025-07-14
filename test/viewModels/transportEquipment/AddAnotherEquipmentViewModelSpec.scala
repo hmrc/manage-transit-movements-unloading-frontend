@@ -40,12 +40,12 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               val userAnswers = emptyUserAnswers
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems mustBe Nil
-              result.title mustBe "You have added 0 transport equipment"
-              result.heading mustBe "You have added 0 transport equipment"
-              result.legend mustBe "Do you want to add any transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(0)
+              result.listItems mustEqual Nil
+              result.title mustEqual "You have added 0 transport equipment"
+              result.heading mustEqual "You have added 0 transport equipment"
+              result.legend mustEqual "Do you want to add any transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(0)
           }
         }
       }
@@ -61,13 +61,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 1
-              result.listItems.head.name mustBe s"Transport Equipment 1 - Container $containerId"
-              result.title mustBe "You have added 1 transport equipment"
-              result.heading mustBe "You have added 1 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.listItems.head.name mustEqual s"Transport Equipment 1 - Container $containerId"
+              result.title mustEqual "You have added 1 transport equipment"
+              result.heading mustEqual "You have added 1 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -79,13 +79,13 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 1
-              result.listItems.head.name mustBe s"Transport Equipment 1"
-              result.title mustBe "You have added 1 transport equipment"
-              result.heading mustBe "You have added 1 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.listItems.head.name mustEqual s"Transport Equipment 1"
+              result.title mustEqual "You have added 1 transport equipment"
+              result.heading mustEqual "You have added 1 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -99,12 +99,12 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(1)), true)
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 transport equipment"
-              result.heading mustBe s"You have added 2 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(2)
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 transport equipment"
+              result.heading mustEqual s"You have added 2 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(2)
           }
         }
 
@@ -119,12 +119,12 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(2)), true)
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 transport equipment"
-              result.heading mustBe s"You have added 2 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(3) // take 'removed item' into account when calculating the next index
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 transport equipment"
+              result.heading mustEqual s"You have added 2 transport equipment"
+              result.legend mustEqual "Do you want to add any other transport equipment?"
+              result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(3) // take 'removed item' into account when calculating the next index
           }
         }
 
@@ -139,7 +139,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"Transport Equipment 1 - Container $containerId",
                   changeUrl = None,
@@ -160,7 +160,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 )
               )
 
-              result.nextIndex mustBe Index(2)
+              result.nextIndex mustEqual Index(2)
           }
         }
       }

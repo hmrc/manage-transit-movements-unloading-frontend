@@ -169,7 +169,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+      userAnswersCaptor.getValue mustEqual userAnswersAfterEverything
     }
 
     "must drop discrepancies, re-transform data and redirect to the next page when No is submitted and switched from revised to legacy procedure" in {
@@ -233,7 +233,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue mustBe userAnswersAfterEverything
+      userAnswersCaptor.getValue mustEqual userAnswersAfterEverything
     }
 
     "must redirect to the next page when no is submitted and answer has not changed" in {

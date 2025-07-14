@@ -149,19 +149,19 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
           case (hc, i) =>
             val hcIndex = Index(i)
 
-            result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
-            result.getValue(GrossWeightPage(hcIndex)) mustBe hc.grossMass
-            result.get(UniqueConsignmentReferencePage(hcIndex)) mustBe hc.referenceNumberUCR
-            result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustBe
+            result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustEqual hc.sequenceNumber
+            result.getValue(GrossWeightPage(hcIndex)) mustEqual hc.grossMass
+            result.get(UniqueConsignmentReferencePage(hcIndex)) mustEqual hc.referenceNumberUCR
+            result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustEqual
               Json.obj("code" -> "code", "description" -> "description")
-            result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeDocumentsSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalReferenceSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalInformationSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeConsignmentItemSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(CountryOfDestinationPage(hcIndex)) mustBe country
+            result.getValue(FakeConsigneeSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeConsignorSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeDocumentsSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeAdditionalReferenceSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeAdditionalInformationSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeConsignmentItemSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(CountryOfDestinationPage(hcIndex)) mustEqual country
         }
     }
   }

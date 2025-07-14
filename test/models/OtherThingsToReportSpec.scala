@@ -30,7 +30,7 @@ class OtherThingsToReportSpec extends SpecBase {
 
         val result = OtherThingsToReport.apply(userAnswers)
 
-        result.prefix.mustBe("otherThingsToReport.oldAuth")
+        result.prefix.mustEqual("otherThingsToReport.oldAuth")
       }
 
       "when cannot use revised procedure" - {
@@ -41,7 +41,7 @@ class OtherThingsToReportSpec extends SpecBase {
 
           val result = OtherThingsToReport.apply(userAnswers)
 
-          result.prefix.mustBe("otherThingsToReport.oldAuth")
+          result.prefix.mustEqual("otherThingsToReport.oldAuth")
         }
 
         "when AddTransitUnloadingPermissionDiscrepanciesYesNoPage is true" in {
@@ -53,7 +53,7 @@ class OtherThingsToReportSpec extends SpecBase {
 
           val result = OtherThingsToReport.apply(userAnswers)
 
-          result.prefix.mustBe("otherThingsToReport.oldAuth")
+          result.prefix.mustEqual("otherThingsToReport.oldAuth")
         }
       }
 
@@ -67,7 +67,7 @@ class OtherThingsToReportSpec extends SpecBase {
 
           val result = OtherThingsToReport.apply(userAnswers)
 
-          result.prefix.mustBe("otherThingsToReport.newAuthAndSealsReplaced")
+          result.prefix.mustEqual("otherThingsToReport.newAuthAndSealsReplaced")
         }
 
         "and external seal not replaced by customs authority" in {
@@ -79,7 +79,7 @@ class OtherThingsToReportSpec extends SpecBase {
 
           val result = OtherThingsToReport.apply(userAnswers)
 
-          result.prefix.mustBe("otherThingsToReport.newAuth")
+          result.prefix.mustEqual("otherThingsToReport.newAuth")
         }
       }
     }
@@ -92,7 +92,7 @@ class OtherThingsToReportSpec extends SpecBase {
             .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
             .setValue(GoodsTooLargeForContainerYesNoPage, false)
 
-          a[Exception].mustBe(thrownBy(OtherThingsToReport.apply(userAnswers)))
+          an[Exception] must be thrownBy OtherThingsToReport.apply(userAnswers)
         }
       }
     }

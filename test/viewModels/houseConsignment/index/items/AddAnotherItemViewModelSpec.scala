@@ -39,12 +39,12 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
               val userAnswers = emptyUserAnswers
 
               val result = new AddAnotherItemViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, mode)
-              result.listItems mustBe Nil
-              result.title mustBe "You have added 0 items for house consignment 1"
-              result.heading mustBe "You have added 0 items for house consignment 1"
-              result.legend mustBe "Do you want to add an item for house consignment 1?"
-              result.maxLimitLabel mustBe "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(0)
+              result.listItems mustEqual Nil
+              result.title mustEqual "You have added 0 items for house consignment 1"
+              result.heading mustEqual "You have added 0 items for house consignment 1"
+              result.legend mustEqual "Do you want to add an item for house consignment 1?"
+              result.maxLimitLabel mustEqual "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(0)
           }
         }
       }
@@ -59,13 +59,13 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
 
               val result = new AddAnotherItemViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, mode)
 
-              result.listItems.length mustBe 1
-              result.listItems.head.name mustBe "Item 1 - item description"
-              result.title mustBe "You have added 1 item for house consignment 1"
-              result.heading mustBe "You have added 1 item for house consignment 1"
-              result.legend mustBe "Do you want to add another item for house consignment 1?"
-              result.maxLimitLabel mustBe "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.listItems.head.name mustEqual "Item 1 - item description"
+              result.title mustEqual "You have added 1 item for house consignment 1"
+              result.heading mustEqual "You have added 1 item for house consignment 1"
+              result.legend mustEqual "Do you want to add another item for house consignment 1?"
+              result.maxLimitLabel mustEqual "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -77,13 +77,13 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
 
               val result = new AddAnotherItemViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, mode)
 
-              result.listItems.length mustBe 1
-              result.listItems.head.name mustBe s"Item 1"
-              result.title mustBe "You have added 1 item for house consignment 1"
-              result.heading mustBe "You have added 1 item for house consignment 1"
-              result.legend mustBe "Do you want to add another item for house consignment 1?"
-              result.maxLimitLabel mustBe "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.listItems.head.name mustEqual s"Item 1"
+              result.title mustEqual "You have added 1 item for house consignment 1"
+              result.heading mustEqual "You have added 1 item for house consignment 1"
+              result.legend mustEqual "Do you want to add another item for house consignment 1?"
+              result.maxLimitLabel mustEqual "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -95,12 +95,12 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
                 .setValue(ItemDescriptionPage(houseConsignmentIndex, Index(1)), "item description 2")
 
               val result = new AddAnotherItemViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, mode)
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 items for house consignment 1"
-              result.heading mustBe s"You have added 2 items for house consignment 1"
-              result.legend mustBe "Do you want to add another item for house consignment 1?"
-              result.maxLimitLabel mustBe "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(2)
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 items for house consignment 1"
+              result.heading mustEqual s"You have added 2 items for house consignment 1"
+              result.legend mustEqual "Do you want to add another item for house consignment 1?"
+              result.maxLimitLabel mustEqual "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(2)
           }
         }
 
@@ -114,12 +114,12 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
 
               val result = new AddAnotherItemViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, mode)
 
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 items for house consignment 1"
-              result.heading mustBe s"You have added 2 items for house consignment 1"
-              result.legend mustBe "Do you want to add another item for house consignment 1?"
-              result.maxLimitLabel mustBe "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(3) // take 'removed item' into account when calculating the next index
+              result.listItems.length mustEqual 2
+              result.title mustEqual s"You have added 2 items for house consignment 1"
+              result.heading mustEqual s"You have added 2 items for house consignment 1"
+              result.legend mustEqual "Do you want to add another item for house consignment 1?"
+              result.maxLimitLabel mustEqual "You cannot add any more items for house consignment 1. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(3) // take 'removed item' into account when calculating the next index
           }
         }
 
@@ -132,7 +132,7 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
 
               val result = new AddAnotherItemViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Item 1 - item description 1",
                   changeUrl = None,
@@ -153,7 +153,7 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
                 )
               )
 
-              result.nextIndex mustBe Index(2)
+              result.nextIndex mustEqual Index(2)
           }
         }
       }

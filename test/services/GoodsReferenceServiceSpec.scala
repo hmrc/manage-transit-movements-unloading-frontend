@@ -43,16 +43,16 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
         .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
 
       val result1 = service.getGoodsReference(userAnswers, Index(0), Index(0))
-      result1.value mustBe GoodsReference(BigInt(1), "description 1")
+      result1.value mustEqual GoodsReference(BigInt(1), "description 1")
 
       val result2 = service.getGoodsReference(userAnswers, Index(0), Index(1))
-      result2.value mustBe GoodsReference(BigInt(2), "description 2")
+      result2.value mustEqual GoodsReference(BigInt(2), "description 2")
 
       val result3 = service.getGoodsReference(userAnswers, Index(1), Index(0))
-      result3.value mustBe GoodsReference(BigInt(3), "description 3")
+      result3.value mustEqual GoodsReference(BigInt(3), "description 3")
 
       val result4 = service.getGoodsReference(userAnswers, Index(1), Index(1))
-      result4.value mustBe GoodsReference(BigInt(4), "description 4")
+      result4.value mustEqual GoodsReference(BigInt(4), "description 4")
     }
   }
 
@@ -74,7 +74,7 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), None)
 
-          result mustBe Seq(
+          result mustEqual Seq(
             GoodsReference(BigInt(1), "description 1"),
             GoodsReference(BigInt(2), "description 2"),
             GoodsReference(BigInt(3), "description 3"),
@@ -96,7 +96,7 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), None)
 
-          result mustBe Seq(
+          result mustEqual Seq(
             GoodsReference(BigInt(2), "description 2"),
             GoodsReference(BigInt(3), "description 3"),
             GoodsReference(BigInt(4), "description 4")
@@ -121,7 +121,7 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), None)
 
-          result mustBe Seq(
+          result mustEqual Seq(
             GoodsReference(BigInt(2), "description 2")
           )
         }
@@ -141,7 +141,7 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
 
-          result mustBe Seq(
+          result mustEqual Seq(
             GoodsReference(BigInt(1), "description 1"),
             GoodsReference(BigInt(2), "description 2"),
             GoodsReference(BigInt(3), "description 3"),
@@ -163,7 +163,7 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
 
-          result mustBe Seq(
+          result mustEqual Seq(
             GoodsReference(BigInt(1), "description 1"),
             GoodsReference(BigInt(2), "description 2"),
             GoodsReference(BigInt(3), "description 3"),
@@ -189,7 +189,7 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
 
           val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
 
-          result mustBe Seq(
+          result mustEqual Seq(
             GoodsReference(BigInt(1), "description 1"),
             GoodsReference(BigInt(2), "description 2")
           )

@@ -63,7 +63,7 @@ class IncidentEndorsementTransformerSpec extends SpecBase with AppWithDefaultMoc
 
           val result = transformer.transform(Some(endorsement), index).apply(emptyUserAnswers).futureValue
 
-          result.getValue(EndorsementCountryPage(index)) mustBe country
+          result.getValue(EndorsementCountryPage(index)) mustEqual country
 
           verify(mockReferenceDataService).getCountry(eqTo(endorsement.country))(any())
       }

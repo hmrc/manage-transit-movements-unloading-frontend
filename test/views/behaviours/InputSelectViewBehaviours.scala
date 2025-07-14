@@ -51,7 +51,7 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
               s"when $value selected" in {
                 val filledForm = form.fill(value)
                 val doc        = parseView(applyView(filledForm))
-                doc.getElementsByAttribute("selected").attr("value") mustBe value.toSelectItem().value.get
+                doc.getElementsByAttribute("selected").attr("value") mustEqual value.toSelectItem().value.get
               }
           }
         }

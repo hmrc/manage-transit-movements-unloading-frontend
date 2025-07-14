@@ -30,8 +30,8 @@ class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckProperty
 
       val result = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
 
-      result.title mustBe "What is the shipping mark for item 1 in house consignment 1?"
-      result.heading mustBe "What is the shipping mark for item 1 in house consignment 1?"
+      result.title mustEqual "What is the shipping mark for item 1 in house consignment 1?"
+      result.heading mustEqual "What is the shipping mark for item 1 in house consignment 1?"
     }
 
     "when CheckMode" in {
@@ -39,8 +39,8 @@ class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckProperty
 
       val result = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)
 
-      result.title mustBe "What is the new shipping mark for item 1 in house consignment 1?"
-      result.heading mustBe "What is the new shipping mark for item 1 in house consignment 1?"
+      result.title mustEqual "What is the new shipping mark for item 1 in house consignment 1?"
+      result.heading mustEqual "What is the new shipping mark for item 1 in house consignment 1?"
     }
   }
 }

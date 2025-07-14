@@ -42,7 +42,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.newProcedure
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Do you want to use the revised unloading procedure?".toText),
               value = Value("Yes".toText),
@@ -67,7 +67,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.newProcedure
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Do you want to use the revised unloading procedure?".toText),
               value = Value("No".toText),
@@ -97,7 +97,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.goodsTooLarge
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Are the goods too large to fit into a container?".toText),
               value = Value("Yes".toText),
@@ -122,7 +122,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.goodsTooLarge
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Are the goods too large to fit into a container?".toText),
               value = Value("No".toText),
@@ -152,7 +152,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.sealsReplaced
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Has the external seal been replaced by a customs authority?".toText),
               value = Value("Yes".toText),
@@ -177,7 +177,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.sealsReplaced
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Has the external seal been replaced by a customs authority?".toText),
               value = Value("No".toText),
@@ -208,7 +208,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             val helper  = new CheckYourAnswersHelper(answers)
             val result  = helper.goodsUnloadedDate
 
-            result mustBe Some(
+            result mustEqual Some(
               SummaryListRow(
                 key = Key("Goods’ unloaded date".toText),
                 value = Value(localDate.format(cyaDateFormatter).toText),
@@ -238,7 +238,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.anySealsBroken
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Are any of the seals broken?".toText),
               value = Value("Yes".toText),
@@ -263,7 +263,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.anySealsBroken
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Are any of the seals broken?".toText),
               value = Value("No".toText),
@@ -293,7 +293,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.canSealsBeRead
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Are all of the seal identification numbers or marks readable?".toText),
               value = Value("Yes".toText),
@@ -318,7 +318,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.canSealsBeRead
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Are all of the seal identification numbers or marks readable?".toText),
               value = Value("No".toText),
@@ -348,7 +348,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.addDiscrepanciesYesNo
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
               value = Value("Yes".toText),
@@ -375,7 +375,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.addDiscrepanciesYesNo
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Were there any discrepancies between the transit movement and unloading permission?".toText),
               value = Value("No".toText),
@@ -406,7 +406,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             val helper  = new CheckYourAnswersHelper(answers)
             val result  = helper.additionalComment
 
-            result mustBe Some(
+            result mustEqual Some(
               SummaryListRow(
                 key = Key("Comments".toText),
                 value = Value(s"$comments".toText),
@@ -436,7 +436,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.addReportYesNo
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Do you have anything else to report?".toText),
               value = Value("Yes".toText),
@@ -464,7 +464,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.addReportYesNo
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Do you have anything else to report?".toText),
               value = Value("No".toText),
@@ -499,7 +499,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new CheckYourAnswersHelper(answers)
               val result = helper.report
 
-              result mustBe Some(
+              result mustEqual Some(
                 SummaryListRow(
                   key = Key("What do you want to report?".toText),
                   value = Value(s"$report".toText),
@@ -535,7 +535,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 val helper = new CheckYourAnswersHelper(answers)
                 val result = helper.report
 
-                result mustBe Some(
+                result mustEqual Some(
                   SummaryListRow(
                     key = Key("Identification number for replacement external seal".toText),
                     value = Value(s"$report".toText),
@@ -570,7 +570,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 val helper = new CheckYourAnswersHelper(answers)
                 val result = helper.report
 
-                result mustBe Some(
+                result mustEqual Some(
                   SummaryListRow(
                     key = Key("Identification number for external seal".toText),
                     value = Value(s"$report".toText),
@@ -602,7 +602,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper = new CheckYourAnswersHelper(answers)
           val result = helper.report
 
-          result mustBe None
+          result must not be defined
         }
       }
     }
@@ -615,7 +615,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.revisedUnloadingProcedureConditionsYesNo
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Does the movement meet the conditions for using the revised unloading procedure?".toText),
               value = Value("Yes".toText),
@@ -640,7 +640,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.revisedUnloadingProcedureConditionsYesNo
 
-          result mustBe Some(
+          result mustEqual Some(
             SummaryListRow(
               key = Key("Does the movement meet the conditions for using the revised unloading procedure?".toText),
               value = Value("No".toText),

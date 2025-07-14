@@ -81,7 +81,7 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
           )
         )
 
-        result mustBe expectedResult
+        result mustEqual expectedResult
       }
     }
 
@@ -103,7 +103,7 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
 
         val result = connector.getMessage(arrivalId, messageId).futureValue
 
-        result mustBe xml
+        result mustEqual xml
       }
     }
 

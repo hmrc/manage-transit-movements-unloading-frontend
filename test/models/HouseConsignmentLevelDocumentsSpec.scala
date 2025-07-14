@@ -38,8 +38,8 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, None)
-              result.supporting mustBe 1
-              result.transport mustBe 0
+              result.supporting mustEqual 1
+              result.transport mustEqual 0
           }
         }
 
@@ -50,8 +50,8 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, Some(index))
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
 
@@ -64,8 +64,8 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, documentIndex)
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
       }
@@ -79,8 +79,8 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, None)
-              result.supporting mustBe 0
-              result.transport mustBe 1
+              result.supporting mustEqual 0
+              result.transport mustEqual 1
           }
         }
 
@@ -91,8 +91,8 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, Some(index))
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
 
@@ -105,8 +105,8 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, documentIndex)
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
       }
@@ -120,7 +120,7 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
       val houseConsignmentLevelDocuments =
         HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment - 1, frontendAppConfig.maxTransportDocumentsHouseConsignment)
 
-      houseConsignmentLevelDocuments.availableDocuments(documents) mustBe Seq(supportDoc)
+      houseConsignmentLevelDocuments.availableDocuments(documents) mustEqual Seq(supportDoc)
     }
   }
 }

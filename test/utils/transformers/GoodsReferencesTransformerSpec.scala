@@ -36,8 +36,8 @@ class GoodsReferencesTransformerSpec extends SpecBase with AppWithDefaultMockFix
 
         goodsReferences.zipWithIndex.map {
           case (goodsReference, i) =>
-            result.getSequenceNumber(ItemSection(equipmentIndex, Index(i))) mustBe goodsReference.sequenceNumber
-            result.getValue(ItemPage(equipmentIndex, Index(i))) mustBe goodsReference.declarationGoodsItemNumber
+            result.getSequenceNumber(ItemSection(equipmentIndex, Index(i))) mustEqual goodsReference.sequenceNumber
+            result.getValue(ItemPage(equipmentIndex, Index(i))) mustEqual goodsReference.declarationGoodsItemNumber
         }
     }
   }

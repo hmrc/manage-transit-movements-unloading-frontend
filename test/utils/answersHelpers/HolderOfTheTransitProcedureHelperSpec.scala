@@ -27,39 +27,39 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
     "identificationNumber" - {
       "must return None when field is undefined" in {
         val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
-        helper.identificationNumber(None) mustBe None
+        helper.identificationNumber(None) must not be defined
       }
 
       "must return Some(Row) when field is defined" in {
         val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
         val result = helper.identificationNumber(Some("identificationNumber")).value
 
-        result.key.value mustBe "EORI number"
-        result.value.value mustBe "identificationNumber"
-        result.actions mustBe None
+        result.key.value mustEqual "EORI number"
+        result.value.value mustEqual "identificationNumber"
+        result.actions must not be defined
       }
     }
 
     "tirHolderIdentificationNumber" - {
       "must return None when field is undefined" in {
         val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
-        helper.tirHolderIdentificationNumber(None) mustBe None
+        helper.tirHolderIdentificationNumber(None) must not be defined
       }
 
       "must return Some(Row) when field is defined" in {
         val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
         val result = helper.tirHolderIdentificationNumber(Some("TIRHolderIdentificationNumber")).value
 
-        result.key.value mustBe "TIR holder’s identification number"
-        result.value.value mustBe "TIRHolderIdentificationNumber"
-        result.actions mustBe None
+        result.key.value mustEqual "TIR holder’s identification number"
+        result.value.value mustEqual "TIRHolderIdentificationNumber"
+        result.actions must not be defined
       }
     }
 
     "country" - {
       "must return None when page is undefined" in {
         val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
-        helper.country mustBe None
+        helper.country must not be defined
       }
 
       "must return Some(Row) when field is defined" in {
@@ -67,9 +67,9 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
         val helper      = new HolderOfTheTransitProcedureHelper(userAnswers)
         val result      = helper.country.value
 
-        result.key.value mustBe "Country"
-        result.value.value mustBe "Great Britain"
-        result.actions mustBe None
+        result.key.value mustEqual "Country"
+        result.value.value mustEqual "Great Britain"
+        result.actions must not be defined
       }
     }
 
@@ -77,18 +77,18 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
       val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
       val result = helper.name("name").value
 
-      result.key.value mustBe "Name"
-      result.value.value mustBe "name"
-      result.actions mustBe None
+      result.key.value mustEqual "Name"
+      result.value.value mustEqual "name"
+      result.actions must not be defined
     }
 
     "address must return Some(Row)" in {
       val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
       val result = helper.address(AddressType15("streetAndNumber", Some("postcode"), "city", "GB")).value
 
-      result.key.value mustBe "Address"
-      result.value.value mustBe "streetAndNumber<br>city<br>postcode"
-      result.actions mustBe None
+      result.key.value mustEqual "Address"
+      result.value.value mustEqual "streetAndNumber<br>city<br>postcode"
+      result.actions must not be defined
     }
   }
 }

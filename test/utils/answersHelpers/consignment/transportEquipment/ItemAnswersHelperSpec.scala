@@ -30,7 +30,7 @@ class ItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new ItemAnswersHelper(emptyUserAnswers, equipmentIndex, itemIndex)
-          helper.transportEquipmentItem mustBe None
+          helper.transportEquipmentItem must not be defined
         }
       }
 
@@ -43,16 +43,16 @@ class ItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ItemAnswersHelper(answers, equipmentIndex, itemIndex)
               val result = helper.transportEquipmentItem.value
 
-              result.key.value mustBe "Item 1"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Item 1"
+              result.value.value mustEqual value.toString
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe
+              action.content.value mustEqual "Change"
+              action.href mustEqual
                 controllers.transportEquipment.index.routes.GoodsReferenceController
                   .onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode, CheckMode)
                   .url
-              action.visuallyHiddenText.value mustBe "item 1 for transport equipment 1"
-              action.id mustBe "change-consignment-item-details-1-1"
+              action.visuallyHiddenText.value mustEqual "item 1 for transport equipment 1"
+              action.id mustEqual "change-consignment-item-details-1-1"
           }
         }
       }

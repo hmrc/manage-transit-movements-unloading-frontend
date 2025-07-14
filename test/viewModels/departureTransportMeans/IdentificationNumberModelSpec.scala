@@ -29,8 +29,8 @@ class IdentificationNumberModelSpec extends SpecBase with ScalaCheckPropertyChec
       val viewModelProvider = new IdentificationNumberViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode)(messages)
 
-      result.title mustBe "What is the identification for this vehicle?"
-      result.heading mustBe "What is the identification for this vehicle?"
+      result.title mustEqual "What is the identification for this vehicle?"
+      result.heading mustEqual "What is the identification for this vehicle?"
     }
 
     "when CheckMode" in {
@@ -38,8 +38,8 @@ class IdentificationNumberModelSpec extends SpecBase with ScalaCheckPropertyChec
 
       val result = viewModelProvider.apply(CheckMode)(messages)
 
-      result.title mustBe "What is the identification for the new departure means of transport?"
-      result.heading mustBe "What is the identification for the new departure means of transport?"
+      result.title mustEqual "What is the identification for the new departure means of transport?"
+      result.heading mustEqual "What is the identification for the new departure means of transport?"
     }
   }
 }

@@ -30,7 +30,7 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
       "must return None" - {
         s"when replacementMeansOfTransport undefined" in {
           val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
-          helper.typeOfIdentification mustBe None
+          helper.typeOfIdentification must not be defined
         }
       }
 
@@ -50,8 +50,8 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
               val helper = new ReplacementMeansOfTransportAnswersHelper(answers, Some(transhipment), index)
               val result = helper.typeOfIdentification.value
 
-              result.key.value mustBe "Identification type"
-              result.value.value mustBe identification.toString
+              result.key.value mustEqual "Identification type"
+              result.value.value mustEqual identification.toString
 
           }
         }
@@ -62,7 +62,7 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
       "must return None" - {
         s"when replacementMeansOfTransport undefined" in {
           val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
-          helper.identificationNumber mustBe None
+          helper.identificationNumber must not be defined
         }
       }
 
@@ -81,8 +81,8 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
               val helper = new ReplacementMeansOfTransportAnswersHelper(answers, Some(transhipment), index)
               val result = helper.identificationNumber.value
 
-              result.key.value mustBe "Identification number"
-              result.value.value mustBe transhipment.TransportMeans.identificationNumber
+              result.key.value mustEqual "Identification number"
+              result.value.value mustEqual transhipment.TransportMeans.identificationNumber
 
           }
         }
@@ -93,7 +93,7 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
       "must return None" - {
         s"when replacementMeansOfTransport undefined" in {
           val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
-          helper.nationality mustBe None
+          helper.nationality must not be defined
         }
       }
 
@@ -113,8 +113,8 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
               val helper = new ReplacementMeansOfTransportAnswersHelper(answers, Some(transhipment), index)
               val result = helper.nationality.value
 
-              result.key.value mustBe "Registered country"
-              result.value.value mustBe country.description
+              result.key.value mustEqual "Registered country"
+              result.value.value mustEqual country.description
 
           }
         }

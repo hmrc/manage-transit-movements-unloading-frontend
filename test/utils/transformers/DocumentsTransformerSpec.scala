@@ -117,34 +117,34 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments).apply(emptyUserAnswers).futureValue
 
-      result.getSequenceNumber(DocumentSection(Index(0))) mustBe 1
-      result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
-      result.getValue(DocumentReferenceNumberPage(Index(0))) mustBe "sd1 rn"
-      result.getValue(AdditionalInformationPage(Index(0))) mustBe "sd1 coi"
+      result.getSequenceNumber(DocumentSection(Index(0))) mustEqual 1
+      result.getValue(TypePage(Index(0))).toString mustEqual "Supporting - (sd1 tv) sd1 d"
+      result.getValue(DocumentReferenceNumberPage(Index(0))) mustEqual "sd1 rn"
+      result.getValue(AdditionalInformationPage(Index(0))) mustEqual "sd1 coi"
 
-      result.getSequenceNumber(DocumentSection(Index(1))) mustBe 2
-      result.getValue(TypePage(Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
-      result.getValue(DocumentReferenceNumberPage(Index(1))) mustBe "sd2 rn"
+      result.getSequenceNumber(DocumentSection(Index(1))) mustEqual 2
+      result.getValue(TypePage(Index(1))).toString mustEqual "Supporting - (sd2 tv) sd2 d"
+      result.getValue(DocumentReferenceNumberPage(Index(1))) mustEqual "sd2 rn"
       result.get(AdditionalInformationPage(Index(1))) must not be defined
 
-      result.getSequenceNumber(DocumentSection(Index(2))) mustBe 1
-      result.getValue(TypePage(Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
-      result.getValue(DocumentReferenceNumberPage(Index(2))) mustBe "td1 rn"
+      result.getSequenceNumber(DocumentSection(Index(2))) mustEqual 1
+      result.getValue(TypePage(Index(2))).toString mustEqual "Transport - (td1 tv) td1 d"
+      result.getValue(DocumentReferenceNumberPage(Index(2))) mustEqual "td1 rn"
       result.get(AdditionalInformationPage(Index(2))) must not be defined
 
-      result.getSequenceNumber(DocumentSection(Index(3))) mustBe 2
-      result.getValue(TypePage(Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
-      result.getValue(DocumentReferenceNumberPage(Index(3))) mustBe "td2 rn"
+      result.getSequenceNumber(DocumentSection(Index(3))) mustEqual 2
+      result.getValue(TypePage(Index(3))).toString mustEqual "Transport - (td2 tv) td2 d"
+      result.getValue(DocumentReferenceNumberPage(Index(3))) mustEqual "td2 rn"
       result.get(AdditionalInformationPage(Index(3))) must not be defined
 
-      result.getSequenceNumber(DocumentSection(Index(4))) mustBe 1
-      result.getValue(TypePage(Index(4))).toString mustBe "Previous - (pd1 tv) pd1 d"
-      result.getValue(DocumentReferenceNumberPage(Index(4))) mustBe "pd1 rn"
-      result.getValue(AdditionalInformationPage(Index(4))) mustBe "pd1 coi"
+      result.getSequenceNumber(DocumentSection(Index(4))) mustEqual 1
+      result.getValue(TypePage(Index(4))).toString mustEqual "Previous - (pd1 tv) pd1 d"
+      result.getValue(DocumentReferenceNumberPage(Index(4))) mustEqual "pd1 rn"
+      result.getValue(AdditionalInformationPage(Index(4))) mustEqual "pd1 coi"
 
-      result.getSequenceNumber(DocumentSection(Index(5))) mustBe 2
-      result.getValue(TypePage(Index(5))).toString mustBe "Previous - (pd2 tv) pd2 d"
-      result.getValue(DocumentReferenceNumberPage(Index(5))) mustBe "pd2 rn"
+      result.getSequenceNumber(DocumentSection(Index(5))) mustEqual 2
+      result.getValue(TypePage(Index(5))).toString mustEqual "Previous - (pd2 tv) pd2 d"
+      result.getValue(DocumentReferenceNumberPage(Index(5))) mustEqual "pd2 rn"
       result.get(AdditionalInformationPage(Index(5))) must not be defined
     }
 
@@ -215,33 +215,33 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(0))) mustBe 1
-      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
-      result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 coi"
-      result.getValue(TypePage(hcIndex, itemIndex, Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(0))) mustEqual 1
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustEqual "sd1 rn"
+      result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustEqual "sd1 coi"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(0))).toString mustEqual "Supporting - (sd1 tv) sd1 d"
 
-      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(1))) mustBe 2
-      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustBe "sd2 rn"
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(1))) mustEqual 2
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustEqual "sd2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(1))) must not be defined
-      result.getValue(TypePage(hcIndex, itemIndex, Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(1))).toString mustEqual "Supporting - (sd2 tv) sd2 d"
 
-      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(2))) mustBe 1
-      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustBe "td1 rn"
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(2))) mustEqual 1
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustEqual "td1 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(2))) must not be defined
-      result.getValue(TypePage(hcIndex, itemIndex, Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(2))).toString mustEqual "Transport - (td1 tv) td1 d"
 
-      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(3))) mustBe 2
-      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(3))) mustEqual 2
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustEqual "td2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
-      result.getValue(TypePage(hcIndex, itemIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(3))).toString mustEqual "Transport - (td2 tv) td2 d"
 
-      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(4))) mustBe "pd1 rn"
-      result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(4))) mustBe "pd1 coi"
-      result.getValue(TypePage(hcIndex, itemIndex, Index(4))).toString mustBe "Previous - (pd1 tv) pd1 d"
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(4))) mustEqual "pd1 rn"
+      result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(4))) mustEqual "pd1 coi"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(4))).toString mustEqual "Previous - (pd1 tv) pd1 d"
 
-      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(5))) mustBe "pd2 rn"
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(5))) mustEqual "pd2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(5))) must not be defined
-      result.getValue(TypePage(hcIndex, itemIndex, Index(5))).toString mustBe "Previous - (pd2 tv) pd2 d"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(5))).toString mustEqual "Previous - (pd2 tv) pd2 d"
     }
 
     "when house consignment documents" in {
@@ -311,33 +311,33 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments, hcIndex).apply(emptyUserAnswers).futureValue
 
-      result.getSequenceNumber(DocumentSection(hcIndex, Index(0))) mustBe 1
-      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(0))) mustBe "sd1 rn"
-      result.getValue(AdditionalInformationPage(hcIndex, Index(0))) mustBe "sd1 coi"
-      result.getValue(TypePage(hcIndex, Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
+      result.getSequenceNumber(DocumentSection(hcIndex, Index(0))) mustEqual 1
+      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(0))) mustEqual "sd1 rn"
+      result.getValue(AdditionalInformationPage(hcIndex, Index(0))) mustEqual "sd1 coi"
+      result.getValue(TypePage(hcIndex, Index(0))).toString mustEqual "Supporting - (sd1 tv) sd1 d"
 
-      result.getSequenceNumber(DocumentSection(hcIndex, Index(1))) mustBe 2
-      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(1))) mustBe "sd2 rn"
+      result.getSequenceNumber(DocumentSection(hcIndex, Index(1))) mustEqual 2
+      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(1))) mustEqual "sd2 rn"
       result.get(AdditionalInformationPage(hcIndex, Index(1))) must not be defined
-      result.getValue(TypePage(hcIndex, Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
+      result.getValue(TypePage(hcIndex, Index(1))).toString mustEqual "Supporting - (sd2 tv) sd2 d"
 
-      result.getSequenceNumber(DocumentSection(hcIndex, Index(2))) mustBe 1
-      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(2))) mustBe "td1 rn"
+      result.getSequenceNumber(DocumentSection(hcIndex, Index(2))) mustEqual 1
+      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(2))) mustEqual "td1 rn"
       result.get(AdditionalInformationPage(hcIndex, Index(2))) must not be defined
-      result.getValue(TypePage(hcIndex, Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
+      result.getValue(TypePage(hcIndex, Index(2))).toString mustEqual "Transport - (td1 tv) td1 d"
 
-      result.getSequenceNumber(DocumentSection(hcIndex, Index(3))) mustBe 2
-      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(3))) mustBe "td2 rn"
+      result.getSequenceNumber(DocumentSection(hcIndex, Index(3))) mustEqual 2
+      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(3))) mustEqual "td2 rn"
       result.get(AdditionalInformationPage(hcIndex, Index(3))) must not be defined
-      result.getValue(TypePage(hcIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
+      result.getValue(TypePage(hcIndex, Index(3))).toString mustEqual "Transport - (td2 tv) td2 d"
 
-      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(4))) mustBe "pd1 rn"
-      result.getValue(AdditionalInformationPage(hcIndex, Index(4))) mustBe "pd1 coi"
-      result.getValue(TypePage(hcIndex, Index(4))).toString mustBe "Previous - (pd1 tv) pd1 d"
+      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(4))) mustEqual "pd1 rn"
+      result.getValue(AdditionalInformationPage(hcIndex, Index(4))) mustEqual "pd1 coi"
+      result.getValue(TypePage(hcIndex, Index(4))).toString mustEqual "Previous - (pd1 tv) pd1 d"
 
-      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(5))) mustBe "pd2 rn"
+      result.getValue(DocumentReferenceNumberPage(hcIndex, Index(5))) mustEqual "pd2 rn"
       result.get(AdditionalInformationPage(hcIndex, Index(5))) must not be defined
-      result.getValue(TypePage(hcIndex, Index(5))).toString mustBe "Previous - (pd2 tv) pd2 d"
+      result.getValue(TypePage(hcIndex, Index(5))).toString mustEqual "Previous - (pd2 tv) pd2 d"
     }
   }
 }

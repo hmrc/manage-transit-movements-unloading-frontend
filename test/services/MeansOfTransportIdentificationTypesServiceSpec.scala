@@ -76,7 +76,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
               val result = service.getMeansOfTransportIdentificationTypes(userAnswers).futureValue
 
-              result.map(_.`type`) mustBe Seq(
+              result.map(_.`type`) mustEqual Seq(
                 "10",
                 "11",
                 "20",
@@ -102,7 +102,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
           val result = service.getMeansOfTransportIdentificationTypes(userAnswers).futureValue
 
-          result.map(_.`type`) mustBe Seq(
+          result.map(_.`type`) mustEqual Seq(
             "30",
             "31"
           )
@@ -116,7 +116,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
         val result = service.getMeansOfTransportIdentificationTypes(emptyUserAnswers).futureValue
 
-        result.map(_.`type`) mustBe Seq(
+        result.map(_.`type`) mustEqual Seq(
           "10",
           "11",
           "20",

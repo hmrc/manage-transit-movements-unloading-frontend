@@ -25,8 +25,8 @@ class MessageIdentificationServiceSpec extends SpecBase with AppWithDefaultMockF
   "randomIdentifier" - {
     "must generate a random string of 35 characters" in {
       val result = service.randomIdentifier
-      result.length mustBe 35
-      result.matches("^[a-zA-Z0-9]*$") mustBe true
+      result.length mustEqual 35
+      result.matches("^[a-zA-Z0-9]*$") mustEqual true
     }
   }
 }

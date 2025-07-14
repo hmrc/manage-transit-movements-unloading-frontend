@@ -68,12 +68,12 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val result = transformer.transform(commodity, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-        result.getValue(ItemDescriptionPage(hcIndex, itemIndex)) mustBe commodity.descriptionOfGoods
-        result.get(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustBe commodity.cusCode
-        result.get(CommodityCodePage(hcIndex, itemIndex)) mustBe commodity.CommodityCode.map(_.harmonizedSystemSubHeadingCode)
-        result.get(CombinedNomenclatureCodePage(hcIndex, itemIndex)) mustBe commodity.CommodityCode.flatMap(_.combinedNomenclatureCode)
-        result.getValue(FakeGoodsMeasureSection) mustBe Json.obj("foo" -> "bar")
-        result.getValue(FakeDangerousGoodsSection) mustBe Json.obj("foo1" -> "bar1")
+        result.getValue(ItemDescriptionPage(hcIndex, itemIndex)) mustEqual commodity.descriptionOfGoods
+        result.get(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustEqual commodity.cusCode
+        result.get(CommodityCodePage(hcIndex, itemIndex)) mustEqual commodity.CommodityCode.map(_.harmonizedSystemSubHeadingCode)
+        result.get(CombinedNomenclatureCodePage(hcIndex, itemIndex)) mustEqual commodity.CommodityCode.flatMap(_.combinedNomenclatureCode)
+        result.getValue(FakeGoodsMeasureSection) mustEqual Json.obj("foo" -> "bar")
+        result.getValue(FakeDangerousGoodsSection) mustEqual Json.obj("foo1" -> "bar1")
     }
   }
 }

@@ -47,7 +47,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
             navigator
               .nextPage(TypePage(hcIndex, documentIndex), documentMode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.documents.routes.ReferenceNumberController
                   .onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
               )
@@ -64,7 +64,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
             navigator
               .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), documentMode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
                   .onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
               )
@@ -81,7 +81,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
             navigator
               .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), documentMode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
                   .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
               )
@@ -96,7 +96,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
         navigator
           .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.documents.routes.AdditionalInformationController
               .onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
           )
@@ -110,7 +110,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
         navigator
           .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           )
@@ -124,7 +124,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
         navigator
           .nextPage(documents.AdditionalInformationPage(hcIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           )
@@ -146,7 +146,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
             navigator
               .nextPage(TypePage(hcIndex, documentIndex), documentMode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -158,7 +158,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
             navigator
               .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), documentMode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -170,7 +170,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
             navigator
               .nextPage(AdditionalInformationPage(hcIndex, documentIndex), documentMode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 

@@ -72,7 +72,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
             val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
 
-            result.getValue(pages.consignee.CountryPage) mustBe country
+            result.getValue(pages.consignee.CountryPage) mustEqual country
         }
       }
 
@@ -94,12 +94,12 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
           consignee =>
             val result = transformer.transform(Some(consignee), hcIndex).apply(emptyUserAnswers).futureValue
 
-            result.get(ConsigneeIdentifierPage(hcIndex)) mustBe consignee.identificationNumber
-            result.get(ConsigneeNamePage(hcIndex)) mustBe consignee.name
+            result.get(ConsigneeIdentifierPage(hcIndex)) mustEqual consignee.identificationNumber
+            result.get(ConsigneeNamePage(hcIndex)) mustEqual consignee.name
             result
               .get(ConsigneeCountryPage(hcIndex))
               .map(
-                countryResult => countryResult.description mustBe country.description
+                countryResult => countryResult.description mustEqual country.description
               )
         }
       }
@@ -123,12 +123,12 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
           consignee =>
             val result = transformer.transform(Some(consignee), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-            result.get(ItemConsigneeIdentifierPage(hcIndex, itemIndex)) mustBe consignee.identificationNumber
-            result.get(ItemConsigneeNamePage(hcIndex, itemIndex)) mustBe consignee.name
+            result.get(ItemConsigneeIdentifierPage(hcIndex, itemIndex)) mustEqual consignee.identificationNumber
+            result.get(ItemConsigneeNamePage(hcIndex, itemIndex)) mustEqual consignee.name
             result
               .get(ItemConsigneeCountryPage(hcIndex, itemIndex))
               .map(
-                countryResult => countryResult.description mustBe country.description
+                countryResult => countryResult.description mustEqual country.description
               )
         }
       }

@@ -116,13 +116,13 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
           incidents.zipWithIndex.map {
             case (incident, i) =>
-              result.getSequenceNumber(IncidentSection(Index(i))) mustBe incident.sequenceNumber
-              result.getValue(IncidentCodePage(Index(i))).code mustBe incident.code
-              result.getValue(IncidentCodePage(Index(i))).description mustBe i.toString
-              result.getValue(IncidentTextPage(Index(i))) mustBe incident.text
-              result.getValue(FakeIncidentEndorsementSection) mustBe Json.obj("foo" -> i.toString)
-              result.getValue(FakeIncidentLocationSection) mustBe Json.obj("foo" -> i.toString)
-              result.getValue(FakeTranshipmentSection) mustBe Json.obj("foo" -> i.toString)
+              result.getSequenceNumber(IncidentSection(Index(i))) mustEqual incident.sequenceNumber
+              result.getValue(IncidentCodePage(Index(i))).code mustEqual incident.code
+              result.getValue(IncidentCodePage(Index(i))).description mustEqual i.toString
+              result.getValue(IncidentTextPage(Index(i))) mustEqual incident.text
+              result.getValue(FakeIncidentEndorsementSection) mustEqual Json.obj("foo" -> i.toString)
+              result.getValue(FakeIncidentLocationSection) mustEqual Json.obj("foo" -> i.toString)
+              result.getValue(FakeTranshipmentSection) mustEqual Json.obj("foo" -> i.toString)
           }
       }
     }

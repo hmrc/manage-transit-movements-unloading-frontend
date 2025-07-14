@@ -32,8 +32,8 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
       val boundForm = form.bind(formData)
 
-      boundForm.hasErrors mustBe false
-      boundForm.get mustBe BigInt(10)
+      boundForm.hasErrors mustEqual false
+      boundForm.get mustEqual BigInt(10)
     }
 
     "fail to bind with a negative value" in {
@@ -42,8 +42,8 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
       val boundForm = form.bind(formData)
 
-      boundForm.hasErrors mustBe true
-      boundForm.errors.head.message mustBe s"$prefix.error.negative"
+      boundForm.hasErrors mustEqual true
+      boundForm.errors.head.message mustEqual s"$prefix.error.negative"
     }
 
     "fail to bind with a value exceeding the maximum" in {
@@ -52,8 +52,8 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
       val boundForm = form.bind(formData)
 
-      boundForm.hasErrors mustBe true
-      boundForm.errors.head.message mustBe s"$prefix.error.maximum"
+      boundForm.hasErrors mustEqual true
+      boundForm.errors.head.message mustEqual s"$prefix.error.maximum"
     }
 
     "fail to bind with a non-numeric value" in {
@@ -62,8 +62,8 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
       val boundForm = form.bind(formData)
 
-      boundForm.hasErrors mustBe true
-      boundForm.errors.head.message mustBe s"$prefix.error.nonNumeric"
+      boundForm.hasErrors mustEqual true
+      boundForm.errors.head.message mustEqual s"$prefix.error.nonNumeric"
     }
 
     "fail to bind with a non-whole number value" in {
@@ -72,8 +72,8 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
       val boundForm = form.bind(formData)
 
-      boundForm.hasErrors mustBe true
-      boundForm.errors.head.message mustBe s"$prefix.error.wholeNumber"
+      boundForm.hasErrors mustEqual true
+      boundForm.errors.head.message mustEqual s"$prefix.error.wholeNumber"
     }
 
     "fail to bind with a required field missing" in {
@@ -82,8 +82,8 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
       val boundForm = form.bind(formData)
 
-      boundForm.hasErrors mustBe true
-      boundForm.errors.head.message mustBe s"$prefix.error.required"
+      boundForm.hasErrors mustEqual true
+      boundForm.errors.head.message mustEqual s"$prefix.error.required"
     }
 
   }

@@ -41,7 +41,7 @@ class GoodsReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         navigator
           .nextPage(ItemPage(equipmentIndex, itemIndex), goodsReferenceMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, equipmentIndex)
           )
 
@@ -60,7 +60,7 @@ class GoodsReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         navigator
           .nextPage(ItemPage(equipmentIndex, itemIndex), goodsReferenceMode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
     }
   }

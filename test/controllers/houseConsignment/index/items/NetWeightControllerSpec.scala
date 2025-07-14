@@ -185,7 +185,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       val result = route(app, request).value
 
-      status(result) mustBe SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
 

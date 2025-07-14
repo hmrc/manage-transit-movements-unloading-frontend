@@ -40,13 +40,13 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
               val userAnswers = emptyUserAnswers
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems mustBe Nil
-              result.title mustBe "You have added 0 document to all items"
-              result.heading mustBe "You have added 0 document to all items"
-              result.legend mustBe "Do you want to add a document to all items?"
-              result.maxLimitLabel mustBe "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
-              result.maxLimitLabelForType mustBe None
-              result.nextIndex mustBe Index(0)
+              result.listItems mustEqual Nil
+              result.title mustEqual "You have added 0 document to all items"
+              result.heading mustEqual "You have added 0 document to all items"
+              result.legend mustEqual "Do you want to add a document to all items?"
+              result.maxLimitLabel mustEqual "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
+              result.maxLimitLabelForType must not be defined
+              result.nextIndex mustEqual Index(0)
           }
         }
       }
@@ -62,13 +62,13 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 1
-              result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
-              result.title mustBe "You have added 1 document to all items"
-              result.heading mustBe "You have added 1 document to all items"
-              result.legend mustBe "Do you want to add another document to all items?"
-              result.maxLimitLabel mustBe "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.listItems.head.name mustEqual "Supporting - (code1) description1 - ref1"
+              result.title mustEqual "You have added 1 document to all items"
+              result.heading mustEqual "You have added 1 document to all items"
+              result.legend mustEqual "Do you want to add another document to all items?"
+              result.maxLimitLabel mustEqual "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -85,8 +85,8 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
-              result.allowMore mustBe true
+              result.maxLimitLabelForType.get mustEqual "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+              result.allowMore mustEqual true
           }
         }
 
@@ -103,8 +103,8 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
-              result.allowMore mustBe true
+              result.maxLimitLabelForType.get mustEqual "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+              result.allowMore mustEqual true
           }
         }
 
@@ -128,7 +128,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.allowMore mustBe false
+              result.allowMore mustEqual false
           }
         }
 
@@ -142,15 +142,15 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
                 .setValue(DocumentReferenceNumberPage(Index(1)), "ref2")
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems.length mustBe 2
-              result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
-              result.listItems.last.name mustBe "Transport - (code2) description2 - ref2"
-              result.title mustBe "You have added 2 documents to all items"
-              result.heading mustBe "You have added 2 documents to all items"
-              result.legend mustBe "Do you want to add another document to all items?"
-              result.maxLimitLabel mustBe "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
+              result.listItems.length mustEqual 2
+              result.listItems.head.name mustEqual "Supporting - (code1) description1 - ref1"
+              result.listItems.last.name mustEqual "Transport - (code2) description2 - ref2"
+              result.title mustEqual "You have added 2 documents to all items"
+              result.heading mustEqual "You have added 2 documents to all items"
+              result.legend mustEqual "Do you want to add another document to all items?"
+              result.maxLimitLabel mustEqual "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
 
-              result.nextIndex mustBe Index(2)
+              result.nextIndex mustEqual Index(2)
           }
         }
 
@@ -163,12 +163,12 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems mustBe Nil
-              result.title mustBe "You have added 0 document to all items"
-              result.heading mustBe "You have added 0 document to all items"
-              result.legend mustBe "Do you want to add a document to all items?"
-              result.maxLimitLabel mustBe "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
-              result.nextIndex mustBe Index(1)
+              result.listItems mustEqual Nil
+              result.title mustEqual "You have added 0 document to all items"
+              result.heading mustEqual "You have added 0 document to all items"
+              result.legend mustEqual "Do you want to add a document to all items?"
+              result.maxLimitLabel mustEqual "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -183,12 +183,12 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
                 .setValue(DocumentReferenceNumberPage(Index(2)), "ref2")
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems.length mustBe 2
-              result.title mustBe "You have added 2 documents to all items"
-              result.heading mustBe "You have added 2 documents to all items"
-              result.legend mustBe "Do you want to add another document to all items?"
-              result.maxLimitLabel mustBe "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
-              result.nextIndex mustBe Index(3) // take 'removed item' into account when calculating the next index
+              result.listItems.length mustEqual 2
+              result.title mustEqual "You have added 2 documents to all items"
+              result.heading mustEqual "You have added 2 documents to all items"
+              result.legend mustEqual "Do you want to add another document to all items?"
+              result.maxLimitLabel mustEqual "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
+              result.nextIndex mustEqual Index(3) // take 'removed item' into account when calculating the next index
           }
         }
 
@@ -203,7 +203,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = "Supporting - (code1) description1 - ref1",
                   changeUrl = None,
@@ -224,7 +224,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
                 )
               )
 
-              result.nextIndex mustBe Index(2)
+              result.nextIndex mustEqual Index(2)
           }
         }
       }

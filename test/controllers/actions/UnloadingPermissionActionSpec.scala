@@ -70,7 +70,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
       val result: Future[Result] = unloadingPermissionProvider.invokeBlock(testRequest, fakeOkResult)
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe routes.ErrorController.technicalDifficulties().url
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

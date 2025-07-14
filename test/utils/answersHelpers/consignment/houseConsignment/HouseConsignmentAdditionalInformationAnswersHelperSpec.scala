@@ -31,7 +31,7 @@ class HouseConsignmentAdditionalInformationAnswersHelperSpec extends AnswersHelp
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAdditionalInformationAnswersHelper(emptyUserAnswers, hcIndex, additionalInformationIndex)
-          helper.code mustBe None
+          helper.code must not be defined
         }
       }
 
@@ -44,8 +44,8 @@ class HouseConsignmentAdditionalInformationAnswersHelperSpec extends AnswersHelp
               val helper = new HouseConsignmentAdditionalInformationAnswersHelper(answers, hcIndex, additionalInformationIndex)
               val result = helper.code.value
 
-              result.key.value mustBe "Type"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Type"
+              result.value.value mustEqual value.toString
               result.actions must not be defined
           }
         }
@@ -58,7 +58,7 @@ class HouseConsignmentAdditionalInformationAnswersHelperSpec extends AnswersHelp
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAdditionalInformationAnswersHelper(emptyUserAnswers, hcIndex, additionalInformationIndex)
-          helper.description mustBe None
+          helper.description must not be defined
         }
       }
 
@@ -71,8 +71,8 @@ class HouseConsignmentAdditionalInformationAnswersHelperSpec extends AnswersHelp
               val helper = new HouseConsignmentAdditionalInformationAnswersHelper(answers, hcIndex, additionalInformationIndex)
               val result = helper.description.value
 
-              result.key.value mustBe "Description"
-              result.value.value mustBe value
+              result.key.value mustEqual "Description"
+              result.value.value mustEqual value
               result.actions must not be defined
           }
         }

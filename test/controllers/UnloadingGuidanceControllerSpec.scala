@@ -74,7 +74,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
 
       val view = app.injector.instanceOf[UnloadingGuidanceView]
 
-      status(result) mustBe OK
+      status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(mrn, arrivalId, messageId, NormalMode, viewModel)(
         request,

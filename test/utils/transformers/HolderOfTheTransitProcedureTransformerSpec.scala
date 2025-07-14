@@ -61,7 +61,7 @@ class HolderOfTheTransitProcedureTransformerSpec extends SpecBase with AppWithDe
     when(mockReferenceDataService.getCountry(eqTo("GB"))(any())).thenReturn(Future(country))
 
     val result = transformer.transform(Some(hotP)).apply(emptyUserAnswers).futureValue
-    result.getValue(CountryPage) mustBe country
+    result.getValue(CountryPage) mustEqual country
   }
 
   "return failure if ref data call fails" in {
@@ -70,7 +70,7 @@ class HolderOfTheTransitProcedureTransformerSpec extends SpecBase with AppWithDe
     val result = transformer.transform(Some(hotP)).apply(emptyUserAnswers)
     whenReady(result.failed) {
       t =>
-        t.getMessage mustBe "test failure"
+        t.getMessage mustEqual "test failure"
     }
   }
 }

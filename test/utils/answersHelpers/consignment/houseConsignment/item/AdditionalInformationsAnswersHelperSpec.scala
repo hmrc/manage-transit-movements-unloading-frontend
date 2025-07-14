@@ -35,7 +35,7 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new AdditionalInformationsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
-          helper.additionalInformationCodeRow mustBe None
+          helper.additionalInformationCodeRow must not be defined
         }
       }
 
@@ -48,8 +48,8 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new AdditionalInformationsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
               val result = helper.additionalInformationCodeRow.value
 
-              result.key.value mustBe "Type"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Type"
+              result.value.value mustEqual value.toString
               result.actions must not be defined
           }
         }
@@ -62,7 +62,7 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new AdditionalInformationsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
-          helper.additionalInformationTextRow mustBe None
+          helper.additionalInformationTextRow must not be defined
         }
       }
 
@@ -75,8 +75,8 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new AdditionalInformationsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
               val result = helper.additionalInformationTextRow.value
 
-              result.key.value mustBe "Description"
-              result.value.value mustBe value
+              result.key.value mustEqual "Description"
+              result.value.value mustEqual value
               result.actions must not be defined
           }
         }

@@ -44,7 +44,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), transportMeansMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationNumberController
               .onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode)
           )
@@ -57,7 +57,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), transportMeansMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController
               .onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode)
           )
@@ -70,7 +70,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(CountryPage(houseConsignmentIndex, transportMeansIndex), transportMeansMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
               .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           )
@@ -90,7 +90,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(TransportMeansIdentificationPage(hcIndex, transportMeansIndex), transportMeansMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
 
@@ -101,7 +101,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(CountryPage(hcIndex, transportMeansIndex), transportMeansMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
 
@@ -112,7 +112,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(VehicleIdentificationNumberPage(hcIndex, transportMeansIndex), transportMeansMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
     }

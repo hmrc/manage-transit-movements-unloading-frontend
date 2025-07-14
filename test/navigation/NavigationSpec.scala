@@ -40,7 +40,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(GoodsTooLargeForContainerYesNoPage, true)
         navigator
           .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
-          .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+          .mustEqual(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
       }
 
       "must go from NewAuthYesNoPage" - {
@@ -49,7 +49,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, true)
           navigator
             .nextPage(NewAuthYesNoPage, mode, userAnswers)
-            .mustBe(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, mode))
         }
 
         "to UnloadingGuidancePage when the answer is No" in {
@@ -57,7 +57,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(NewAuthYesNoPage, false)
           navigator
             .nextPage(NewAuthYesNoPage, mode, userAnswers)
-            .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+            .mustEqual(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
         }
       }
 
@@ -67,14 +67,14 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
           navigator
             .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
-            .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
         }
         "when answered false" in {
 
           val userAnswers = emptyUserAnswers.setValue(SealsReplacedByCustomsAuthorityYesNoPage, false)
           navigator
             .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
-            .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
         }
       }
 
@@ -83,7 +83,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
         navigator
           .nextPage(UnloadingTypePage, mode, userAnswers)
-          .mustBe(routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
+          .mustEqual(routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
       }
 
       "must go from date goods unloaded page" - {
@@ -101,7 +101,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
 
         "to can seals be read page when seals exist in incident transport equipment" in {
@@ -120,7 +120,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
 
         "to add transit unloading permission discrepancies yes/no page when no seals exist" in {
@@ -130,7 +130,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
+            .mustEqual(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
         }
       }
 
@@ -140,7 +140,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
           navigator
             .nextPage(CanSealsBeReadPage, mode, userAnswers)
-            .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
 
         "to Are any seals broken page when the answer is No" in {
@@ -148,7 +148,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
           navigator
             .nextPage(CanSealsBeReadPage, mode, userAnswers)
-            .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
+            .mustEqual(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
       }
 
@@ -162,7 +162,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
+            .mustEqual(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
         }
 
         "to unloading findings when switched from revised to legacy" in {
@@ -177,7 +177,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustEqual(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
         "to unloading findings page when seals are not present" in {
@@ -187,7 +187,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustEqual(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
         "to unloading findings page when seals are present but not readable" in {
@@ -199,7 +199,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustEqual(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
         "to unloading finding page when seals are broken NewAuthYesNoPage is false" in {
@@ -210,7 +210,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+            .mustEqual(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
         }
 
         "to unloading findings page when seals are present but broken" in {
@@ -222,7 +222,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustEqual(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }
 
@@ -236,7 +236,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-                .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+                .mustEqual(routes.UnloadingFindingsController.onPageLoad(arrivalId))
             }
           }
 
@@ -248,7 +248,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-                .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
+                .mustEqual(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
             }
           }
         }
@@ -263,7 +263,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
             navigator
               .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-              .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
+              .mustEqual(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
           }
         }
 
@@ -277,7 +277,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
             navigator
               .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
           }
         }
 
@@ -285,7 +285,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           "to session expired controller" in {
             navigator
               .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, emptyUserAnswers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
+              .mustEqual(routes.SessionExpiredController.onPageLoad())
           }
         }
       }
@@ -294,7 +294,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
+          .mustEqual(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
       }
 
       "must go from do you have anything else to report page" - {
@@ -303,7 +303,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, mode))
+            .mustEqual(routes.OtherThingsToReportController.onPageLoad(arrivalId, mode))
         }
 
         "when answer is false to check your answers page" in {
@@ -311,7 +311,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+            .mustEqual(routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
       }
 
@@ -319,7 +319,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "test")
         navigator
           .nextPage(OtherThingsToReportPage, mode, userAnswers)
-          .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(arrivalId))
 
       }
 
@@ -331,7 +331,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           answers =>
             navigator
               .nextPage(UnknownPage, mode, answers)
-              .mustBe(routes.ErrorController.technicalDifficulties())
+              .mustEqual(routes.ErrorController.technicalDifficulties())
         }
       }
 
@@ -343,7 +343,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-              .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+              .mustEqual(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
           }
         }
 
@@ -354,7 +354,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-              .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
+              .mustEqual(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
           }
         }
       }
@@ -373,7 +373,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(NewAuthYesNoPage, mode, userAnswers)
-                .mustBe(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, mode))
+                .mustEqual(routes.RevisedUnloadingProcedureConditionsYesNoController.onPageLoad(userAnswers.id, mode))
             }
           }
 
@@ -385,7 +385,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(NewAuthYesNoPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -401,7 +401,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   navigator
                     .nextPage(NewAuthYesNoPage, mode, userAnswers)
-                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                    .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
               }
             }
           }
@@ -413,7 +413,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(NewAuthYesNoPage, mode, userAnswers)
-                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -428,7 +428,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-                .mustBe(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
+                .mustEqual(routes.GoodsTooLargeForContainerYesNoController.onPageLoad(userAnswers.id, mode))
             }
           }
 
@@ -440,7 +440,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -453,7 +453,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-                .mustBe(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.RevisedUnloadingProcedureUnmetConditionsController.onPageLoad(userAnswers.id))
             }
           }
 
@@ -465,7 +465,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(RevisedUnloadingProcedureConditionsYesNoPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -476,7 +476,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
         navigator
           .nextPage(UnloadingTypePage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from date goods unloaded page to check your answers" in {
@@ -484,7 +484,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
         navigator
           .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from can seals be read page" - {
@@ -498,7 +498,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(CanSealsBeReadPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
 
@@ -510,7 +510,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(CanSealsBeReadPage, mode, userAnswers)
-                .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
+                .mustEqual(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
             }
           }
         }
@@ -524,7 +524,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(CanSealsBeReadPage, mode, userAnswers)
-                .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
             }
           }
 
@@ -537,7 +537,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(CanSealsBeReadPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -554,7 +554,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
 
@@ -566,7 +566,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-                .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
+                .mustEqual(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(userAnswers.id, CheckMode))
             }
           }
 
@@ -582,7 +582,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+              .mustEqual(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -595,7 +595,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-                .mustBe(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
             }
           }
 
@@ -608,7 +608,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -625,7 +625,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 navigator
                   .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-                  .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+                  .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
               }
             }
 
@@ -638,7 +638,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 navigator
                   .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                  .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
               }
             }
           }
@@ -652,7 +652,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 navigator
                   .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-                  .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, mode))
+                  .mustEqual(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, mode))
               }
             }
 
@@ -665,7 +665,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 navigator
                   .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-                  .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                  .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
               }
             }
           }
@@ -681,7 +681,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
             navigator
               .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-              .mustBe(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
+              .mustEqual(routes.CannotUseRevisedUnloadingProcedureController.onPageLoad(userAnswers.id))
           }
         }
 
@@ -695,7 +695,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
             navigator
               .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
           }
         }
       }
@@ -705,7 +705,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from do you have anything else to report yes/no page" - {
@@ -716,7 +716,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-                .mustBe(controllers.routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+                .mustEqual(controllers.routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
             }
           }
 
@@ -728,7 +728,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -739,7 +739,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
           }
         }
       }
@@ -749,7 +749,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
         navigator
           .nextPage(OtherThingsToReportPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from a page that doesn't exist in the edit route map  to Check Your Answers" in {
@@ -760,7 +760,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           answers =>
             navigator
               .nextPage(UnknownPage, mode, answers)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+              .mustEqual(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
       }
 
@@ -774,7 +774,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 navigator
                   .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
-                  .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                  .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -785,7 +785,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             navigator
               .nextPage(SealsReplacedByCustomsAuthorityYesNoPage, mode, userAnswers)
-              .mustBe(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, NormalMode))
+              .mustEqual(routes.OtherThingsToReportController.onPageLoad(userAnswers.id, NormalMode))
           }
         }
       }
@@ -802,7 +802,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   navigator
                     .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
-                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                    .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
               }
             }
           }
@@ -814,7 +814,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
-                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
             }
           }
         }
@@ -830,7 +830,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   navigator
                     .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
-                    .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+                    .mustEqual(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
               }
             }
           }
@@ -842,7 +842,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               navigator
                 .nextPage(GoodsTooLargeForContainerYesNoPage, mode, userAnswers)
-                .mustBe(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
+                .mustEqual(routes.UnloadingGuidanceController.onPageLoad(userAnswers.id))
             }
           }
         }

@@ -32,9 +32,9 @@ class DescriptionViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val viewModelProvider = new DescriptionViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, NormalMode, Index(0), Index(1))
 
-      result.title mustBe "Enter a description of item 2 in house consignment 1"
-      result.heading mustBe "Enter a description of item 2 in house consignment 1"
-      result.requiredError mustBe "Enter a description of item 2 in house consignment 1"
+      result.title mustEqual "Enter a description of item 2 in house consignment 1"
+      result.heading mustEqual "Enter a description of item 2 in house consignment 1"
+      result.requiredError mustEqual "Enter a description of item 2 in house consignment 1"
     }
 
     "when Check mode" in {
@@ -42,9 +42,9 @@ class DescriptionViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       val result = viewModelProvider.apply(arrivalId, houseConsignmentMode, CheckMode, Index(0), Index(1))
 
-      result.title mustBe "Enter the new description of item 2 in house consignment 1"
-      result.heading mustBe "Enter the new description of item 2 in house consignment 1"
-      result.requiredError mustBe "Enter the new description of item 2 in house consignment 1"
+      result.title mustEqual "Enter the new description of item 2 in house consignment 1"
+      result.heading mustEqual "Enter the new description of item 2 in house consignment 1"
+      result.requiredError mustEqual "Enter the new description of item 2 in house consignment 1"
     }
   }
 }

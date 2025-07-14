@@ -35,7 +35,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
             val result = helper.containerIdentificationNumber
 
-            result mustBe None
+            result must not be defined
         }
       }
 
@@ -48,8 +48,8 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
             val result = helper.containerIdentificationNumber
 
-            result.isDefined mustBe true
-            result.get.value.content.value mustBe containerIdentificationNumber
+            result.isDefined mustEqual true
+            result.get.value.content.value mustEqual containerIdentificationNumber
             result.get.actions must not be defined
         }
       }
@@ -65,16 +65,16 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
             val result = helper.transportEquipmentSeals
 
-            result.sectionTitle.value mustBe "Seals"
+            result.sectionTitle.value mustEqual "Seals"
 
-            result.rows.size mustBe 2
+            result.rows.size mustEqual 2
 
-            result.rows.head.key.value mustBe "Seal 1"
-            result.rows.head.value.value mustBe "Seal1"
+            result.rows.head.key.value mustEqual "Seal 1"
+            result.rows.head.value.value mustEqual "Seal1"
             result.rows.head.actions must not be defined
 
-            result.rows(1).key.value mustBe "Seal 2"
-            result.rows(1).value.value mustBe "Seal2"
+            result.rows(1).key.value mustEqual "Seal 2"
+            result.rows(1).value.value mustEqual "Seal2"
             result.rows(1).actions must not be defined
         }
       }
@@ -90,16 +90,16 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
             val result = helper.itemNumbers
 
-            result.sectionTitle.value mustBe "Goods item numbers"
+            result.sectionTitle.value mustEqual "Goods item numbers"
 
-            result.rows.size mustBe 2
+            result.rows.size mustEqual 2
 
-            result.rows.head.key.value mustBe "Goods item number 1"
-            result.rows.head.value.value mustBe "123"
+            result.rows.head.key.value mustEqual "Goods item number 1"
+            result.rows.head.value.value mustEqual "123"
             result.rows.head.actions must not be defined
 
-            result.rows(1).key.value mustBe "Goods item number 2"
-            result.rows(1).value.value mustBe "234"
+            result.rows(1).key.value mustEqual "Goods item number 2"
+            result.rows(1).value.value mustEqual "234"
             result.rows(1).actions must not be defined
         }
       }

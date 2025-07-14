@@ -47,12 +47,12 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
 
               val result = new AddAnotherHouseConsignmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 1
-              result.title mustBe "You have added 1 house consignment"
-              result.heading mustBe "You have added 1 house consignment"
-              result.legend mustBe "Do you want to add another house consignment?"
-              result.maxLimitLabel mustBe "You cannot add any more house consignments. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.title mustEqual "You have added 1 house consignment"
+              result.heading mustEqual "You have added 1 house consignment"
+              result.legend mustEqual "Do you want to add another house consignment?"
+              result.maxLimitLabel mustEqual "You cannot add any more house consignments. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -77,12 +77,12 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
 
               val result = new AddAnotherHouseConsignmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 4
-              result.title mustBe s"You have added 4 house consignments"
-              result.heading mustBe s"You have added 4 house consignments"
-              result.legend mustBe "Do you want to add another house consignment?"
-              result.maxLimitLabel mustBe "You cannot add any more house consignments. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(4)
+              result.listItems.length mustEqual 4
+              result.title mustEqual s"You have added 4 house consignments"
+              result.heading mustEqual s"You have added 4 house consignments"
+              result.legend mustEqual "Do you want to add another house consignment?"
+              result.maxLimitLabel mustEqual "You cannot add any more house consignments. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(4)
           }
         }
 
@@ -106,12 +106,12 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
 
               val result = new AddAnotherHouseConsignmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 3
-              result.title mustBe s"You have added 3 house consignments"
-              result.heading mustBe s"You have added 3 house consignments"
-              result.legend mustBe "Do you want to add another house consignment?"
-              result.maxLimitLabel mustBe "You cannot add any more house consignments. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(4)
+              result.listItems.length mustEqual 3
+              result.title mustEqual s"You have added 3 house consignments"
+              result.heading mustEqual s"You have added 3 house consignments"
+              result.legend mustEqual "Do you want to add another house consignment?"
+              result.maxLimitLabel mustEqual "You cannot add any more house consignments. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(4)
           }
         }
 
@@ -136,7 +136,7 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
 
               val result = new AddAnotherHouseConsignmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"House consignment 1",
                   changeUrl = None,
@@ -175,7 +175,7 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
                 )
               )
 
-              result.nextIndex mustBe Index(4)
+              result.nextIndex mustEqual Index(4)
           }
         }
       }

@@ -33,12 +33,12 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
         mode =>
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(emptyUserAnswers, arrivalId, mode)
 
-          result.listItems mustBe Nil
+          result.listItems mustEqual Nil
 
-          result.title mustBe s"You have added 0 additional references"
-          result.heading mustBe s"You have added 0 additional references"
-          result.legend mustBe s"Do you want to add a additional reference?"
-          result.maxLimitLabel mustBe
+          result.title mustEqual s"You have added 0 additional references"
+          result.heading mustEqual s"You have added 0 additional references"
+          result.legend mustEqual s"Do you want to add a additional reference?"
+          result.maxLimitLabel mustEqual
             s"You cannot add any more additional references. To add another, you need to remove one first."
       }
     }
@@ -51,11 +51,11 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-          result.listItems.length mustBe 1
-          result.title mustBe s"You have added 1 additional reference"
-          result.heading mustBe s"You have added 1 additional reference"
-          result.legend mustBe s"Do you want to add another additional reference?"
-          result.maxLimitLabel mustBe
+          result.listItems.length mustEqual 1
+          result.title mustEqual s"You have added 1 additional reference"
+          result.heading mustEqual s"You have added 1 additional reference"
+          result.legend mustEqual s"Do you want to add another additional reference?"
+          result.maxLimitLabel mustEqual
             s"You cannot add any more additional references. To add another, you need to remove one first."
       }
     }
@@ -71,11 +71,11 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
             .setValue(AdditionalReferenceTypePage(Index(3)), identificationReference)
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode)
-          result.listItems.length mustBe 4
-          result.title mustBe s"You have added 4 additional references"
-          result.heading mustBe s"You have added 4 additional references"
-          result.legend mustBe s"Do you want to add another additional reference?"
-          result.maxLimitLabel mustBe
+          result.listItems.length mustEqual 4
+          result.title mustEqual s"You have added 4 additional references"
+          result.heading mustEqual s"You have added 4 additional references"
+          result.legend mustEqual s"Do you want to add another additional reference?"
+          result.maxLimitLabel mustEqual
             s"You cannot add any more additional references. To add another, you need to remove one first."
       }
     }

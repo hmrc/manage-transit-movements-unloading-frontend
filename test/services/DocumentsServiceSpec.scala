@@ -58,7 +58,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
             when(mockReferenceDataService.getDocuments()(any()))
               .thenReturn(Future.successful(documents))
 
-            service.getDocumentList(emptyUserAnswers, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(emptyUserAnswers, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(documents)
           }
 
@@ -68,7 +68,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
             val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), transportDocument2)
 
-            service.getDocumentList(userAnswers, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(transportDocuments)
           }
 
@@ -78,7 +78,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
             val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), supportingDocument2)
 
-            service.getDocumentList(userAnswers, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(supportingDocuments)
           }
         }
@@ -87,7 +87,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
             when(mockReferenceDataService.getDocuments()(any()))
               .thenReturn(Future.successful(documents))
 
-            service.getDocumentList(emptyUserAnswers, documentIndex, NormalMode).futureValue mustBe
+            service.getDocumentList(emptyUserAnswers, documentIndex, NormalMode).futureValue mustEqual
               SelectableList(documents)
           }
         }
@@ -99,7 +99,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
             when(mockReferenceDataService.getDocuments()(any()))
               .thenReturn(Future.successful(documents))
 
-            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(documents)
           }
 
@@ -109,7 +109,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
             val userAnswers = emptyUserAnswers.setValue(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex), transportDocument2)
 
-            service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(transportDocuments)
           }
 
@@ -122,7 +122,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
             val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), supportingDocument2)
 
-            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(supportingDocuments)
           }
 
@@ -131,7 +131,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
             when(mockReferenceDataService.getDocuments()(any()))
               .thenReturn(Future.successful(documents))
 
-            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(documents)
           }
 
@@ -144,7 +144,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
             val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), transportDocument2)
 
-            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(transportDocuments)
           }
 
@@ -157,7 +157,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
             val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), supportingDocument2)
 
-            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustEqual
               SelectableList(supportingDocuments)
           }
         }
@@ -167,7 +167,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
             when(mockReferenceDataService.getDocuments()(any()))
               .thenReturn(Future.successful(documents))
 
-            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex, NormalMode).futureValue mustBe
+            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex, NormalMode).futureValue mustEqual
               SelectableList(documents)
           }
         }

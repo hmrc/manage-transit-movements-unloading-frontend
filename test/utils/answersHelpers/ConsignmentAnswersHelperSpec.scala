@@ -57,7 +57,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val result = helper.headerSection
 
         result mustBe a[StaticSection]
-        result.rows.size mustBe 7
+        result.rows.size mustEqual 7
       }
     }
 
@@ -72,8 +72,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val helper = new ConsignmentAnswersHelper(answers)
             val result = helper.traderAtDestinationRow
 
-            result.key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
-            result.value.value mustBe value
+            result.key.value mustEqual "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
+            result.value.value mustEqual value
             result.actions must not be defined
         }
       }
@@ -118,7 +118,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentAnswersHelper(userAnswers)
               val result = helper.consignorSection.value
 
-              result.sectionTitle.value mustBe "Consignor"
+              result.sectionTitle.value mustEqual "Consignor"
           }
         }
       }
@@ -163,7 +163,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentAnswersHelper(userAnswers)
               val result = helper.consigneeSection.value
 
-              result.sectionTitle.value mustBe "Consignee"
+              result.sectionTitle.value mustEqual "Consignee"
           }
         }
       }
@@ -181,14 +181,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.countriesOfRoutingSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Countries of routing"
-            result.id.value mustBe "countries-of-routing"
+            result.sectionTitle.value mustEqual "Countries of routing"
+            result.id.value mustEqual "countries-of-routing"
 
             val addOrRemoveLink = result.viewLinks.head
-            addOrRemoveLink.id mustBe "add-remove-countries-of-routing"
-            addOrRemoveLink.text mustBe "Add or remove country of routing"
+            addOrRemoveLink.id mustEqual "add-remove-countries-of-routing"
+            addOrRemoveLink.text mustEqual "Add or remove country of routing"
             addOrRemoveLink.visuallyHidden must not be defined
-            addOrRemoveLink.href mustBe controllers.countriesOfRouting.routes.AddAnotherCountryController.onPageLoad(arrivalId, NormalMode).url
+            addOrRemoveLink.href mustEqual controllers.countriesOfRouting.routes.AddAnotherCountryController.onPageLoad(arrivalId, NormalMode).url
 
             result.rows.size mustEqual 2
             result.rows.head.value.value mustEqual value1.toString
@@ -204,7 +204,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         s"when no transport equipments defined" in {
           val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
           val result = helper.grossMassRow
-          result.isEmpty mustBe true
+          result.isEmpty mustEqual true
         }
       }
 
@@ -216,13 +216,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.grossMassRow.value
 
-          result.key.value mustBe "Gross weight"
-          result.value.value mustBe "999.99kg"
+          result.key.value mustEqual "Gross weight"
+          result.value.value mustEqual "999.99kg"
           val action = result.actions.value.items.head
-          action.content.value mustBe "Change"
-          action.href mustBe controllers.routes.GrossWeightController.onPageLoad(arrivalId).url
-          action.visuallyHiddenText.value mustBe "gross weight"
-          action.id mustBe "change-gross-mass"
+          action.content.value mustEqual "Change"
+          action.href mustEqual controllers.routes.GrossWeightController.onPageLoad(arrivalId).url
+          action.visuallyHiddenText.value mustEqual "gross weight"
+          action.id mustEqual "change-gross-mass"
         }
       }
     }
@@ -246,13 +246,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.ucrRow.value
 
-          result.key.value mustBe "Reference number UCR"
-          result.value.value mustBe "foo"
+          result.key.value mustEqual "Reference number UCR"
+          result.value.value mustEqual "foo"
           val action = result.actions.value.items.head
-          action.content.value mustBe "Change"
-          action.href mustBe controllers.routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId).url
-          action.visuallyHiddenText.value mustBe "reference number UCR"
-          action.id mustBe "change-unique-consignment-reference"
+          action.content.value mustEqual "Change"
+          action.href mustEqual controllers.routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId).url
+          action.visuallyHiddenText.value mustEqual "reference number UCR"
+          action.id mustEqual "change-unique-consignment-reference"
         }
       }
     }
@@ -265,7 +265,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = None))
 
         val helper = new ConsignmentAnswersHelper(userAnswers)
-        helper.holderOfTheTransitProcedureSection mustBe None
+        helper.holderOfTheTransitProcedureSection must not be defined
       }
 
       "must return section title and rows when HolderOfTheTransitProcedure is defined" in {
@@ -285,9 +285,9 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         section mustBe a[StaticSection]
 
-        section.sectionTitle.value mustBe "Transit holder"
-        section.rows.size mustBe 5
-        section.viewLinks mustBe Nil
+        section.sectionTitle.value mustEqual "Transit holder"
+        section.rows.size mustEqual 5
+        section.viewLinks mustEqual Nil
       }
     }
 
@@ -306,16 +306,16 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.departureTransportMeansSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Departure means of transport"
-            result.viewLinks.head.href mustBe
+            result.sectionTitle.value mustEqual "Departure means of transport"
+            result.viewLinks.head.href mustEqual
               controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url
 
             result.children.head mustBe a[AccordionSection]
-            result.children.head.sectionTitle.value mustBe "Departure means of transport 1"
-            result.children.head.rows.size mustBe 3
-            result.children.head.rows.head.value.value mustBe `type`.description
-            result.children.head.rows(1).value.value mustBe number
-            result.children.head.rows(2).value.value mustBe country.description
+            result.children.head.sectionTitle.value mustEqual "Departure means of transport 1"
+            result.children.head.rows.size mustEqual 3
+            result.children.head.rows.head.value.value mustEqual `type`.description
+            result.children.head.rows(1).value.value mustEqual number
+            result.children.head.rows(2).value.value mustEqual country.description
 
         }
       }
@@ -337,24 +337,24 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.transportEquipmentSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Transport equipment"
-            result.viewLinks.head.href mustBe controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url
+            result.sectionTitle.value mustEqual "Transport equipment"
+            result.viewLinks.head.href mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url
             result.children.head mustBe a[AccordionSection]
-            result.children.head.sectionTitle.value mustBe "Transport equipment 1"
+            result.children.head.sectionTitle.value mustEqual "Transport equipment 1"
 
-            result.children.head.rows.size mustBe 1
-            result.children.head.rows.head.value.value mustBe containerId
+            result.children.head.rows.size mustEqual 1
+            result.children.head.rows.head.value.value mustEqual containerId
 
             result.children.head.children.head mustBe a[AccordionSection]
-            result.children.head.children.head.rows.size mustBe 1
-            result.children.head.children.head.rows.head.value.value mustBe sealId
-            result.children.head.children.head.viewLinks.head.href mustBe
+            result.children.head.children.head.rows.size mustEqual 1
+            result.children.head.children.head.rows.head.value.value mustEqual sealId
+            result.children.head.children.head.viewLinks.head.href mustEqual
               controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url
 
             result.children.head.children(1) mustBe a[AccordionSection]
-            result.children.head.children(1).rows.size mustBe 1
-            result.children.head.children(1).rows.head.value.value mustBe item.toString
-            result.children.head.children(1).viewLinks.head.href mustBe
+            result.children.head.children(1).rows.size mustEqual 1
+            result.children.head.children(1).rows.head.value.value mustEqual item.toString
+            result.children.head.children(1).viewLinks.head.href mustEqual
               controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url
         }
       }
@@ -374,14 +374,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.additionalReferencesSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Additional references"
-            result.children.size mustBe 1
-            result.children.head.sectionTitle.value mustBe "Additional reference 1"
-            result.children.head.rows.size mustBe 2
-            result.children.head.rows.head.value.value mustBe `type`.toString
-            result.children.head.rows(1).value.value mustBe number
-            result.viewLinks.head.href mustBe "/manage-transit-movements/unloading/AB123/additional-references/add-another"
-            result.id.value mustBe "additionalReferences"
+            result.sectionTitle.value mustEqual "Additional references"
+            result.children.size mustEqual 1
+            result.children.head.sectionTitle.value mustEqual "Additional reference 1"
+            result.children.head.rows.size mustEqual 2
+            result.children.head.rows.head.value.value mustEqual `type`.toString
+            result.children.head.rows(1).value.value mustEqual number
+            result.viewLinks.head.href mustEqual "/manage-transit-movements/unloading/AB123/additional-references/add-another"
+            result.id.value mustEqual "additionalReferences"
         }
       }
     }
@@ -400,14 +400,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.additionalInformationSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Additional information"
-            result.children.size mustBe 1
-            result.children.head.sectionTitle.value mustBe "Additional information 1"
-            result.children.head.rows.size mustBe 2
-            result.children.head.rows.head.value.value mustBe code.toString
-            result.children.head.rows(1).value.value mustBe text
+            result.sectionTitle.value mustEqual "Additional information"
+            result.children.size mustEqual 1
+            result.children.head.sectionTitle.value mustEqual "Additional information 1"
+            result.children.head.rows.size mustEqual 2
+            result.children.head.rows.head.value.value mustEqual code.toString
+            result.children.head.rows(1).value.value mustEqual text
             result.viewLinks mustBe empty
-            result.id.value mustBe "additionalInformation"
+            result.id.value mustEqual "additionalInformation"
         }
       }
 
@@ -415,7 +415,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
         val result = helper.additionalInformationSection
 
-        result.children.size mustBe 0
+        result.children.size mustEqual 0
       }
     }
 
@@ -441,31 +441,31 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.documentSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Documents"
-            result.viewLinks.head.href mustBe controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url
+            result.sectionTitle.value mustEqual "Documents"
+            result.viewLinks.head.href mustEqual controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url
 
-            result.children.head.sectionTitle.value mustBe "Document 1"
-            result.children.head.rows.size mustBe 3
-            result.children.head.rows.head.value.value mustBe documentType.toString
-            result.children.head.rows(1).value.value mustBe referenceNumber
-            result.children.head.rows(2).value.value mustBe additionalInformation
-            result.children.head.viewLinks mustBe Nil
+            result.children.head.sectionTitle.value mustEqual "Document 1"
+            result.children.head.rows.size mustEqual 3
+            result.children.head.rows.head.value.value mustEqual documentType.toString
+            result.children.head.rows(1).value.value mustEqual referenceNumber
+            result.children.head.rows(2).value.value mustEqual additionalInformation
+            result.children.head.viewLinks mustEqual Nil
 
-            result.children(1).sectionTitle.value mustBe "Document 2"
-            result.children(1).rows.size mustBe 3
-            result.children(1).rows.head.value.value mustBe documentType.toString
-            result.children(1).rows(1).value.value mustBe referenceNumber
-            result.children(1).rows(2).value.value mustBe additionalInformation
-            result.children(1).viewLinks mustBe Nil
+            result.children(1).sectionTitle.value mustEqual "Document 2"
+            result.children(1).rows.size mustEqual 3
+            result.children(1).rows.head.value.value mustEqual documentType.toString
+            result.children(1).rows(1).value.value mustEqual referenceNumber
+            result.children(1).rows(2).value.value mustEqual additionalInformation
+            result.children(1).viewLinks mustEqual Nil
 
-            result.children(2).sectionTitle.value mustBe "Document 3"
-            result.children(2).rows.size mustBe 3
-            result.children(2).rows.head.value.value mustBe previousDoc.toString
-            result.children(2).rows(1).value.value mustBe referenceNumber
-            result.children(2).rows(1).actions mustBe None
-            result.children(2).rows(2).value.value mustBe additionalInformation
-            result.children(2).rows(2).actions mustBe None
-            result.children(2).viewLinks mustBe Nil
+            result.children(2).sectionTitle.value mustEqual "Document 3"
+            result.children(2).rows.size mustEqual 3
+            result.children(2).rows.head.value.value mustEqual previousDoc.toString
+            result.children(2).rows(1).value.value mustEqual referenceNumber
+            result.children(2).rows(1).actions must not be defined
+            result.children(2).rows(2).value.value mustEqual additionalInformation
+            result.children(2).rows(2).actions must not be defined
+            result.children(2).viewLinks mustEqual Nil
         }
       }
     }
@@ -488,25 +488,25 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val result = helper.houseConsignmentSection
 
               result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "House consignments"
+              result.sectionTitle.value mustEqual "House consignments"
 
-              result.viewLinks.size mustBe 1
+              result.viewLinks.size mustEqual 1
               val addOrRemoveLink = result.viewLinks.head
-              addOrRemoveLink.id mustBe "add-remove-house-consignment"
-              addOrRemoveLink.text mustBe "Add or remove house consignment"
+              addOrRemoveLink.id mustEqual "add-remove-house-consignment"
+              addOrRemoveLink.text mustEqual "Add or remove house consignment"
               addOrRemoveLink.visuallyHidden must not be defined
-              addOrRemoveLink.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
+              addOrRemoveLink.href mustEqual controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
 
               result.children.head mustBe a[AccordionSection]
-              result.children.head.sectionTitle.value mustBe "House consignment 1"
-              result.children.head.rows.size mustBe 2
+              result.children.head.sectionTitle.value mustEqual "House consignment 1"
+              result.children.head.rows.size mustEqual 2
 
               val link = result.children.head.viewLinks.head
-              link.id mustBe "view-house-consignment-1"
-              link.text mustBe "More details"
-              link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
-              link.visuallyHidden.value mustBe "on house consignment 1"
-              result.children.head.id.value mustBe "houseConsignment1"
+              link.id mustEqual "view-house-consignment-1"
+              link.text mustEqual "More details"
+              link.href mustEqual controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
+              link.visuallyHidden.value mustEqual "on house consignment 1"
+              result.children.head.id.value mustEqual "houseConsignment1"
           }
         }
       }
@@ -520,16 +520,16 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val result = helper.houseConsignmentSection
 
           result mustBe a[AccordionSection]
-          result.sectionTitle.value mustBe "House consignments"
+          result.sectionTitle.value mustEqual "House consignments"
 
-          result.children mustBe Nil
+          result.children mustEqual Nil
 
-          result.viewLinks.size mustBe 1
+          result.viewLinks.size mustEqual 1
           val addOrRemoveLink = result.viewLinks.head
-          addOrRemoveLink.id mustBe "add-remove-house-consignment"
-          addOrRemoveLink.text mustBe "Add or remove house consignment"
+          addOrRemoveLink.id mustEqual "add-remove-house-consignment"
+          addOrRemoveLink.text mustEqual "Add or remove house consignment"
           addOrRemoveLink.visuallyHidden must not be defined
-          addOrRemoveLink.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
+          addOrRemoveLink.href mustEqual controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url
         }
       }
     }
@@ -575,30 +575,30 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val result = helper.incidentSection
 
         result mustBe a[AccordionSection]
-        result.sectionTitle.value mustBe "Incidents"
+        result.sectionTitle.value mustEqual "Incidents"
 
         result mustBe a[AccordionSection]
-        result.children.head.sectionTitle.value mustBe "Incident 1"
-        result.children.head.rows.size mustBe 8
-        result.children.head.rows.head.value.value mustBe country.toString
-        result.children.head.rows(1).value.value mustBe inc.toString
-        result.children.head.rows(2).value.value mustBe description
-        result.children.head.rows(3).value.value mustBe qualifier.toString
-        result.children.head.rows(4).value.value mustBe coordinate.toString
-        result.children.head.rows(5).value.value mustBe unLocode
-        result.children.head.rows(6).value.value mustBe s"${address.streetAndNumber}<br>${address.city}<br>${address.postcode.get}"
+        result.children.head.sectionTitle.value mustEqual "Incident 1"
+        result.children.head.rows.size mustEqual 8
+        result.children.head.rows.head.value.value mustEqual country.toString
+        result.children.head.rows(1).value.value mustEqual inc.toString
+        result.children.head.rows(2).value.value mustEqual description
+        result.children.head.rows(3).value.value mustEqual qualifier.toString
+        result.children.head.rows(4).value.value mustEqual coordinate.toString
+        result.children.head.rows(5).value.value mustEqual unLocode
+        result.children.head.rows(6).value.value mustEqual s"${address.streetAndNumber}<br>${address.city}<br>${address.postcode.get}"
 
-        result.children.head.children.head.sectionTitle.value mustBe "Endorsements"
-        result.children.head.children.head.rows.head.key.value mustBe "Endorsement date"
-        result.children.head.children.head.rows(1).key.value mustBe "Authority"
-        result.children.head.children.head.rows(2).key.value mustBe "Country"
-        result.children.head.children.head.rows(3).key.value mustBe "Location"
-        result.children.head.children.head.sectionTitle.value mustBe "Endorsements"
-        result.children.head.children.head.rows.head.key.value mustBe "Endorsement date"
-        result.children.head.children.head.rows(1).key.value mustBe "Authority"
-        result.children.head.children.head.rows(2).key.value mustBe "Country"
-        result.children.head.children.head.rows(3).key.value mustBe "Location"
-        result.children.head.children.head.rows(3).key.value mustBe "Location"
+        result.children.head.children.head.sectionTitle.value mustEqual "Endorsements"
+        result.children.head.children.head.rows.head.key.value mustEqual "Endorsement date"
+        result.children.head.children.head.rows(1).key.value mustEqual "Authority"
+        result.children.head.children.head.rows(2).key.value mustEqual "Country"
+        result.children.head.children.head.rows(3).key.value mustEqual "Location"
+        result.children.head.children.head.sectionTitle.value mustEqual "Endorsements"
+        result.children.head.children.head.rows.head.key.value mustEqual "Endorsement date"
+        result.children.head.children.head.rows(1).key.value mustEqual "Authority"
+        result.children.head.children.head.rows(2).key.value mustEqual "Country"
+        result.children.head.children.head.rows(3).key.value mustEqual "Location"
+        result.children.head.children.head.rows(3).key.value mustEqual "Location"
       }
     }
 
@@ -609,7 +609,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         s"when no inland mode of transport defined" in {
           val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
           val result = helper.inlandModeOfTransportRow
-          result.isEmpty mustBe true
+          result.isEmpty mustEqual true
         }
       }
 
@@ -621,8 +621,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.inlandModeOfTransportRow.value
 
-          result.key.value mustBe "Mode"
-          result.value.value mustBe "Maritime Transport"
+          result.key.value mustEqual "Mode"
+          result.value.value mustEqual "Maritime Transport"
         }
       }
     }
@@ -634,7 +634,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         s"when no country of destination defined" in {
           val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
           val result = helper.countryOfDestinationRow
-          result.isEmpty mustBe true
+          result.isEmpty mustEqual true
         }
       }
 
@@ -646,8 +646,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.countryOfDestinationRow.value
 
-          result.key.value mustBe "Country of destination"
-          result.value.value mustBe "France - FR"
+          result.key.value mustEqual "Country of destination"
+          result.value.value mustEqual "France - FR"
         }
       }
     }

@@ -32,9 +32,9 @@ class GrossWeightViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val viewModelProvider = new GrossWeightViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, NormalMode, Index(0), Index(1))
 
-      result.title mustBe "What is the gross weight of item 2 in house consignment 1?"
-      result.heading mustBe "What is the gross weight of item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the gross weight of item 2 in house consignment 1"
+      result.title mustEqual "What is the gross weight of item 2 in house consignment 1?"
+      result.heading mustEqual "What is the gross weight of item 2 in house consignment 1?"
+      result.requiredError mustEqual "Enter the gross weight of item 2 in house consignment 1"
     }
 
     "when Check mode" in {
@@ -42,9 +42,9 @@ class GrossWeightViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       val result = viewModelProvider.apply(arrivalId, houseConsignmentMode, CheckMode, Index(0), Index(1))
 
-      result.title mustBe "What is the new gross weight of item 2 in house consignment 1?"
-      result.heading mustBe "What is the new gross weight of item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the new gross weight of item 2 in house consignment 1"
+      result.title mustEqual "What is the new gross weight of item 2 in house consignment 1?"
+      result.heading mustEqual "What is the new gross weight of item 2 in house consignment 1?"
+      result.requiredError mustEqual "Enter the new gross weight of item 2 in house consignment 1"
     }
   }
 }

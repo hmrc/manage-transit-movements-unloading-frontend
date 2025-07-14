@@ -42,7 +42,7 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
       forAll(decimals -> "decimal") {
         decimal =>
           val result = form.bind(Map(fieldName -> decimal)).apply(fieldName)
-          result.value.value mustBe decimal
+          result.value.value mustEqual decimal
       }
     }
 

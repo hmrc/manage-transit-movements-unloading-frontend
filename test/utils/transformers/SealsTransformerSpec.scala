@@ -36,8 +36,8 @@ class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
         seals.zipWithIndex.map {
           case (seal, i) =>
-            result.getSequenceNumber(SealSection(equipmentIndex, Index(i))) mustBe seal.sequenceNumber
-            result.getValue(SealIdentificationNumberPage(equipmentIndex, Index(i))) mustBe seal.identifier
+            result.getSequenceNumber(SealSection(equipmentIndex, Index(i))) mustEqual seal.sequenceNumber
+            result.getValue(SealIdentificationNumberPage(equipmentIndex, Index(i))) mustEqual seal.identifier
         }
     }
   }

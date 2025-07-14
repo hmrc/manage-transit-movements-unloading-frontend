@@ -29,7 +29,7 @@ trait FormBehaviours extends FormSpec {
   def questionForm[A](expectedResult: A) =
     "must  bind valid values correctly" in {
       val boundForm = form.bind(validData)
-      boundForm.get mustBe expectedResult
+      boundForm.get mustEqual expectedResult
     }
 
   def formWithOptionalTextFields(fields: String*) =
@@ -37,7 +37,7 @@ trait FormBehaviours extends FormSpec {
       s"must bind when $field is omitted" in {
         val data      = validData - field
         val boundForm = form.bind(data)
-        boundForm.errors.isEmpty mustBe true
+        boundForm.errors.isEmpty mustEqual true
       }
 
   def formWithMandatoryTextFields(fields: Field*) =
@@ -59,7 +59,7 @@ trait FormBehaviours extends FormSpec {
     s"must bind when $booleanField is false and $field is omitted" in {
       val data      = validData + (booleanField -> "false") - field
       val boundForm = form.bind(data)
-      boundForm.errors.isEmpty mustBe true
+      boundForm.errors.isEmpty mustEqual true
     }
 
     s"must fail to bind when $booleanField is true and $field is omitted" in {
@@ -89,7 +89,7 @@ trait FormBehaviours extends FormSpec {
       s"must bind when ${field.name} is set to $validValue" in {
         val data      = validData + (field.name -> validValue)
         val boundForm = form.bind(data)
-        boundForm.errors.isEmpty mustBe true
+        boundForm.errors.isEmpty mustEqual true
       }
 
     s"must fail to bind when ${field.name} is omitted" in {

@@ -30,7 +30,7 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new SealAnswersHelper(emptyUserAnswers, equipmentIndex, sealIndex)
-          helper.transportEquipmentSeal mustBe None
+          helper.transportEquipmentSeal must not be defined
         }
       }
 
@@ -43,16 +43,16 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new SealAnswersHelper(answers, equipmentIndex, sealIndex)
               val result = helper.transportEquipmentSeal.value
 
-              result.key.value mustBe "Seal 1"
-              result.value.value mustBe value
+              result.key.value mustEqual "Seal 1"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe
+              action.content.value mustEqual "Change"
+              action.href mustEqual
                 controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
                   .onPageLoad(arrivalId, CheckMode, CheckMode, equipmentIndex, sealIndex)
                   .url
-              action.visuallyHiddenText.value mustBe "seal 1 for transport equipment 1"
-              action.id mustBe "change-seal-details-1-1"
+              action.visuallyHiddenText.value mustEqual "seal 1 for transport equipment 1"
+              action.id mustEqual "change-seal-details-1-1"
           }
         }
       }

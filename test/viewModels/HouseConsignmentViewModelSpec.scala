@@ -66,13 +66,13 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(2)
 
-        section.sectionTitle.value mustBe "Departure means of transport"
-        section.children.size mustBe 1
+        section.sectionTitle.value mustEqual "Departure means of transport"
+        section.children.size mustEqual 1
 
-        section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
-        section.children.head.rows.size mustBe 3
+        section.children.head.sectionTitle.value mustEqual "Departure means of transport 1"
+        section.children.head.rows.size mustEqual 3
 
-        section.viewLinks.head.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+        section.viewLinks.head.href mustEqual controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
           .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
           .url
       }
@@ -93,16 +93,16 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(2)
 
-        section.sectionTitle.value mustBe "Departure means of transport"
-        section.children.size mustBe 2
+        section.sectionTitle.value mustEqual "Departure means of transport"
+        section.children.size mustEqual 2
 
-        section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
-        section.children.head.rows.size mustBe 3
+        section.children.head.sectionTitle.value mustEqual "Departure means of transport 1"
+        section.children.head.rows.size mustEqual 3
 
-        section.children(1).sectionTitle.value mustBe "Departure means of transport 2"
-        section.children(1).rows.size mustBe 3
+        section.children(1).sectionTitle.value mustEqual "Departure means of transport 2"
+        section.children(1).rows.size mustEqual 3
 
-        section.viewLinks.head.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+        section.viewLinks.head.href mustEqual controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
           .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
           .url
       }
@@ -122,9 +122,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(3)
 
-        section.sectionTitle.value mustBe "Documents"
-        section.children.head.sectionTitle.value mustBe "Document 1"
-        section.children.head.rows.size mustBe 3
+        section.sectionTitle.value mustEqual "Documents"
+        section.children.head.sectionTitle.value mustEqual "Document 1"
+        section.children.head.rows.size mustEqual 3
 
         section.viewLinks must not be empty
       }
@@ -145,12 +145,12 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(3)
 
-        section.sectionTitle.value mustBe "Documents"
-        section.children.head.sectionTitle.value mustBe "Document 1"
-        section.children.head.rows.size mustBe 3
+        section.sectionTitle.value mustEqual "Documents"
+        section.children.head.sectionTitle.value mustEqual "Document 1"
+        section.children.head.rows.size mustEqual 3
 
-        section.children(1).sectionTitle.value mustBe "Document 2"
-        section.children(1).rows.size mustBe 3
+        section.children(1).sectionTitle.value mustEqual "Document 2"
+        section.children(1).rows.size mustEqual 3
 
         section.viewLinks must not be empty
       }
@@ -171,13 +171,13 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(4)
 
-        section.sectionTitle.value mustBe "Additional references"
-        section.children.size mustBe 1
+        section.sectionTitle.value mustEqual "Additional references"
+        section.children.size mustEqual 1
 
-        section.children.head.sectionTitle.value mustBe "Additional reference 1"
-        section.children.head.rows.size mustBe 2
+        section.children.head.sectionTitle.value mustEqual "Additional reference 1"
+        section.children.head.rows.size mustEqual 2
 
-        section.viewLinks.head.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+        section.viewLinks.head.href mustEqual controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
           .onSubmit(arrivalId, CheckMode, hcIndex)
           .url
       }
@@ -196,16 +196,16 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(4)
 
-        section.sectionTitle.value mustBe "Additional references"
-        section.children.size mustBe 2
+        section.sectionTitle.value mustEqual "Additional references"
+        section.children.size mustEqual 2
 
-        section.children.head.sectionTitle.value mustBe "Additional reference 1"
-        section.children.head.rows.size mustBe 2
+        section.children.head.sectionTitle.value mustEqual "Additional reference 1"
+        section.children.head.rows.size mustEqual 2
 
-        section.children(1).sectionTitle.value mustBe "Additional reference 2"
-        section.children(1).rows.size mustBe 2
+        section.children(1).sectionTitle.value mustEqual "Additional reference 2"
+        section.children(1).rows.size mustEqual 2
 
-        section.viewLinks.head.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+        section.viewLinks.head.href mustEqual controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
           .onSubmit(arrivalId, CheckMode, hcIndex)
           .url
       }
@@ -226,13 +226,13 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(5)
 
-        section.sectionTitle.value mustBe "Additional information"
-        section.children.size mustBe 1
+        section.sectionTitle.value mustEqual "Additional information"
+        section.children.size mustEqual 1
 
-        section.children.head.sectionTitle.value mustBe "Additional information 1"
-        section.children.head.rows.size mustBe 2
+        section.children.head.sectionTitle.value mustEqual "Additional information 1"
+        section.children.head.rows.size mustEqual 2
 
-        section.viewLinks mustBe Nil
+        section.viewLinks mustEqual Nil
       }
 
       "when there is multiple" in {
@@ -249,16 +249,16 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(answers, index)
         val section           = result.section.children(5)
 
-        section.sectionTitle.value mustBe "Additional information"
-        section.children.size mustBe 2
+        section.sectionTitle.value mustEqual "Additional information"
+        section.children.size mustEqual 2
 
-        section.children.head.sectionTitle.value mustBe "Additional information 1"
-        section.children.head.rows.size mustBe 2
+        section.children.head.sectionTitle.value mustEqual "Additional information 1"
+        section.children.head.rows.size mustEqual 2
 
-        section.children(1).sectionTitle.value mustBe "Additional information 2"
-        section.children(1).rows.size mustBe 2
+        section.children(1).sectionTitle.value mustEqual "Additional information 2"
+        section.children(1).rows.size mustEqual 2
 
-        section.viewLinks mustBe Nil
+        section.viewLinks mustEqual Nil
       }
     }
 
@@ -284,31 +284,31 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val viewModelProvider = app.injector.instanceOf[HouseConsignmentViewModelProvider]
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.section.rows.size mustBe 4
-        result.section.rows(0).value.value mustBe "France"
-        result.section.rows(1).value.value mustBe "Description"
-        result.section.rows(2).value.value mustBe "123.45kg"
-        result.section.rows(3).value.value mustBe "ucr"
+        result.section.rows.size mustEqual 4
+        result.section.rows(0).value.value mustEqual "France"
+        result.section.rows(1).value.value mustEqual "Description"
+        result.section.rows(2).value.value mustEqual "123.45kg"
+        result.section.rows(3).value.value mustEqual "ucr"
 
         result.section.children(6) mustBe a[AccordionSection]
-        result.section.children(6).sectionTitle.value mustBe "Items"
+        result.section.children(6).sectionTitle.value mustEqual "Items"
         result.section.children(6).viewLinks must not be empty
 
         result.section.children(6).children.head mustBe a[AccordionSection]
-        result.section.children(6).children.head.sectionTitle.value mustBe "Item 1"
-        result.section.children(6).children.head.rows.size mustBe 5
+        result.section.children(6).children.head.sectionTitle.value mustEqual "Item 1"
+        result.section.children(6).children.head.rows.size mustEqual 5
 
         result.section.children(6).children.head.children.head mustBe a[AccordionSection]
-        result.section.children(6).children.head.children.head.sectionTitle.value mustBe "UN numbers"
-        result.section.children(6).children.head.children.head.rows.size mustBe 0
+        result.section.children(6).children.head.children.head.sectionTitle.value mustEqual "UN numbers"
+        result.section.children(6).children.head.children.head.rows.size mustEqual 0
 
         result.section.children(6).children.head.children(1) mustBe a[StaticSection]
-        result.section.children(6).children.head.children(1).sectionTitle.value mustBe "Consignee"
-        result.section.children(6).children.head.children(1).rows.size mustBe 2
+        result.section.children(6).children.head.children(1).sectionTitle.value mustEqual "Consignee"
+        result.section.children(6).children.head.children(1).rows.size mustEqual 2
 
         result.section.children(6).children.head.children(2) mustBe a[AccordionSection]
-        result.section.children(6).children.head.children(2).sectionTitle.value mustBe "Documents"
-        result.section.children(6).children.head.children(2).viewLinks.head.id mustBe "add-remove-item-1-document"
+        result.section.children(6).children.head.children(2).sectionTitle.value mustEqual "Documents"
+        result.section.children(6).children.head.children(2).viewLinks.head.id mustEqual "add-remove-item-1-document"
       }
     }
 
@@ -325,9 +325,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(userAnswers, index)
         val section           = result.section.children(6)
 
-        section.sectionTitle.value mustBe "Items"
-        section.children.head.sectionTitle.value mustBe "Item 1"
-        section.children.head.rows.size mustBe 5
+        section.sectionTitle.value mustEqual "Items"
+        section.children.head.sectionTitle.value mustEqual "Item 1"
+        section.children.head.rows.size mustEqual 5
       }
 
       "when there are multiple" in {
@@ -353,24 +353,24 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(userAnswers, index)
 
         result.section.children(6) mustBe a[AccordionSection]
-        result.section.children(6).sectionTitle.value mustBe "Items"
+        result.section.children(6).sectionTitle.value mustEqual "Items"
         result.section.children(6).viewLinks must not be empty
 
         result.section.children(6).children.head mustBe a[AccordionSection]
-        result.section.children(6).children.head.sectionTitle.value mustBe "Item 1"
-        result.section.children(6).children.head.rows.size mustBe 5
+        result.section.children(6).children.head.sectionTitle.value mustEqual "Item 1"
+        result.section.children(6).children.head.rows.size mustEqual 5
 
         result.section.children(6).children(1) mustBe a[AccordionSection]
-        result.section.children(6).children(1).sectionTitle.value mustBe "Item 2"
-        result.section.children(6).children(1).rows.size mustBe 5
+        result.section.children(6).children(1).sectionTitle.value mustEqual "Item 2"
+        result.section.children(6).children(1).rows.size mustEqual 5
 
         result.section.children(6).children.head.children.head mustBe a[AccordionSection]
-        result.section.children(6).children.head.children.head.sectionTitle.value mustBe "UN numbers"
-        result.section.children(6).children.head.children.head.rows.size mustBe 0
+        result.section.children(6).children.head.children.head.sectionTitle.value mustEqual "UN numbers"
+        result.section.children(6).children.head.children.head.rows.size mustEqual 0
 
         result.section.children(6).children.head.children(1) mustBe a[StaticSection]
-        result.section.children(6).children.head.children(1).sectionTitle.value mustBe "Consignee"
-        result.section.children(6).children.head.children(1).rows.size mustBe 2
+        result.section.children(6).children.head.children(1).sectionTitle.value mustEqual "Consignee"
+        result.section.children(6).children.head.children(1).rows.size mustEqual 2
       }
     }
   }

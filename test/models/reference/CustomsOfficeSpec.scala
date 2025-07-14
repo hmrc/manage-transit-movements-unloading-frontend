@@ -29,7 +29,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
         (id, name, countryId, phoneNumber) =>
           val customsOffice = CustomsOffice(id, name, countryId, Some(phoneNumber))
-          Json.toJson(customsOffice) mustBe Json.parse(s"""
+          Json.toJson(customsOffice) mustEqual Json.parse(s"""
                                                           |{
                                                           |  "id": "$id",
                                                           |  "name": "$name",
@@ -53,7 +53,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
                       |  "phoneNumber": "$phoneNumber"
                       |}
                       |""".stripMargin)
-            .as[CustomsOffice] mustBe customsOffice
+            .as[CustomsOffice] mustEqual customsOffice
       }
     }
 
@@ -85,7 +85,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
           val result = json.as[List[CustomsOffice]]
 
-          result mustBe List(
+          result mustEqual List(
             CustomsOffice("AD000001", "CUSTOMS OFFICE SANT JULIÀ DE LÒRIA", "AD", None),
             CustomsOffice("AD000002", "DCNJ PORTA", "AD", None),
             CustomsOffice("IT261101", "PASSO NUOVO", "IT", None)
@@ -142,7 +142,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
           val result = json.as[List[CustomsOffice]]
 
-          result mustBe List(
+          result mustEqual List(
             CustomsOffice("AD000001", "CUSTOMS OFFICE SANT JULIÀ DE LÒRIA", "AD", None),
             CustomsOffice("AD000002", "DCNJ PORTA", "AD", None),
             CustomsOffice("IT261101", "PASSO NUOVO", "IT", None)
@@ -160,7 +160,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
           val result = json.validate[List[CustomsOffice]]
 
-          result mustBe JsError("Expected customs offices to be in a JsArray")
+          result mustEqual JsError("Expected customs offices to be in a JsArray")
         }
       }
     }

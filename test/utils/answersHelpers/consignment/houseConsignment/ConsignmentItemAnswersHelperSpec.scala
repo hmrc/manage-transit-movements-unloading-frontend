@@ -36,7 +36,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.descriptionRow mustBe None
+          helper.descriptionRow must not be defined
         }
       }
 
@@ -48,14 +48,14 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.descriptionRow.value
-              result.value.value mustBe value
+              result.value.value mustEqual value
               val actions = result.actions.get.items
-              result.key.value mustBe "Description"
+              result.key.value mustEqual "Description"
               val action = actions.head
-              action.href mustBe controllers.houseConsignment.index.items.routes.DescriptionController
+              action.href mustEqual controllers.houseConsignment.index.items.routes.DescriptionController
                 .onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, itemIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "description of item 1"
+              action.visuallyHiddenText.get mustEqual "description of item 1"
 
           }
         }
@@ -67,7 +67,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.ucrRow mustBe None
+          helper.ucrRow must not be defined
         }
       }
 
@@ -79,14 +79,14 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.ucrRow.value
-              result.value.value mustBe value
+              result.value.value mustEqual value
               val actions = result.actions.get.items
-              result.key.value mustBe "Reference Number UCR"
+              result.key.value mustEqual "Reference Number UCR"
               val action = actions.head
-              action.href mustBe controllers.houseConsignment.index.items.routes.UniqueConsignmentReferenceController
+              action.href mustEqual controllers.houseConsignment.index.items.routes.UniqueConsignmentReferenceController
                 .onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, itemIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "reference number UCR of item 1"
+              action.visuallyHiddenText.get mustEqual "reference number UCR of item 1"
 
           }
         }
@@ -98,7 +98,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.declarationType mustBe None
+          helper.declarationType must not be defined
         }
       }
 
@@ -111,8 +111,8 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.declarationType.value
 
-              result.key.value mustBe "Declaration type"
-              result.value.value mustBe value
+              result.key.value mustEqual "Declaration type"
+              result.value.value mustEqual value
               result.actions must not be defined
           }
         }
@@ -124,7 +124,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.countryOfDestination mustBe None
+          helper.countryOfDestination must not be defined
         }
       }
 
@@ -137,8 +137,8 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.countryOfDestination.value
 
-              result.key.value mustBe "Country of destination"
-              result.value.value mustBe value.description
+              result.key.value mustEqual "Country of destination"
+              result.value.value mustEqual value.description
               result.actions must not be defined
           }
         }
@@ -150,7 +150,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return add link" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.grossWeightRow.key.value mustBe "Gross weight"
+          helper.grossWeightRow.key.value mustEqual "Gross weight"
 
           helper.grossWeightRow.value.content.asHtml.toString() must include("Enter gross weight")
         }
@@ -165,7 +165,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.grossWeightRow
 
-              result mustBe
+              result mustEqual
                 SummaryListRow(
                   key = Key("Gross weight".toText),
                   value = Value(s"${value}kg".toText),
@@ -181,7 +181,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return add link" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.netWeightRow.key.value mustBe "Net weight"
+          helper.netWeightRow.key.value mustEqual "Net weight"
 
           helper.netWeightRow.value.content.asHtml.toString() must include("Enter net weight")
         }
@@ -196,20 +196,20 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.netWeightRow
 
-              result.key.value mustBe "Net weight"
-              result.value.value mustBe s"${value}kg"
+              result.key.value mustEqual "Net weight"
+              result.value.value mustEqual s"${value}kg"
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.houseConsignment.index.items.routes.NetWeightController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.houseConsignment.index.items.routes.NetWeightController
                 .onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode, CheckMode)
                 .url
-              action.visuallyHiddenText.value mustBe "net weight of item 1"
-              action.id mustBe "change-net-weight-1"
+              action.visuallyHiddenText.value mustEqual "net weight of item 1"
+              action.id mustEqual "change-net-weight-1"
 
               val action2 = result.actions.value.items(1)
-              action2.content.value mustBe "Remove"
-              action2.visuallyHiddenText.value mustBe "net weight of item 1"
-              action2.href mustBe controllers.houseConsignment.index.items.routes.RemoveNetWeightYesNoController
+              action2.content.value mustEqual "Remove"
+              action2.visuallyHiddenText.value mustEqual "net weight of item 1"
+              action2.href mustEqual controllers.houseConsignment.index.items.routes.RemoveNetWeightYesNoController
                 .onPageLoad(arrivalId, NormalMode, hcIndex, itemIndex)
                 .url
           }
@@ -227,7 +227,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
           val result = helper.cusCodeRow
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -238,7 +238,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
           val result = helper.cusCodeRow.value
 
-          result mustBe
+          result mustEqual
             SummaryListRow(
               key = Key("Customs Union and Statistics (CUS) code".toText),
               value = Value(s"$value".toText),
@@ -256,7 +256,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return add link" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.commodityCodeRow.key.value mustBe "Commodity code"
+          helper.commodityCodeRow.key.value mustEqual "Commodity code"
 
           helper.commodityCodeRow.value.content.asHtml.toString() must include("Enter commodity code")
         }
@@ -269,7 +269,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
           val result = helper.commodityCodeRow
 
-          result mustBe
+          result mustEqual
             SummaryListRow(
               key = Key("Commodity code".toText),
               value = Value(s"$value".toText),
@@ -288,7 +288,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
           val result = helper.nomenclatureCodeRow
-          result.key.value mustBe "Combined nomenclature code"
+          result.key.value mustEqual "Combined nomenclature code"
 
           result.value.content.asHtml.toString() must include("Enter nomenclature code")
         }
@@ -301,7 +301,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
           val result = helper.nomenclatureCodeRow
 
-          result mustBe
+          result mustEqual
             SummaryListRow(
               key = Key("Combined nomenclature code".toText),
               value = Value(s"$value".toText),
@@ -331,31 +331,31 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.documentSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Documents"
-            result.id.value mustBe "item-1-documents"
+            result.sectionTitle.value mustEqual "Documents"
+            result.id.value mustEqual "item-1-documents"
 
             val addOrRemoveLink = result.viewLinks.head
-            addOrRemoveLink.id mustBe "add-remove-item-1-document"
-            addOrRemoveLink.text mustBe "Add or remove document"
-            addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
-            addOrRemoveLink.href mustBe controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            addOrRemoveLink.id mustEqual "add-remove-item-1-document"
+            addOrRemoveLink.text mustEqual "Add or remove document"
+            addOrRemoveLink.visuallyHidden.value mustEqual "from item 1"
+            addOrRemoveLink.href mustEqual controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
 
             result.children.head mustBe a[AccordionSection]
-            result.children.head.sectionTitle.value mustBe "Document 1"
-            result.children.head.id.value mustBe "item-1-document-1"
-            result.children.head.rows.size mustBe 3
+            result.children.head.sectionTitle.value mustEqual "Document 1"
+            result.children.head.id.value mustEqual "item-1-document-1"
+            result.children.head.rows.size mustEqual 3
 
             result.children(1) mustBe a[AccordionSection]
-            result.children(1).sectionTitle.value mustBe "Document 2"
-            result.children(1).id.value mustBe "item-1-document-2"
-            result.children(1).rows.size mustBe 3
+            result.children(1).sectionTitle.value mustEqual "Document 2"
+            result.children(1).id.value mustEqual "item-1-document-2"
+            result.children(1).rows.size mustEqual 3
 
             result.children(2) mustBe a[AccordionSection]
-            result.children(2).sectionTitle.value mustBe "Document 3"
-            result.children(2).id.value mustBe "item-1-document-3"
-            result.children(2).rows.size mustBe 3
+            result.children(2).sectionTitle.value mustEqual "Document 3"
+            result.children(2).id.value mustEqual "item-1-document-3"
+            result.children(2).rows.size mustEqual 3
         }
       }
     }
@@ -374,19 +374,19 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.additionalReferencesSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Additional references"
-            result.children.size mustBe 1
-            result.children.head.sectionTitle.value mustBe "Additional reference 1"
-            result.children.head.rows.size mustBe 2
-            result.children.head.rows.head.value.value mustBe `type`.toString
-            result.children.head.rows(1).value.value mustBe number
-            result.id.value mustBe "item-1-additional-references"
+            result.sectionTitle.value mustEqual "Additional references"
+            result.children.size mustEqual 1
+            result.children.head.sectionTitle.value mustEqual "Additional reference 1"
+            result.children.head.rows.size mustEqual 2
+            result.children.head.rows.head.value.value mustEqual `type`.toString
+            result.children.head.rows(1).value.value mustEqual number
+            result.id.value mustEqual "item-1-additional-references"
 
             val addOrRemoveLink = result.viewLinks.head
-            addOrRemoveLink.id mustBe "add-remove-item-1-additional-reference"
-            addOrRemoveLink.text mustBe "Add or remove additional reference"
-            addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
-            addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/additional-references/add-another"
+            addOrRemoveLink.id mustEqual "add-remove-item-1-additional-reference"
+            addOrRemoveLink.text mustEqual "Add or remove additional reference"
+            addOrRemoveLink.visuallyHidden.value mustEqual "from item 1"
+            addOrRemoveLink.href mustEqual "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/additional-references/add-another"
 
         }
       }
@@ -404,14 +404,14 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.dangerousGoodsSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "UN numbers"
-            result.id.value mustBe "item-1-dangerous-goods"
+            result.sectionTitle.value mustEqual "UN numbers"
+            result.id.value mustEqual "item-1-dangerous-goods"
 
             result.viewLinks mustBe empty
 
-            result.rows.size mustBe 2
-            result.rows.head.value.value mustBe value1
-            result.rows(1).value.value mustBe value2
+            result.rows.size mustEqual 2
+            result.rows.head.value.value mustEqual value1
+            result.rows(1).value.value mustEqual value2
         }
       }
     }
@@ -436,31 +436,31 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.packageSection
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Packages"
-            result.id.value mustBe "item-1-packages"
+            result.sectionTitle.value mustEqual "Packages"
+            result.id.value mustEqual "item-1-packages"
 
             val addOrRemove = result.viewLinks.head
-            addOrRemove.id mustBe "add-remove-item-1-packaging"
-            addOrRemove.text mustBe "Add or remove package"
-            addOrRemove.visuallyHidden.value mustBe "from item 1"
-            addOrRemove.href mustBe controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+            addOrRemove.id mustEqual "add-remove-item-1-packaging"
+            addOrRemove.text mustEqual "Add or remove package"
+            addOrRemove.visuallyHidden.value mustEqual "from item 1"
+            addOrRemove.href mustEqual controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
 
             result.children.head mustBe a[AccordionSection]
-            result.children.head.sectionTitle.value mustBe "Package 1"
-            result.children.head.id.value mustBe "item-1-package-1"
-            result.children.head.rows.size mustBe 3
+            result.children.head.sectionTitle.value mustEqual "Package 1"
+            result.children.head.id.value mustEqual "item-1-package-1"
+            result.children.head.rows.size mustEqual 3
 
             result.children(1) mustBe a[AccordionSection]
-            result.children(1).sectionTitle.value mustBe "Package 2"
-            result.children(1).id.value mustBe "item-1-package-2"
-            result.children(1).rows.size mustBe 3
+            result.children(1).sectionTitle.value mustEqual "Package 2"
+            result.children(1).id.value mustEqual "item-1-package-2"
+            result.children(1).rows.size mustEqual 3
 
             result.children(2) mustBe a[AccordionSection]
-            result.children(2).sectionTitle.value mustBe "Package 3"
-            result.children(2).id.value mustBe "item-1-package-3"
-            result.children(2).rows.size mustBe 3
+            result.children(2).sectionTitle.value mustEqual "Package 3"
+            result.children(2).id.value mustEqual "item-1-package-3"
+            result.children(2).rows.size mustEqual 3
         }
       }
     }

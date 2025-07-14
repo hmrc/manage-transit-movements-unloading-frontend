@@ -36,8 +36,8 @@ class ErrorHandlerSpec extends SpecBase with JsonMatchers with AppWithDefaultMoc
 
     val result: Future[Result] = handler.onClientError(new FakeRequestHeader, 404)
 
-    status(result) mustBe SEE_OTHER
-    redirectLocation(result).value mustBe controllers.routes.ErrorController.notFound().url
+    status(result) mustEqual SEE_OTHER
+    redirectLocation(result).value mustEqual controllers.routes.ErrorController.notFound().url
   }
 
   "must redirect to BadRequest page when given a client error (400-499)" in {
@@ -48,8 +48,8 @@ class ErrorHandlerSpec extends SpecBase with JsonMatchers with AppWithDefaultMoc
 
         val result: Future[Result] = handler.onClientError(new FakeRequestHeader, clientErrorCode)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe controllers.routes.ErrorController.badRequest().url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.ErrorController.badRequest().url
     }
   }
 
@@ -61,8 +61,8 @@ class ErrorHandlerSpec extends SpecBase with JsonMatchers with AppWithDefaultMoc
 
         val result: Future[Result] = handler.onClientError(new FakeRequestHeader, serverErrorCode)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe controllers.routes.ErrorController.technicalDifficulties().url
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.ErrorController.technicalDifficulties().url
     }
   }
 

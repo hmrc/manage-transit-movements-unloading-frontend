@@ -88,11 +88,11 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         redirectLocation(result).value mustEqual nextPage
 
         verify(mockIE043Transformer).transform(userAnswersCaptor.capture())(any(), any())
-        userAnswersCaptor.getValue.data mustBe Json.obj()
+        userAnswersCaptor.getValue.data mustEqual Json.obj()
 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.data mustBe Json.obj("foo" -> "bar")
-        userAnswersCaptor.getValue.ie043Data mustBe basicIe043
+        userAnswersCaptor.getValue.data mustEqual Json.obj("foo" -> "bar")
+        userAnswersCaptor.getValue.ie043Data mustEqual basicIe043
       }
 
       "must redirect to onward route when there are UserAnswers" in {

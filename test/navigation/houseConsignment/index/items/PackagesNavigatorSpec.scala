@@ -53,7 +53,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             navigator
               .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 routes.AddNumberOfPackagesYesNoController
                   .onPageLoad(arrivalId, houseConsignmentMode, itemMode, packageMode, houseConsignmentIndex, itemIndex, packageIndex)
               )
@@ -66,7 +66,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(
+            .mustEqual(
               routes.NumberOfPackagesController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
             )
@@ -77,7 +77,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(
+            .mustEqual(
               routes.AddPackageShippingMarkYesNoController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
             )
@@ -91,7 +91,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             navigator
               .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 routes.AddPackageShippingMarkYesNoController
                   .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
               )
@@ -104,7 +104,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(
+            .mustEqual(
               routes.PackageShippingMarkController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
             )
@@ -115,7 +115,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(
+            .mustEqual(
               routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             )
         }
@@ -128,7 +128,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             navigator
               .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-              .mustBe(
+              .mustEqual(
                 routes.AddAnotherPackageController
                   .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
               )
@@ -142,7 +142,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
@@ -155,7 +155,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
@@ -167,7 +167,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
@@ -179,7 +179,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
@@ -191,7 +191,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           )
@@ -203,7 +203,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           )
@@ -225,7 +225,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             navigator
               .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -235,7 +235,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(
+            .mustEqual(
               routes.NumberOfPackagesController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
             )
@@ -246,7 +246,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+            .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -257,7 +257,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             navigator
               .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -267,7 +267,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(
+            .mustEqual(
               routes.PackageShippingMarkController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
             )
@@ -278,7 +278,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           navigator
             .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-            .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+            .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -289,7 +289,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
             navigator
               .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
 
@@ -300,7 +300,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
@@ -313,7 +313,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
       "must go from NumberOfPackagesPage to cross-check" in {
@@ -322,7 +322,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
       "must go from AddPackageShippingMarkYesNoPage to Add PackageShippingMark when user answer is yes" in {
@@ -331,7 +331,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
@@ -343,7 +343,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
       "must go from PackageShippingMarkPage to cross-check page" in {
@@ -352,7 +352,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
     }
   }

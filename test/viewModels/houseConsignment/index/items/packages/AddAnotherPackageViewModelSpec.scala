@@ -33,12 +33,12 @@ class AddAnotherPackageViewModelSpec extends SpecBase with Generators with Scala
         mode =>
           val result = new AddAnotherPackageViewModelProvider().apply(emptyUserAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
-          result.listItems mustBe Nil
+          result.listItems mustEqual Nil
 
-          result.title(houseConsignmentIndex, itemIndex) mustBe s"You have added 0 types of packages for item 1 in house consignment 1"
-          result.heading(houseConsignmentIndex, itemIndex) mustBe s"You have added 0 types of packages for item 1 in house consignment 1"
-          result.legend(houseConsignmentIndex, itemIndex) mustBe s"Do you want to add a type of package for item 1 in house consignment 1?"
-          result.maxLimitLabel(houseConsignmentIndex, itemIndex) mustBe
+          result.title(houseConsignmentIndex, itemIndex) mustEqual s"You have added 0 types of packages for item 1 in house consignment 1"
+          result.heading(houseConsignmentIndex, itemIndex) mustEqual s"You have added 0 types of packages for item 1 in house consignment 1"
+          result.legend(houseConsignmentIndex, itemIndex) mustEqual s"Do you want to add a type of package for item 1 in house consignment 1?"
+          result.maxLimitLabel(houseConsignmentIndex, itemIndex) mustEqual
             s"You cannot add any more types of packages for item 1 in house consignment 1. To add another, you need to remove one first."
       }
     }
@@ -51,11 +51,11 @@ class AddAnotherPackageViewModelSpec extends SpecBase with Generators with Scala
 
           val result = new AddAnotherPackageViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
-          result.listItems.length mustBe 1
-          result.title(houseConsignmentIndex, itemIndex) mustBe s"You have added 1 type of package for item 1 in house consignment 1"
-          result.heading(houseConsignmentIndex, itemIndex) mustBe s"You have added 1 type of package for item 1 in house consignment 1"
-          result.legend(houseConsignmentIndex, itemIndex) mustBe s"Do you want to add another type of package for item 1 in house consignment 1?"
-          result.maxLimitLabel(houseConsignmentIndex, itemIndex) mustBe
+          result.listItems.length mustEqual 1
+          result.title(houseConsignmentIndex, itemIndex) mustEqual s"You have added 1 type of package for item 1 in house consignment 1"
+          result.heading(houseConsignmentIndex, itemIndex) mustEqual s"You have added 1 type of package for item 1 in house consignment 1"
+          result.legend(houseConsignmentIndex, itemIndex) mustEqual s"Do you want to add another type of package for item 1 in house consignment 1?"
+          result.maxLimitLabel(houseConsignmentIndex, itemIndex) mustEqual
             s"You cannot add any more types of packages for item 1 in house consignment 1. To add another, you need to remove one first."
       }
     }
@@ -71,11 +71,11 @@ class AddAnotherPackageViewModelSpec extends SpecBase with Generators with Scala
             .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, Index(3)), packageType)
 
           val result = new AddAnotherPackageViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
-          result.listItems.length mustBe 4
-          result.title(houseConsignmentIndex, itemIndex) mustBe s"You have added 4 types of packages for item 1 in house consignment 1"
-          result.heading(houseConsignmentIndex, itemIndex) mustBe s"You have added 4 types of packages for item 1 in house consignment 1"
-          result.legend(houseConsignmentIndex, itemIndex) mustBe s"Do you want to add another type of package for item 1 in house consignment 1?"
-          result.maxLimitLabel(houseConsignmentIndex, itemIndex) mustBe
+          result.listItems.length mustEqual 4
+          result.title(houseConsignmentIndex, itemIndex) mustEqual s"You have added 4 types of packages for item 1 in house consignment 1"
+          result.heading(houseConsignmentIndex, itemIndex) mustEqual s"You have added 4 types of packages for item 1 in house consignment 1"
+          result.legend(houseConsignmentIndex, itemIndex) mustEqual s"Do you want to add another type of package for item 1 in house consignment 1?"
+          result.maxLimitLabel(houseConsignmentIndex, itemIndex) mustEqual
             s"You cannot add any more types of packages for item 1 in house consignment 1. To add another, you need to remove one first."
       }
     }

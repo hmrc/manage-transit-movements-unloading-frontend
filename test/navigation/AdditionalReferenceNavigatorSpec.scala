@@ -39,7 +39,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from AdditionalReferenceNumberPage to UnloadingFindingsPage page" in {
@@ -48,7 +48,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceNumberPage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
     }
@@ -63,7 +63,9 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.additionalReference.index.routes.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, additionalReferenceIndex, mode))
+          .mustEqual(
+            controllers.additionalReference.index.routes.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, additionalReferenceIndex, mode)
+          )
       }
 
       "must go from AdditionalReferenceNumberYesNoPage to AdditionalReferenceNumberPage page" in {
@@ -72,7 +74,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, mode))
+          .mustEqual(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, mode))
       }
 
       "must go from AdditionalReferenceNumberYesNoPage to AddAnotherAdditionalReference page when Yes is selected" in {
@@ -81,7 +83,9 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, NormalMode))
+          .mustEqual(
+            controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, NormalMode)
+          )
       }
 
       "must go from AdditionalReferenceNumberYesNoPage to AddAnotherAdditionalReference page when No is selected" in {
@@ -90,7 +94,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode))
+          .mustEqual(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode))
       }
 
     }

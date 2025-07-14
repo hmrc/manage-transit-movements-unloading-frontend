@@ -67,7 +67,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
           when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustEqual true
         }
 
         "when head message is a rejection after an IE044" in {
@@ -87,7 +87,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
           when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustEqual true
         }
 
         "when head message is another rejection after an IE044" in {
@@ -111,7 +111,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
           when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustEqual true
         }
 
         "when head message is an IE044 with status Failed" in {
@@ -129,7 +129,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
           when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe true
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustEqual true
         }
       }
 
@@ -149,7 +149,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
           when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustBe false
+          service.canSubmitUnloadingRemarks(arrivalId).futureValue mustEqual false
         }
       }
     }
@@ -451,7 +451,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-        service.getIE043(arrivalId).futureValue mustBe None
+        service.getIE043(arrivalId).futureValue must not be defined
       }
     }
 
@@ -566,7 +566,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-        service.getIE044(arrivalId).futureValue mustBe None
+        service.getIE044(arrivalId).futureValue must not be defined
       }
     }
   }

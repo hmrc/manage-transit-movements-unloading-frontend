@@ -66,9 +66,9 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
         val result = transformer.transform(location, index).apply(emptyUserAnswers).futureValue
 
-        result.getValue(QualifierOfIdentificationPage(index)) mustBe qualifierOfIdentification
-        result.get(UNLocodePage(index)) mustBe location.UNLocode
-        result.getValue(CountryPage(index)) mustBe country
+        result.getValue(QualifierOfIdentificationPage(index)) mustEqual qualifierOfIdentification
+        result.get(UNLocodePage(index)) mustEqual location.UNLocode
+        result.getValue(CountryPage(index)) mustEqual country
 
         verify(mockReferenceDataService).getQualifierOfIdentificationIncident(eqTo(location.qualifierOfIdentification))(any())
         verify(mockReferenceDataService).getCountry(eqTo(location.country))(any())

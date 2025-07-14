@@ -65,6 +65,6 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
     val doc       = parseView(view)
     val accordion = doc.getElementById(accordionId)
 
-    accordion.text() mustBe "No information provided"
+    accordion.text() mustEqual "No information provided"
   }
 }

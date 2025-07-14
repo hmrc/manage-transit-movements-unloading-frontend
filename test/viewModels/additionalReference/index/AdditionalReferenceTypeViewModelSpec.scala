@@ -29,8 +29,8 @@ class AdditionalReferenceTypeViewModelSpec extends SpecBase with ScalaCheckPrope
       val viewModelProvider = new AdditionalReferenceTypeViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, NormalMode, additionalReferenceIndex)
 
-      result.title mustBe "What type of additional reference do you want to add?"
-      result.heading mustBe "What type of additional reference do you want to add?"
+      result.title mustEqual "What type of additional reference do you want to add?"
+      result.heading mustEqual "What type of additional reference do you want to add?"
     }
 
     "when Check mode" in {
@@ -38,8 +38,8 @@ class AdditionalReferenceTypeViewModelSpec extends SpecBase with ScalaCheckPrope
 
       val result = viewModelProvider.apply(arrivalId, CheckMode, additionalReferenceIndex)
 
-      result.title mustBe "What is the new additional reference type?"
-      result.heading mustBe "What is the new additional reference type?"
+      result.title mustEqual "What is the new additional reference type?"
+      result.heading mustEqual "What is the new additional reference type?"
     }
   }
 }

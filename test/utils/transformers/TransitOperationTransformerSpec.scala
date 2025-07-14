@@ -58,8 +58,8 @@ class TransitOperationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
     val result = transformer.transform(TransitOperationType10).apply(emptyUserAnswers).futureValue
 
-    result.getValue(SecurityTypePage).code mustBe TransitOperationType10.security
-    result.getValue(SecurityTypePage).description mustBe "test2"
+    result.getValue(SecurityTypePage).code mustEqual TransitOperationType10.security
+    result.getValue(SecurityTypePage).description mustEqual "test2"
 
   }
 

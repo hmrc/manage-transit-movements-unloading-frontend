@@ -64,7 +64,7 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
 
       val view = app.injector.instanceOf[CannotSendUnloadingRemarksView]
 
-      status(result) mustBe OK
+      status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, customsOfficeId))(request, messages).toString
 

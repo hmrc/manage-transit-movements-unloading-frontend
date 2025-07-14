@@ -77,9 +77,9 @@ class PhotographExternalSealControllerSpec extends SpecBase with AppWithDefaultM
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value `mustEqual` routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to next page" in {
@@ -90,8 +90,8 @@ class PhotographExternalSealControllerSpec extends SpecBase with AppWithDefaultM
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
-      redirectLocation(result).value `mustEqual` controllers.routes.SealsReplacedByCustomsAuthorityYesNoController
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.SealsReplacedByCustomsAuthorityYesNoController
         .onPageLoad(arrivalId, mode)
         .url
     }
