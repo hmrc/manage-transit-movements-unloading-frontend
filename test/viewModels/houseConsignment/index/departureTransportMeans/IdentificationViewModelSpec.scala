@@ -29,9 +29,9 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
       val viewModelProvider = new IdentificationViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "Which identification do you want to use for the departure means of transport in house consignment 1?"
-      result.heading mustBe "Which identification do you want to use for the departure means of transport in house consignment 1?"
-      result.paragraph mustBe None
+      result.title mustEqual "Which identification do you want to use for the departure means of transport in house consignment 1?"
+      result.heading mustEqual "Which identification do you want to use for the departure means of transport in house consignment 1?"
+      result.paragraph must not be defined
     }
 
     "when CheckMode" in {
@@ -39,9 +39,9 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
 
       val result = viewModelProvider.apply(CheckMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "Which identification do you want to use for the new departure means of transport in house consignment 1?"
-      result.heading mustBe "Which identification do you want to use for the new departure means of transport in house consignment 1?"
-      result.paragraph mustBe Some("This is the means of transport used from the UK office of departure to a UK port or airport.")
+      result.title mustEqual "Which identification do you want to use for the new departure means of transport in house consignment 1?"
+      result.heading mustEqual "Which identification do you want to use for the new departure means of transport in house consignment 1?"
+      result.paragraph.value mustEqual "This is the means of transport used from the UK office of departure to a UK port or airport."
     }
   }
 }

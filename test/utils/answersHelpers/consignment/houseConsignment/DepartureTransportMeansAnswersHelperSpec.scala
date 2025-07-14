@@ -31,7 +31,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, hcIndex, dtmIndex)
-          helper.transportMeansID mustBe None
+          helper.transportMeansID must not be defined
         }
       }
 
@@ -44,12 +44,12 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, hcIndex, dtmIndex)
               val result = helper.transportMeansID.value
 
-              result.key.value mustBe "Identification type"
-              result.value.value mustBe value.description
+              result.key.value mustEqual "Identification type"
+              result.value.value mustEqual value.description
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "identification type for departure means of transport 1"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/identification"
+              action.content.value mustEqual "Change"
+              action.visuallyHiddenText.value mustEqual "identification type for departure means of transport 1"
+              action.href mustEqual "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/identification"
           }
         }
       }
@@ -60,7 +60,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, hcIndex, dtmIndex)
-          helper.transportMeansIDNumber mustBe None
+          helper.transportMeansIDNumber must not be defined
         }
       }
 
@@ -73,12 +73,12 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, hcIndex, dtmIndex)
               val result = helper.transportMeansIDNumber.value
 
-              result.key.value mustBe "Identification"
-              result.value.value mustBe value
+              result.key.value mustEqual "Identification"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "identification for departure means of transport 1"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/identification-number"
+              action.content.value mustEqual "Change"
+              action.visuallyHiddenText.value mustEqual "identification for departure means of transport 1"
+              action.href mustEqual "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/identification-number"
           }
         }
       }
@@ -89,7 +89,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, hcIndex, dtmIndex)
-          helper.buildVehicleNationalityRow mustBe None
+          helper.buildVehicleNationalityRow must not be defined
         }
       }
 
@@ -102,12 +102,12 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, hcIndex, dtmIndex)
               val result = helper.buildVehicleNationalityRow.value
 
-              result.key.value mustBe "Registered country"
-              result.value.value mustBe value.description
+              result.key.value mustEqual "Registered country"
+              result.value.value mustEqual value.description
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "registered country for departure means of transport 1"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/country"
+              action.content.value mustEqual "Change"
+              action.visuallyHiddenText.value mustEqual "registered country for departure means of transport 1"
+              action.href mustEqual "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/country"
           }
         }
       }

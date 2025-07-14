@@ -58,9 +58,9 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value `mustEqual` routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to CanSealsBeRead page if number of ie043 seals is not zero" in {
@@ -88,8 +88,8 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
-      redirectLocation(result).value `mustEqual` controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
     }
 
     "must redirect to UnloadingFindings page if number of ie043 seals is zero" in {
@@ -117,8 +117,8 @@ class CannotUseRevisedUnloadingProcedureControllerSpec extends SpecBase with App
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
-      redirectLocation(result).value `mustEqual` controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
     }
 
   }

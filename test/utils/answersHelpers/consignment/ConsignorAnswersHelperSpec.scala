@@ -32,7 +32,7 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         "when identification number undefined" in {
           val helper = new ConsignorAnswersHelper(emptyUserAnswers)
-          helper.identificationNumber(None) mustBe None
+          helper.identificationNumber(None) must not be defined
         }
       }
 
@@ -43,8 +43,8 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignorAnswersHelper(emptyUserAnswers)
               val result = helper.identificationNumber(Some(identificationNumber)).value
 
-              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
-              result.value.value mustBe identificationNumber
+              result.key.value mustEqual "EORI number or Trader Identification Number (TIN)"
+              result.value.value mustEqual identificationNumber
               result.actions must not be defined
           }
         }
@@ -55,7 +55,7 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         "when name undefined" in {
           val helper = new ConsignorAnswersHelper(emptyUserAnswers)
-          helper.name(None) mustBe None
+          helper.name(None) must not be defined
         }
       }
 
@@ -66,8 +66,8 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignorAnswersHelper(emptyUserAnswers)
               val result = helper.name(Some(name)).value
 
-              result.key.value mustBe "Name"
-              result.value.value mustBe name
+              result.key.value mustEqual "Name"
+              result.value.value mustEqual name
               result.actions must not be defined
           }
         }
@@ -79,7 +79,7 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new ConsignorAnswersHelper(emptyUserAnswers)
-          helper.country mustBe None
+          helper.country must not be defined
         }
       }
 
@@ -92,8 +92,8 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignorAnswersHelper(answers)
               val result = helper.country.value
 
-              result.key.value mustBe "Country"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Country"
+              result.value.value mustEqual value.toString
               result.actions must not be defined
           }
         }
@@ -104,7 +104,7 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         "when address undefined" in {
           val helper = new ConsignorAnswersHelper(emptyUserAnswers)
-          helper.address(None) mustBe None
+          helper.address(None) must not be defined
         }
       }
 
@@ -115,8 +115,8 @@ class ConsignorAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignorAnswersHelper(emptyUserAnswers)
               val result = helper.address(Some(address)).value
 
-              result.key.value mustBe "Address"
-              result.value.value mustBe DynamicAddress(address).toString
+              result.key.value mustEqual "Address"
+              result.value.value mustEqual DynamicAddress(address).toString
               result.actions must not be defined
           }
         }

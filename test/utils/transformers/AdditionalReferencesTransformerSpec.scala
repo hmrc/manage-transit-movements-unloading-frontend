@@ -68,8 +68,8 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
     additionalReferences.zipWithIndex.map {
       case (refType, i) =>
-        result.getValue(AdditionalReferenceTypePage(Index(i))).documentType mustBe refType.typeValue
-        result.getValue(AdditionalReferenceTypePage(Index(i))).description mustBe "describe me"
+        result.getValue(AdditionalReferenceTypePage(Index(i))).documentType mustEqual refType.typeValue
+        result.getValue(AdditionalReferenceTypePage(Index(i))).description mustEqual "describe me"
 
     }
   }
@@ -91,8 +91,8 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
     additionalReferences.zipWithIndex.map {
       case (refType, i) =>
-        result.getSequenceNumber(AdditionalReferenceSection(hcIndex, Index(i))) mustBe refType.sequenceNumber
-        result.getValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(i))).documentType mustBe refType.typeValue
+        result.getSequenceNumber(AdditionalReferenceSection(hcIndex, Index(i))) mustEqual refType.sequenceNumber
+        result.getValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(i))).documentType mustEqual refType.typeValue
     }
   }
 
@@ -115,9 +115,9 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
       additionalReferences.zipWithIndex.map {
         case (refType, i) =>
-          result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
-          result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
-          result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustBe true
+          result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustEqual refType.sequenceNumber
+          result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustEqual refType.typeValue
+          result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustEqual true
       }
     }
 
@@ -138,9 +138,9 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
 
       additionalReferences.zipWithIndex.map {
         case (refType, i) =>
-          result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
-          result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
-          result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustBe false
+          result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustEqual refType.sequenceNumber
+          result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustEqual refType.typeValue
+          result.getValue(AdditionalReferenceInCL234Page(hcIndex, itemIndex, Index(i))) mustEqual false
       }
     }
 

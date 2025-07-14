@@ -40,7 +40,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(TypePage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.documents.routes.DocumentReferenceNumberController.onPageLoad(arrivalId, mode, documentIndex))
+          .mustEqual(controllers.documents.routes.DocumentReferenceNumberController.onPageLoad(arrivalId, mode, documentIndex))
       }
 
       "must go from DocumentReferenceNumberPage to AddAdditionalInformationYesNoPage when Document Type is Support" in {
@@ -53,7 +53,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex))
+          .mustEqual(controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex))
       }
 
       "must go from DocumentReferenceNumberPage to AddAnotherDocumentPage when Document Type is Transport" in {
@@ -66,7 +66,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
+          .mustEqual(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
       }
 
       "must go from DocumentReferenceNumberPage to TypePage when Document Type is unexpectedly Previous" in {
@@ -79,7 +79,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.documents.routes.TypeController.onPageLoad(arrivalId, mode, documentIndex))
+          .mustEqual(controllers.documents.routes.TypeController.onPageLoad(arrivalId, mode, documentIndex))
       }
 
       "must go from AddAdditionalInformationYesNoPage to AdditionalInformationPage when answer is true" in {
@@ -92,7 +92,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddAdditionalInformationYesNoPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, mode, documentIndex))
+          .mustEqual(controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, mode, documentIndex))
       }
 
       "must go from AddAdditionalInformationYesNoPage to AddAnotherDocumentPage when answer is false" in {
@@ -105,7 +105,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddAdditionalInformationYesNoPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
+          .mustEqual(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
       }
     }
 
@@ -119,7 +119,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AdditionalInformationPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from DocumentReferenceNumberPage to UnloadingFindingsController" in {
@@ -128,7 +128,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from TypePage to UnloadingFindingsController" in {
@@ -139,7 +139,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(TypePage(documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
     }
   }

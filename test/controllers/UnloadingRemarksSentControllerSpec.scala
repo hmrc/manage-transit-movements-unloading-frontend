@@ -76,7 +76,7 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
 
           val view = app.injector.instanceOf[UnloadingRemarksSentView]
 
-          status(result) mustBe OK
+          status(result) mustEqual OK
 
           contentAsString(result) mustEqual view(mrn.toString, unloadingRemarksSentViewModel)(request, messages).toString
 

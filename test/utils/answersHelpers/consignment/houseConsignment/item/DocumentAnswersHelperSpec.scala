@@ -34,7 +34,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
-          helper.documentType() mustBe None
+          helper.documentType() must not be defined
         }
       }
 
@@ -47,13 +47,13 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
               val result = helper.documentType().value
 
-              result.key.value mustBe "Document type"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Document type"
+              result.value.value mustEqual value.toString
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.TypeController.onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex).url
-              action.visuallyHiddenText.value mustBe "document type for document 1 in item 1"
-              action.id mustBe "change-document-type-1-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.TypeController.onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex).url
+              action.visuallyHiddenText.value mustEqual "document type for document 1 in item 1"
+              action.id mustEqual "change-document-type-1-1"
           }
         }
       }
@@ -67,9 +67,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
               val result = helper.documentType(true).value
 
-              result.key.value mustBe "Document type"
-              result.value.value mustBe value.toString
-              result.actions mustBe None
+              result.key.value mustEqual "Document type"
+              result.value.value mustEqual value.toString
+              result.actions must not be defined
           }
         }
       }
@@ -81,7 +81,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
-          helper.referenceNumber() mustBe None
+          helper.referenceNumber() must not be defined
         }
       }
 
@@ -94,15 +94,15 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
               val result = helper.referenceNumber().value
 
-              result.key.value mustBe "Reference number"
-              result.value.value mustBe value
+              result.key.value mustEqual "Reference number"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.DocumentReferenceNumberController
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.DocumentReferenceNumberController
                 .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex)
                 .url
-              action.visuallyHiddenText.value mustBe "reference number for document 1 in item 1"
-              action.id mustBe "change-document-reference-number-1-1"
+              action.visuallyHiddenText.value mustEqual "reference number for document 1 in item 1"
+              action.id mustEqual "change-document-reference-number-1-1"
           }
         }
       }
@@ -116,9 +116,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
               val result = helper.referenceNumber(true).value
 
-              result.key.value mustBe "Reference number"
-              result.value.value mustBe value
-              result.actions mustBe None
+              result.key.value mustEqual "Reference number"
+              result.value.value mustEqual value
+              result.actions must not be defined
           }
         }
       }
@@ -130,7 +130,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
-          helper.additionalInformation() mustBe None
+          helper.additionalInformation() must not be defined
         }
       }
 
@@ -143,15 +143,15 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
               val result = helper.additionalInformation().value
 
-              result.key.value mustBe "Additional information"
-              result.value.value mustBe value
+              result.key.value mustEqual "Additional information"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe routes.AdditionalInformationController
+              action.content.value mustEqual "Change"
+              action.href mustEqual routes.AdditionalInformationController
                 .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex)
                 .url
-              action.visuallyHiddenText.value mustBe "additional information for document 1 in item 1"
-              action.id mustBe "change-document-additional-information-1-1"
+              action.visuallyHiddenText.value mustEqual "additional information for document 1 in item 1"
+              action.id mustEqual "change-document-additional-information-1-1"
           }
         }
       }
@@ -165,9 +165,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
               val result = helper.additionalInformation(true).value
 
-              result.key.value mustBe "Additional information"
-              result.value.value mustBe value
-              result.actions mustBe None
+              result.key.value mustEqual "Additional information"
+              result.value.value mustEqual value
+              result.actions must not be defined
           }
         }
       }

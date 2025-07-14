@@ -33,7 +33,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelpe
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(emptyUserAnswers, hcIndex, index)
-          helper.referenceType mustBe None
+          helper.referenceType must not be defined
         }
       }
 
@@ -45,13 +45,13 @@ class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelpe
             val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(answers, hcIndex, index)
             val result = helper.referenceType.value
 
-            result.key.value mustBe "Type"
-            result.value.value mustBe value.toString
+            result.key.value mustEqual "Type"
+            result.value.value mustEqual value.toString
             val action = result.actions.value.items.head
-            action.content.value mustBe "Change"
-            action.href mustBe routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, index).url
-            action.visuallyHiddenText.value mustBe "type for additional reference 1"
-            action.id mustBe "change-additional-reference-type-1"
+            action.content.value mustEqual "Change"
+            action.href mustEqual routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, index).url
+            action.visuallyHiddenText.value mustEqual "type for additional reference 1"
+            action.id mustEqual "change-additional-reference-type-1"
         }
       }
     }
@@ -62,7 +62,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelpe
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(emptyUserAnswers, hcIndex, index)
-          helper.referenceNumber mustBe None
+          helper.referenceNumber must not be defined
         }
       }
 
@@ -74,13 +74,13 @@ class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelpe
             val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(answers, hcIndex, index)
             val result = helper.referenceNumber.value
 
-            result.key.value mustBe "Reference number"
-            result.value.value mustBe value
+            result.key.value mustEqual "Reference number"
+            result.value.value mustEqual value
             val action = result.actions.value.items.head
-            action.content.value mustBe "Change"
-            action.href mustBe routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, index).url
-            action.visuallyHiddenText.value mustBe "reference number for additional reference 1"
-            action.id mustBe "change-additional-reference-number-1"
+            action.content.value mustEqual "Change"
+            action.href mustEqual routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, index).url
+            action.visuallyHiddenText.value mustEqual "reference number for additional reference 1"
+            action.id mustEqual "change-additional-reference-number-1"
         }
       }
     }

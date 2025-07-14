@@ -89,7 +89,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
       }
@@ -112,7 +112,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
       }
@@ -136,9 +136,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result).value mustEqual routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -160,9 +160,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result).value mustEqual routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -184,9 +184,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result).value mustEqual routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -208,9 +208,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result).value mustEqual routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -232,9 +232,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result).value mustEqual routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -258,9 +258,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result).value mustEqual routes.UnauthorisedController.onPageLoad().url
       }
     }
 
@@ -277,9 +277,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
     }
 
@@ -296,9 +296,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
     }
 
@@ -315,8 +315,8 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(frontendAppConfig.eccEnrolmentSplashPage)
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.eccEnrolmentSplashPage
       }
     }
 
@@ -334,8 +334,8 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(frontendAppConfig.eccEnrolmentSplashPage)
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.eccEnrolmentSplashPage
       }
     }
 
@@ -359,7 +359,7 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe OK
+        status(result) mustEqual OK
       }
     }
   }

@@ -94,7 +94,7 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours wit
             val form     = new SealIdentificationNumberFormProvider(config).apply(prefix, otherIds)
             val dataItem = "foo"
             val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-            result.value.value mustBe dataItem
+            result.value.value mustEqual dataItem
             result.errors must be(empty)
         }
       }

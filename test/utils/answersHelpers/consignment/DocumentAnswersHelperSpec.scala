@@ -32,7 +32,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
-          helper.documentType() mustBe None
+          helper.documentType() must not be defined
         }
       }
 
@@ -45,13 +45,13 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.documentType().value
 
-              result.key.value mustBe "Document type"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Document type"
+              result.value.value mustEqual value.toString
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/change-document/1/type"
-              action.visuallyHiddenText.value mustBe "document type for document 1"
-              action.id mustBe "change-document-type-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual "/manage-transit-movements/unloading/AB123/change-document/1/type"
+              action.visuallyHiddenText.value mustEqual "document type for document 1"
+              action.id mustEqual "change-document-type-1"
           }
         }
 
@@ -63,9 +63,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.documentType(readOnly = true).value
 
-              result.key.value mustBe "Document type"
-              result.value.value mustBe value.toString
-              result.actions mustBe None
+              result.key.value mustEqual "Document type"
+              result.value.value mustEqual value.toString
+              result.actions must not be defined
           }
         }
       }
@@ -77,7 +77,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
-          helper.referenceNumber() mustBe None
+          helper.referenceNumber() must not be defined
         }
       }
 
@@ -90,13 +90,13 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.referenceNumber().value
 
-              result.key.value mustBe "Reference number"
-              result.value.value mustBe value
+              result.key.value mustEqual "Reference number"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/change-document/1/reference-number"
-              action.visuallyHiddenText.value mustBe "reference number for document 1"
-              action.id mustBe "change-document-reference-number-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual "/manage-transit-movements/unloading/AB123/change-document/1/reference-number"
+              action.visuallyHiddenText.value mustEqual "reference number for document 1"
+              action.id mustEqual "change-document-reference-number-1"
           }
         }
 
@@ -108,9 +108,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.referenceNumber(readOnly = true).value
 
-              result.key.value mustBe "Reference number"
-              result.value.value mustBe value
-              result.actions mustBe None
+              result.key.value mustEqual "Reference number"
+              result.value.value mustEqual value
+              result.actions must not be defined
           }
         }
       }
@@ -122,7 +122,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
-          helper.additionalInformation() mustBe None
+          helper.additionalInformation() must not be defined
         }
       }
 
@@ -135,13 +135,13 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.additionalInformation().value
 
-              result.key.value mustBe "Additional information"
-              result.value.value mustBe value
+              result.key.value mustEqual "Additional information"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/change-document/1/additional-information"
-              action.visuallyHiddenText.value mustBe "additional information for document 1"
-              action.id mustBe "change-document-additional-information-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual "/manage-transit-movements/unloading/AB123/change-document/1/additional-information"
+              action.visuallyHiddenText.value mustEqual "additional information for document 1"
+              action.id mustEqual "change-document-additional-information-1"
           }
         }
 
@@ -153,9 +153,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.additionalInformation(readOnly = true).value
 
-              result.key.value mustBe "Additional information"
-              result.value.value mustBe value
-              result.actions mustBe None
+              result.key.value mustEqual "Additional information"
+              result.value.value mustEqual value
+              result.actions must not be defined
           }
         }
       }

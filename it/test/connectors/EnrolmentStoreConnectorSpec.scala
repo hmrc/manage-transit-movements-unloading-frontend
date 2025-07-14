@@ -21,8 +21,8 @@ import itbase.{ItSpecBase, WireMockServerHandler}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.libs.json.{JsString, Json}
+import play.api.test.Helpers.*
 
 import scala.concurrent.Future
 
@@ -129,7 +129,7 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
 
         val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-        await(result) mustBe true
+        await(result) mustEqual true
       }
 
       "return false when no NCTS enrolment is present" in {
@@ -140,27 +140,29 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
 
         val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-        await(result) mustBe false
+        await(result) mustEqual false
       }
 
       "return false when the API call returns a no content" in {
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
-          aResponse().withStatus(NO_CONTENT)
-        })
+        server.stubFor(
+          get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey"))
+            .willReturn(aResponse().withStatus(NO_CONTENT))
+        )
 
         val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-        await(result) mustBe false
+        await(result) mustEqual false
       }
 
       "return false when the API call returns 404 NOT_FOUND" in {
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
-          aResponse().withStatus(NOT_FOUND)
-        })
+        server.stubFor(
+          get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey"))
+            .willReturn(aResponse().withStatus(NOT_FOUND))
+        )
 
         val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-        await(result) mustBe false
+        await(result) mustEqual false
       }
 
       "return false when the API call returns 400 BAD_REQUEST with message INVALID_GROUP_ID" in {
@@ -171,46 +173,42 @@ class EnrolmentStoreConnectorSpec extends ItSpecBase with WireMockServerHandler 
             |}
             |""".stripMargin)
 
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
-          aResponse().withStatus(BAD_REQUEST).withBody(Json.stringify(body))
-        })
+        server.stubFor(
+          get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey"))
+            .willReturn(aResponse().withStatus(BAD_REQUEST).withBody(Json.stringify(body)))
+        )
 
         val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-        await(result) mustBe false
+        await(result) mustEqual false
       }
 
       "throw exception when the API call returns another 4xx/5xx" in {
         forAll(Gen.choose(400, 599).retryUntil(_ != 404)) {
           status =>
             server.stubFor(
-              get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
-                aResponse().withStatus(status)
-              }
+              get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey"))
+                .willReturn(aResponse().withStatus(status))
             )
 
             val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-            an[Exception] mustBe thrownBy(result.futureValue)
+            an[Exception] must be thrownBy result.futureValue
         }
       }
 
       "throw exception when the API call returns 200 and invalid JSON" in {
-        server.stubFor(get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey")) `willReturn` {
-          aResponse()
-            .withStatus(OK)
-            .withBody("""
-              |{
-              |  invalid
-              |}
-              |""".stripMargin)
-        })
+        val body = JsString("invalid")
+
+        server.stubFor(
+          get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=$enrolmentKey"))
+            .willReturn(aResponse().withStatus(OK).withBody(Json.stringify(body)))
+        )
 
         val result: Future[Boolean] = connector.checkGroupEnrolments(groupId, "HMCE-NCTS-ORG")
 
-        an[Exception] mustBe thrownBy(result.futureValue)
+        an[Exception] must be thrownBy result.futureValue
       }
     }
   }
-
 }

@@ -27,18 +27,18 @@ class DocumentsSpec extends SpecBase {
     "must return message if max limit reached" - {
       "when transport" in {
         val result = Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsHouseConsignment), "prefix")
-        result.isDefined mustBe true
+        result.isDefined mustEqual true
       }
 
       "when supporting" in {
         val result = Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment, 0), "prefix")
-        result.isDefined mustBe true
+        result.isDefined mustEqual true
       }
     }
 
     "must return None if max limit not reached" in {
       val result = Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, 0), "prefix")
-      result.isDefined mustBe false
+      result.isDefined mustEqual false
     }
   }
 }

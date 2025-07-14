@@ -32,9 +32,9 @@ class NetWeightViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
       val viewModelProvider = new NetWeightViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, NormalMode, Index(0), Index(1))
 
-      result.title mustBe "What is the net weight of item 2 in house consignment 1?"
-      result.heading mustBe "What is the net weight of item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the net weight of item 2 in house consignment 1"
+      result.title mustEqual "What is the net weight of item 2 in house consignment 1?"
+      result.heading mustEqual "What is the net weight of item 2 in house consignment 1?"
+      result.requiredError mustEqual "Enter the net weight of item 2 in house consignment 1"
     }
 
     "when Check mode" in {
@@ -42,9 +42,9 @@ class NetWeightViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       val result = viewModelProvider.apply(arrivalId, houseConsignmentMode, CheckMode, Index(0), Index(1))
 
-      result.title mustBe "What is the new net weight of item 2 in house consignment 1?"
-      result.heading mustBe "What is the new net weight of item 2 in house consignment 1?"
-      result.requiredError mustBe "Enter the new net weight of item 2 in house consignment 1"
+      result.title mustEqual "What is the new net weight of item 2 in house consignment 1?"
+      result.heading mustEqual "What is the new net weight of item 2 in house consignment 1?"
+      result.requiredError mustEqual "Enter the new net weight of item 2 in house consignment 1"
     }
   }
 }

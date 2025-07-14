@@ -16,11 +16,9 @@
 
 package models
 
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import base.SpecBase
 
-class IndexSpec extends AnyFreeSpec with Matchers with OptionValues {
+class IndexSpec extends SpecBase {
 
   "Index display must return correct Int" in {
     Index(0).display mustEqual 1
@@ -31,11 +29,11 @@ class IndexSpec extends AnyFreeSpec with Matchers with OptionValues {
     val key    = "index"
 
     "bind a valid index" in {
-      binder.bind(key, "1") mustEqual Right(Index(0))
+      binder.bind(key, "1").value mustEqual Index(0)
     }
 
     "fail to bind an index with negative value" in {
-      binder.bind(key, "-1") mustEqual Left("Index binding failed")
+      binder.bind(key, "-1").left.value mustEqual "Index binding failed"
     }
 
     "unbind an index" in {

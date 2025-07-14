@@ -29,16 +29,16 @@ class ReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
       val viewModelProvider = new ReferenceNumberViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, hcIndex)
 
-      result.title mustBe "What is the document’s reference number?"
-      result.heading mustBe "What is the document’s reference number?"
+      result.title mustEqual "What is the document’s reference number?"
+      result.heading mustEqual "What is the document’s reference number?"
     }
 
     "when Check mode" in {
       val viewModelProvider = new ReferenceNumberViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode, hcIndex)
 
-      result.title mustBe s"What is the new document’s reference number in house consignment ${hcIndex.display}?"
-      result.heading mustBe s"What is the new document’s reference number in house consignment ${hcIndex.display}?"
+      result.title mustEqual s"What is the new document’s reference number in house consignment ${hcIndex.display}?"
+      result.heading mustEqual s"What is the new document’s reference number in house consignment ${hcIndex.display}?"
     }
   }
 }

@@ -50,7 +50,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
                 navigator
                   .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-                  .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+                  .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
             }
           }
 
@@ -65,7 +65,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
                   navigator
                     .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-                    .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+                    .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
               }
             }
           }
@@ -80,7 +80,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
                   navigator
                     .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-                    .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+                    .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
               }
             }
           }
@@ -97,7 +97,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
                   navigator
                     .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-                    .mustBe(
+                    .mustEqual(
                       routes.AdditionalReferenceNumberController.onPageLoad(
                         arrivalId,
                         houseConsignmentMode,
@@ -121,7 +121,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
                   navigator
                     .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-                    .mustBe(
+                    .mustEqual(
                       routes.AdditionalReferenceNumberController.onPageLoad(
                         arrivalId,
                         houseConsignmentMode,
@@ -144,7 +144,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
     }
@@ -169,7 +169,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, houseConsignmentIndex, itemIndex), additionalReferenceMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             routes.AddAdditionalReferenceNumberYesNoController
               .onPageLoad(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, additionalReferenceIndex, hcIndex, itemIndex)
           )
@@ -181,7 +181,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             routes.AdditionalReferenceNumberController
               .onPageLoad(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, additionalReferenceIndex, hcIndex, itemIndex)
           )
@@ -193,7 +193,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex, hcIndex, itemIndex), additionalReferenceMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             routes.AdditionalReferenceNumberController
               .onPageLoad(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, additionalReferenceIndex, hcIndex, itemIndex)
           )
@@ -205,7 +205,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex, houseConsignmentIndex, itemIndex), additionalReferenceMode, userAnswers)
-          .mustBe(routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+          .mustEqual(routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
       }
 
     }

@@ -114,7 +114,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(AdditionalReferenceSection(additionalReferenceIndex)).value mustBe
+        userAnswersCaptor.getValue.get(AdditionalReferenceSection(additionalReferenceIndex)).value mustEqual
           Json.parse("""
               |{
               |  "sequenceNumber" : 1,
@@ -147,7 +147,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(AdditionalReferenceSection(additionalReferenceIndex)).value mustBe
+        userAnswersCaptor.getValue.get(AdditionalReferenceSection(additionalReferenceIndex)).value mustEqual
           Json.parse("""
               |{
               |  "sequenceNumber" : 1,

@@ -78,11 +78,11 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
           case (te, i) =>
             val equipmentIndex = Index(i)
 
-            result.getSequenceNumber(TransportEquipmentSection(equipmentIndex)) mustBe te.sequenceNumber
-            result.getValue[JsBoolean](TransportEquipmentSection(equipmentIndex), "removed").value mustBe false
-            result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustBe te.containerIdentificationNumber
-            result.getValue(FakeSealsSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeGoodsReferencesSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getSequenceNumber(TransportEquipmentSection(equipmentIndex)) mustEqual te.sequenceNumber
+            result.getValue[JsBoolean](TransportEquipmentSection(equipmentIndex), "removed").value mustEqual false
+            result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustEqual te.containerIdentificationNumber
+            result.getValue(FakeSealsSection(equipmentIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(FakeGoodsReferencesSection(equipmentIndex)) mustEqual Json.obj("foo" -> i.toString)
         }
     }
   }

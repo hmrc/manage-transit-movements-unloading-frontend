@@ -100,7 +100,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.getRemoved(ItemSection(equipmentIndex, itemIndex)) mustBe true
+        userAnswersCaptor.getValue.getRemoved(ItemSection(equipmentIndex, itemIndex)) mustEqual true
       }
 
       "when no is submitted" in {

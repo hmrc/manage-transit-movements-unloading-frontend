@@ -35,7 +35,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new TransportEquipmentAnswersHelper(emptyUserAnswers, equipmentIndex)
-          helper.containerIdentificationNumber mustBe None
+          helper.containerIdentificationNumber must not be defined
         }
       }
 
@@ -48,14 +48,14 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new TransportEquipmentAnswersHelper(answers, equipmentIndex)
               val result = helper.containerIdentificationNumber.value
 
-              result.key.value mustBe "Container identification number"
-              result.value.value mustBe value
+              result.key.value mustEqual "Container identification number"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe
+              action.content.value mustEqual "Change"
+              action.href mustEqual
                 controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode).url
-              action.visuallyHiddenText.value mustBe "container identification number for transport equipment 1"
-              action.id mustBe "change-container-identification-number-1"
+              action.visuallyHiddenText.value mustEqual "container identification number for transport equipment 1"
+              action.id mustEqual "change-container-identification-number-1"
           }
         }
       }
@@ -78,8 +78,8 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
         val result = helper.containerIndicatorRow
 
-        result.get.key.value mustBe "Are you using any containers?"
-        result.value.value.value mustBe "Yes"
+        result.get.key.value mustEqual "Are you using any containers?"
+        result.value.value.value mustEqual "Yes"
         result.get.actions must not be defined
       }
     }
@@ -96,17 +96,17 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.transportEquipmentSeals
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Seals"
-            result.id.value mustBe "transport-equipment-1-seals"
+            result.sectionTitle.value mustEqual "Seals"
+            result.id.value mustEqual "transport-equipment-1-seals"
 
             val addOrRemoveLink = result.viewLinks.head
-            addOrRemoveLink.id mustBe "add-remove-transport-equipment-1-seal"
-            addOrRemoveLink.text mustBe "Add or remove seal"
-            addOrRemoveLink.visuallyHidden.value mustBe "from transport equipment 1"
+            addOrRemoveLink.id mustEqual "add-remove-transport-equipment-1-seal"
+            addOrRemoveLink.text mustEqual "Add or remove seal"
+            addOrRemoveLink.visuallyHidden.value mustEqual "from transport equipment 1"
 
-            result.rows.size mustBe 2
-            result.rows.head.value.value mustBe value1
-            result.rows(1).value.value mustBe value2
+            result.rows.size mustEqual 2
+            result.rows.head.value.value mustEqual value1
+            result.rows(1).value.value mustEqual value2
         }
       }
     }
@@ -123,17 +123,17 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.transportEquipmentItems
 
             result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Items applied to this transport equipment"
-            result.id.value mustBe "transport-equipment-1-items"
+            result.sectionTitle.value mustEqual "Items applied to this transport equipment"
+            result.id.value mustEqual "transport-equipment-1-items"
 
             val addOrRemoveLink = result.viewLinks.head
-            addOrRemoveLink.id mustBe "add-remove-transport-equipment-1-item"
-            addOrRemoveLink.text mustBe "Add or remove items from transport equipment 1"
+            addOrRemoveLink.id mustEqual "add-remove-transport-equipment-1-item"
+            addOrRemoveLink.text mustEqual "Add or remove items from transport equipment 1"
             addOrRemoveLink.visuallyHidden must not be defined
 
-            result.rows.size mustBe 2
-            result.rows.head.value.value mustBe item1.toString
-            result.rows(1).value.value mustBe item2.toString
+            result.rows.size mustEqual 2
+            result.rows.head.value.value mustEqual item1.toString
+            result.rows(1).value.value mustEqual item2.toString
         }
       }
     }

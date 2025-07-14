@@ -73,7 +73,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
-        descriptionLists.size mustBe 1
+        descriptionLists.size mustEqual 1
       }
 
       val renderedItems = doc.getElementsByClass("govuk-summary-list__row").asScala
@@ -85,7 +85,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
           s"item ${index + 1}" - {
             "must contain a name" in {
               val name = renderedItem.getElementsByClass("govuk-summary-list__key").text()
-              name mustBe listItem.name
+              name mustEqual listItem.name
             }
           }
       }

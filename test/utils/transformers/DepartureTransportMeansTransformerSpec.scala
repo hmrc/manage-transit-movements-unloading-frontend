@@ -81,12 +81,12 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
               case (dtm, i) =>
                 val dtmIndex = Index(i)
 
-                result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustBe dtm.sequenceNumber
-                result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustBe dtm.typeOfIdentification.value
-                result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustBe i.toString
-                result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustBe dtm.identificationNumber.value
-                result.getValue(CountryPage(dtmIndex)).code mustBe dtm.nationality.value
-                result.getValue(CountryPage(dtmIndex)).description mustBe i.toString
+                result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustEqual dtm.sequenceNumber
+                result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustEqual dtm.typeOfIdentification.value
+                result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustEqual i.toString
+                result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustEqual dtm.identificationNumber.value
+                result.getValue(CountryPage(dtmIndex)).code mustEqual dtm.nationality.value
+                result.getValue(CountryPage(dtmIndex)).description mustEqual i.toString
             }
         }
       }
@@ -102,7 +102,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
               case (dtm, i) =>
                 val dtmIndex = Index(i)
 
-                result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustBe dtm.sequenceNumber
+                result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustEqual dtm.sequenceNumber
                 result.get(TransportMeansIdentificationPage(dtmIndex)) must not be defined
                 result.get(VehicleIdentificationNumberPage(dtmIndex)) must not be defined
                 result.get(CountryPage(dtmIndex)) must not be defined
@@ -136,12 +136,12 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
 
               val dtmIndex = Index(i)
 
-              result.getSequenceNumber(TransportMeansSection(hcIndex, dtmIndex)) mustBe dtm.sequenceNumber
-              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).code mustBe dtm.typeOfIdentification
-              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).description mustBe i.toString
-              result.getValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
-              result.getValue(CountryPage(hcIndex, dtmIndex)).code mustBe dtm.nationality
-              result.getValue(CountryPage(hcIndex, dtmIndex)).description mustBe i.toString
+              result.getSequenceNumber(TransportMeansSection(hcIndex, dtmIndex)) mustEqual dtm.sequenceNumber
+              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).code mustEqual dtm.typeOfIdentification
+              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).description mustEqual i.toString
+              result.getValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex)) mustEqual dtm.identificationNumber
+              result.getValue(CountryPage(hcIndex, dtmIndex)).code mustEqual dtm.nationality
+              result.getValue(CountryPage(hcIndex, dtmIndex)).description mustEqual i.toString
           }
       }
     }

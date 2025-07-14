@@ -63,7 +63,7 @@ class MessageMetaDataSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           val result: MessageMetaData = json.validate[MessageMetaData].asOpt.value
 
-          result mustBe expectedResult
+          result mustEqual expectedResult
       }
     }
   }

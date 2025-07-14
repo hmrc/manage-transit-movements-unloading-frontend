@@ -29,16 +29,16 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
       val viewModelProvider = new DocumentReferenceNumberViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode)
 
-      result.title mustBe "What is the document’s reference number?"
-      result.heading mustBe "What is the document’s reference number?"
+      result.title mustEqual "What is the document’s reference number?"
+      result.heading mustEqual "What is the document’s reference number?"
     }
 
     "when Check mode" in {
       val viewModelProvider = new DocumentReferenceNumberViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode)
 
-      result.title mustBe "What is the document’s new reference number?"
-      result.heading mustBe "What is the document’s new reference number?"
+      result.title mustEqual "What is the document’s new reference number?"
+      result.heading mustEqual "What is the document’s new reference number?"
     }
   }
 }

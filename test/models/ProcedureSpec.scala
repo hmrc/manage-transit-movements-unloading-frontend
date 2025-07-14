@@ -30,7 +30,7 @@ class ProcedureSpec extends SpecBase {
 
         val result = Procedure.apply(userAnswers)
 
-        result.mustBe(Procedure.Unrevised)
+        result.mustEqual(Procedure.Unrevised)
       }
     }
 
@@ -43,7 +43,7 @@ class ProcedureSpec extends SpecBase {
 
           val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.CannotUseRevisedDueToConditions)
+          result.mustEqual(Procedure.CannotUseRevisedDueToConditions)
         }
       }
 
@@ -58,7 +58,7 @@ class ProcedureSpec extends SpecBase {
 
             val result = Procedure.apply(userAnswers)
 
-            result.mustBe(Procedure.CannotUseRevisedDueToDiscrepancies)
+            result.mustEqual(Procedure.CannotUseRevisedDueToDiscrepancies)
           }
         }
       }
@@ -75,7 +75,7 @@ class ProcedureSpec extends SpecBase {
 
           val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.RevisedAndGoodsTooLarge)
+          result.mustEqual(Procedure.RevisedAndGoodsTooLarge)
         }
       }
 
@@ -88,7 +88,7 @@ class ProcedureSpec extends SpecBase {
 
           val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.RevisedAndGoodsNotTooLarge)
+          result.mustEqual(Procedure.RevisedAndGoodsNotTooLarge)
         }
       }
 
@@ -101,7 +101,7 @@ class ProcedureSpec extends SpecBase {
 
           val result = Procedure.apply(userAnswers)
 
-          result.mustBe(Procedure.RevisedAndGoodsTooLarge)
+          result.mustEqual(Procedure.RevisedAndGoodsTooLarge)
         }
       }
     }

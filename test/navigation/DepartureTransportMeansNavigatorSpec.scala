@@ -39,7 +39,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(AddIdentificationYesNoPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportMeansIndex, mode))
+            .mustEqual(controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportMeansIndex, mode))
         }
 
         "when user answers No to AddIdentificationNumberYesNoPage" in {
@@ -47,7 +47,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(AddIdentificationYesNoPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
+            .mustEqual(controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
         }
       }
 
@@ -57,7 +57,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(TransportMeansIdentificationPage(transportMeansIndex), mode, userAnswers)
-          .mustBe(controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
+          .mustEqual(controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
       }
 
       "must go from AddIdentificationNumberYesNo page" - {
@@ -66,7 +66,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(AddIdentificationNumberYesNoPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, transportMeansIndex, mode))
+            .mustEqual(controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, transportMeansIndex, mode))
         }
 
         "when user answers No to AddNationalityYesNoPage" in {
@@ -74,7 +74,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(AddIdentificationNumberYesNoPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.AddNationalityYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
+            .mustEqual(controllers.departureMeansOfTransport.routes.AddNationalityYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
         }
       }
 
@@ -84,7 +84,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, userAnswers)
-          .mustBe(controllers.departureMeansOfTransport.routes.AddNationalityYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
+          .mustEqual(controllers.departureMeansOfTransport.routes.AddNationalityYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
       }
 
       "must go from AddNationalityYesNo page" - {
@@ -93,7 +93,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(AddNationalityYesNoPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportMeansIndex, mode))
+            .mustEqual(controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportMeansIndex, mode))
         }
 
         "when user answers No to AddNationalityYesNoPage" in {
@@ -101,7 +101,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(AddNationalityYesNoPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode))
+            .mustEqual(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode))
         }
       }
 
@@ -111,7 +111,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(CountryPage(transportMeansIndex), mode, userAnswers)
-          .mustBe(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode))
+          .mustEqual(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode))
       }
 
       "in Check mode" - {
@@ -125,7 +125,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(TransportMeansIdentificationPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
 
         }
 
@@ -136,7 +136,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
 
         }
       }

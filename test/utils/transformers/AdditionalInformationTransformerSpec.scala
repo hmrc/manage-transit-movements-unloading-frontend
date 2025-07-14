@@ -67,10 +67,10 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
 
     additionalInformationType02.zipWithIndex.map {
       case (refType, i) =>
-        result.getSequenceNumber(AdditionalInformationSection(Index(i))) mustBe refType.sequenceNumber
-        result.getValue(AdditionalInformationCodePage(Index(i))).code mustBe refType.code
-        result.getValue(AdditionalInformationCodePage(Index(i))).description mustBe "describe me"
-        result.get(AdditionalInformationTextPage(Index(i))) mustBe refType.text
+        result.getSequenceNumber(AdditionalInformationSection(Index(i))) mustEqual refType.sequenceNumber
+        result.getValue(AdditionalInformationCodePage(Index(i))).code mustEqual refType.code
+        result.getValue(AdditionalInformationCodePage(Index(i))).description mustEqual "describe me"
+        result.get(AdditionalInformationTextPage(Index(i))) mustEqual refType.text
     }
   }
 
@@ -90,10 +90,10 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
 
     additionalInformationType02.zipWithIndex.map {
       case (refType, i) =>
-        result.getSequenceNumber(AdditionalInformationSection(hcIndex, Index(i))) mustBe refType.sequenceNumber
-        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, Index(i))).value mustBe refType.code
-        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, Index(i))).description mustBe "describe me"
-        result.get(HouseConsignmentAdditionalInformationTextPage(hcIndex, Index(i))) mustBe refType.text
+        result.getSequenceNumber(AdditionalInformationSection(hcIndex, Index(i))) mustEqual refType.sequenceNumber
+        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, Index(i))).value mustEqual refType.code
+        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, Index(i))).description mustEqual "describe me"
+        result.get(HouseConsignmentAdditionalInformationTextPage(hcIndex, Index(i))) mustEqual refType.text
     }
   }
 
@@ -115,10 +115,10 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
 
     additionalInformationType02.zipWithIndex.map {
       case (refType, i) =>
-        result.getSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
-        result.getValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).value mustBe refType.code
-        result.getValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).description mustBe "describe me"
-        result.get(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, Index(i))) mustBe refType.text
+        result.getSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, Index(i))) mustEqual refType.sequenceNumber
+        result.getValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).value mustEqual refType.code
+        result.getValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).description mustEqual "describe me"
+        result.get(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, Index(i))) mustEqual refType.text
     }
   }
 

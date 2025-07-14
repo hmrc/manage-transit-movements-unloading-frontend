@@ -54,9 +54,9 @@ class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase wi
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value `mustEqual` routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to UnloadingGuidance page on submit" in {
@@ -66,8 +66,8 @@ class RevisedUnloadingProcedureUnmetConditionsControllerSpec extends SpecBase wi
 
       val result = route(app, request).value
 
-      status(result) `mustEqual` SEE_OTHER
-      redirectLocation(result).value `mustEqual` controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
     }
   }
 }

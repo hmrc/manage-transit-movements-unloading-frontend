@@ -104,7 +104,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         whenReady(result) {
           updatedAnswers =>
-            updatedAnswers.data mustBe userAnswersAfterWipe.data
+            updatedAnswers.data mustEqual userAnswersAfterWipe.data
         }
       }
     }
@@ -118,7 +118,7 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         whenReady(result) {
           updatedAnswers =>
-            updatedAnswers.data mustBe userAnswersAfterRetention.data
+            updatedAnswers.data mustEqual userAnswersAfterRetention.data
         }
       }
     }

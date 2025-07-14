@@ -40,12 +40,12 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               val userAnswers = emptyUserAnswers
 
               val result = new AddAnotherDepartureMeansOfTransportViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems mustBe Nil
-              result.title mustBe "You have added 0 departure means of transport"
-              result.heading mustBe "You have added 0 departure means of transport"
-              result.legend mustBe "Do you want to add a departure means of transport?"
-              result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(0)
+              result.listItems mustEqual Nil
+              result.title mustEqual "You have added 0 departure means of transport"
+              result.heading mustEqual "You have added 0 departure means of transport"
+              result.legend mustEqual "Do you want to add a departure means of transport?"
+              result.maxLimitLabel mustEqual "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(0)
           }
         }
       }
@@ -60,12 +60,12 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
 
               val result = new AddAnotherDepartureMeansOfTransportViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems.length mustBe 1
-              result.title mustBe "You have added 1 departure means of transport"
-              result.heading mustBe "You have added 1 departure means of transport"
-              result.legend mustBe "Do you want to add another departure means of transport?"
-              result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(1)
+              result.listItems.length mustEqual 1
+              result.title mustEqual "You have added 1 departure means of transport"
+              result.heading mustEqual "You have added 1 departure means of transport"
+              result.legend mustEqual "Do you want to add another departure means of transport?"
+              result.maxLimitLabel mustEqual "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(1)
           }
         }
 
@@ -92,12 +92,12 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                 .setValue(AddNationalityYesNoPage(Index(3)), false)
 
               val result = new AddAnotherDepartureMeansOfTransportViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems.length mustBe 4
-              result.title mustBe s"You have added 4 departure means of transport"
-              result.heading mustBe s"You have added 4 departure means of transport"
-              result.legend mustBe "Do you want to add another departure means of transport?"
-              result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(4)
+              result.listItems.length mustEqual 4
+              result.title mustEqual s"You have added 4 departure means of transport"
+              result.heading mustEqual s"You have added 4 departure means of transport"
+              result.legend mustEqual "Do you want to add another departure means of transport?"
+              result.maxLimitLabel mustEqual "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(4)
           }
         }
 
@@ -120,12 +120,12 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                 .setValue(AddNationalityYesNoPage(Index(3)), false)
 
               val result = new AddAnotherDepartureMeansOfTransportViewModelProvider().apply(userAnswers, arrivalId, mode)
-              result.listItems.length mustBe 3
-              result.title mustBe s"You have added 3 departure means of transport"
-              result.heading mustBe s"You have added 3 departure means of transport"
-              result.legend mustBe "Do you want to add another departure means of transport?"
-              result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
-              result.nextIndex mustBe Index(4)
+              result.listItems.length mustEqual 3
+              result.title mustEqual s"You have added 3 departure means of transport"
+              result.heading mustEqual s"You have added 3 departure means of transport"
+              result.legend mustEqual "Do you want to add another departure means of transport?"
+              result.maxLimitLabel mustEqual "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustEqual Index(4)
           }
         }
 
@@ -145,7 +145,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
 
               val result = new AddAnotherDepartureMeansOfTransportViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.listItems mustBe Seq(
+              result.listItems mustEqual Seq(
                 ListItem(
                   name = s"Departure means of transport 1 - $identification - $identificationNumber",
                   changeUrl = None,
@@ -166,7 +166,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                 )
               )
 
-              result.nextIndex mustBe Index(2)
+              result.nextIndex mustEqual Index(2)
           }
         }
       }

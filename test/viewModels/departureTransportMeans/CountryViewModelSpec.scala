@@ -29,8 +29,8 @@ class CountryViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with G
       val viewModelProvider = new CountryViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode)(messages)
 
-      result.title mustBe "What country is this vehicle registered to?"
-      result.heading mustBe "What country is this vehicle registered to?"
+      result.title mustEqual "What country is this vehicle registered to?"
+      result.heading mustEqual "What country is this vehicle registered to?"
     }
 
     "when CheckMode" in {
@@ -38,8 +38,8 @@ class CountryViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
       val result = viewModelProvider.apply(CheckMode)(messages)
 
-      result.title mustBe "What country is the new departure means of transport registered to?"
-      result.heading mustBe "What country is the new departure means of transport registered to?"
+      result.title mustEqual "What country is the new departure means of transport registered to?"
+      result.heading mustEqual "What country is the new departure means of transport registered to?"
     }
   }
 }

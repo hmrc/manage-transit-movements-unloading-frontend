@@ -45,7 +45,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
       "must go from DocumentReferenceNumberPage to UnloadingFindingsController" in {
@@ -54,7 +54,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
       "must go from TypePage to UnloadingFindingsController" in {
@@ -65,7 +65,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+          .mustEqual(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
     }
 
@@ -87,7 +87,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           )
@@ -99,7 +99,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.document.routes.AdditionalInformationController
               .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
           )
@@ -111,7 +111,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           )
@@ -126,7 +126,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.document.routes.DocumentReferenceNumberController
               .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
           )
@@ -140,7 +140,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         )
         navigator
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, userAnswers)
-          .mustBe(
+          .mustEqual(
             controllers.houseConsignment.index.items.document.routes.DocumentReferenceNumberController
               .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
           )

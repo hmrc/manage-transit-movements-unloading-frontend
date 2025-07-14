@@ -69,11 +69,11 @@ class PackagingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       case (packagingType0, i) =>
         val ind = Index(i)
 
-        result.getSequenceNumber(PackagingSection(hcIndex, itemIndex, ind)) mustBe packagingType0.sequenceNumber
-        result.getValue(PackageTypePage(hcIndex, itemIndex, ind)).code mustBe packagingType0.typeOfPackages
-        result.getValue(PackageTypePage(hcIndex, itemIndex, ind)).description mustBe "describe me"
-        result.get(PackageShippingMarkPage(hcIndex, itemIndex, ind)) mustBe packagingType0.shippingMarks
-        result.get(NumberOfPackagesPage(hcIndex, itemIndex, ind)) mustBe packagingType0.numberOfPackages
+        result.getSequenceNumber(PackagingSection(hcIndex, itemIndex, ind)) mustEqual packagingType0.sequenceNumber
+        result.getValue(PackageTypePage(hcIndex, itemIndex, ind)).code mustEqual packagingType0.typeOfPackages
+        result.getValue(PackageTypePage(hcIndex, itemIndex, ind)).description mustEqual "describe me"
+        result.get(PackageShippingMarkPage(hcIndex, itemIndex, ind)) mustEqual packagingType0.shippingMarks
+        result.get(NumberOfPackagesPage(hcIndex, itemIndex, ind)) mustEqual packagingType0.numberOfPackages
 
     }
 

@@ -40,7 +40,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, mode))
+            .mustEqual(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, mode))
 
         }
 
@@ -49,7 +49,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+            .mustEqual(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
 
         }
       }
@@ -59,7 +59,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         navigator
           .nextPage(ContainerIdentificationNumberPage(equipmentIndex), mode, userAnswers)
-          .mustBe(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+          .mustEqual(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
 
       }
 
@@ -70,7 +70,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(
+            .mustEqual(
               controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
                 .onPageLoad(arrivalId, mode, NormalMode, equipmentIndex, sealIndex)
             )
@@ -82,7 +82,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
           val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
           navigator
             .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+            .mustEqual(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
         }
       }
 
@@ -93,7 +93,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode, NormalMode))
+            .mustEqual(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode, NormalMode))
 
         }
 
@@ -102,7 +102,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+            .mustEqual(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
 
         }
       }
@@ -119,7 +119,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         navigator
           .nextPage(ContainerIdentificationNumberPage(equipmentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustEqual(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from ApplyAnItemYesNoPage" - {
@@ -129,7 +129,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode, NormalMode))
+            .mustEqual(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode, NormalMode))
 
         }
 
@@ -138,7 +138,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+            .mustEqual(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
 
         }
       }

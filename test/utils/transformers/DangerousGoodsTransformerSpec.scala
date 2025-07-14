@@ -36,8 +36,8 @@ class DangerousGoodsTransformerSpec extends SpecBase with AppWithDefaultMockFixt
 
         dangerousGoods.zipWithIndex.map {
           case (dangerousGoods, i) =>
-            result.getSequenceNumber(DangerousGoodsSection(hcIndex, itemIndex, Index(i))) mustBe dangerousGoods.sequenceNumber
-            result.getValue(DangerousGoodsPage(hcIndex, itemIndex, Index(i))) mustBe dangerousGoods.UNNumber
+            result.getSequenceNumber(DangerousGoodsSection(hcIndex, itemIndex, Index(i))) mustEqual dangerousGoods.sequenceNumber
+            result.getValue(DangerousGoodsPage(hcIndex, itemIndex, Index(i))) mustEqual dangerousGoods.UNNumber
         }
     }
   }

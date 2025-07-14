@@ -32,7 +32,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, dtmIndex)
-          helper.transportMeansID mustBe None
+          helper.transportMeansID must not be defined
         }
       }
 
@@ -45,13 +45,15 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, dtmIndex)
               val result = helper.transportMeansID.value
 
-              result.key.value mustBe "Identification type"
-              result.value.value mustBe value.description
+              result.key.value mustEqual "Identification type"
+              result.value.value mustEqual value.description
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportMeansIndex, CheckMode).url
-              action.visuallyHiddenText.value mustBe "identification type for departure means of transport 1"
-              action.id mustBe "change-transport-means-identification-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.departureMeansOfTransport.routes.IdentificationController
+                .onPageLoad(arrivalId, transportMeansIndex, CheckMode)
+                .url
+              action.visuallyHiddenText.value mustEqual "identification type for departure means of transport 1"
+              action.id mustEqual "change-transport-means-identification-1"
           }
         }
       }
@@ -62,7 +64,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, dtmIndex)
-          helper.transportMeansNumber mustBe None
+          helper.transportMeansNumber must not be defined
         }
       }
 
@@ -75,15 +77,15 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, dtmIndex)
               val result = helper.transportMeansNumber.value
 
-              result.key.value mustBe "Identification"
-              result.value.value mustBe value
+              result.key.value mustEqual "Identification"
+              result.value.value mustEqual value
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.departureMeansOfTransport.routes.IdentificationNumberController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.departureMeansOfTransport.routes.IdentificationNumberController
                 .onPageLoad(arrivalId, transportMeansIndex, CheckMode)
                 .url
-              action.visuallyHiddenText.value mustBe "identification for departure means of transport 1"
-              action.id mustBe "change-transport-means-identification-number-1"
+              action.visuallyHiddenText.value mustEqual "identification for departure means of transport 1"
+              action.id mustEqual "change-transport-means-identification-number-1"
           }
         }
       }
@@ -94,7 +96,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, dtmIndex)
-          helper.transportRegisteredCountry mustBe None
+          helper.transportRegisteredCountry must not be defined
         }
       }
 
@@ -107,13 +109,13 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, dtmIndex)
               val result = helper.transportRegisteredCountry.value
 
-              result.key.value mustBe "Registered country"
-              result.value.value mustBe value.description
+              result.key.value mustEqual "Registered country"
+              result.value.value mustEqual value.description
               val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportMeansIndex, CheckMode).url
-              action.visuallyHiddenText.value mustBe "registered country for departure means of transport 1"
-              action.id mustBe "change-registered-country"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportMeansIndex, CheckMode).url
+              action.visuallyHiddenText.value mustEqual "registered country for departure means of transport 1"
+              action.id mustEqual "change-registered-country"
           }
         }
       }

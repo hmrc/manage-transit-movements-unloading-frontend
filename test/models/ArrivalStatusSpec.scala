@@ -29,35 +29,35 @@ class ArrivalStatusSpec extends SpecBase {
 
         val json = JsString("UnloadingPermission")
 
-        json.validate[ArrivalStatus].asOpt.value mustBe ArrivalStatus.UnloadingPermission
+        json.validate[ArrivalStatus].asOpt.value mustEqual ArrivalStatus.UnloadingPermission
       }
 
       "to an UnloadingRemarksRejected" in {
 
         val json = JsString("UnloadingRemarksRejected")
 
-        json.validate[ArrivalStatus].asOpt.value mustBe ArrivalStatus.UnloadingRemarksRejected
+        json.validate[ArrivalStatus].asOpt.value mustEqual ArrivalStatus.UnloadingRemarksRejected
       }
 
       "to a UnloadingRemarksSubmittedNegativeAcknowledgement" in {
 
         val json = JsString("UnloadingRemarksSubmittedNegativeAcknowledgement")
 
-        json.validate[ArrivalStatus].asOpt.value mustBe ArrivalStatus.UnloadingRemarksSubmittedNegativeAcknowledgement
+        json.validate[ArrivalStatus].asOpt.value mustEqual ArrivalStatus.UnloadingRemarksSubmittedNegativeAcknowledgement
       }
 
       "to an OtherStatus when given an unrecognised status" in {
 
         val json = JsString("Foo")
 
-        json.validate[ArrivalStatus].asOpt.value mustBe ArrivalStatus.OtherStatus
+        json.validate[ArrivalStatus].asOpt.value mustEqual ArrivalStatus.OtherStatus
       }
     }
 
     "must deserialise" in {
 
       ArrivalStatus.values.map(
-        arrivalStatus => Json.toJson(arrivalStatus) mustBe JsString(arrivalStatus.toString)
+        arrivalStatus => Json.toJson(arrivalStatus) mustEqual JsString(arrivalStatus.toString)
       )
     }
   }

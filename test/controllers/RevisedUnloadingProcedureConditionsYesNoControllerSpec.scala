@@ -150,7 +150,7 @@ class RevisedUnloadingProcedureConditionsYesNoControllerSpec extends SpecBase wi
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue mustBe userAnswersAfterTransformation
+      userAnswersCaptor.getValue mustEqual userAnswersAfterTransformation
     }
 
     "must redirect to the next page when yes is submitted and answer has not changed" in {

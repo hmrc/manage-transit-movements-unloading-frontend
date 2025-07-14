@@ -53,17 +53,17 @@ class AddAnotherFormProviderSpec extends BooleanFieldBehaviours {
 
       "must bind true to false" in {
         val result = form.bind(Map(fieldName -> "true"))
-        result.value.value mustBe false
+        result.value.value mustEqual false
       }
 
       "must bind false to false" in {
         val result = form.bind(Map(fieldName -> "false"))
-        result.value.value mustBe false
+        result.value.value mustEqual false
       }
 
       "must bind blank to false" in {
         val result = form.bind(Map.empty[String, String])
-        result.value.value mustBe false
+        result.value.value mustEqual false
       }
     }
   }

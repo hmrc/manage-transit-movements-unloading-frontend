@@ -68,8 +68,8 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
 
           val result = transformer.transform(Some(transhipment), index).apply(emptyUserAnswers).futureValue
 
-          result.getValue(NationalityPage(index)) mustBe country
-          result.getValue(IdentificationPage(index)) mustBe identification
+          result.getValue(NationalityPage(index)) mustEqual country
+          result.getValue(IdentificationPage(index)) mustEqual identification
 
           verify(mockReferenceDataService).getCountry(eqTo(transhipment.TransportMeans.nationality))(any())
           verify(mockReferenceDataService).getMeansOfTransportIdentificationType(eqTo(transhipment.TransportMeans.typeOfIdentification))(any())

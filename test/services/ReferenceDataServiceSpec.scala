@@ -57,7 +57,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getCountries()(any(), any()))
             .thenReturn(Future.successful(Right(countries)))
 
-          service.getCountries().futureValue mustBe
+          service.getCountries().futureValue mustEqual
             Seq(andorra, france, uk)
 
           verify(mockConnector).getCountries()(any(), any())
@@ -70,7 +70,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getCountry("GB"))
             .thenReturn(Future.successful(Right(uk)))
 
-          service.getCountry("GB").futureValue mustBe Country("GB", "United Kingdom")
+          service.getCountry("GB").futureValue mustEqual Country("GB", "United Kingdom")
         }
       }
     }
@@ -85,7 +85,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getCustomsOffice(any())(any(), any()))
             .thenReturn(Future.successful(Right(customsOffice)))
 
-          service.getCustomsOffice("GB00001").futureValue mustBe customsOffice
+          service.getCustomsOffice("GB00001").futureValue mustEqual customsOffice
 
           verify(mockConnector).getCustomsOffice(any())(any(), any())
         }
@@ -102,7 +102,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Right(cusCode)))
 
-          service.doesCUSCodeExist(cusCode.code).futureValue mustBe true
+          service.doesCUSCodeExist(cusCode.code).futureValue mustEqual true
 
           verify(mockConnector).getCUSCode(eqTo(cusCode.code))(any(), any())
         }
@@ -112,7 +112,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
-          service.doesCUSCodeExist(cusCode.code).futureValue mustBe false
+          service.doesCUSCodeExist(cusCode.code).futureValue mustEqual false
 
           verify(mockConnector).getCUSCode(eqTo(cusCode.code))(any(), any())
         }
@@ -149,7 +149,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getAdditionalReferences()(any(), any()))
             .thenReturn(Future.successful(Right(additionalReferences)))
 
-          service.getAdditionalReferences().futureValue mustBe
+          service.getAdditionalReferences().futureValue mustEqual
             SelectableList(Seq(additionalReference2, additionalReference3, additionalReference1))
 
           verify(mockConnector).getAdditionalReferences()(any(), any())
@@ -162,7 +162,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getDocumentTypeExcise(any())(any(), any()))
             .thenReturn(Future.successful(Right(docTypeExcise)))
 
-          service.isDocumentTypeExcise("C651").futureValue mustBe true
+          service.isDocumentTypeExcise("C651").futureValue mustEqual true
 
           verify(mockConnector).getDocumentTypeExcise(any())(any(), any())
         }
@@ -173,7 +173,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getDocumentTypeExcise(any())(any(), any()))
             .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
-          service.isDocumentTypeExcise(docType).futureValue mustBe false
+          service.isDocumentTypeExcise(docType).futureValue mustEqual false
 
           verify(mockConnector).getDocumentTypeExcise(eqTo(docType))(any(), any())
         }
@@ -197,7 +197,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getSupportingDocuments()(any(), any()))
             .thenReturn(Future.successful(Right(supportingDocuments)))
 
-          service.getDocuments().futureValue mustBe
+          service.getDocuments().futureValue mustEqual
             Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2)
 
           verify(mockConnector).getTransportDocuments()(any(), any())
@@ -210,7 +210,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getTransportDocuments()(any(), any()))
             .thenReturn(Future.successful(Right(transportDocuments)))
 
-          service.getTransportDocuments().futureValue mustBe
+          service.getTransportDocuments().futureValue mustEqual
             Seq(transportDocument1, transportDocument2)
 
           verify(mockConnector).getTransportDocuments()(any(), any())
@@ -222,7 +222,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getSupportingDocuments()(any(), any()))
             .thenReturn(Future.successful(Right(supportingDocuments)))
 
-          service.getSupportingDocuments().futureValue mustBe
+          service.getSupportingDocuments().futureValue mustEqual
             Seq(supportingDocument1, supportingDocument2)
 
           verify(mockConnector).getSupportingDocuments()(any(), any())
@@ -243,7 +243,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           when(mockConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
             .thenReturn(Future.successful(Right(tms)))
 
-          service.getMeansOfTransportIdentificationTypes().futureValue mustBe
+          service.getMeansOfTransportIdentificationTypes().futureValue mustEqual
             Seq(tm1, tm2, tm3)
 
           verify(mockConnector).getMeansOfTransportIdentificationTypes()(any(), any())

@@ -30,16 +30,16 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       val viewModelProvider = new TypeViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, ConsignmentLevelDocuments(0, 0))
 
-      result.title mustBe "What type of document do you want to add?"
-      result.heading mustBe "What type of document do you want to add?"
+      result.title mustEqual "What type of document do you want to add?"
+      result.heading mustEqual "What type of document do you want to add?"
     }
 
     "when Check mode" in {
       val viewModelProvider = new TypeViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode, ConsignmentLevelDocuments(0, 0))
 
-      result.title mustBe "What is the new document type?"
-      result.heading mustBe "What is the new document type?"
+      result.title mustEqual "What is the new document type?"
+      result.heading mustEqual "What is the new document type?"
     }
   }
 
@@ -48,7 +48,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       mode =>
         val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsConsignment))
 
-        result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+        result.maxLimitLabelForType.get mustEqual "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
     }
   }
 
@@ -57,7 +57,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       mode =>
         val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment, 0))
 
-        result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+        result.maxLimitLabelForType.get mustEqual "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
     }
   }
 }

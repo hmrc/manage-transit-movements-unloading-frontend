@@ -27,7 +27,7 @@ trait FormSpec extends SpecBase {
       .fold(
         formWithErrors => {
           for (error <- expectedErrors) formWithErrors.errors must contain(FormError(error.key, error.message, error.args))
-          formWithErrors.errors.size mustBe expectedErrors.size
+          formWithErrors.errors.size mustEqual expectedErrors.size
         },
         _ => fail("Expected a validation error when binding the form, but it was bound successfully.")
       )

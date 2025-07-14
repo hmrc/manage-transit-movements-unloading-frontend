@@ -29,16 +29,16 @@ class AdditionalInformationViewModelSpec extends SpecBase with ScalaCheckPropert
       val viewModelProvider = new AdditionalInformationViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode)
 
-      result.title mustBe "Enter the additional information"
-      result.heading mustBe "Enter the additional information"
+      result.title mustEqual "Enter the additional information"
+      result.heading mustEqual "Enter the additional information"
     }
 
     "when Check mode" in {
       val viewModelProvider = new AdditionalInformationViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode)
 
-      result.title mustBe "Enter the new additional information"
-      result.heading mustBe "Enter the new additional information"
+      result.title mustEqual "Enter the new additional information"
+      result.heading mustEqual "Enter the new additional information"
     }
   }
 }

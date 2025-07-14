@@ -32,7 +32,7 @@ class StateOfSealsSpec extends SpecBase {
 
         val stateOfSeals = StateOfSeals(userAnswers)
 
-        stateOfSeals.value mustBe Some(true)
+        stateOfSeals.value.value mustEqual true
       }
     }
 
@@ -44,7 +44,7 @@ class StateOfSealsSpec extends SpecBase {
 
         val stateOfSeals = StateOfSeals(userAnswers)
 
-        stateOfSeals.value mustBe Some(false)
+        stateOfSeals.value.value mustEqual false
       }
 
       "when seals unreadable and broken" in {
@@ -54,7 +54,7 @@ class StateOfSealsSpec extends SpecBase {
 
         val stateOfSeals = StateOfSeals(userAnswers)
 
-        stateOfSeals.value mustBe Some(false)
+        stateOfSeals.value.value mustEqual false
       }
 
       "when seals unreadable and not broken" in {
@@ -64,7 +64,7 @@ class StateOfSealsSpec extends SpecBase {
 
         val stateOfSeals = StateOfSeals(userAnswers)
 
-        stateOfSeals.value mustBe Some(false)
+        stateOfSeals.value.value mustEqual false
       }
     }
 
@@ -77,7 +77,7 @@ class StateOfSealsSpec extends SpecBase {
 
             val stateOfSeals = StateOfSeals(userAnswers)
 
-            stateOfSeals.value mustBe None
+            stateOfSeals.value must not be defined
         }
       }
 
@@ -89,7 +89,7 @@ class StateOfSealsSpec extends SpecBase {
 
             val stateOfSeals = StateOfSeals(userAnswers)
 
-            stateOfSeals.value mustBe None
+            stateOfSeals.value must not be defined
         }
       }
     }

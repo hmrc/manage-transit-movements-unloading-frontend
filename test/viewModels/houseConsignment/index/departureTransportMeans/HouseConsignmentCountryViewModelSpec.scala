@@ -29,8 +29,8 @@ class HouseConsignmentCountryViewModelSpec extends SpecBase with ScalaCheckPrope
       val viewModelProvider = new HouseConsignmentCountryViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "What country is this vehicle registered to?"
-      result.heading mustBe "What country is this vehicle registered to?"
+      result.title mustEqual "What country is this vehicle registered to?"
+      result.heading mustEqual "What country is this vehicle registered to?"
     }
 
     "when CheckMode" in {
@@ -38,8 +38,8 @@ class HouseConsignmentCountryViewModelSpec extends SpecBase with ScalaCheckPrope
 
       val result = viewModelProvider.apply(CheckMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe s"What country is the new vehicle registered to in house consignment ${houseConsignmentIndex.display}?"
-      result.heading mustBe s"What country is the new vehicle registered to in house consignment ${houseConsignmentIndex.display}?"
+      result.title mustEqual s"What country is the new vehicle registered to in house consignment ${houseConsignmentIndex.display}?"
+      result.heading mustEqual s"What country is the new vehicle registered to in house consignment ${houseConsignmentIndex.display}?"
     }
   }
 }

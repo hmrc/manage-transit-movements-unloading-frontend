@@ -29,16 +29,16 @@ class SealIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckProp
       val viewModelProvider = new SealIdentificationNumberViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode)
 
-      result.title mustBe "What is the seal identification number?"
-      result.heading mustBe "What is the seal identification number?"
+      result.title mustEqual "What is the seal identification number?"
+      result.heading mustEqual "What is the seal identification number?"
     }
 
     "when Check mode" in {
       val viewModelProvider = new SealIdentificationNumberViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode)
 
-      result.title mustBe "What is the new seal identification number?"
-      result.heading mustBe "What is the new seal identification number?"
+      result.title mustEqual "What is the new seal identification number?"
+      result.heading mustEqual "What is the new seal identification number?"
     }
   }
 }

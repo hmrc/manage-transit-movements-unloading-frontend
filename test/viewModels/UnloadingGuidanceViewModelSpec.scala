@@ -28,13 +28,13 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "return correct text for not newAuth title" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, false)
-      viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.notNewAuth.title"
+      viewModel.apply(userAnswers).title mustEqual s"unloadingGuidance.notNewAuth.title"
     }
 
     "return correct text for not newAuth heading" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, false)
-      viewModel.apply(userAnswers).heading mustBe s"unloadingGuidance.notNewAuth.heading"
+      viewModel.apply(userAnswers).heading mustEqual s"unloadingGuidance.notNewAuth.heading"
     }
 
     "return correct text for newAuth and goodsTooLarge = false" in {
@@ -43,7 +43,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-      viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeNo.title"
+      viewModel.apply(userAnswers).title mustEqual s"unloadingGuidance.newAuth.goodsTooLargeNo.title"
     }
 
     "return correct text for newAuth and goodsTooLarge = true" in {
@@ -53,7 +53,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(GoodsTooLargeForContainerYesNoPage, true)
         .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-      viewModel.apply(userAnswers).title mustBe s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
+      viewModel.apply(userAnswers).title mustEqual s"unloadingGuidance.newAuth.goodsTooLargeYes.title"
     }
 
     "return correct preLinkText for newAuth and goodsTooLarge = false" in {
@@ -62,7 +62,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-      viewModel.apply(userAnswers).preLinkText mustBe Some("unloadingGuidance.preLinkText")
+      viewModel.apply(userAnswers).preLinkText.value mustEqual "unloadingGuidance.preLinkText"
     }
 
     "return correct postLinkText for newAuth and goodsTooLarge = false" in {
@@ -71,13 +71,13 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-      viewModel.apply(userAnswers).postLinkText mustBe Some("unloadingGuidance.postLinkText")
+      viewModel.apply(userAnswers).postLinkText.value mustEqual "unloadingGuidance.postLinkText"
     }
 
     "return correct para2 for not newAuth" in {
       val userAnswers = emptyUserAnswers
         .setValue(NewAuthYesNoPage, false)
-      viewModel.apply(userAnswers).para2 mustBe Some("unloadingGuidance.para2.notNewAuth")
+      viewModel.apply(userAnswers).para2.value mustEqual "unloadingGuidance.para2.notNewAuth"
     }
 
     "return None when newAuth and goodsTooLarge = false" in {
@@ -86,7 +86,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(RevisedUnloadingProcedureConditionsYesNoPage, true)
         .setValue(GoodsTooLargeForContainerYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-      viewModel.apply(userAnswers).para2 mustBe None
+      viewModel.apply(userAnswers).para2 must not be defined
     }
 
     "return correct para2 for newAuth and goodsTooLarge = true" in {
@@ -96,7 +96,7 @@ class UnloadingGuidanceViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(GoodsTooLargeForContainerYesNoPage, true)
         .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
         .setValue(SealsReplacedByCustomsAuthorityYesNoPage, true)
-      viewModel.apply(userAnswers).para2 mustBe Some("unloadingGuidance.para2.newAuth.goodsTooLargeYes")
+      viewModel.apply(userAnswers).para2.value mustEqual "unloadingGuidance.para2.newAuth.goodsTooLargeYes"
     }
 
   }

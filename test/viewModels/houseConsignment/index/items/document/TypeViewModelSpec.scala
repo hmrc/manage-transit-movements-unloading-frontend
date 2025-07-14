@@ -30,16 +30,16 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       val viewModelProvider = new TypeViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, HouseConsignmentLevelDocuments(0, 0), houseConsignmentIndex, itemIndex)
 
-      result.title mustBe s"What type of document do you want to add for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
-      result.heading mustBe s"What type of document do you want to add for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
+      result.title mustEqual s"What type of document do you want to add for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
+      result.heading mustEqual s"What type of document do you want to add for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
     }
 
     "when Check mode" in {
       val viewModelProvider = new TypeViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode, HouseConsignmentLevelDocuments(0, 0), houseConsignmentIndex, itemIndex)
 
-      result.title mustBe s"What is the new document type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
-      result.heading mustBe s"What is the new document type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
+      result.title mustEqual s"What is the new document type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
+      result.heading mustEqual s"What is the new document type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
     }
   }
 
@@ -52,7 +52,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                                                        itemIndex
         )
 
-        result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to this item. You can, however, still add a supporting document."
+        result.maxLimitLabelForType.get mustEqual "You cannot add any more transport documents to this item. You can, however, still add a supporting document."
     }
   }
 
@@ -65,7 +65,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                                                        itemIndex
         )
 
-        result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to this item. You can, however, still add a transport document."
+        result.maxLimitLabelForType.get mustEqual "You cannot add any more supporting documents to this item. You can, however, still add a transport document."
     }
   }
 }

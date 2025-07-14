@@ -29,16 +29,16 @@ class AdditionalInformationViewModelSpec extends SpecBase with ScalaCheckPropert
       val viewModelProvider = new AdditionalInformationViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, hcIndex)
 
-      result.title mustBe s"Enter the additional information in house consignment ${hcIndex.display}"
-      result.heading mustBe s"Enter the additional information in house consignment ${hcIndex.display}"
+      result.title mustEqual s"Enter the additional information in house consignment ${hcIndex.display}"
+      result.heading mustEqual s"Enter the additional information in house consignment ${hcIndex.display}"
     }
 
     "when Check mode" in {
       val viewModelProvider = new AdditionalInformationViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode, hcIndex)
 
-      result.title mustBe s"Enter the new additional information in house consignment ${hcIndex.display}"
-      result.heading mustBe s"Enter the new additional information in house consignment ${hcIndex.display}"
+      result.title mustEqual s"Enter the new additional information in house consignment ${hcIndex.display}"
+      result.heading mustEqual s"Enter the new additional information in house consignment ${hcIndex.display}"
     }
   }
 }

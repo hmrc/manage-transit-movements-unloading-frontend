@@ -29,34 +29,34 @@ class ArrivalMessageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with
       "when a JsString" - {
         "when IE007" in {
           val result = JsString("IE007").as[ArrivalMessageType]
-          result mustBe ArrivalNotification
+          result mustEqual ArrivalNotification
         }
 
         "when IE025" in {
           val result = JsString("IE025").as[ArrivalMessageType]
-          result mustBe GoodsReleasedNotification
+          result mustEqual GoodsReleasedNotification
         }
 
         "when IE043" in {
           val result = JsString("IE043").as[ArrivalMessageType]
-          result mustBe UnloadingPermission
+          result mustEqual UnloadingPermission
         }
 
         "when IE044" in {
           val result = JsString("IE044").as[ArrivalMessageType]
-          result mustBe UnloadingRemarks
+          result mustEqual UnloadingRemarks
         }
 
         "when IE057" in {
           val result = JsString("IE057").as[ArrivalMessageType]
-          result mustBe RejectionFromOfficeOfDestination
+          result mustEqual RejectionFromOfficeOfDestination
         }
 
         "when something else" in {
           forAll(nonEmptyString) {
             value =>
               val result = JsString(value).as[ArrivalMessageType]
-              result mustBe Other(value)
+              result mustEqual Other(value)
           }
         }
       }

@@ -38,7 +38,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentCountryRow mustBe None
+          helper.incidentCountryRow must not be defined
         }
       }
 
@@ -51,10 +51,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentCountryRow.value
 
-              result.key.value mustBe "Country"
-              result.value.value mustBe value.toString
+              result.key.value mustEqual "Country"
+              result.value.value mustEqual value.toString
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -65,7 +65,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentCodeRow mustBe None
+          helper.incidentCodeRow must not be defined
         }
       }
 
@@ -78,10 +78,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentCodeRow.value
 
-              result.key.value mustBe "Incident code"
-              result.value.value mustBe s"${value.toString}"
+              result.key.value mustEqual "Incident code"
+              result.value.value mustEqual s"${value.toString}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -92,7 +92,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentDescriptionRow mustBe None
+          helper.incidentDescriptionRow must not be defined
         }
       }
 
@@ -105,10 +105,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentDescriptionRow.value
 
-              result.key.value mustBe "Description"
-              result.value.value mustBe s"$value"
+              result.key.value mustEqual "Description"
+              result.value.value mustEqual s"$value"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -119,7 +119,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentQualifierRow mustBe None
+          helper.incidentQualifierRow must not be defined
         }
       }
 
@@ -132,10 +132,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentQualifierRow.value
 
-              result.key.value mustBe "Identifier type"
-              result.value.value mustBe s"${value.toString}"
+              result.key.value mustEqual "Identifier type"
+              result.value.value mustEqual s"${value.toString}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -145,7 +145,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when endorsement undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentDescriptionRow mustBe None
+          helper.incidentDescriptionRow must not be defined
         }
       }
 
@@ -163,10 +163,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentEndorsementDateRow.value
 
-              result.key.value mustBe "Endorsement date"
-              result.value.value mustBe s"${endorsement.date.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter)}"
+              result.key.value mustEqual "Endorsement date"
+              result.value.value mustEqual s"${endorsement.date.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter)}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -176,7 +176,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when endorsement undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentEndorsementAuthorityRow mustBe None
+          helper.incidentEndorsementAuthorityRow must not be defined
         }
       }
 
@@ -194,10 +194,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentEndorsementAuthorityRow.value
 
-              result.key.value mustBe "Authority"
-              result.value.value mustBe s"${endorsement.authority}"
+              result.key.value mustEqual "Authority"
+              result.value.value mustEqual s"${endorsement.authority}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -207,7 +207,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when endorsement undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentEndorsementPlaceRow mustBe None
+          helper.incidentEndorsementPlaceRow must not be defined
         }
       }
 
@@ -225,10 +225,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentEndorsementPlaceRow.value
 
-              result.key.value mustBe "Location"
-              result.value.value mustBe s"${endorsement.place}"
+              result.key.value mustEqual "Location"
+              result.value.value mustEqual s"${endorsement.place}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -239,7 +239,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentEndorsementCountryRow mustBe None
+          helper.incidentEndorsementCountryRow must not be defined
         }
       }
 
@@ -252,10 +252,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentEndorsementCountryRow.value
 
-              result.key.value mustBe "Country"
-              result.value.value mustBe s"${value.description}"
+              result.key.value mustEqual "Country"
+              result.value.value mustEqual s"${value.description}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -265,7 +265,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when location address undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentLocationAddressRow mustBe None
+          helper.incidentLocationAddressRow must not be defined
         }
       }
 
@@ -286,10 +286,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentLocationAddressRow.value
 
-              result.key.value mustBe "Address"
-              result.value.value mustBe s"${address.value.streetAndNumber}<br>${address.value.city}<br>${address.value.postcode.get}"
+              result.key.value mustEqual "Address"
+              result.value.value mustEqual s"${address.value.streetAndNumber}<br>${address.value.city}<br>${address.value.postcode.get}"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -299,7 +299,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when incident undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentCoordinatesRow mustBe None
+          helper.incidentCoordinatesRow must not be defined
         }
       }
 
@@ -318,10 +318,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentCoordinatesRow.value
 
-              result.key.value mustBe "Coordinates"
-              result.value.value mustBe s"$coordinate"
+              result.key.value mustEqual "Coordinates"
+              result.value.value mustEqual s"$coordinate"
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -330,7 +330,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when Container Indicator undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.containerIndicator mustBe None
+          helper.containerIndicator must not be defined
         }
       }
 
@@ -344,10 +344,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper      = new IncidentAnswersHelper(answers, index)
               val result      = helper.containerIndicator.value
 
-              result.key.value mustBe "Are you using any containers?"
+              result.key.value mustEqual "Are you using any containers?"
               result.value.value.contains(containerIndicator.toString)
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -357,7 +357,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when incident undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentUnLocodeRow mustBe None
+          helper.incidentUnLocodeRow must not be defined
         }
       }
 
@@ -376,10 +376,10 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentUnLocodeRow.value
 
-              result.key.value mustBe "UN/LOCODE"
-              result.value.value mustBe unLocode
+              result.key.value mustEqual "UN/LOCODE"
+              result.value.value mustEqual unLocode
               val action = result.actions
-              action mustBe None
+              action must not be defined
           }
         }
       }
@@ -390,7 +390,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
         "must return no children" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
           val result = helper.incidentTransportEquipments
-          result.children.size mustBe 0
+          result.children.size mustEqual 0
         }
       }
 
@@ -433,11 +433,11 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentTransportEquipments
-              result.sectionTitle.value mustBe "Transport equipment"
+              result.sectionTitle.value mustEqual "Transport equipment"
 
-              result.children.size mustBe 1
+              result.children.size mustEqual 1
 
-              result.children.head.sectionTitle.value mustBe "Transport equipment 1"
+              result.children.head.sectionTitle.value mustEqual "Transport equipment 1"
           }
         }
       }
@@ -447,7 +447,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return Nil" - {
         s"when replacementMeansOfTransport undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentReplacementMeansOfTransport mustBe Nil
+          helper.incidentReplacementMeansOfTransport mustEqual Nil
         }
       }
 
@@ -468,14 +468,14 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentReplacementMeansOfTransport
 
-              result.head.key.value mustBe "Identification type"
-              result.head.value.value mustBe identification.toString
+              result.head.key.value mustEqual "Identification type"
+              result.head.value.value mustEqual identification.toString
 
-              result(1).key.value mustBe "Identification number"
-              result(1).value.value mustBe transhipment.TransportMeans.identificationNumber
+              result(1).key.value mustEqual "Identification number"
+              result(1).value.value mustEqual transhipment.TransportMeans.identificationNumber
 
-              result(2).key.value mustBe "Registered country"
-              result(2).value.value mustBe country.description
+              result(2).key.value mustEqual "Registered country"
+              result(2).value.value mustEqual country.description
 
           }
         }

@@ -30,20 +30,20 @@ class ContainerIdentificationNumberViewModelSpec extends SpecBase with ScalaChec
       val viewModelProvider = new ContainerIdentificationNumberViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode)
 
-      result.title mustBe "What is the container identification number?"
-      result.heading mustBe "What is the container identification number?"
-      result.requiredError mustBe "Enter the container identification number"
-      result.paragraph mustBe None
+      result.title mustEqual "What is the container identification number?"
+      result.heading mustEqual "What is the container identification number?"
+      result.requiredError mustEqual "Enter the container identification number"
+      result.paragraph must not be defined
     }
 
     "when CheckMode" in {
       val viewModelProvider = new ContainerIdentificationNumberViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode)
 
-      result.title mustBe "What is the new container identification number?"
-      result.heading mustBe "What is the new container identification number?"
-      result.requiredError mustBe "Enter the new container identification number"
-      result.paragraph.get mustBe "This is a unique number used to identify the container."
+      result.title mustEqual "What is the new container identification number?"
+      result.heading mustEqual "What is the new container identification number?"
+      result.requiredError mustEqual "Enter the new container identification number"
+      result.paragraph.get mustEqual "This is a unique number used to identify the container."
     }
 
   }

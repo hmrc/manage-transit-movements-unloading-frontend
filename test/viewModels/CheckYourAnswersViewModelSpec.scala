@@ -40,7 +40,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
         val result            = viewModelProvider.apply(userAnswers)
 
         result.procedureSection.sectionTitle must not be defined
-        result.procedureSection.rows.size mustBe 1
+        result.procedureSection.rows.size mustEqual 1
       }
 
       "when switching from legacy to revised procedure" in {
@@ -54,7 +54,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
         val result            = viewModelProvider.apply(userAnswers)
 
         result.procedureSection.sectionTitle must not be defined
-        result.procedureSection.rows.size mustBe 4
+        result.procedureSection.rows.size mustEqual 4
       }
 
       "when revised procedure" in {
@@ -67,7 +67,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
         val result            = viewModelProvider.apply(userAnswers)
 
         result.procedureSection.sectionTitle must not be defined
-        result.procedureSection.rows.size mustBe 3
+        result.procedureSection.rows.size mustEqual 3
       }
     }
   }
@@ -97,13 +97,13 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
         val viewModelProvider = new CheckYourAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
-        result.sections.length mustBe 2
+        result.sections.length mustEqual 2
 
         result.sections.head.sectionTitle must not be defined
-        result.sections.head.rows.size mustBe 4
+        result.sections.head.rows.size mustEqual 4
 
-        result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-        result.sections(1).rows.size mustBe 5
+        result.sections(1).sectionTitle.value mustEqual "Transit movement and unloading permission discrepancies"
+        result.sections(1).rows.size mustEqual 5
       }
 
       "when revised procedure" - {
@@ -127,13 +127,13 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.sections.length mustBe 2
+          result.sections.length mustEqual 2
 
           result.sections.head.sectionTitle must not be defined
-          result.sections.head.rows.size mustBe 2
+          result.sections.head.rows.size mustEqual 2
 
-          result.sections(1).sectionTitle.value mustBe "Transit movement and unloading permission discrepancies"
-          result.sections(1).rows.size mustBe 4
+          result.sections(1).sectionTitle.value mustEqual "Transit movement and unloading permission discrepancies"
+          result.sections(1).rows.size mustEqual 4
         }
       }
     }
@@ -152,7 +152,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe false
+          result.showDiscrepanciesLink mustEqual false
         }
       }
 
@@ -167,7 +167,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe true
+          result.showDiscrepanciesLink mustEqual true
         }
       }
 
@@ -181,7 +181,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe true
+          result.showDiscrepanciesLink mustEqual true
         }
       }
 
@@ -195,7 +195,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe true
+          result.showDiscrepanciesLink mustEqual true
         }
       }
 
@@ -209,7 +209,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe true
+          result.showDiscrepanciesLink mustEqual true
         }
       }
 
@@ -224,7 +224,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe false
+          result.showDiscrepanciesLink mustEqual false
         }
       }
 
@@ -239,7 +239,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe true
+          result.showDiscrepanciesLink mustEqual true
         }
       }
     }
@@ -257,7 +257,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new CheckYourAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
 
-          result.showDiscrepanciesLink mustBe false
+          result.showDiscrepanciesLink mustEqual false
         }
       }
 
@@ -275,7 +275,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
             val viewModelProvider = new CheckYourAnswersViewModelProvider()
             val result            = viewModelProvider.apply(userAnswers)
 
-            result.showDiscrepanciesLink mustBe true
+            result.showDiscrepanciesLink mustEqual true
           }
         }
       }

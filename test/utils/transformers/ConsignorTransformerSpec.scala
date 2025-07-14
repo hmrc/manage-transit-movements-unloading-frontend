@@ -66,7 +66,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
               val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
 
-              result.getValue(CountryPage) mustBe country
+              result.getValue(CountryPage) mustEqual country
           }
         }
 
@@ -110,9 +110,9 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
             val result = transformer.transform(Some(input), hcIndex).apply(emptyUserAnswers).futureValue
 
-            result.get(ConsignorIdentifierPage(hcIndex)) mustBe consignor.identificationNumber
-            result.get(ConsignorNamePage(hcIndex)) mustBe consignor.name
-            result.get(ConsignorAddressPage(hcIndex)) mustBe Some(DynamicAddress(address.streetAndNumber, address.city, address.postcode))
+            result.get(ConsignorIdentifierPage(hcIndex)) mustEqual consignor.identificationNumber
+            result.get(ConsignorNamePage(hcIndex)) mustEqual consignor.name
+            result.get(ConsignorAddressPage(hcIndex)).value mustEqual DynamicAddress(address.streetAndNumber, address.city, address.postcode)
         }
       }
 

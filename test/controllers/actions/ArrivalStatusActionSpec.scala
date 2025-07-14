@@ -64,7 +64,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with Gene
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
     }
   }
 }
