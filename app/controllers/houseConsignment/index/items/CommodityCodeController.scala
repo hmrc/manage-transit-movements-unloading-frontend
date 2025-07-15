@@ -70,8 +70,8 @@ class CommodityCodeController @Inject() (
         val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
         val isXI      = request.userAnswers.ie043Data.hasXIOfficeOfDestination
 
-        form(viewModel)
-          .bindFromRequest()
+        val boundForm = form(viewModel).bindFromRequest()
+        boundForm
           .fold(
             formWithErrors =>
               Future.successful(
@@ -88,7 +88,7 @@ class CommodityCodeController @Inject() (
                     Redirect(navigator.nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
                   }
                 case false =>
-                  val formWithErrors = form(viewModel).withError(FormError("value", viewModel.invalidError))
+                  val formWithErrors = boundForm.withError(FormError("value", viewModel.invalidError))
                   Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, isXI, viewModel)))
               }
           )

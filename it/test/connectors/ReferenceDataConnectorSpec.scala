@@ -553,7 +553,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       "when phase 5" - {
 
-        val url = s"/$baseUrl/lists/CUSCode?data.code=$code"
+        val url = s"/$baseUrl/lists/HScode?data.code=$code"
 
         val json: String =
           """

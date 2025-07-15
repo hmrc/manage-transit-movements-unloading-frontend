@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.CommodityCodePage
+import play.api.data.FormError
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -147,13 +148,17 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val unknownAnswer = "123456"
 
-      val request = FakeRequest(POST, commodityCodeControllerRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val request   = FakeRequest(POST, commodityCodeControllerRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val boundForm = form.bind(Map("value" -> unknownAnswer)).withError(FormError("value", viewModel.invalidError))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) must include(viewModel.invalidError)
+      val view = injector.instanceOf[CommodityCodeView]
+
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, isXI = false, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
