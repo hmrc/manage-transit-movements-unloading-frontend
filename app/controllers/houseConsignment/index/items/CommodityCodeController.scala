@@ -16,15 +16,16 @@
 
 package controllers.houseConsignment.index.items
 
-import controllers.actions._
+import controllers.actions.*
 import forms.CommodityCodeFormProvider
 import models.{ArrivalId, Index, Mode, RichCC043CType}
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.CommodityCodePage
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.CommodityCodeViewModel
 import viewModels.houseConsignment.index.items.CommodityCodeViewModel.CommodityCodeViewModelProvider
@@ -41,7 +42,8 @@ class CommodityCodeController @Inject() (
   navigatorProvider: HouseConsignmentItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: CommodityCodeView,
-  viewModelProvider: CommodityCodeViewModelProvider
+  viewModelProvider: CommodityCodeViewModelProvider,
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -76,12 +78,18 @@ class CommodityCodeController @Inject() (
                 BadRequest(view(formWithErrors, request.userAnswers.mrn, isXI, viewModel))
               ),
             value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(CommodityCodePage(houseConsignmentIndex, itemIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield {
-                val navigator = navigatorProvider.apply(houseConsignmentMode)
-                Redirect(navigator.nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
+              referenceDataService.doesHSCodeExist(value).flatMap {
+                case true =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(CommodityCodePage(houseConsignmentIndex, itemIndex), value))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield {
+                    val navigator = navigatorProvider.apply(houseConsignmentMode)
+                    Redirect(navigator.nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
+                  }
+                case false =>
+                  val formWithErrors = form(viewModel).withError(FormError("value", viewModel.invalidError))
+                  Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, isXI, viewModel)))
               }
           )
     }

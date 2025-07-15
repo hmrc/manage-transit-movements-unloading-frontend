@@ -35,6 +35,7 @@ class CommodityCodeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks 
       result.title mustEqual "What is the commodity code for item 2 in house consignment 1?"
       result.heading mustEqual "What is the commodity code for item 2 in house consignment 1?"
       result.requiredError mustEqual "Enter the commodity code of item 2 in house consignment 1"
+      result.invalidError mustEqual "houseConsignment.commodityCode.error.not.exists"
     }
 
     "when Check mode" in {
@@ -45,6 +46,7 @@ class CommodityCodeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks 
       result.title mustEqual "What is the new commodity code for item 2 in house consignment 1?"
       result.heading mustEqual "What is the new commodity code for item 2 in house consignment 1?"
       result.requiredError mustEqual "Enter the new commodity code of item 2 in house consignment 1"
+      result.invalidError mustEqual "houseConsignment.commodityCode.error.not.exists"
     }
   }
 }

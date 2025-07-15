@@ -17,9 +17,9 @@
 package services
 
 import connectors.ReferenceDataConnector
+import models.SelectableList
 import models.reference.*
 import models.reference.TransportMode.InlandMode
-import models.SelectableList
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -62,6 +62,11 @@ class ReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConne
   def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
       .getCUSCode(cusCode)
+      .map(_.isDefined)
+
+  def doesHSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
+      .getHSCode(cusCode)
       .map(_.isDefined)
 
   def getCustomsOffice(code: String)(implicit hc: HeaderCarrier): Future[CustomsOffice] =

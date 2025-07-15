@@ -775,25 +775,17 @@ houseConsignment.index.item.packageType.CheckMode.error.required = Enter the new
 houseConsignment.index.item.packageType.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
 houseConsignment.index.item.packageType.placeholder = Select a package type
 
-commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
-commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
-commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
-commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
-commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
-commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
-commodityCode.error.length = The commodity code must be 6 characters long
-
-
 houseConsignment.commodityCode.CheckMode.title = What is the new commodity code for item {1} in house consignment {0}?
 houseConsignment.commodityCode.NormalMode.title = What is the commodity code for item {1} in house consignment {0}?
 houseConsignment.commodityCode.CheckMode.heading = What is the new commodity code for item {1} in house consignment {0}?
 houseConsignment.commodityCode.NormalMode.heading = What is the commodity code for item {1} in house consignment {0}?
 houseConsignment.commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
-houseConsignment.commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
+houseConsignment.commodityCode.hint = This is 6 numbers long.
 houseConsignment.commodityCode.CheckMode.error.required = Enter the new commodity code of item {1} in house consignment {0}
 houseConsignment.commodityCode.NormalMode.error.required = Enter the commodity code of item {1} in house consignment {0}
-houseConsignment.commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
-houseConsignment.commodityCode.error.length = The commodity code must be 6 characters long
+houseConsignment.commodityCode.error.invalid = The commodity code must only include numbers 0 to 9
+houseConsignment.commodityCode.error.length = The commodity code must be 6 numbers long
+houseConsignment.commodityCode.error.not.exists = Enter a valid commodity code
 
 houseConsignment.removeCommodityCodeYesNo.title = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
 houseConsignment.removeCommodityCodeYesNo.heading = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?

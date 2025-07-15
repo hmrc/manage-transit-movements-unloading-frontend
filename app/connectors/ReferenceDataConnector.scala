@@ -105,6 +105,13 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getOrElseUpdate[CUSCode](url)
   }
 
+  def getHSCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[HSCode]] = {
+    implicit val reads: Reads[HSCode] = HSCode.reads(config)
+    val queryParameters               = HSCode.queryParams(code)(config)
+    val url                           = url"${config.referenceDataUrl}/lists/HScode?$queryParameters"
+    getOrElseUpdate[HSCode](url)
+  }
+
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CustomsOffice]] = {
     val queryParameters = Seq("data.id" -> code)
     val url             = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"

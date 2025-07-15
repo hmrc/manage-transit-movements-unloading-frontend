@@ -509,16 +509,17 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceTypeItemViewModel(heading,
-                                                 title,
-                                                 requiredError,
-                                                 ArrivalId(arrivalId),
-                                                 NormalMode,
-                                                 NormalMode,
-                                                 NormalMode,
-                                                 Index(0),
-                                                 Index(0),
-                                                 Index(0)
+    } yield AdditionalReferenceTypeItemViewModel(
+      heading,
+      title,
+      requiredError,
+      ArrivalId(arrivalId),
+      NormalMode,
+      NormalMode,
+      NormalMode,
+      Index(0),
+      Index(0),
+      Index(0)
     )
   }
 
@@ -528,16 +529,17 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceNumberViewModel(heading,
-                                               title,
-                                               requiredError,
-                                               ArrivalId(arrivalId),
-                                               NormalMode,
-                                               NormalMode,
-                                               NormalMode,
-                                               Index(0),
-                                               Index(0),
-                                               Index(0)
+    } yield AdditionalReferenceNumberViewModel(
+      heading,
+      title,
+      requiredError,
+      ArrivalId(arrivalId),
+      NormalMode,
+      NormalMode,
+      NormalMode,
+      Index(0),
+      Index(0),
+      Index(0)
     )
   }
 
@@ -692,7 +694,8 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- arbitrary[ArrivalId]
-    } yield CommodityCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0))
+      invalidError  <- nonEmptyString
+    } yield CommodityCodeViewModel(heading, title, requiredError, arrivalId, NormalMode, NormalMode, Index(0), Index(0), invalidError)
   }
 
   implicit lazy val arbitraryConsignmentUniqueReferenceNumberViewModel: Arbitrary[UniqueConsignmentReferenceViewModel] = Arbitrary {
