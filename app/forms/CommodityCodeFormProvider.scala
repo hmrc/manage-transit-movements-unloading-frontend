@@ -31,8 +31,8 @@ class CommodityCodeFormProvider @Inject() extends Mappings {
       "value" -> text(requiredError)
         .verifying(
           StopOnFirstFail[String](
-            exactLength(UnloadingRemarksRequest.commodityCodeLength, s"$prefix.error.length"),
-            regexp(numericRegex, s"$prefix.error.invalid", Seq.empty)
+            regexp(numericRegex, s"$prefix.error.invalid"),
+            exactLength(UnloadingRemarksRequest.commodityCodeLength, s"$prefix.error.length")
           )
         )
     )

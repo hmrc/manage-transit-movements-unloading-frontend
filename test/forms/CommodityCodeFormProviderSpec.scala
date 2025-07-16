@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest.commodityCodeLength
+import models.messages.UnloadingRemarksRequest.{commodityCodeLength, numericRegex}
 import org.scalacheck.Gen
 import play.api.data.{Field, Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -54,7 +54,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind strings that do not match regex" in {
 
-      val expectedError          = FormError(fieldName, invalidKey)
+      val expectedError          = FormError(fieldName, invalidKey, Seq(numericRegex.regex))
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{6}")
 
       forAll(generator) {
@@ -62,6 +62,13 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors must contain(expectedError)
       }
+    }
+
+    "must result in 'invalid characters' error when input is incorrect length and has invalid characters" in {
+      val result: Field = form.bind(Map(fieldName -> "abcdefg")).apply(fieldName)
+      result.errors mustEqual Seq(
+        FormError(fieldName, invalidKey, Seq(numericRegex.regex))
+      )
     }
   }
 }
