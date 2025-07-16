@@ -69,22 +69,17 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
     actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
-        form(viewModel)
-          .bindFromRequest()
+        val boundForm = form(viewModel).bindFromRequest()
+        boundForm
           .fold(
-            formWithErrors =>
-              Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))
-              ),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))),
             value =>
               referenceDataService.doesCUSCodeExist(value).flatMap {
-                case true => redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+                case true =>
+                  redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
                 case false =>
-                  val formWithErrors =
-                    form(viewModel).withError(FormError("value", s"$prefix.error.not.exists"))
-                  Future.successful(
-                    BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))
-                  )
+                  val formWithErrors = boundForm.withError(FormError("value", s"$prefix.error.not.exists"))
+                  Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel)))
               }
           )
     }

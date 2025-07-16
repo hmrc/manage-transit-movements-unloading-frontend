@@ -119,6 +119,33 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
 
+    "HS codes" - {
+
+      val code = HSCode("010121")
+
+      "doesHSCodeExist should" - {
+        "return true when cusCode exists" in {
+
+          when(mockConnector.getHSCode(any())(any(), any()))
+            .thenReturn(Future.successful(Right(code)))
+
+          service.doesHSCodeExist(code.code).futureValue mustEqual true
+
+          verify(mockConnector).getHSCode(eqTo(code.code))(any(), any())
+        }
+
+        "return false when cusCode does not exist" in {
+
+          when(mockConnector.getHSCode(any())(any(), any()))
+            .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
+
+          service.doesHSCodeExist(code.code).futureValue mustEqual false
+
+          verify(mockConnector).getHSCode(eqTo(code.code))(any(), any())
+        }
+      }
+    }
+
     "AdditionalReferences" - {
 
       val additionalReference1 = AdditionalReferenceType(

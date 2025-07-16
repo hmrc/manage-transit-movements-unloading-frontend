@@ -56,7 +56,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBas
 
   behave like pageWithHeading(viewModel.heading)
 
-  behave like pageWithHint("This will be 6 characters long and include both letters and numbers, for example 0G23AB.")
+  behave like pageWithHint("This is 6 numbers long.")
 
   behave like pageWithInputText()
 

@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import models.messages.UnloadingRemarksRequest
-import models.messages.UnloadingRemarksRequest.alphaNumericRegex
+import models.messages.UnloadingRemarksRequest.numericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -31,8 +31,8 @@ class CommodityCodeFormProvider @Inject() extends Mappings {
       "value" -> text(requiredError)
         .verifying(
           StopOnFirstFail[String](
-            exactLength(UnloadingRemarksRequest.commodityCodeLength, s"$prefix.error.length"),
-            regexp(alphaNumericRegex.r, s"$prefix.error.invalid", Seq.empty)
+            regexp(numericRegex, s"$prefix.error.invalid"),
+            exactLength(UnloadingRemarksRequest.commodityCodeLength, s"$prefix.error.length")
           )
         )
     )

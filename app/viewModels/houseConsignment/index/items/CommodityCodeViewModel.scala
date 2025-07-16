@@ -32,7 +32,8 @@ case class CommodityCodeViewModel(
   houseConsignmentMode: Mode,
   itemMode: Mode,
   houseConsignmentIndex: Index,
-  itemIndex: Index
+  itemIndex: Index,
+  invalidError: String
 ) {
 
   def onSubmit(): Call = routes.CommodityCodeController.onSubmit(
@@ -65,7 +66,8 @@ object CommodityCodeViewModel {
         houseConsignmentMode,
         itemMode,
         houseConsignmentIndex,
-        itemIndex
+        itemIndex,
+        s"$prefix.error.not.exists"
       )
   }
 }

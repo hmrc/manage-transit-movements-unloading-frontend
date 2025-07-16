@@ -23,9 +23,10 @@ import models.NormalMode
 import navigation.FakeHouseConsignmentItemNavigatorProviderProvider
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
+import play.api.data.FormError
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -41,8 +42,10 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
   private val viewModel = arbitrary[CustomsUnionAndStatisticsCodeViewModel].sample.value
 
+  private val prefix = "houseConsignment.item.customsUnionAndStatisticsCode"
+
   private val formProvider = new CUSCodeFormProvider()
-  private val form         = formProvider("houseConsignment.item.customsUnionAndStatisticsCode", viewModel.requiredError)
+  private val form         = formProvider(prefix, viewModel.requiredError)
 
   private val houseConsignmentMode = NormalMode
   private val itemMode             = NormalMode
@@ -65,8 +68,13 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
         bind(classOf[CustomsUnionAndStatisticsCodeViewModelProvider]).toInstance(mockViewModelProvider)
       )
 
+  private val validAnswer = "0010001-6"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
+
+    reset(mockViewModelProvider)
+    reset(mockReferenceDataService)
 
     when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
       .thenReturn(viewModel)
@@ -92,14 +100,14 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), "validCode")
+      val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, customsUnionAndStatisticsCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "validCode"))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
 
@@ -117,7 +125,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       when(mockSessionRepository.set(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "0010007-2"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -128,12 +136,35 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      when(mockReferenceDataService.doesCUSCodeExist(anyString())(any())).thenReturn(Future.successful(true))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val invalidAnswer = ""
 
       val request    = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, viewModel)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when unknown data is submitted" in {
+
+      when(mockReferenceDataService.doesCUSCodeExist(anyString())(any())).thenReturn(Future.successful(false))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val unknownAnswer = "1234567-8"
+
+      val request    = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val filledForm = form.bind(Map("value" -> unknownAnswer)).withError(FormError("value", s"$prefix.error.not.exists"))
 
       val result = route(app, request).value
 
@@ -163,7 +194,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "validCode"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
