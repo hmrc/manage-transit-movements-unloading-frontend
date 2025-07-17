@@ -434,6 +434,59 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           }
         }
       }
+
+      "when phase 6" - {
+        val url = s"/$baseUrl/lists/CustomsOffices?referenceNumbers=$code"
+
+        val customsOfficeResponseJson: String =
+          """
+            |[
+            |  {
+            |    "referenceNumber":"ID1",
+            |    "customsOfficeLsd": {
+            |      "languageCode": "EN",
+            |      "customsOfficeUsualName": "NAME001"
+            |    },
+            |    "countryCode":"GB",
+            |    "phoneNumber":"004412323232345"
+            |  }
+            |]
+            |""".stripMargin
+
+        "should handle a 200 response" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              server.stubFor(
+                get(urlEqualTo(url))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+                  .willReturn(okJson(customsOfficeResponseJson))
+              )
+
+              val expectedResult = CustomsOffice("ID1", "NAME001", "GB", Some("004412323232345"))
+
+              connector.getCustomsOffice(code).futureValue.value mustEqual expectedResult
+              server.resetMappings()
+              connector.getCustomsOffice(code).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "should throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getCustomsOffice(code))
+          }
+        }
+
+        "should handle client and server errors" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url, connector.getCustomsOffice(code))
+          }
+        }
+      }
     }
 
     "getCUSCode" - {
