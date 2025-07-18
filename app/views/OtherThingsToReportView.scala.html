@@ -24,14 +24,12 @@
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
-    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button,
     inputCharacterCount: InputCharacterCount
 )
 
-@(form: Form[_],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode, viewModel: OtherThingsToReportViewModel)(implicit request: Request[?], messages: Messages)
+@(form: Form[?],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode, viewModel: OtherThingsToReportViewModel)(implicit request: Request[?], messages: Messages)
 
 @html(value: AdditionalHtml) = {
     <p class="govuk-body">@value.paragraph1</p>

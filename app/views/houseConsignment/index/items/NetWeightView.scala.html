@@ -30,7 +30,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, viewModel: NetWeightViewModel)(implicit request: Request[?], messages: Messages)
+@(form: Form[?], mrn: MovementReferenceNumber, viewModel: NetWeightViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
