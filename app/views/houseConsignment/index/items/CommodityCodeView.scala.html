@@ -28,7 +28,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, isXI: Boolean, viewModel: CommodityCodeViewModel)(implicit request: Request[?], messages: Messages)
+@(form: Form[?], mrn: MovementReferenceNumber, isXI: Boolean, viewModel: CommodityCodeViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

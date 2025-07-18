@@ -27,7 +27,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[?], messages: Messages)
+@(form: Form[?], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("grossWeight.title"),
