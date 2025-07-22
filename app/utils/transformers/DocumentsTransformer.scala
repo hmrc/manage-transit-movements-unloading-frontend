@@ -37,35 +37,29 @@ class DocumentsTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.documents.*
     import pages.sections.documents.DocumentSection
-    userAnswers =>
-      val documents = Documents(
-        supportingDocuments = supportingDocuments.map(SupportingDocument(_)),
-        transportDocuments = transportDocuments.map(TransportDocument(_)),
-        previousDocuments = previousDocuments.map(PreviousDocument(_))
-      )
 
-      documents.documents.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (value, i)) =>
-          val documentIndex = Index(i)
-          acc.flatMap {
-            value match {
-              case SupportingDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation) =>
-                setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
-                  set(TypePage(documentIndex), typeValue, referenceDataService.getSupportingDocument) andThen
-                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
-                  set(AdditionalInformationPage(documentIndex), complementOfInformation)
-              case TransportDocument(sequenceNumber, typeValue, referenceNumber) =>
-                setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
-                  set(TypePage(documentIndex), typeValue, referenceDataService.getTransportDocument) andThen
-                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
-              case PreviousDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation) =>
-                setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
-                  set(TypePage(documentIndex), typeValue, referenceDataService.getPreviousDocument) andThen
-                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
-                  set(AdditionalInformationPage(documentIndex), complementOfInformation)
-            }
-          }
-      }
+    val documents = Documents(
+      supportingDocuments = supportingDocuments.map(SupportingDocument(_)),
+      transportDocuments = transportDocuments.map(TransportDocument(_)),
+      previousDocuments = previousDocuments.map(PreviousDocument(_))
+    )
+
+    documents.documents.mapWithSets {
+      case (SupportingDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation), documentIndex) =>
+        setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+          set(TypePage(documentIndex), typeValue, referenceDataService.getSupportingDocument) andThen
+          set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
+          set(AdditionalInformationPage(documentIndex), complementOfInformation)
+      case (TransportDocument(sequenceNumber, typeValue, referenceNumber), documentIndex) =>
+        setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+          set(TypePage(documentIndex), typeValue, referenceDataService.getTransportDocument) andThen
+          set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
+      case (PreviousDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation), documentIndex) =>
+        setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+          set(TypePage(documentIndex), typeValue, referenceDataService.getPreviousDocument) andThen
+          set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
+          set(AdditionalInformationPage(documentIndex), complementOfInformation)
+    }
   }
 
   def transform(
@@ -77,35 +71,29 @@ class DocumentsTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.document.*
     import pages.sections.houseConsignment.index.items.documents.DocumentSection
-    userAnswers =>
-      val documents = Documents(
-        supportingDocuments = supportingDocuments.map(SupportingDocument(_)),
-        transportDocuments = transportDocuments.map(TransportDocument(_)),
-        previousDocuments = previousDocuments.map(PreviousDocument(_))
-      )
 
-      documents.documents.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (value, i)) =>
-          val documentIndex = Index(i)
-          acc.flatMap {
-            value match {
-              case SupportingDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation) =>
-                setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
-                  set(TypePage(hcIndex, itemIndex, documentIndex), typeValue, referenceDataService.getSupportingDocument) andThen
-                  set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
-                  set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation)
-              case TransportDocument(sequenceNumber, typeValue, referenceNumber) =>
-                setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
-                  set(TypePage(hcIndex, itemIndex, documentIndex), typeValue, referenceDataService.getTransportDocument) andThen
-                  set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber)
-              case PreviousDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation) =>
-                setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
-                  set(TypePage(hcIndex, itemIndex, documentIndex), typeValue, referenceDataService.getPreviousDocument) andThen
-                  set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
-                  set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation)
-            }
-          }
-      }
+    val documents = Documents(
+      supportingDocuments = supportingDocuments.map(SupportingDocument(_)),
+      transportDocuments = transportDocuments.map(TransportDocument(_)),
+      previousDocuments = previousDocuments.map(PreviousDocument(_))
+    )
+
+    documents.documents.mapWithSets {
+      case (SupportingDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation), documentIndex) =>
+        setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+          set(TypePage(hcIndex, itemIndex, documentIndex), typeValue, referenceDataService.getSupportingDocument) andThen
+          set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+          set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation)
+      case (TransportDocument(sequenceNumber, typeValue, referenceNumber), documentIndex) =>
+        setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+          set(TypePage(hcIndex, itemIndex, documentIndex), typeValue, referenceDataService.getTransportDocument) andThen
+          set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber)
+      case (PreviousDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation), documentIndex) =>
+        setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+          set(TypePage(hcIndex, itemIndex, documentIndex), typeValue, referenceDataService.getPreviousDocument) andThen
+          set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+          set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation)
+    }
   }
 
   def transform(
@@ -116,34 +104,28 @@ class DocumentsTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.documents.*
     import pages.sections.houseConsignment.index.documents.DocumentSection
-    userAnswers =>
-      val documents = Documents(
-        supportingDocuments = supportingDocuments.map(SupportingDocument(_)),
-        transportDocuments = transportDocuments.map(TransportDocument(_)),
-        previousDocuments = previousDocuments.map(PreviousDocument(_))
-      )
 
-      documents.documents.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (value, i)) =>
-          val documentIndex = Index(i)
-          acc.flatMap {
-            value match {
-              case SupportingDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation) =>
-                setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
-                  set(TypePage(hcIndex, documentIndex), typeValue, referenceDataService.getSupportingDocument) andThen
-                  set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
-                  set(AdditionalInformationPage(hcIndex, documentIndex), complementOfInformation)
-              case TransportDocument(sequenceNumber, typeValue, referenceNumber) =>
-                setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
-                  set(TypePage(hcIndex, documentIndex), typeValue, referenceDataService.getTransportDocument) andThen
-                  set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber)
-              case PreviousDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation) =>
-                setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
-                  set(TypePage(hcIndex, documentIndex), typeValue, referenceDataService.getPreviousDocumentExport) andThen
-                  set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
-                  set(AdditionalInformationPage(hcIndex, documentIndex), complementOfInformation)
-            }
-          }
-      }
+    val documents = Documents(
+      supportingDocuments = supportingDocuments.map(SupportingDocument(_)),
+      transportDocuments = transportDocuments.map(TransportDocument(_)),
+      previousDocuments = previousDocuments.map(PreviousDocument(_))
+    )
+
+    documents.documents.mapWithSets {
+      case (SupportingDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation), documentIndex) =>
+        setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
+          set(TypePage(hcIndex, documentIndex), typeValue, referenceDataService.getSupportingDocument) andThen
+          set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
+          set(AdditionalInformationPage(hcIndex, documentIndex), complementOfInformation)
+      case (TransportDocument(sequenceNumber, typeValue, referenceNumber), documentIndex) =>
+        setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
+          set(TypePage(hcIndex, documentIndex), typeValue, referenceDataService.getTransportDocument) andThen
+          set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber)
+      case (PreviousDocument(sequenceNumber, typeValue, referenceNumber, complementOfInformation), documentIndex) =>
+        setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
+          set(TypePage(hcIndex, documentIndex), typeValue, referenceDataService.getPreviousDocumentExport) andThen
+          set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
+          set(AdditionalInformationPage(hcIndex, documentIndex), complementOfInformation)
+    }
   }
 }

@@ -34,17 +34,14 @@ class DepartureTransportMeansTransformer @Inject() (
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.departureMeansOfTransport.*
     import pages.sections.TransportMeansSection
-    userAnswers =>
-      departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (value, i)) =>
-          val index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(TransportMeansSection(index), value.sequenceNumber) andThen
-              set(TransportMeansIdentificationPage(index), value.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
-              set(VehicleIdentificationNumberPage(index), value.identificationNumber) andThen
-              set(CountryPage(index), value.nationality, referenceDataService.getCountry)
-          }
-      }
+
+    departureTransportMeans.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(TransportMeansSection(index), value.sequenceNumber) andThen
+          set(TransportMeansIdentificationPage(index), value.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
+          set(VehicleIdentificationNumberPage(index), value.identificationNumber) andThen
+          set(CountryPage(index), value.nationality, referenceDataService.getCountry)
+    }
   }
 
   def transform(
@@ -53,20 +50,17 @@ class DepartureTransportMeansTransformer @Inject() (
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.departureMeansOfTransport.*
     import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
-    userAnswers =>
-      departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (value, i)) =>
-          val index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(TransportMeansSection(hcIndex, index), value.sequenceNumber) andThen
-              set(
-                TransportMeansIdentificationPage(hcIndex, index),
-                value.typeOfIdentification,
-                referenceDataService.getMeansOfTransportIdentificationType
-              ) andThen
-              set(VehicleIdentificationNumberPage(hcIndex, index), value.identificationNumber) andThen
-              set(CountryPage(hcIndex, index), value.nationality, referenceDataService.getCountry)
-          }
-      }
+
+    departureTransportMeans.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(TransportMeansSection(hcIndex, index), value.sequenceNumber) andThen
+          set(
+            TransportMeansIdentificationPage(hcIndex, index),
+            value.typeOfIdentification,
+            referenceDataService.getMeansOfTransportIdentificationType
+          ) andThen
+          set(VehicleIdentificationNumberPage(hcIndex, index), value.identificationNumber) andThen
+          set(CountryPage(hcIndex, index), value.nationality, referenceDataService.getCountry)
+    }
   }
 }

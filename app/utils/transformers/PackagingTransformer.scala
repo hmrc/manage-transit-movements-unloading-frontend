@@ -31,17 +31,16 @@ class PackagingTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(packages: Seq[PackagingType01], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      packages.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val packageIndex: Index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), value.sequenceNumber) andThen
-                set(PackageTypePage(hcIndex, itemIndex, packageIndex), value.typeOfPackages, referenceDataService.getPackageType) andThen
-                set(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), value.numberOfPackages) andThen
-                set(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), value.shippingMarks)
-            }
-        }
+  def transform(
+    packages: Seq[PackagingType01],
+    hcIndex: Index,
+    itemIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    packages.mapWithSets {
+      (value, packageIndex) =>
+        setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), value.sequenceNumber) andThen
+          set(PackageTypePage(hcIndex, itemIndex, packageIndex), value.typeOfPackages, referenceDataService.getPackageType) andThen
+          set(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), value.numberOfPackages) andThen
+          set(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), value.shippingMarks)
+    }
 }

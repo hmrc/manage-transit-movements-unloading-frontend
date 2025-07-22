@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.HouseConsignmentType04
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
 import pages.sections.HouseConsignmentSection
 import services.ReferenceDataService
@@ -38,38 +38,35 @@ class HouseConsignmentsTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(houseConsignments: Seq[HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      houseConsignments.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (houseConsignment, i)) =>
-            val hcIndex = Index(i)
-            acc.flatMap {
-              setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
-                set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
-                set(UniqueConsignmentReferencePage(hcIndex), houseConsignment.referenceNumberUCR) andThen
-                consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
-                consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
-                departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
-                documentsTransformer.transform(
-                  houseConsignment.SupportingDocument,
-                  houseConsignment.TransportDocument,
-                  houseConsignment.PreviousDocument,
-                  hcIndex
-                ) andThen
-                additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
-                additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
-                consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
-                set(
-                  SecurityIndicatorFromExportDeclarationPage(hcIndex),
-                  houseConsignment.securityIndicatorFromExportDeclaration,
-                  referenceDataService.getSecurityType
-                ) andThen
-                set(
-                  CountryOfDestinationPage(hcIndex),
-                  houseConsignment.countryOfDestination,
-                  referenceDataService.getCountry
-                )
-            }
-        }
+  def transform(
+    houseConsignments: Seq[HouseConsignmentType04]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    houseConsignments.mapWithSets {
+      (houseConsignment, hcIndex) =>
+        setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
+          set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
+          set(UniqueConsignmentReferencePage(hcIndex), houseConsignment.referenceNumberUCR) andThen
+          consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
+          consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
+          departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
+          documentsTransformer.transform(
+            houseConsignment.SupportingDocument,
+            houseConsignment.TransportDocument,
+            houseConsignment.PreviousDocument,
+            hcIndex
+          ) andThen
+          additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
+          additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
+          consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
+          set(
+            SecurityIndicatorFromExportDeclarationPage(hcIndex),
+            houseConsignment.securityIndicatorFromExportDeclaration,
+            referenceDataService.getSecurityType
+          ) andThen
+          set(
+            CountryOfDestinationPage(hcIndex),
+            houseConsignment.countryOfDestination,
+            referenceDataService.getCountry
+          )
+    }
 }

@@ -34,5 +34,8 @@ class HolderOfTheTransitProcedureTransformer @Inject() (
   def transform(
     holderOfTheTransitProcedure: Option[HolderOfTheTransitProcedureType06]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    set(CountryPage, holderOfTheTransitProcedure.map(_.Address.country), referenceDataService.getCountry)
+    holderOfTheTransitProcedure.mapWithSets {
+      value =>
+        set(CountryPage, value.Address.country, referenceDataService.getCountry)
+    }
 }

@@ -37,29 +37,28 @@ class ConsignmentItemTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (consignmentItem, i)) =>
-          val itemIndex: Index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
-              set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
-              set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
-              set(UniqueConsignmentReferencePage(hcIndex, itemIndex), consignmentItem.referenceNumberUCR) andThen
-              set(CountryOfDestinationPage(hcIndex, itemIndex), consignmentItem.countryOfDestination, referenceDataService.getCountry) andThen
-              commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
-              packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
-              documentsTransformer.transform(
-                consignmentItem.SupportingDocument,
-                consignmentItem.TransportDocument,
-                consignmentItem.PreviousDocument,
-                hcIndex,
-                itemIndex
-              ) andThen
-              additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
-              consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
-              additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
-          }
-      }
+  def transform(
+    consignmentItems: Seq[ConsignmentItemType04],
+    hcIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    consignmentItems.mapWithSets {
+      (consignmentItem, itemIndex) =>
+        setSequenceNumber(ItemSection(hcIndex, itemIndex), consignmentItem.goodsItemNumber) andThen
+          set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
+          set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
+          set(UniqueConsignmentReferencePage(hcIndex, itemIndex), consignmentItem.referenceNumberUCR) andThen
+          set(CountryOfDestinationPage(hcIndex, itemIndex), consignmentItem.countryOfDestination, referenceDataService.getCountry) andThen
+          commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+          packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
+          documentsTransformer.transform(
+            consignmentItem.SupportingDocument,
+            consignmentItem.TransportDocument,
+            consignmentItem.PreviousDocument,
+            hcIndex,
+            itemIndex
+          ) andThen
+          additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
+          consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
+          additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
+    }
 }

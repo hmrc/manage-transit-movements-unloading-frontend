@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.TransportEquipmentType03
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentSection
 
@@ -30,16 +30,14 @@ class TransportEquipmentTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(transportEquipment: Seq[TransportEquipmentType03]): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (TransportEquipmentType03(sequenceNumber, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
-          val equipmentIndex: Index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(TransportEquipmentSection(equipmentIndex), sequenceNumber) andThen
-              set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
-              sealsTransformer.transform(seals, equipmentIndex) andThen
-              goodsReferencesTransformer.transform(goodsReferences, equipmentIndex)
-          }
-      }
+  def transform(
+    transportEquipment: Seq[TransportEquipmentType03]
+  ): UserAnswers => Future[UserAnswers] =
+    transportEquipment.mapWithSets {
+      (value, equipmentIndex) =>
+        setSequenceNumber(TransportEquipmentSection(equipmentIndex), value.sequenceNumber) andThen
+          set(ContainerIdentificationNumberPage(equipmentIndex), value.containerIdentificationNumber) andThen
+          sealsTransformer.transform(value.Seal, equipmentIndex) andThen
+          goodsReferencesTransformer.transform(value.GoodsReference, equipmentIndex)
+    }
 }

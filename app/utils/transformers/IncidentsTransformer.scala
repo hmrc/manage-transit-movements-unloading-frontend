@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.IncidentType03
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.sections.incidents.IncidentSection
 import services.ReferenceDataService
@@ -34,19 +34,16 @@ class IncidentsTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(incidents: Seq[IncidentType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      incidents.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val incidentIndex: Index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(IncidentSection(incidentIndex), value.sequenceNumber) andThen
-                set(IncidentCodePage(incidentIndex), value.code, referenceDataService.getIncidentType) andThen
-                set(IncidentTextPage(incidentIndex), value.text) andThen
-                incidentEndorsementTransformer.transform(value.Endorsement, incidentIndex) andThen
-                incidentLocationTransformer.transform(value.Location, incidentIndex) andThen
-                replacementMeansOfTransportTransformer.transform(value.Transhipment, incidentIndex)
-            }
-        }
+  def transform(
+    incidents: Seq[IncidentType03]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    incidents.mapWithSets {
+      (value, incidentIndex) =>
+        setSequenceNumber(IncidentSection(incidentIndex), value.sequenceNumber) andThen
+          set(IncidentCodePage(incidentIndex), value.code, referenceDataService.getIncidentType) andThen
+          set(IncidentTextPage(incidentIndex), value.text) andThen
+          incidentEndorsementTransformer.transform(value.Endorsement, incidentIndex) andThen
+          incidentLocationTransformer.transform(value.Location, incidentIndex) andThen
+          replacementMeansOfTransportTransformer.transform(value.Transhipment, incidentIndex)
+    }
 }

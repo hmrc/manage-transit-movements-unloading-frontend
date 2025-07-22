@@ -31,11 +31,9 @@ class ReplacementMeansOfTransportTransformer @Inject() (
     extends PageTransformer {
 
   def transform(transhipment: Option[TranshipmentType], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    transhipment match {
-      case Some(TranshipmentType(_, transportMeans)) =>
+    transhipment.mapWithSets {
+      case TranshipmentType(_, transportMeans) =>
         set(IdentificationPage(incidentIndex), transportMeans.typeOfIdentification, referenceDataService.getMeansOfTransportIdentificationType) andThen
           set(NationalityPage(incidentIndex), transportMeans.nationality, referenceDataService.getCountry)
-      case None =>
-        Future.successful
     }
 }

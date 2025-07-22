@@ -26,14 +26,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(seals: Seq[SealType01], equipmentIndex: Index): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      seals.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (SealType01(sequenceNumber, identifier), i)) =>
-          val sealIndex: Index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(SealSection(equipmentIndex, sealIndex), sequenceNumber) andThen
-              set(SealIdentificationNumberPage(equipmentIndex, sealIndex), identifier)
-          }
-      }
+  def transform(
+    seals: Seq[SealType01],
+    equipmentIndex: Index
+  ): UserAnswers => Future[UserAnswers] =
+    seals.mapWithSets {
+      (value, sealIndex) =>
+        setSequenceNumber(SealSection(equipmentIndex, sealIndex), value.sequenceNumber) andThen
+          set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value.identifier)
+    }
 }

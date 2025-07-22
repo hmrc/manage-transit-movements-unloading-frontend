@@ -31,10 +31,8 @@ class IncidentEndorsementTransformer @Inject() (
     extends PageTransformer {
 
   def transform(endorsement: Option[EndorsementType02], incidentIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    endorsement match {
-      case Some(EndorsementType02(date, authority, place, country)) =>
+    endorsement.mapWithSets {
+      case EndorsementType02(date, authority, place, country) =>
         set(EndorsementCountryPage(incidentIndex), country, referenceDataService.getCountry)
-      case None =>
-        Future.successful
     }
 }

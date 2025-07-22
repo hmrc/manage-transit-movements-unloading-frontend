@@ -31,23 +31,19 @@ class ConsignorTransformer @Inject() (
 
   def transform(consignor: Option[ConsignorType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.consignor.*
-    consignor match {
-      case Some(ConsignorType04(_, _, address)) =>
+    consignor.mapWithSets {
+      case ConsignorType04(_, _, address) =>
         set(CountryPage, address.map(_.country), referenceDataService.getCountry)
-      case None =>
-        Future.successful
     }
   }
 
   def transform(consignor: Option[ConsignorType05], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.{ConsignorIdentifierPage, ConsignorNamePage}
-    consignor match {
-      case Some(ConsignorType05(identificationNumber, name, address)) =>
+    consignor.mapWithSets {
+      case ConsignorType05(identificationNumber, name, address) =>
         transformAddress(address, hcIndex) andThen
           set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
           set(ConsignorNamePage(hcIndex), name)
-      case None =>
-        Future.successful
     }
   }
 
@@ -56,12 +52,10 @@ class ConsignorTransformer @Inject() (
   ): UserAnswers => Future[UserAnswers] = {
     import pages.ConsignorAddressPage
     import pages.houseConsignment.consignor.CountryPage
-    address match {
-      case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
+    address.mapWithSets {
+      case AddressType14(streetAndNumber, postcode, city, country) =>
         set(CountryPage(hcIndex), country, referenceDataService.getCountry) andThen
           set(ConsignorAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
-      case None =>
-        Future.successful
     }
   }
 }
