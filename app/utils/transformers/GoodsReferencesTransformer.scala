@@ -26,14 +26,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(goodsReferences: Seq[GoodsReferenceType01], equipmentIndex: Index): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      goodsReferences.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (GoodsReferenceType01(sequenceNumber, declarationGoodsItemNumber), i)) =>
-          val itemIndex: Index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(ItemSection(equipmentIndex, itemIndex), sequenceNumber) andThen
-              set(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
-          }
-      }
+  def transform(
+    goodsReferences: Seq[GoodsReferenceType01],
+    equipmentIndex: Index
+  ): UserAnswers => Future[UserAnswers] =
+    goodsReferences.mapWithSets {
+      (value, itemIndex) =>
+        setSequenceNumber(ItemSection(equipmentIndex, itemIndex), value.sequenceNumber) andThen
+          set(ItemPage(equipmentIndex, itemIndex), value.declarationGoodsItemNumber)
+    }
 }

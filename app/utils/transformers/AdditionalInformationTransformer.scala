@@ -35,7 +35,7 @@ class AdditionalInformationTransformer @Inject() (
     import pages.additionalInformation.*
     import pages.sections.additionalInformation.AdditionalInformationSection
 
-    additionalInformation.forEachDoSets {
+    additionalInformation.mapWithSets {
       (value, index) =>
         setSequenceNumber(AdditionalInformationSection(index), value.sequenceNumber) andThen
           set(AdditionalInformationCodePage(index), value.code, referenceDataService.getAdditionalInformationCode) andThen
@@ -50,7 +50,7 @@ class AdditionalInformationTransformer @Inject() (
     import pages.houseConsignment.index.additionalinformation.*
     import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
 
-    additionalInformation.forEachDoSets {
+    additionalInformation.mapWithSets {
       (value, index) =>
         setSequenceNumber(AdditionalInformationSection(hcIndex, index), value.sequenceNumber) andThen
           set(HouseConsignmentAdditionalInformationCodePage(hcIndex, index), value.code, referenceDataService.getAdditionalInformationCode) andThen
@@ -66,7 +66,7 @@ class AdditionalInformationTransformer @Inject() (
     import pages.houseConsignment.index.items.additionalinformation.*
     import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
 
-    additionalInformation.forEachDoSets {
+    additionalInformation.mapWithSets {
       (value, index) =>
         setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
           set(

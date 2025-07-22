@@ -26,14 +26,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DangerousGoodsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(dangerousGoods: Seq[DangerousGoodsType01], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      dangerousGoods.zipWithIndex.foldLeft(Future.successful(userAnswers)) {
-        case (acc, (DangerousGoodsType01(sequenceNumber, unNumber), i)) =>
-          val index = Index(i)
-          acc.flatMap {
-            setSequenceNumber(DangerousGoodsSection(hcIndex, itemIndex, index), sequenceNumber) andThen
-              set(DangerousGoodsPage(hcIndex, itemIndex, index), unNumber)
-          }
-      }
+  def transform(
+    dangerousGoods: Seq[DangerousGoodsType01],
+    hcIndex: Index,
+    itemIndex: Index
+  ): UserAnswers => Future[UserAnswers] =
+    dangerousGoods.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(DangerousGoodsSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
+          set(DangerousGoodsPage(hcIndex, itemIndex, index), value.UNNumber)
+    }
 }

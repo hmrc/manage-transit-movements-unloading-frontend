@@ -30,20 +30,16 @@ class ConsigneeTransformer @Inject() (
     extends PageTransformer {
 
   def transform(consignee: Option[ConsigneeType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    consignee match {
-      case Some(ConsigneeType05(_, _, address)) =>
+    consignee.mapWithSets {
+      case ConsigneeType05(_, _, address) =>
         transformAddress(address)
-      case _ =>
-        Future.successful
     }
 
   private def transformAddress(address: Option[AddressType14])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.consignee.CountryPage
-    address match {
-      case Some(AddressType14(_, _, _, country)) =>
+    address.mapWithSets {
+      case AddressType14(_, _, _, country) =>
         set(CountryPage, country, referenceDataService.getCountry)
-      case None =>
-        Future.successful
     }
   }
 
@@ -51,13 +47,11 @@ class ConsigneeTransformer @Inject() (
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = {
     import pages.{ConsigneeIdentifierPage, ConsigneeNamePage}
-    consignee match {
-      case Some(ConsigneeType05(identificationNumber, name, address)) =>
+    consignee.mapWithSets {
+      case ConsigneeType05(identificationNumber, name, address) =>
         set(ConsigneeIdentifierPage(hcIndex), identificationNumber) andThen
           set(ConsigneeNamePage(hcIndex), name) andThen
           transformAddress(address, hcIndex)
-      case None =>
-        Future.successful
     }
   }
 
@@ -65,12 +59,10 @@ class ConsigneeTransformer @Inject() (
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = {
     import pages.{ConsigneeAddressPage, ConsigneeCountryPage}
-    address match {
-      case Some(AddressType14(streetAndNumber, postcode, city, country)) =>
+    address.mapWithSets {
+      case AddressType14(streetAndNumber, postcode, city, country) =>
         set(ConsigneeCountryPage(hcIndex), country, referenceDataService.getCountry) andThen
           set(ConsigneeAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
-      case None =>
-        Future.successful
     }
   }
 
@@ -78,13 +70,11 @@ class ConsigneeTransformer @Inject() (
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.*
-    consignee match {
-      case Some(ConsigneeType01(identificationNumber, name, address)) =>
+    consignee.mapWithSets {
+      case ConsigneeType01(identificationNumber, name, address) =>
         set(ConsigneeIdentifierPage(hcIndex, itemIndex), identificationNumber) andThen
           set(ConsigneeNamePage(hcIndex, itemIndex), name) andThen
           transformAddress(address, hcIndex, itemIndex)
-      case None =>
-        Future.successful
     }
   }
 
@@ -92,11 +82,9 @@ class ConsigneeTransformer @Inject() (
     hc: HeaderCarrier
   ): UserAnswers => Future[UserAnswers] =
     import pages.houseConsignment.index.items.*
-    address match {
-      case Some(AddressType01(streetAndNumber, postcode, city, country)) =>
+    address.mapWithSets {
+      case AddressType01(streetAndNumber, postcode, city, country) =>
         set(ConsigneeCountryPage(hcIndex, itemIndex), country, referenceDataService.getCountry) andThen
           set(ConsigneeAddressPage(hcIndex, itemIndex), DynamicAddress(streetAndNumber, city, postcode))
-      case None =>
-        Future.successful
     }
 }

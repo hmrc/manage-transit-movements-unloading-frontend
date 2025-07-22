@@ -31,7 +31,9 @@ package object transformers {
 
   implicit class RichSeq[A](value: Seq[A]) {
 
-    def forEachDoSets(sets: (A, Index) => UserAnswers => Future[UserAnswers])(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+    def mapWithSets(
+      sets: (A, Index) => UserAnswers => Future[UserAnswers]
+    )(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
       userAnswers =>
         value.zipWithIndex
           .foldLeft(Future.successful(userAnswers)) {
@@ -40,5 +42,16 @@ package object transformers {
                 sets(value, Index(i))
               }
           }
+  }
+
+  implicit class RichOption[A](value: Option[A]) {
+
+    def mapWithSets(
+      sets: A => UserAnswers => Future[UserAnswers]
+    )(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+      value match {
+        case Some(a) => sets(a)
+        case None    => Future.successful
+      }
   }
 }

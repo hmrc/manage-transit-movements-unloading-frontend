@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.CountryOfRoutingOfConsignmentType02
-import models.{Index, UserAnswers}
+import models.UserAnswers
 import pages.countriesOfRouting.CountryOfRoutingPage
 import pages.sections.CountryOfRoutingSection
 import services.ReferenceDataService
@@ -31,15 +31,12 @@ class CountriesOfRoutingTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(countriesOfRouting: Seq[CountryOfRoutingOfConsignmentType02])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      countriesOfRouting.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index: Index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(CountryOfRoutingSection(index), value.sequenceNumber) andThen
-                set(CountryOfRoutingPage(index), value.country, referenceDataService.getCountry)
-            }
-        }
+  def transform(
+    countriesOfRouting: Seq[CountryOfRoutingOfConsignmentType02]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
+    countriesOfRouting.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(CountryOfRoutingSection(index), value.sequenceNumber) andThen
+          set(CountryOfRoutingPage(index), value.country, referenceDataService.getCountry)
+    }
 }

@@ -34,17 +34,13 @@ class AdditionalReferencesTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
     import pages.sections.additionalReference.AdditionalReferenceSection
-    userAnswers =>
-      additionalReferences.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(AdditionalReferenceSection(index), value.sequenceNumber) andThen
-                set(AdditionalReferenceTypePage(index), value.typeValue, referenceDataService.getAdditionalReference) andThen
-                set(AdditionalReferenceNumberPage(index), value.referenceNumber)
-            }
-        }
+
+    additionalReferences.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(AdditionalReferenceSection(index), value.sequenceNumber) andThen
+          set(AdditionalReferenceTypePage(index), value.typeValue, referenceDataService.getAdditionalReference) andThen
+          set(AdditionalReferenceNumberPage(index), value.referenceNumber)
+    }
   }
 
   def transform(
@@ -53,17 +49,13 @@ class AdditionalReferencesTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.additionalReference.*
     import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
-    userAnswers =>
-      additionalReferences.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(AdditionalReferenceSection(hcIndex, index), value.sequenceNumber) andThen
-                set(HouseConsignmentAdditionalReferenceTypePage(hcIndex, index), value.typeValue, referenceDataService.getAdditionalReference) andThen
-                set(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, index), value.referenceNumber)
-            }
-        }
+
+    additionalReferences.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(AdditionalReferenceSection(hcIndex, index), value.sequenceNumber) andThen
+          set(HouseConsignmentAdditionalReferenceTypePage(hcIndex, index), value.typeValue, referenceDataService.getAdditionalReference) andThen
+          set(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, index), value.referenceNumber)
+    }
   }
 
   def transform(
@@ -73,17 +65,13 @@ class AdditionalReferencesTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
     import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-    userAnswers =>
-      additionalReferences.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
-                set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), value.typeValue, referenceDataService.getAdditionalReference) andThen
-                set(AdditionalReferenceInCL234Page(hcIndex, itemIndex, index), value.typeValue, referenceDataService.isDocumentTypeExcise) andThen
-                set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), value.referenceNumber)
-            }
-        }
+
+    additionalReferences.mapWithSets {
+      (value, index) =>
+        setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
+          set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), value.typeValue, referenceDataService.getAdditionalReference) andThen
+          set(AdditionalReferenceInCL234Page(hcIndex, itemIndex, index), value.typeValue, referenceDataService.isDocumentTypeExcise) andThen
+          set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), value.referenceNumber)
+    }
   }
 }

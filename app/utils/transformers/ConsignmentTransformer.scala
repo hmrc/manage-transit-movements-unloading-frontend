@@ -43,8 +43,8 @@ class ConsignmentTransformer @Inject() (
     extends PageTransformer {
 
   def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    consignment match {
-      case Some(value) =>
+    consignment.mapWithSets {
+      value =>
         consignorTransformer.transform(value.Consignor) andThen
           consigneeTransformer.transform(value.Consignee) andThen
           transportEquipmentTransformer.transform(value.TransportEquipment) andThen
@@ -59,7 +59,5 @@ class ConsignmentTransformer @Inject() (
           incidentsTransformer.transform(value.Incident) andThen
           set(CountryOfDestinationPage, value.countryOfDestination, referenceDataService.getCountry) andThen
           set(InlandModeOfTransportPage, value.inlandModeOfTransport, referenceDataService.getTransportModeCode)
-      case None =>
-        Future.successful
     }
 }
