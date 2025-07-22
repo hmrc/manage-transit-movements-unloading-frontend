@@ -37,9 +37,9 @@ package object transformers {
       userAnswers =>
         value.zipWithIndex
           .foldLeft(Future.successful(userAnswers)) {
-            case (acc, (value, i)) =>
+            case (acc, (a, i)) =>
               acc.flatMap {
-                sets(value, Index(i))
+                sets(a, Index(i))
               }
           }
   }
