@@ -34,17 +34,13 @@ class AdditionalInformationTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.additionalInformation.*
     import pages.sections.additionalInformation.AdditionalInformationSection
-    userAnswers =>
-      additionalInformation.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(AdditionalInformationSection(index), value.sequenceNumber) andThen
-                set(AdditionalInformationCodePage(index), value.code, referenceDataService.getAdditionalInformationCode) andThen
-                set(AdditionalInformationTextPage(index), value.text)
-            }
-        }
+
+    additionalInformation.forEachDoSets {
+      (value, index) =>
+        setSequenceNumber(AdditionalInformationSection(index), value.sequenceNumber) andThen
+          set(AdditionalInformationCodePage(index), value.code, referenceDataService.getAdditionalInformationCode) andThen
+          set(AdditionalInformationTextPage(index), value.text)
+    }
   }
 
   def transform(
@@ -53,17 +49,13 @@ class AdditionalInformationTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.additionalinformation.*
     import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
-    userAnswers =>
-      additionalInformation.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(AdditionalInformationSection(hcIndex, index), value.sequenceNumber) andThen
-                set(HouseConsignmentAdditionalInformationCodePage(hcIndex, index), value.code, referenceDataService.getAdditionalInformationCode) andThen
-                set(HouseConsignmentAdditionalInformationTextPage(hcIndex, index), value.text)
-            }
-        }
+
+    additionalInformation.forEachDoSets {
+      (value, index) =>
+        setSequenceNumber(AdditionalInformationSection(hcIndex, index), value.sequenceNumber) andThen
+          set(HouseConsignmentAdditionalInformationCodePage(hcIndex, index), value.code, referenceDataService.getAdditionalInformationCode) andThen
+          set(HouseConsignmentAdditionalInformationTextPage(hcIndex, index), value.text)
+    }
   }
 
   def transform(
@@ -73,20 +65,16 @@ class AdditionalInformationTransformer @Inject() (
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.additionalinformation.*
     import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
-    userAnswers =>
-      additionalInformation.zipWithIndex
-        .foldLeft(Future.successful(userAnswers)) {
-          case (acc, (value, i)) =>
-            val index = Index(i)
-            acc.flatMap {
-              setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
-                set(
-                  HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, index),
-                  value.code,
-                  referenceDataService.getAdditionalInformationCode
-                ) andThen
-                set(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, index), value.text)
-            }
-        }
+
+    additionalInformation.forEachDoSets {
+      (value, index) =>
+        setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), value.sequenceNumber) andThen
+          set(
+            HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, index),
+            value.code,
+            referenceDataService.getAdditionalInformationCode
+          ) andThen
+          set(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, index), value.text)
+    }
   }
 }

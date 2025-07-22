@@ -16,6 +16,8 @@
 
 package utils
 
+import models.{Index, UserAnswers}
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 
@@ -26,4 +28,17 @@ package object transformers {
   final val DeclarationGoodsItemNumber = "declarationGoodsItemNumber"
 
   implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
+
+  implicit class RichSeq[A](value: Seq[A]) {
+
+    def forEachDoSets(sets: (A, Index) => UserAnswers => Future[UserAnswers])(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+      userAnswers =>
+        value.zipWithIndex
+          .foldLeft(Future.successful(userAnswers)) {
+            case (acc, (value, i)) =>
+              acc.flatMap {
+                sets(value, Index(i))
+              }
+          }
+  }
 }
