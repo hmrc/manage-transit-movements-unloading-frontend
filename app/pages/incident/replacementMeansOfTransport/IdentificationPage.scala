@@ -19,12 +19,12 @@ package pages.incident.replacementMeansOfTransport
 import models.Index
 import models.reference.TransportMeansIdentification
 import pages.QuestionPage
-import pages.sections.incidents.IncidentSection
+import pages.sections.incidents.TranshipmentSection
 import play.api.libs.json.JsPath
 
 case class IdentificationPage(incidentIndex: Index) extends QuestionPage[TransportMeansIdentification] {
 
-  override def path: JsPath = IncidentSection(incidentIndex).path \ "Transhipment" \ toString
+  override def path: JsPath = TranshipmentSection(incidentIndex).path \ toString
 
   override def toString: String = "identification"
 }

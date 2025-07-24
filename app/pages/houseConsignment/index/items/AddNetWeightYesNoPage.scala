@@ -18,14 +18,14 @@ package pages.houseConsignment.index.items
 
 import models.{Index, UserAnswers}
 import pages.QuestionPage
-import pages.sections.ItemSection
+import pages.sections.houseConsignment.index.items.GoodsMeasureSection
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
 case class AddNetWeightYesNoPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ "GoodsMeasure" \ toString
+  override def path: JsPath = GoodsMeasureSection(houseConsignmentIndex, itemIndex).path \ toString
 
   override def toString: String = "addNetWeightYesNo"
 

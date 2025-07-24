@@ -17,12 +17,13 @@
 package pages.sections.houseConsignment.index.items.dangerousGoods
 
 import models.Index
-import pages.sections.{ItemSection, Section}
+import pages.sections.Section
+import pages.sections.houseConsignment.index.items.CommoditySection
 import play.api.libs.json.{JsArray, JsPath}
 
 case class DangerousGoodsListSection(houseConsignmentIndex: Index, itemIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ toString
+  override def path: JsPath = CommoditySection(houseConsignmentIndex, itemIndex).path \ toString
 
   override def toString: String = "DangerousGoods"
 }

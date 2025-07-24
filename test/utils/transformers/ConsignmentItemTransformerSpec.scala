@@ -25,12 +25,15 @@ import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
 import pages.houseConsignment.index.items.{CountryOfDestinationPage, DeclarationGoodsItemNumberPage, DeclarationTypePage, UniqueConsignmentReferencePage}
-import pages.sections.ItemSection
+import pages.sections.houseConsignment.index.items.CommoditySection
+import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
+import pages.sections.houseConsignment.index.items.documents.DocumentsSection
+import pages.sections.{ItemSection, PackagingListSection}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsArray, Json}
 import services.ReferenceDataService
 
 import scala.concurrent.Future
@@ -59,26 +62,6 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
         bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
-  private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
-  }
-
-  private case class FakePackagingSection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "packaging"
-  }
-
-  private case class FakeDocumentsSection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "documents"
-  }
-
-  private case class FakeAdditionalReferencesSection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "additionalReferences"
-  }
-
-  private case class FakeAdditionalInformationSection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "additionalInformation"
-  }
-
   "must transform data" in {
     forAll(arbitrary[Seq[ConsignmentItemType04]]) {
       consignmentItems =>
@@ -88,27 +71,27 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
 
             when(mockCommodityTransformer.transform(any(), any(), eqTo(itemIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(CommoditySection(hcIndex, itemIndex), Json.obj("foo" -> i.toString)))
               }
 
             when(mockPackagingTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakePackagingSection(itemIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(PackagingListSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockDocumentsTransformer.transform(any(), any(), any(), any(), eqTo(itemIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeDocumentsSection(itemIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(DocumentsSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockAdditionalReferencesTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeAdditionalReferencesSection(itemIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(AdditionalReferencesSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockAdditionalInformationTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeAdditionalInformationSection(itemIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(AdditionalInformationsSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockReferenceDataService.getCountry(eqTo(consignmentItem.countryOfDestination.value))(any()))
@@ -126,11 +109,11 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             result.get(DeclarationTypePage(hcIndex, itemIndex)) mustEqual consignmentItem.declarationType
             result.getValue(CountryOfDestinationPage(hcIndex, itemIndex)) mustEqual Country("foo", i.toString)
             result.get(UniqueConsignmentReferencePage(hcIndex, itemIndex)) mustEqual consignmentItem.referenceNumberUCR
-            result.getValue(FakeCommoditySection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakePackagingSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeDocumentsSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalReferencesSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalInformationSection(itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(CommoditySection(hcIndex, itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(PackagingListSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(DocumentsSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(AdditionalReferencesSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(AdditionalInformationsSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
         }
     }
   }

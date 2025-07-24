@@ -25,12 +25,11 @@ import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
-import pages.sections.incidents.IncidentSection
+import pages.sections.incidents.{IncidentEndorsementSection, IncidentLocationSection, IncidentSection, TranshipmentSection}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.Json
 import services.ReferenceDataService
 
 import scala.concurrent.Future
@@ -39,9 +38,9 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[IncidentsTransformer]
 
-  private lazy val mockIncidentEndorsementTransformer: IncidentEndorsementTransformer  = mock[IncidentEndorsementTransformer]
-  private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer        = mock[IncidentLocationTransformer]
-  private lazy val mockTranshipmentTransformer: ReplacementMeansOfTransportTransformer = mock[ReplacementMeansOfTransportTransformer]
+  private lazy val mockIncidentEndorsementTransformer: IncidentEndorsementTransformer = mock[IncidentEndorsementTransformer]
+  private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer       = mock[IncidentLocationTransformer]
+  private lazy val mockTranshipmentTransformer: TranshipmentTransformer               = mock[TranshipmentTransformer]
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
@@ -52,7 +51,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         bind[ReferenceDataService].toInstance(mockReferenceDataService),
         bind[IncidentEndorsementTransformer].toInstance(mockIncidentEndorsementTransformer),
         bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer),
-        bind[ReplacementMeansOfTransportTransformer].toInstance(mockTranshipmentTransformer)
+        bind[TranshipmentTransformer].toInstance(mockTranshipmentTransformer)
       )
 
   override def beforeEach(): Unit = {
@@ -61,18 +60,6 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     reset(mockIncidentEndorsementTransformer)
     reset(mockIncidentLocationTransformer)
     reset(mockTranshipmentTransformer)
-  }
-
-  private case object FakeIncidentEndorsementSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "incidentEndorsement"
-  }
-
-  private case object FakeIncidentLocationSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "incidentLocation"
-  }
-
-  private case object FakeTranshipmentSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "replacementMeansOfTransport"
   }
 
   // Because each incident has its own set of mocks, we need to ensure the values are unique
@@ -98,17 +85,17 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
               when(mockIncidentEndorsementTransformer.transform(any(), eqTo(Index(i)))(any()))
                 .thenReturn {
-                  ua => Future.successful(ua.setValue(FakeIncidentEndorsementSection, Json.obj("foo" -> i.toString)))
+                  ua => Future.successful(ua.setValue(IncidentEndorsementSection(Index(i)), Json.obj("foo" -> i.toString)))
                 }
 
               when(mockIncidentLocationTransformer.transform(any(), eqTo(Index(i)))(any()))
                 .thenReturn {
-                  ua => Future.successful(ua.setValue(FakeIncidentLocationSection, Json.obj("foo" -> i.toString)))
+                  ua => Future.successful(ua.setValue(IncidentLocationSection(Index(i)), Json.obj("foo" -> i.toString)))
                 }
 
               when(mockTranshipmentTransformer.transform(any(), eqTo(Index(i)))(any()))
                 .thenReturn {
-                  ua => Future.successful(ua.setValue(FakeTranshipmentSection, Json.obj("foo" -> i.toString)))
+                  ua => Future.successful(ua.setValue(TranshipmentSection(Index(i)), Json.obj("foo" -> i.toString)))
                 }
           }
 
@@ -120,9 +107,9 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
               result.getValue(IncidentCodePage(Index(i))).code mustEqual incident.code
               result.getValue(IncidentCodePage(Index(i))).description mustEqual i.toString
               result.getValue(IncidentTextPage(Index(i))) mustEqual incident.text
-              result.getValue(FakeIncidentEndorsementSection) mustEqual Json.obj("foo" -> i.toString)
-              result.getValue(FakeIncidentLocationSection) mustEqual Json.obj("foo" -> i.toString)
-              result.getValue(FakeTranshipmentSection) mustEqual Json.obj("foo" -> i.toString)
+              result.getValue(IncidentEndorsementSection(Index(i))) mustEqual Json.obj("foo" -> i.toString)
+              result.getValue(IncidentLocationSection(Index(i))) mustEqual Json.obj("foo" -> i.toString)
+              result.getValue(TranshipmentSection(Index(i))) mustEqual Json.obj("foo" -> i.toString)
           }
       }
     }

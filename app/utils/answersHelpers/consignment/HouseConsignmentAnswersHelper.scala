@@ -23,10 +23,10 @@ import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, User
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
 import pages.sections.ItemsSection
-import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
 import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
+import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansListSection
 import pages.{houseConsignment, *}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -188,7 +188,7 @@ class HouseConsignmentAnswersHelper(
   }
 
   def departureTransportMeansSection: Section =
-    userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
+    userAnswers.get(TransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         val rows = Seq(

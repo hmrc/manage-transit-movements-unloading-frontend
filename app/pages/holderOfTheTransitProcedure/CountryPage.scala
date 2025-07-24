@@ -18,11 +18,12 @@ package pages.holderOfTheTransitProcedure
 
 import models.reference.Country
 import pages.QuestionPage
+import pages.sections.HolderOfTheTransitProcedureSection
 import play.api.libs.json.JsPath
 
 case object CountryPage extends QuestionPage[Country] {
 
-  override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure" \ "Address" \ toString
+  override def path: JsPath = HolderOfTheTransitProcedureSection.path \ "Address" \ toString
 
   override def toString: String = "nationality"
 }

@@ -30,7 +30,7 @@ class IncidentsTransformer @Inject() (
   referenceDataService: ReferenceDataService,
   incidentEndorsementTransformer: IncidentEndorsementTransformer,
   incidentLocationTransformer: IncidentLocationTransformer,
-  replacementMeansOfTransportTransformer: ReplacementMeansOfTransportTransformer
+  transhipmentTransformer: TranshipmentTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -44,6 +44,6 @@ class IncidentsTransformer @Inject() (
           set(IncidentTextPage(incidentIndex), value.text) andThen
           incidentEndorsementTransformer.transform(value.Endorsement, incidentIndex) andThen
           incidentLocationTransformer.transform(value.Location, incidentIndex) andThen
-          replacementMeansOfTransportTransformer.transform(value.Transhipment, incidentIndex)
+          transhipmentTransformer.transform(value.Transhipment, incidentIndex)
     }
 }

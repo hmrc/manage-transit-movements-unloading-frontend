@@ -19,12 +19,13 @@ package pages.houseConsignment.index.items
 import generated.CUSTOM_GoodsMeasureType05
 import models.Index
 import pages.DiscrepancyQuestionPage
-import pages.sections.ItemsSection
+import pages.sections.houseConsignment.index.items.GoodsMeasureSection
 import play.api.libs.json.JsPath
 
-case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends DiscrepancyQuestionPage[BigDecimal, Option[CUSTOM_GoodsMeasureType05], BigDecimal] {
+case class NetWeightPage(houseConsignmentIndex: Index, itemIndex: Index)
+    extends DiscrepancyQuestionPage[BigDecimal, Option[CUSTOM_GoodsMeasureType05], BigDecimal] {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
+  override def path: JsPath = GoodsMeasureSection(houseConsignmentIndex, itemIndex).path \ toString
 
   override def toString: String = "netMass"
 

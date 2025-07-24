@@ -17,11 +17,12 @@
 package pages
 
 import models.reference.SecurityType
+import pages.sections.TransitOperationSection
 import play.api.libs.json.JsPath
 
 case object SecurityTypePage extends QuestionPage[SecurityType] {
 
-  override def path: JsPath = JsPath \ "TransitOperation" \ toString
+  override def path: JsPath = TransitOperationSection.path \ toString
 
   override def toString: String = "securityType"
 }
