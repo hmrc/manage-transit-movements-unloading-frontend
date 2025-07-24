@@ -19,13 +19,13 @@ package pages.houseConsignment.index.items
 import generated.CommodityCodeType05
 import models.Index
 import pages.DiscrepancyQuestionPage
-import pages.sections.ItemSection
+import pages.sections.houseConsignment.index.items.CommoditySection
 import play.api.libs.json.JsPath
 
 case class CombinedNomenclatureCodePage(houseConsignmentIndex: Index, itemIndex: Index)
     extends DiscrepancyQuestionPage[String, Option[CommodityCodeType05], String] {
 
-  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ "CommodityCode" \ toString
+  override def path: JsPath = CommoditySection(houseConsignmentIndex, itemIndex).path \ "CommodityCode" \ toString
 
   override def toString: String = "combinedNomenclatureCode"
 

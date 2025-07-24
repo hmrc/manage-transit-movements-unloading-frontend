@@ -23,11 +23,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
 import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CommodityCodePage, CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
+import pages.sections.houseConsignment.index.items.GoodsMeasureSection
+import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsArray, Json}
 
 import scala.concurrent.Future
 
@@ -46,24 +47,16 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         bind[DangerousGoodsTransformer].toInstance(mockDangerousGoodsTransformer)
       )
 
-  private case object FakeGoodsMeasureSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "goodsMeasure"
-  }
-
-  private case object FakeDangerousGoodsSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "UNNumber"
-  }
-
   "must transform data" in {
     forAll(arbitrary[CommodityType09]) {
       commodity =>
         when(mockGoodsMeasureTransformer.transform(any(), any(), any()))
           .thenReturn {
-            ua => Future.successful(ua.setValue(FakeGoodsMeasureSection, Json.obj("foo" -> "bar")))
+            ua => Future.successful(ua.setValue(GoodsMeasureSection(hcIndex, itemIndex), Json.obj("foo" -> "bar")))
           }
         when(mockDangerousGoodsTransformer.transform(any(), any(), any()))
           .thenReturn {
-            ua => Future.successful(ua.setValue(FakeDangerousGoodsSection, Json.obj("foo1" -> "bar1")))
+            ua => Future.successful(ua.setValue(DangerousGoodsListSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo1" -> "bar1")))))
           }
 
         val result = transformer.transform(commodity, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
@@ -72,8 +65,8 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         result.get(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustEqual commodity.cusCode
         result.get(CommodityCodePage(hcIndex, itemIndex)) mustEqual commodity.CommodityCode.map(_.harmonizedSystemSubHeadingCode)
         result.get(CombinedNomenclatureCodePage(hcIndex, itemIndex)) mustEqual commodity.CommodityCode.flatMap(_.combinedNomenclatureCode)
-        result.getValue(FakeGoodsMeasureSection) mustEqual Json.obj("foo" -> "bar")
-        result.getValue(FakeDangerousGoodsSection) mustEqual Json.obj("foo1" -> "bar1")
+        result.getValue(GoodsMeasureSection(hcIndex, itemIndex)) mustEqual Json.obj("foo" -> "bar")
+        result.getValue(DangerousGoodsListSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo1" -> "bar1")))
     }
   }
 }

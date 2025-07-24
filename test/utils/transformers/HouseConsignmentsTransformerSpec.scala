@@ -19,18 +19,22 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.HouseConsignmentType04
 import generators.Generators
-import models.reference.{Country, SecurityType}
 import models.Index
+import models.reference.{Country, SecurityType}
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
-import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, UniqueConsignmentReferencePage}
-import pages.sections.HouseConsignmentSection
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage, UniqueConsignmentReferencePage}
+import pages.sections.houseConsignment.index.*
+import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
+import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
+import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansListSection
+import pages.sections.houseConsignment.index.documents.DocumentsSection
+import pages.sections.{HouseConsignmentSection, ItemsSection}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsArray, Json}
 import services.ReferenceDataService
 
 import scala.concurrent.Future
@@ -63,34 +67,6 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
-  private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignee"
-  }
-
-  private case class FakeConsignorSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignor"
-  }
-
-  private case class FakeDepartureTransportMeansSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "departureTransportMeans"
-  }
-
-  private case class FakeDocumentsSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "documents"
-  }
-
-  private case class FakeAdditionalReferenceSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "additionalReference"
-  }
-
-  private case class FakeAdditionalInformationSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "additionalInformation"
-  }
-
-  private case class FakeConsignmentItemSection(hcIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignmentItems"
-  }
-
   "must transform data" in {
     val country = Country("GB", "country")
     forAll(arbitrary[Seq[HouseConsignmentType04]]) {
@@ -101,37 +77,37 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
             when(mockConsigneeTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeConsigneeSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(ConsigneeSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
             when(mockConsignorTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeConsignorSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(ConsignorSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
             when(mockDepartureTransportMeansTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(TransportMeansListSection(hcIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockDocumentsTransformer.transform(any(), any(), any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeDocumentsSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(DocumentsSection(hcIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockAdditionalReferenceTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(AdditionalReferenceListSection(hcIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockAdditionalInformationTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeAdditionalInformationSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(AdditionalInformationListSection(hcIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockConsignmentItemTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeConsignmentItemSection(hcIndex), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(ItemsSection(hcIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
             when(mockReferenceDataService.getSecurityType(any())(any()))
@@ -152,15 +128,14 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustEqual hc.sequenceNumber
             result.getValue(GrossWeightPage(hcIndex)) mustEqual hc.grossMass
             result.get(UniqueConsignmentReferencePage(hcIndex)) mustEqual hc.referenceNumberUCR
-            result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustEqual
-              Json.obj("code" -> "code", "description" -> "description")
-            result.getValue(FakeConsigneeSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeConsignorSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeDocumentsSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalReferenceSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeAdditionalInformationSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
-            result.getValue(FakeConsignmentItemSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(SecurityIndicatorFromExportDeclarationPage(hcIndex)) mustEqual SecurityType("code", "description")
+            result.getValue(ConsigneeSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(ConsignorSection(hcIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(TransportMeansListSection(hcIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(DocumentsSection(hcIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(AdditionalReferenceListSection(hcIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(AdditionalInformationListSection(hcIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
+            result.getValue(ItemsSection(hcIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
             result.getValue(CountryOfDestinationPage(hcIndex)) mustEqual country
         }
     }

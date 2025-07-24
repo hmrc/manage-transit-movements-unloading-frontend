@@ -32,9 +32,9 @@ import services.ReferenceDataService
 
 import scala.concurrent.Future
 
-class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class TranshipmentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[ReplacementMeansOfTransportTransformer]
+  private val transformer = app.injector.instanceOf[TranshipmentTransformer]
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 

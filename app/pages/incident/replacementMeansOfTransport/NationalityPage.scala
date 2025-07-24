@@ -19,12 +19,12 @@ package pages.incident.replacementMeansOfTransport
 import models.Index
 import models.reference.Country
 import pages.QuestionPage
-import pages.sections.incidents.IncidentSection
+import pages.sections.incidents.TranshipmentSection
 import play.api.libs.json.JsPath
 
 case class NationalityPage(incidentIndex: Index) extends QuestionPage[Country] {
 
-  override def path: JsPath = IncidentSection(incidentIndex).path \ "Transhipment" \ toString
+  override def path: JsPath = TranshipmentSection(incidentIndex).path \ toString
 
   override def toString: String = "nationality"
 }

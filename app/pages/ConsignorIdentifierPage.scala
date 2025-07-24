@@ -17,12 +17,12 @@
 package pages
 
 import models.Index
-import pages.sections.HouseConsignmentSection
+import pages.sections.houseConsignment.index.ConsignorSection
 import play.api.libs.json.JsPath
 
 case class ConsignorIdentifierPage(houseConsignmentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignor" \ toString
+  override def path: JsPath = ConsignorSection(houseConsignmentIndex).path \ toString
 
   override def toString: String = "identificationNumber"
 }

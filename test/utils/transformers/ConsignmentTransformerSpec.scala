@@ -27,10 +27,15 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
-import pages.{GrossWeightPage, QuestionPage, UniqueConsignmentReferencePage}
+import pages.sections.*
+import pages.sections.additionalInformation.AdditionalInformationListSection
+import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.sections.documents.DocumentsSection
+import pages.sections.incidents.IncidentsSection
+import pages.{GrossWeightPage, UniqueConsignmentReferencePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsArray, Json}
 import services.ReferenceDataService
 
 import scala.concurrent.Future
@@ -69,97 +74,57 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[ReferenceDataService].toInstance(mockReferenceDataService)
       )
 
-  private case object FakeConsignorSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "consignor"
-  }
-
-  private case object FakeConsigneeSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "consignee"
-  }
-
-  private case object FakeTransportEquipmentSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "transportEquipment"
-  }
-
-  private case object FakeDepartureTransportMeansSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "departureTransportMeans"
-  }
-
-  private case object FakeCountriesOfRoutingSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "countriesOfRouting"
-  }
-
-  private case object FakeDocumentsSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "documents"
-  }
-
-  private case object FakeHouseConsignmentSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "houseConsignment"
-  }
-
-  private case object FakeAdditionalReferenceSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "additionalReferenceSection"
-  }
-
-  private case object FakeAdditionalInformationSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "additionalInformationSection"
-  }
-
-  private case object FakeIncidentSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "incidentSection"
-  }
-
   "must transform data" - {
     "when consignment defined" in {
       forAll(arbitrary[ConsignmentType05]) {
         consignment =>
           when(mockConsignorTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeConsignorSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(ConsignorSection, Json.obj("foo" -> "bar")))
             }
 
           when(mockConsigneeTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeConsigneeSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(ConsigneeSection, Json.obj("foo" -> "bar")))
             }
 
           when(mockTransportEquipmentTransformer.transform(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeTransportEquipmentSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(TransportEquipmentListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           when(mockDepartureTransportMeansTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(TransportMeansListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           when(mockCountriesOfRoutingTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeCountriesOfRoutingSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(CountriesOfRoutingSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           when(mockDocumentsTransformer.transform(any(), any(), any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeDocumentsSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(DocumentsSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           when(mockHouseConsignmentsTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeHouseConsignmentSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(HouseConsignmentsSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
           when(mockAdditionalReferencesTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(AdditionalReferencesSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           when(mockAdditionalInformationTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeAdditionalInformationSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(AdditionalInformationListSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           when(mockIncidentsTransformer.transform(any())(any()))
             .thenReturn {
-              ua => Future.successful(ua.setValue(FakeIncidentSection, Json.obj("foo" -> "bar")))
+              ua => Future.successful(ua.setValue(IncidentsSection, JsArray(Seq(Json.obj("foo" -> "bar")))))
             }
 
           val country = Country("GB", "country")
@@ -179,18 +144,18 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
           val result = transformer.transform(Some(updatedConsignment))(hc).apply(emptyUserAnswers).futureValue
 
-          result.getValue(FakeConsignorSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeConsigneeSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeTransportEquipmentSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeDepartureTransportMeansSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeCountriesOfRoutingSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeDocumentsSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeHouseConsignmentSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeAdditionalReferenceSection) mustEqual Json.obj("foo" -> "bar")
-          result.getValue(FakeAdditionalInformationSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(ConsignorSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(ConsigneeSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(TransportEquipmentListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(TransportMeansListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(CountriesOfRoutingSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(DocumentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(HouseConsignmentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(AdditionalReferencesSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
+          result.getValue(AdditionalInformationListSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
           result.get(GrossWeightPage) mustEqual updatedConsignment.grossMass
           result.get(UniqueConsignmentReferencePage) mustEqual updatedConsignment.referenceNumberUCR
-          result.getValue(FakeIncidentSection) mustEqual Json.obj("foo" -> "bar")
+          result.getValue(IncidentsSection) mustEqual JsArray(Seq(Json.obj("foo" -> "bar")))
           result.getValue(CountryOfDestinationPage) mustEqual country
           result.getValue(InlandModeOfTransportPage) mustEqual inlandMode
       }
@@ -199,17 +164,17 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
     "when consignment undefined" in {
       val result = transformer.transform(None)(hc).apply(emptyUserAnswers).futureValue
 
-      result.get(FakeConsignorSection) must not be defined
-      result.get(FakeConsigneeSection) must not be defined
-      result.get(FakeTransportEquipmentSection) must not be defined
-      result.get(FakeDepartureTransportMeansSection) must not be defined
-      result.get(FakeCountriesOfRoutingSection) must not be defined
-      result.get(FakeDocumentsSection) must not be defined
-      result.get(FakeHouseConsignmentSection) must not be defined
-      result.get(FakeAdditionalReferenceSection) must not be defined
-      result.get(FakeAdditionalInformationSection) must not be defined
+      result.get(ConsignorSection) must not be defined
+      result.get(ConsigneeSection) must not be defined
+      result.get(TransportEquipmentListSection) must not be defined
+      result.get(TransportMeansListSection) must not be defined
+      result.get(CountriesOfRoutingSection) must not be defined
+      result.get(DocumentsSection) must not be defined
+      result.get(HouseConsignmentsSection) must not be defined
+      result.get(AdditionalReferencesSection) must not be defined
+      result.get(AdditionalInformationListSection) must not be defined
       result.get(GrossWeightPage) must not be defined
-      result.get(FakeIncidentSection) must not be defined
+      result.get(IncidentsSection) must not be defined
       result.get(CountryOfDestinationPage) must not be defined
       result.get(InlandModeOfTransportPage) must not be defined
     }
