@@ -29,7 +29,7 @@ import pages.sections.transport.equipment.ItemsSection
 import pages.sections.{SealsSection, TransportEquipmentSection}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsArray, JsBoolean, Json}
+import play.api.libs.json.{JsArray, Json}
 
 import scala.concurrent.Future
 
