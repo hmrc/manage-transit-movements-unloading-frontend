@@ -17,6 +17,9 @@
 package navigation.houseConsignment.index.items
 
 import config.FrontendAppConfig
+import controllers.houseConsignment.index.items.additionalReference.routes as additionalReferenceRoutes
+import controllers.houseConsignment.index.items.document.routes as documentRoutes
+import controllers.houseConsignment.index.items.packages.routes as packageRoutes
 import controllers.houseConsignment.index.items.routes
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
@@ -130,6 +133,8 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
         routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
         itemMode match {
+          case NormalMode if config.phase6Enabled =>
+            routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
           case NormalMode =>
             routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           case CheckMode =>
@@ -145,8 +150,10 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
     itemMode: Mode
   ): Option[Call] =
     ua.get(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
-      case true  => routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
-      case false => routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      case true =>
+        routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+      case false =>
+        routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
   private def addAdditionalReferenceYesNoRoute(
@@ -157,8 +164,15 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
   ): Option[Call] =
     ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
-        controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-          .onPageLoad(ua.id, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
+        additionalReferenceRoutes.AdditionalReferenceTypeController.onPageLoad(
+          ua.id,
+          houseConsignmentMode,
+          itemMode,
+          NormalMode,
+          houseConsignmentIndex,
+          itemIndex,
+          Index(0)
+        )
       case false =>
         itemMode match {
           case NormalMode =>
@@ -171,8 +185,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
   private def addPackagesYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
-        controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), houseConsignmentMode, itemMode, NormalMode)
+        packageRoutes.PackageTypeController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), houseConsignmentMode, itemMode, NormalMode)
       case false =>
         itemMode match {
           case NormalMode =>
@@ -193,16 +206,15 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
   private def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
-        routes.CombinedNomenclatureCodeController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-      case false => routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        routes.CombinedNomenclatureCodeController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      case false =>
+        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
   private def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
-        controllers.houseConsignment.index.items.document.routes.TypeController
-          .onPageLoad(ua.id, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
+        documentRoutes.TypeController.onPageLoad(ua.id, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
       case false =>
         itemMode match {
           case NormalMode =>
@@ -216,11 +228,10 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
     itemMode match {
       case NormalMode if config.phase6Enabled =>
         Some(routes.UniqueConsignmentReferenceYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode))
-
       case NormalMode =>
         Some(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
-
-      case CheckMode => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+      case CheckMode =>
+        Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     }
 
   private def addUniqueConsignmentReferenceYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
@@ -228,33 +239,31 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
       case true =>
         itemMode match {
           case NormalMode =>
-            controllers.houseConsignment.index.items.routes.UniqueConsignmentReferenceController
-              .onPageLoad(ua.id, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
-          case CheckMode => controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+            routes.UniqueConsignmentReferenceController.onPageLoad(ua.id, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
       case false =>
         itemMode match {
           case NormalMode =>
-            controllers.houseConsignment.index.items.routes.AddCustomsUnionAndStatisticsCodeYesNoController
-              .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-          case CheckMode => controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+            routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
-
     }
 
-  private def uniqueConsignmentReferenceRoute(ua: UserAnswers,
-                                              houseConsignmentMode: Mode,
-                                              itemMode: Mode,
-                                              houseConsignmentIndex: Index,
-                                              itemIndex: Index
+  private def uniqueConsignmentReferenceRoute(
+    ua: UserAnswers,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index
   ): Option[Call] =
     itemMode match {
       case NormalMode =>
-        Some(
-          controllers.houseConsignment.index.items.routes.AddCustomsUnionAndStatisticsCodeYesNoController
-            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-        )
-      case CheckMode => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+        Some(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
+      case CheckMode =>
+        Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     }
 }
 
