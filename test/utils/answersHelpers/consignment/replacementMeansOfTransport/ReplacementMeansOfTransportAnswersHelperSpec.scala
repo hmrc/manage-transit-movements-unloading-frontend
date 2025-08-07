@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.replacementMeansOfTransport
 
+import base.AppWithDefaultMockFixtures
 import generated.{ConsignmentType05, IncidentType03, Number0, TranshipmentType}
 import models.reference.{Country, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary

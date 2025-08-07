@@ -16,11 +16,12 @@
 
 package utils.answersHelpers.consignment
 
+import base.AppWithDefaultMockFixtures
 import models.CheckMode
 import models.reference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.additionalReference._
+import pages.additionalReference.*
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalReferenceAnswersHelperSpec extends AnswersHelperSpecBase {

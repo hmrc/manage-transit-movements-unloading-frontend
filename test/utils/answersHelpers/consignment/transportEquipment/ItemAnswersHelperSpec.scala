@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
+import base.AppWithDefaultMockFixtures
 import models.CheckMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transportEquipment.index.ItemPage

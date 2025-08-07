@@ -16,11 +16,12 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference._
+import base.AppWithDefaultMockFixtures
+import models.reference.*
 import models.{CheckMode, DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages._
+import pages.*
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import pages.houseConsignment.index.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}

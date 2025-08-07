@@ -18,12 +18,13 @@ package controllers.actions
 
 import base.SpecBase
 import models.UserAnswers
-import models.requests._
+import models.requests.*
 import org.scalacheck.Arbitrary.arbitrary
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.{AnyContent, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import queries.Gettable
 
@@ -31,6 +32,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SpecificDataRequiredActionSpec extends SpecBase {
+
+  private def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   private class Harness1[T1](page: Gettable[T1])(implicit rds: Reads[T1]) extends SpecificDataRequiredAction1[T1](page) {
 

@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import base.AppWithDefaultMockFixtures
 import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

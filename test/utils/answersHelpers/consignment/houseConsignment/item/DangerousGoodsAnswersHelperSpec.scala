@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import base.AppWithDefaultMockFixtures
 import org.scalacheck.Gen
 import pages.houseConsignment.index.items.DangerousGoodsPage
 import utils.answersHelpers.AnswersHelperSpecBase

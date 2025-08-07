@@ -16,14 +16,14 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Mode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.*
 import viewModels.OtherThingsToReportViewModel.{AdditionalHtml, OtherThingsToReportViewModelProvider}
 
-class OtherThingsToReportViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class OtherThingsToReportViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mode: Mode = NormalMode
 

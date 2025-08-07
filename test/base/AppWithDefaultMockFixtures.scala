@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import controllers.actions.*
 import models.{Mode, UserAnswers}
 import navigation.*
@@ -28,9 +29,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
 import play.api.Application
 import play.api.cache.AsyncCacheApi
-import play.api.inject.bind
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.{bind, Injector}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
+import play.api.mvc.{AnyContent, Call}
+import play.api.test.FakeRequest
 import repositories.SessionRepository
 import services.P5.UnloadingPermissionMessageService
 
@@ -38,6 +41,16 @@ import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite =>
+
+  def injector: Injector = app.injector
+
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
+
+  def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
@@ -51,9 +64,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   }
 
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]
-  final val mockDataRetrievalActionProvider          = mock[DataRetrievalActionProvider]
   final val mockUnloadingPermissionMessageService    = mock[UnloadingPermissionMessageService]
   final val mockUnloadingPermissionActionProvider    = mock[UnloadingPermissionActionProvider]
+
+  final private val mockDataRetrievalActionProvider = mock[DataRetrievalActionProvider]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()

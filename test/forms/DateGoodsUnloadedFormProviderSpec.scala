@@ -16,13 +16,14 @@
 
 package forms
 
+import base.AppWithDefaultMockFixtures
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 import services.DateTimeService
 
 import java.time.{LocalDate, ZoneOffset}
 
-class DateGoodsUnloadedFormProviderSpec extends DateBehaviours {
+class DateGoodsUnloadedFormProviderSpec extends DateBehaviours with AppWithDefaultMockFixtures {
 
   val minDate         = LocalDate.of(2020, 12, 31)
   val maxDate         = LocalDate.now(ZoneOffset.UTC)

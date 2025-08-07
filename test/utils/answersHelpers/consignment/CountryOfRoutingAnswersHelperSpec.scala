@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import base.AppWithDefaultMockFixtures
 import models.CheckMode
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary

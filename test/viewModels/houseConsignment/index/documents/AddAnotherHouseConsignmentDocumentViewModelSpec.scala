@@ -16,7 +16,7 @@
 
 package viewModels.houseConsignment.index.documents
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
@@ -28,7 +28,7 @@ import pages.sections.houseConsignment.index.documents.DocumentSection
 import viewModels.ListItem
 import viewModels.houseConsignment.index.documents.AddAnotherHouseConsignmentDocumentViewModel.AddAnotherHouseConsignmentDocumentViewModelProvider
 
-class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when Normal mode" in {

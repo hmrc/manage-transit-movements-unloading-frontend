@@ -16,7 +16,7 @@
 
 package viewModels.houseConsignment.index.items
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,7 +27,7 @@ import play.api.libs.json.{JsArray, Json}
 import viewModels.ListItem
 import viewModels.houseConsignment.index.items.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
 
-class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherItemViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherItemViewModel" - {
     "list items" - {

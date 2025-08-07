@@ -16,7 +16,7 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.UnloadingType
 import org.scalacheck.Arbitrary.arbitrary
@@ -26,7 +26,7 @@ import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 
 import java.time.LocalDate
 
-class CheckYourAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "procedureSection" - {
 

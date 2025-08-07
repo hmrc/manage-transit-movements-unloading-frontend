@@ -16,7 +16,7 @@
 
 package viewModels.countriesOfRouting
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.countriesOfRouting.routes
 import generators.Generators
 import models.reference.{Country, TransportMeansIdentification}
@@ -29,7 +29,7 @@ import pages.sections.CountryOfRoutingSection
 import viewModels.ListItem
 import viewModels.countriesOfRouting.AddAnotherCountryViewModel.AddAnotherCountryViewModelProvider
 
-class AddAnotherCountryViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherCountryViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherCountryViewModel" - {
     "list items" - {

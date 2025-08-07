@@ -16,12 +16,13 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import base.AppWithDefaultMockFixtures
 import controllers.houseConsignment.index.items.document.routes
 import models.CheckMode
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.houseConsignment.index.items.document._
+import pages.houseConsignment.index.items.document.*
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {

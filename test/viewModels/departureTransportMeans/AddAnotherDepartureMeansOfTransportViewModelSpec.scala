@@ -16,19 +16,19 @@
 
 package viewModels.departureTransportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.departureMeansOfTransport._
+import pages.departureMeansOfTransport.*
 import pages.sections.TransportMeansSection
 import viewModels.ListItem
 import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
 
-class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherDepartureMeansOfTransportViewModelSpec" - {
     "list items" - {

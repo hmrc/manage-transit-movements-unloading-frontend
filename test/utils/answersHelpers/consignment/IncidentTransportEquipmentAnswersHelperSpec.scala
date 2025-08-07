@@ -22,7 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import utils.answersHelpers.AnswersHelperSpecBase
 import utils.answersHelpers.consignment.incident.IncidentTransportEquipmentAnswersHelper
 
-class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase with AppWithDefaultMockFixtures {
+class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
   "IncidentTransportEquipmentAnswersHelper" - {
 

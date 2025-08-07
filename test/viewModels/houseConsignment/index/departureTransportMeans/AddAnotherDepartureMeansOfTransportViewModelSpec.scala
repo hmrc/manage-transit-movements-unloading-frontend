@@ -16,7 +16,7 @@
 
 package viewModels.houseConsignment.index.departureTransportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, Mode}
@@ -27,7 +27,7 @@ import pages.houseConsignment.index.departureMeansOfTransport.{CountryPage, Tran
 import viewModels.ListItem
 import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
 
-class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherDepartureMeansOfTransportViewModelSpec" - {
     "list items" - {

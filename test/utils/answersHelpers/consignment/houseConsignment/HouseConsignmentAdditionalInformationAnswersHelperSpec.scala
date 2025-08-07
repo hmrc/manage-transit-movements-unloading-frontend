@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import base.AppWithDefaultMockFixtures
 import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}

@@ -48,13 +48,10 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience
     with MockitoSugar
-    with GuiceOneAppPerSuite
     with TestMessageData {
 
   val arrivalId: ArrivalId = ArrivalId("AB123")
   val messageId: String    = "12344565gf"
-
-  def injector: Injector = app.injector
 
   val mrn: MovementReferenceNumber = MovementReferenceNumber("19GB1234567890123")
   val eoriNumber: EoriNumber       = EoriNumber("id")
@@ -77,13 +74,7 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
-  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
-
-  def messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit val hc: HeaderCarrier  = HeaderCarrier()
-
-  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

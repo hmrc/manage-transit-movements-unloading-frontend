@@ -16,19 +16,19 @@
 
 package viewModels.houseConsignment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index._
-import pages.houseConsignment.index.departureMeansOfTransport._
+import pages.houseConsignment.index.*
+import pages.houseConsignment.index.departureMeansOfTransport.*
 import pages.sections.HouseConsignmentSection
 import viewModels.ListItem
 import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel.AddAnotherHouseConsignmentViewModelProvider
 
-class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherHouseConsignmentViewModelSpec" - {
     "list items" - {
