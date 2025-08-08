@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.houseConsignment.index.items.CombinedNomenclatureCodeViewModel.CombinedNomenclatureCodeViewModelProvider
 
 class CombinedNomenclatureCodeViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

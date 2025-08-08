@@ -19,7 +19,6 @@ package viewModels.departureTransportMeans
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
 
 class IdentificationNumberModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

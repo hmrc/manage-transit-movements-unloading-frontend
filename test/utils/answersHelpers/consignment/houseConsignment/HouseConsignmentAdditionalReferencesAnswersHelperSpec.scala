@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import base.AppWithDefaultMockFixtures
 import controllers.houseConsignment.index.additionalReference.routes
 import models.CheckMode
 import models.reference.AdditionalReferenceType

@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
-import base.AppWithDefaultMockFixtures
 import models.CheckMode
 import org.scalacheck.Gen
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage

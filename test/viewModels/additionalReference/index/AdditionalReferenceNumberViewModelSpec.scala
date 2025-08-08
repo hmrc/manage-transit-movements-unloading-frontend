@@ -19,7 +19,6 @@ package viewModels.additionalReference.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 
 class AdditionalReferenceNumberViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

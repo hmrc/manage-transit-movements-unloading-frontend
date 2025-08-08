@@ -16,7 +16,6 @@
 
 package utils.answersHelpers
 
-import base.AppWithDefaultMockFixtures
 import generated.*
 import models.DocType.Previous
 import models.reference.*

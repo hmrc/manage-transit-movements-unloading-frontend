@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
-import base.AppWithDefaultMockFixtures
 import models.CheckMode
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary

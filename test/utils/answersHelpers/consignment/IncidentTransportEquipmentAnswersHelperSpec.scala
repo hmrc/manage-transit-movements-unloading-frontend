@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment
 
-import base.AppWithDefaultMockFixtures
 import generated._
 import org.scalacheck.Arbitrary.arbitrary
 import utils.answersHelpers.AnswersHelperSpecBase

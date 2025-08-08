@@ -22,11 +22,13 @@ import config.FrontendAppConfig
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class TransportMeansIdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "TransportMeansIdentification" - {
 
@@ -61,40 +63,34 @@ class TransportMeansIdentificationSpec extends SpecBase with ScalaCheckPropertyC
 
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = TransportMeansIdentification(code, description)
-                  Json
-                    .parse(s"""
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = TransportMeansIdentification(code, description)
+              Json
+                .parse(s"""
                          |{
                          |  "type": "$code",
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[TransportMeansIdentification](TransportMeansIdentification.reads(config)) mustEqual value
-              }
+                .as[TransportMeansIdentification](TransportMeansIdentification.reads(mockFrontendAppConfig)) mustEqual value
           }
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = TransportMeansIdentification(code, description)
-                  Json
-                    .parse(s"""
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = TransportMeansIdentification(code, description)
+              Json
+                .parse(s"""
                          |{
                          |  "key": "$code",
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                    .as[TransportMeansIdentification](TransportMeansIdentification.reads(config)) mustEqual value
-              }
+                .as[TransportMeansIdentification](TransportMeansIdentification.reads(mockFrontendAppConfig)) mustEqual value
           }
         }
       }

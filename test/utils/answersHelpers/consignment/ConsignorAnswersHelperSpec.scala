@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment
 
-import base.AppWithDefaultMockFixtures
 import generated.AddressType14
 import models.DynamicAddress
 import models.reference.Country

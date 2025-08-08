@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.UnloadingType
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.*
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 

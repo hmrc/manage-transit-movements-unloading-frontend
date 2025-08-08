@@ -16,7 +16,6 @@
 
 package utils.answersHelpers
 
-import base.AppWithDefaultMockFixtures
 import generated.AddressType15
 import models.reference.Country
 import pages.holderOfTheTransitProcedure.CountryPage

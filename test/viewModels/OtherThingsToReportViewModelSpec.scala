@@ -19,7 +19,6 @@ package viewModels
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Mode, NormalMode}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.*
 import viewModels.OtherThingsToReportViewModel.{AdditionalHtml, OtherThingsToReportViewModelProvider}
 

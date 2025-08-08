@@ -19,7 +19,6 @@ package viewModels
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.UniqueConsignmentReferenceViewModel.UniqueConsignmentReferenceViewModelProvider
 
 class UniqueConsignmentReferenceViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
