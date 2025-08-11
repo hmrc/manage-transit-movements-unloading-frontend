@@ -17,7 +17,7 @@
 package base
 
 import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
@@ -40,7 +40,6 @@ trait SpecBase
     with TryValues
     with EitherValues
     with ScalaFutures
-    with IntegrationPatience
     with MockitoSugar
     with TestMessageData {
 

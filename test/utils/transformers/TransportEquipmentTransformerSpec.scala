@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.TransportEquipmentType03
 import generators.Generators
 import models.Index
@@ -27,26 +27,17 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
 import pages.sections.transport.equipment.ItemsSection
 import pages.sections.{SealsSection, TransportEquipmentSection}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[TransportEquipmentTransformer]
+class TransportEquipmentTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockSealsTransformer           = mock[SealsTransformer]
   private lazy val mockGoodsReferencesTransformer = mock[GoodsReferencesTransformer]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[SealsTransformer].toInstance(mockSealsTransformer),
-        bind[GoodsReferencesTransformer].toInstance(mockGoodsReferencesTransformer)
-      )
+  private val transformer = new TransportEquipmentTransformer(mockSealsTransformer, mockGoodsReferencesTransformer)
 
   "must transform data" in {
     forAll(arbitrary[Seq[TransportEquipmentType03]]) {

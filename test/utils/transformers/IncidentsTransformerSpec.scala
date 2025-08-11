@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.*
 import generators.Generators
 import models.Index
@@ -24,19 +24,17 @@ import models.reference.Incident
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.sections.incidents.{IncidentEndorsementSection, IncidentLocationSection, IncidentSection, TranshipmentSection}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[IncidentsTransformer]
+class IncidentsTransformerSpec extends SpecBase with BeforeAndAfterEach with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockIncidentEndorsementTransformer: IncidentEndorsementTransformer = mock[IncidentEndorsementTransformer]
   private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer       = mock[IncidentLocationTransformer]
@@ -44,15 +42,12 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService),
-        bind[IncidentEndorsementTransformer].toInstance(mockIncidentEndorsementTransformer),
-        bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer),
-        bind[TranshipmentTransformer].toInstance(mockTranshipmentTransformer)
-      )
+  private val transformer = new IncidentsTransformer(
+    mockReferenceDataService,
+    mockIncidentEndorsementTransformer,
+    mockIncidentLocationTransformer,
+    mockTranshipmentTransformer
+  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

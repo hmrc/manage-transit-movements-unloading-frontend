@@ -16,15 +16,15 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import models.Index
 import models.reference.GoodsReference
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
 import pages.transportEquipment.index.ItemPage
 
-class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GoodsReferenceServiceSpec extends SpecBase {
 
-  private val service = app.injector.instanceOf[GoodsReferenceService]
+  private val service = new GoodsReferenceService()
 
   "getGoodsReference" - {
     "must get goods reference" in {

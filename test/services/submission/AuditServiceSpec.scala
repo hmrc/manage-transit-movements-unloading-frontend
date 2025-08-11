@@ -16,26 +16,20 @@
 
 package services.submission
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import models.AuditType.UnloadingRemarks
 import models.UserAnswers
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
-class AuditServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class AuditServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockAuditConnector = mock[AuditConnector]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[AuditConnector].toInstance(mockAuditConnector)
-      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -45,7 +39,7 @@ class AuditServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
   "audit" - {
     "must audit event" - {
       "ArrivalNotification" in {
-        val service = app.injector.instanceOf[AuditService]
+        val service = new AuditService(mockAuditConnector)
 
         val userAnswers = emptyUserAnswers
         service.audit(UnloadingRemarks, userAnswers)

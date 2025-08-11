@@ -16,7 +16,7 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import pages.QuestionPage
@@ -27,7 +27,7 @@ import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UserAnswersServiceSpec extends SpecBase {
 
   private val dataTransformer = mock[IE043Transformer]
   private val service         = new UserAnswersService(dataTransformer)
@@ -38,11 +38,6 @@ class UserAnswersServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private case object BarPage extends QuestionPage[String] {
     override def path: JsPath = JsPath \ "bar"
-  }
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(dataTransformer)
   }
 
   private val now = Instant.now()

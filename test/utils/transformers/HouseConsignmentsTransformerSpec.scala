@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.HouseConsignmentType04
 import generators.Generators
 import models.Index
@@ -32,16 +32,13 @@ import pages.sections.houseConsignment.index.additionalReference.AdditionalRefer
 import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansListSection
 import pages.sections.houseConsignment.index.documents.DocumentsSection
 import pages.sections.{HouseConsignmentSection, ItemsSection}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[HouseConsignmentsTransformer]
+class HouseConsignmentsTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockConsigneeTransformer               = mock[ConsigneeTransformer]
   private lazy val mockConsignorTransformer               = mock[ConsignorTransformer]
@@ -53,19 +50,16 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ConsigneeTransformer].toInstance(mockConsigneeTransformer),
-        bind[ConsignorTransformer].toInstance(mockConsignorTransformer),
-        bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
-        bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
-        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferenceTransformer),
-        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
-        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer),
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
+  private val transformer = new HouseConsignmentsTransformer(
+    mockConsigneeTransformer,
+    mockConsignorTransformer,
+    mockDepartureTransportMeansTransformer,
+    mockDocumentsTransformer,
+    mockAdditionalReferenceTransformer,
+    mockAdditionalInformationTransformer,
+    mockConsignmentItemTransformer,
+    mockReferenceDataService
+  )
 
   "must transform data" in {
     val country = Country("GB", "country")

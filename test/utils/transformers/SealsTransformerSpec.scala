@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.SealType01
 import generators.Generators
 import models.Index
@@ -25,9 +25,11 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.SealSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
-class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  private val transformer = app.injector.instanceOf[SealsTransformer]
+class SealsTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val transformer = new SealsTransformer()
 
   "must transform data" in {
     forAll(arbitrary[Seq[SealType01]]) {

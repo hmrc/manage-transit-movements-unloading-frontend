@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.CommodityType09
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
@@ -26,26 +26,17 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CommodityCodePage, CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 import pages.sections.houseConsignment.index.items.GoodsMeasureSection
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[CommodityTransformer]
+class CommodityTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockGoodsMeasureTransformer   = mock[GoodsMeasureTransformer]
   private lazy val mockDangerousGoodsTransformer = mock[DangerousGoodsTransformer]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[GoodsMeasureTransformer].toInstance(mockGoodsMeasureTransformer),
-        bind[DangerousGoodsTransformer].toInstance(mockDangerousGoodsTransformer)
-      )
+  private val transformer = new CommodityTransformer(mockGoodsMeasureTransformer, mockDangerousGoodsTransformer)
 
   "must transform data" in {
     forAll(arbitrary[CommodityType09]) {

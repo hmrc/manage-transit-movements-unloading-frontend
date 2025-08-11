@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.ConsignmentItemType04
 import generators.Generators
 import models.Index
@@ -29,38 +29,35 @@ import pages.houseConsignment.index.items.{CountryOfDestinationPage, Declaration
 import pages.sections.houseConsignment.index.items.CommoditySection
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
+import pages.sections.houseConsignment.index.items.consignee.ConsigneeSection
 import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import pages.sections.{ItemSection, PackagingListSection}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
+class ConsignmentItemTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockCommodityTransformer             = mock[CommodityTransformer]
   private lazy val mockPackagingTransformer             = mock[PackagingTransformer]
   private lazy val mockDocumentsTransformer             = mock[DocumentsTransformer]
   private lazy val mockAdditionalReferencesTransformer  = mock[AdditionalReferencesTransformer]
+  private lazy val mockConsigneeTransformer             = mock[ConsigneeTransformer]
   private lazy val mockAdditionalInformationTransformer = mock[AdditionalInformationTransformer]
 
-  private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+  private lazy val mockReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[CommodityTransformer].toInstance(mockCommodityTransformer),
-        bind[PackagingTransformer].toInstance(mockPackagingTransformer),
-        bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
-        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
-        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
+  private val transformer = new ConsignmentItemTransformer(
+    mockCommodityTransformer,
+    mockPackagingTransformer,
+    mockDocumentsTransformer,
+    mockAdditionalReferencesTransformer,
+    mockConsigneeTransformer,
+    mockAdditionalInformationTransformer,
+    mockReferenceDataService
+  )
 
   "must transform data" in {
     forAll(arbitrary[Seq[ConsignmentItemType04]]) {
@@ -89,6 +86,11 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
                 ua => Future.successful(ua.setValue(AdditionalReferencesSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
               }
 
+            when(mockConsigneeTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(ConsigneeSection(hcIndex, itemIndex), Json.obj("foo" -> i.toString)))
+              }
+
             when(mockAdditionalInformationTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(AdditionalInformationsSection(hcIndex, itemIndex), JsArray(Seq(Json.obj("foo" -> i.toString)))))
@@ -110,6 +112,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             result.getValue(CountryOfDestinationPage(hcIndex, itemIndex)) mustEqual Country("foo", i.toString)
             result.get(UniqueConsignmentReferencePage(hcIndex, itemIndex)) mustEqual consignmentItem.referenceNumberUCR
             result.getValue(CommoditySection(hcIndex, itemIndex)) mustEqual Json.obj("foo" -> i.toString)
+            result.getValue(ConsigneeSection(hcIndex, itemIndex)) mustEqual Json.obj("foo" -> i.toString)
             result.getValue(PackagingListSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
             result.getValue(DocumentsSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))
             result.getValue(AdditionalReferencesSection(hcIndex, itemIndex)) mustEqual JsArray(Seq(Json.obj("foo" -> i.toString)))

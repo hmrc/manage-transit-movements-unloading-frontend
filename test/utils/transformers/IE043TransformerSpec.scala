@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.CC043CType
 import generators.Generators
 import models.reference.CustomsOffice
@@ -26,17 +26,13 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.CustomsOfficeOfDestinationActualPage
 import pages.sections.*
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import services.ReferenceDataService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[IE043Transformer]
+class IE043TransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockConsignmentTransformer                 = mock[ConsignmentTransformer]
   private lazy val mockTransitOperationTransformer            = mock[TransitOperationTransformer]
@@ -44,15 +40,12 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
-        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer),
-        bind[HolderOfTheTransitProcedureTransformer].toInstance(mockHolderOfTheTransitProcedureTransformer),
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
+  private val transformer = new IE043Transformer(
+    mockConsignmentTransformer,
+    mockTransitOperationTransformer,
+    mockHolderOfTheTransitProcedureTransformer,
+    mockReferenceDataService
+  )
 
   "must transform data" in {
     forAll(arbitrary[CC043CType]) {

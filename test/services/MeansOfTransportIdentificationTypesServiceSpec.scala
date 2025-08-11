@@ -16,29 +16,21 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import config.Constants.TransportModeCode.*
 import models.reference.TransportMeansIdentification
 import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase {
 
   private val mockReferenceDataService = mock[ReferenceDataService]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
 
   private val meansOfTransportIdentificationTypes = Seq(
     "10",
@@ -54,23 +46,18 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
     "99"
   ).map(TransportMeansIdentification(_, ""))
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-
-    when(mockReferenceDataService.getMeansOfTransportIdentificationTypes()(any()))
-      .thenReturn(Future.successful(meansOfTransportIdentificationTypes))
-  }
-
   "getMeansOfTransportIdentificationTypes" - {
     "when inland mode defined" - {
       "and inland mode is Fixed or Unknown" - {
         "must return all identification types except 99" in {
           forAll(Gen.oneOf(Fixed, Unknown), Gen.alphaNumStr) {
             (code, description) =>
+              when(mockReferenceDataService.getMeansOfTransportIdentificationTypes()(any()))
+                .thenReturn(Future.successful(meansOfTransportIdentificationTypes))
+
               val inlandMode = InlandMode(code, description)
 
-              val service = app.injector.instanceOf[MeansOfTransportIdentificationTypesService]
+              val service = new MeansOfTransportIdentificationTypesService(mockReferenceDataService)
 
               val userAnswers = emptyUserAnswers.setValue(InlandModeOfTransportPage, inlandMode)
 
@@ -94,9 +81,12 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
       "and inland mode is neither Fixed nor Unknown" - {
         "must return identification types starting with the appropriate code" in {
+          when(mockReferenceDataService.getMeansOfTransportIdentificationTypes()(any()))
+            .thenReturn(Future.successful(meansOfTransportIdentificationTypes))
+
           val inlandMode = InlandMode("3", "")
 
-          val service = app.injector.instanceOf[MeansOfTransportIdentificationTypesService]
+          val service = new MeansOfTransportIdentificationTypesService(mockReferenceDataService)
 
           val userAnswers = emptyUserAnswers.setValue(InlandModeOfTransportPage, inlandMode)
 
@@ -112,7 +102,10 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with AppWi
 
     "when inland mode undefined" - {
       "must return all identification types except 99" in {
-        val service = app.injector.instanceOf[MeansOfTransportIdentificationTypesService]
+        when(mockReferenceDataService.getMeansOfTransportIdentificationTypes()(any()))
+          .thenReturn(Future.successful(meansOfTransportIdentificationTypes))
+
+        val service = new MeansOfTransportIdentificationTypesService(mockReferenceDataService)
 
         val result = service.getMeansOfTransportIdentificationTypes(emptyUserAnswers).futureValue
 
