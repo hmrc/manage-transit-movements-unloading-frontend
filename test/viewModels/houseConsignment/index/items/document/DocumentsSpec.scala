@@ -16,11 +16,11 @@
 
 package viewModels.houseConsignment.index.items.document
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.HouseConsignmentLevelDocuments
 import viewModels.documents.Documents
 
-class DocumentsSpec extends SpecBase {
+class DocumentsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "Documents" - {
 

@@ -16,38 +16,25 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.{PreviousDocumentType03, PreviousDocumentType05, PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType01}
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.Index
 import models.reference.DocumentType
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[DocumentsTransformer]
+class DocumentsTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-  }
+  private val transformer = new DocumentsTransformer(mockReferenceDataService)
 
   "must transform data" - {
     "when consignment documents" in {

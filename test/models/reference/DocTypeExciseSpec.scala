@@ -20,12 +20,14 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import generators.Generators
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "DocTypeExcise" - {
 
@@ -34,11 +36,11 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
         (code, description) =>
           val value = DocTypeExcise(code, description)
           Json.toJson(value) mustEqual Json.parse(s"""
-                                                     |{
-                                                     |  "code": "$code",
-                                                     |  "description": "$description"
-                                                     |}
-                                                     |""".stripMargin)
+               |{
+               |  "code": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
       }
     }
 
@@ -49,52 +51,46 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             val value = DocTypeExcise(code, description)
             Json
               .parse(s"""
-                        |{
-                        |  "code": "$code",
-                        |  "description": "$description"
-                        |}
-                        |""".stripMargin)
+                   |{
+                   |  "code": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
               .as[DocTypeExcise] mustEqual value
         }
       }
+    }
 
-      "when reading from reference data" - {
-        "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = DocTypeExcise(code, description)
-                  Json
-                    .parse(s"""
-                              |{
-                              |  "code": "$code",
-                              |  "description": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[DocTypeExcise](DocTypeExcise.reads(config)) mustEqual value
-              }
-          }
+    "when reading from reference data" - {
+      "when phase 5" in {
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val value = DocTypeExcise(code, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "code": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[DocTypeExcise](DocTypeExcise.reads(mockFrontendAppConfig)) mustEqual value
         }
+      }
 
-        "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val value = DocTypeExcise(code, description)
-                  Json
-                    .parse(s"""
-                              |{
-                              |  "key": "$code",
-                              |  "value": "$description"
-                              |}
-                              |""".stripMargin)
-                    .as[DocTypeExcise](DocTypeExcise.reads(config)) mustEqual value
-              }
-          }
+      "when phase 6" in {
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val value = DocTypeExcise(code, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "key": "$code",
+                   |  "value": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[DocTypeExcise](DocTypeExcise.reads(mockFrontendAppConfig)) mustEqual value
         }
       }
     }

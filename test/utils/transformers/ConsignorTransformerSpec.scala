@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.*
 import generators.Generators
 import models.DynamicAddress
@@ -24,25 +24,18 @@ import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[ConsignorTransformer]
+class ConsignorTransformerSpec extends SpecBase with BeforeAndAfterEach with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
+  private val transformer = new ConsignorTransformer(mockReferenceDataService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

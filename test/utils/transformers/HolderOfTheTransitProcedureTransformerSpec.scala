@@ -16,38 +16,24 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.{AddressType15, HolderOfTheTransitProcedureType06}
 import generators.Generators
 import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.holderOfTheTransitProcedure.CountryPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HolderOfTheTransitProcedureTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[HolderOfTheTransitProcedureTransformer]
+class HolderOfTheTransitProcedureTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-  }
+  private val transformer = new HolderOfTheTransitProcedureTransformer(mockReferenceDataService)
 
   private val hotP = HolderOfTheTransitProcedureType06(
     Some("identificationNumber"),

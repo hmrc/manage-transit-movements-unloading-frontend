@@ -16,13 +16,13 @@
 
 package viewModels.transportEquipment.index
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.transportEquipment.index.ContainerIdentificationNumberViewModel.ContainerIdentificationNumberViewModelProvider
 
-class ContainerIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ContainerIdentificationNumberViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "must create view model in " - {
 

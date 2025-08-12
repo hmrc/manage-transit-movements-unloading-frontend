@@ -16,7 +16,7 @@
 
 package viewModels.houseConsignment.index.items.additionalReference
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.AdditionalReferenceType
 import models.{Index, Mode, NormalMode}
@@ -26,7 +26,7 @@ import pages.houseConsignment.index.items.additionalReference.AdditionalReferenc
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberPage
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 
-class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

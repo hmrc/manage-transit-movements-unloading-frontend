@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
@@ -28,7 +28,7 @@ import views.assertions.ViewSpecAssertions
 
 import scala.jdk.CollectionConverters.*
 
-trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
+trait ViewBehaviours extends SpecBase with AppWithDefaultMockFixtures with ViewSpecAssertions {
 
   private val path = "foo"
 

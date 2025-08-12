@@ -16,21 +16,21 @@
 
 package utils.answersHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import models.CheckMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Value}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
 import utils.Format.cyaDateFormatter
 
 import java.time.LocalDate
 
-class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks {
+class CheckYourAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
   "CheckYourAnswersHelper" - {
 

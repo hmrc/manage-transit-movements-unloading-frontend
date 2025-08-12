@@ -22,12 +22,14 @@ import config.FrontendAppConfig
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class HSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "HSCode" - {
 
@@ -60,38 +62,32 @@ class HSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators 
 
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr) {
-                code =>
-                  val value = HSCode(code)
-                  Json
-                    .parse(s"""
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+          forAll(Gen.alphaNumStr) {
+            code =>
+              val value = HSCode(code)
+              Json
+                .parse(s"""
                          |{
                          |  "code": "$code"
                          |}
                          |""".stripMargin)
-                    .as[HSCode](HSCode.reads(config)) mustEqual value
-              }
+                .as[HSCode](HSCode.reads(mockFrontendAppConfig)) mustEqual value
           }
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr) {
-                code =>
-                  val value = HSCode(code)
-                  Json
-                    .parse(s"""
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+          forAll(Gen.alphaNumStr) {
+            code =>
+              val value = HSCode(code)
+              Json
+                .parse(s"""
                          |{
                          |  "key": "$code"
                          |}
                          |""".stripMargin)
-                    .as[HSCode](HSCode.reads(config)) mustEqual value
-              }
+                .as[HSCode](HSCode.reads(mockFrontendAppConfig)) mustEqual value
           }
         }
       }

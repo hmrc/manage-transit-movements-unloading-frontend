@@ -16,6 +16,7 @@
 
 package forms
 
+import base.AppWithDefaultMockFixtures
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
 import models.reference.Country
@@ -24,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
+class SelectableFormProviderSpec extends StringFieldBehaviours with AppWithDefaultMockFixtures with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val mode        = NormalMode

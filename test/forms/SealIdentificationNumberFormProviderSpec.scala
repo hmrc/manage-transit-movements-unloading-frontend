@@ -21,8 +21,8 @@ import config.FrontendAppConfig
 import forms.Constants.maxSealIdentificationLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
+import org.mockito.Mockito.when
 import play.api.data.FormError
-import play.api.test.Helpers.running
 
 class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours with AppWithDefaultMockFixtures {
 
@@ -32,6 +32,8 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours wit
   private val maxLengthKey         = s"$prefix.error.length"
   val duplicateKey                 = s"$prefix.error.duplicate"
   private val maxLength            = 20
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   private val formProvider = app.injector.instanceOf[SealIdentificationNumberFormProvider]
   private val form         = formProvider.apply(requiredKey, Seq.empty)
@@ -74,29 +76,23 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours wit
 
     "when phase 5" - {
       "must not bind if value exists in the list of other ids" in {
-        running(phase5App) {
-          app =>
-            val config   = app.injector.instanceOf[FrontendAppConfig]
-            val otherIds = Seq("foo", "bar")
-            val form     = new SealIdentificationNumberFormProvider(config).apply(prefix, otherIds)
-            val result   = form.bind(Map(fieldName -> "foo")).apply(fieldName)
-            result.errors mustEqual Seq(FormError(fieldName, duplicateKey))
-        }
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        val otherIds = Seq("foo", "bar")
+        val form     = new SealIdentificationNumberFormProvider(mockFrontendAppConfig).apply(prefix, otherIds)
+        val result   = form.bind(Map(fieldName -> "foo")).apply(fieldName)
+        result.errors mustEqual Seq(FormError(fieldName, duplicateKey))
       }
     }
 
     "when phase 6" - {
       "must bind if value exists in the list of other ids" in {
-        running(phase6App) {
-          app =>
-            val config   = app.injector.instanceOf[FrontendAppConfig]
-            val otherIds = Seq("foo", "bar")
-            val form     = new SealIdentificationNumberFormProvider(config).apply(prefix, otherIds)
-            val dataItem = "foo"
-            val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-            result.value.value mustEqual dataItem
-            result.errors must be(empty)
-        }
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        val otherIds = Seq("foo", "bar")
+        val form     = new SealIdentificationNumberFormProvider(mockFrontendAppConfig).apply(prefix, otherIds)
+        val dataItem = "foo"
+        val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
+        result.value.value mustEqual dataItem
+        result.errors must be(empty)
       }
     }
   }

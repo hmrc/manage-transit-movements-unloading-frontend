@@ -16,16 +16,18 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.CUSTOM_GoodsMeasureType05
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.{GrossWeightPage, NetWeightPage}
 
-class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  private val transformer = app.injector.instanceOf[GoodsMeasureTransformer]
+class GoodsMeasureTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val transformer = new GoodsMeasureTransformer()
 
   "must transform data" - {
     "when goods measure defined" in {

@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.additionalInformation._
+import pages.additionalInformation.*
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalInformationAnswersHelperSpec extends AnswersHelperSpecBase {

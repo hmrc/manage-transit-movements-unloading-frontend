@@ -16,13 +16,12 @@
 
 package viewModels.additionalReference.index
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 
-class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AdditionalReferenceNumberViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "must create view model" - {
     "when Normal mode" in {

@@ -16,38 +16,25 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.AdditionalInformationType02
 import generators.Generators
 import models.Index
 import models.reference.AdditionalInformationCode
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer: AdditionalInformationTransformer = app.injector.instanceOf[AdditionalInformationTransformer]
+class AdditionalInformationTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-  }
+  private val transformer: AdditionalInformationTransformer = new AdditionalInformationTransformer(mockReferenceDataService)
 
   "must transform data" in {
     import pages.additionalInformation.*

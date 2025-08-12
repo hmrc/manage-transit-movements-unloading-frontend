@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.DangerousGoodsType01
 import generators.Generators
 import models.Index
@@ -25,9 +25,11 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.DangerousGoodsPage
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
 
-class DangerousGoodsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  private val transformer = app.injector.instanceOf[DangerousGoodsTransformer]
+class DangerousGoodsTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val transformer = new DangerousGoodsTransformer()
 
   "must transform data" in {
     forAll(arbitrary[Seq[DangerousGoodsType01]]) {

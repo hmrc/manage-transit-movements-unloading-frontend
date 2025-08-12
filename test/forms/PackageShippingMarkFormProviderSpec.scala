@@ -16,13 +16,14 @@
 
 package forms
 
+import base.AppWithDefaultMockFixtures
 import forms.Constants.maxPackageShippingMarkLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
+class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours with AppWithDefaultMockFixtures {
 
   private val invalidKey  = "houseConsignment.index.item.packageShippingMark.error.invalid"
   private val requiredKey = "houseConsignment.index.item.packageShippingMark.error.required"

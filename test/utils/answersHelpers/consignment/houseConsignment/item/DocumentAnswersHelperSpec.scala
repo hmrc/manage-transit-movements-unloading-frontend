@@ -21,7 +21,7 @@ import models.CheckMode
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.houseConsignment.index.items.document._
+import pages.houseConsignment.index.items.document.*
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {

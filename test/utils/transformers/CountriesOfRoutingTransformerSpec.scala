@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.CountryOfRoutingOfConsignmentType02
 import generators.Generators
 import models.Index
@@ -27,24 +27,16 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.countriesOfRouting.CountryOfRoutingPage
 import pages.sections.CountryOfRoutingSection
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CountriesOfRoutingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[CountriesOfRoutingTransformer]
+class CountriesOfRoutingTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
+  private val transformer = new CountriesOfRoutingTransformer(mockReferenceDataService)
 
   "must transform data" in {
     val countriesOfRouting = arbitrary[Seq[CountryOfRoutingOfConsignmentType02]].sample.value

@@ -16,7 +16,7 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.ConsignmentType05
 import generators.Generators
 import models.reference.Country
@@ -33,16 +33,13 @@ import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
 import pages.{GrossWeightPage, UniqueConsignmentReferencePage}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, Json}
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer = app.injector.instanceOf[ConsignmentTransformer]
+class ConsignmentTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockConsignorTransformer               = mock[ConsignorTransformer]
   private lazy val mockConsigneeTransformer               = mock[ConsigneeTransformer]
@@ -57,22 +54,19 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ConsignorTransformer].toInstance(mockConsignorTransformer),
-        bind[ConsigneeTransformer].toInstance(mockConsigneeTransformer),
-        bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
-        bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
-        bind[CountriesOfRoutingTransformer].toInstance(mockCountriesOfRoutingTransformer),
-        bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
-        bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
-        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
-        bind[IncidentsTransformer].toInstance(mockIncidentsTransformer),
-        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
+  private val transformer = new ConsignmentTransformer(
+    mockConsignorTransformer,
+    mockConsigneeTransformer,
+    mockTransportEquipmentTransformer,
+    mockDepartureTransportMeansTransformer,
+    mockCountriesOfRoutingTransformer,
+    mockDocumentsTransformer,
+    mockHouseConsignmentsTransformer,
+    mockAdditionalReferencesTransformer,
+    mockAdditionalInformationTransformer,
+    mockIncidentsTransformer,
+    mockReferenceDataService
+  )
 
   "must transform data" - {
     "when consignment defined" in {

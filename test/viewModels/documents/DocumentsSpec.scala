@@ -16,10 +16,10 @@
 
 package viewModels.documents
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.ConsignmentLevelDocuments
 
-class DocumentsSpec extends SpecBase {
+class DocumentsSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "Documents" - {
 

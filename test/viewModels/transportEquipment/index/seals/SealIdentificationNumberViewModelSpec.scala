@@ -16,13 +16,13 @@
 
 package viewModels.transportEquipment.index.seals
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel.SealIdentificationNumberViewModelProvider
 
-class SealIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SealIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures with Generators {
 
   "must create view model" - {
     "when Normal mode" in {

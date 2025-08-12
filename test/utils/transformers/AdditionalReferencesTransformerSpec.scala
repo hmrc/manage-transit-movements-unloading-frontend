@@ -16,41 +16,28 @@
 
 package utils.transformers
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import generated.{AdditionalReferenceType01, AdditionalReferenceType02}
 import generators.Generators
 import models.Index
 import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AdditionalReferenceTypePage
 import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceInCL234Page, AdditionalReferenceTypePage as AdditionalReferenceTypeItemPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-
-  private val transformer: AdditionalReferencesTransformer = app.injector.instanceOf[AdditionalReferencesTransformer]
+class AdditionalReferencesTransformerSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private lazy val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[ReferenceDataService].toInstance(mockReferenceDataService)
-      )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-  }
+  private val transformer: AdditionalReferencesTransformer = new AdditionalReferencesTransformer(mockReferenceDataService)
 
   "must transform data" in {
 

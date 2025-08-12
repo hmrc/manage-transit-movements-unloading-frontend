@@ -16,12 +16,12 @@
 
 package services
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import models.DocType.{Support, Transport}
 import models.reference.DocumentType
 import models.{CheckMode, NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.documents.TypePage
 import pages.houseConsignment.index.items.document.TypePage as ItemDocTypePage
@@ -29,7 +29,7 @@ import pages.houseConsignment.index.items.document.TypePage as ItemDocTypePage
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
+class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
   private val service                                        = new DocumentsService(mockReferenceDataService)
@@ -43,11 +43,6 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
   private val supportingDocuments = Seq(supportingDocument1, supportingDocument2)
 
   private val documents = transportDocuments ++ supportingDocuments
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockReferenceDataService)
-  }
 
   "DocumentsService" - {
 

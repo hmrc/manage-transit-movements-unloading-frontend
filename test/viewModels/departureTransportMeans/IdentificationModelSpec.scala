@@ -16,13 +16,13 @@
 
 package viewModels.departureTransportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.departureTransportMeans.IdentificationViewModel.IdentificationViewModelProvider
 
-class IdentificationModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class IdentificationModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when NormalMode" in {

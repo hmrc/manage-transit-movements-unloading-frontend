@@ -16,22 +16,16 @@
 
 package base
 
-import config.FrontendAppConfig
 import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.sections.Section
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
-import play.api.libs.json._
-import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import play.api.libs.json.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.transformers.{Removed, SequenceNumber}
@@ -46,15 +40,11 @@ trait SpecBase
     with TryValues
     with EitherValues
     with ScalaFutures
-    with IntegrationPatience
     with MockitoSugar
-    with GuiceOneAppPerSuite
     with TestMessageData {
 
   val arrivalId: ArrivalId = ArrivalId("AB123")
   val messageId: String    = "12344565gf"
-
-  def injector: Injector = app.injector
 
   val mrn: MovementReferenceNumber = MovementReferenceNumber("19GB1234567890123")
   val eoriNumber: EoriNumber       = EoriNumber("id")
@@ -77,13 +67,7 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
-  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
-
-  def messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit val hc: HeaderCarrier  = HeaderCarrier()
-
-  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

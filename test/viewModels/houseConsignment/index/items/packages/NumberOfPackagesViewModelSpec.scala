@@ -16,13 +16,13 @@
 
 package viewModels.houseConsignment.index.items.packages
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
 
-class NumberOfPackagesViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class NumberOfPackagesViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures with Generators {
 
   "must create view model" - {
     "when NormalMode" in {

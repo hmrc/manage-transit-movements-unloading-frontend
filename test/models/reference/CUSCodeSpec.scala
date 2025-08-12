@@ -20,14 +20,16 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import generators.Generators
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class CUSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "CUSCode" - {
 
@@ -57,42 +59,36 @@ class CUSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators
               .as[CUSCode] mustEqual value
         }
       }
+    }
 
-      "when reading from reference data" - {
-        "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr) {
-                code =>
-                  val value = CUSCode(code)
-                  Json
-                    .parse(s"""
+    "when reading from reference data" - {
+      "when phase 5" in {
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        forAll(Gen.alphaNumStr) {
+          code =>
+            val value = CUSCode(code)
+            Json
+              .parse(s"""
                          |{
                          |  "code": "$code"
                          |}
                          |""".stripMargin)
-                    .as[CUSCode](CUSCode.reads(config)) mustEqual value
-              }
-          }
+              .as[CUSCode](CUSCode.reads(mockFrontendAppConfig)) mustEqual value
         }
+      }
 
-        "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              forAll(Gen.alphaNumStr) {
-                code =>
-                  val value = CUSCode(code)
-                  Json
-                    .parse(s"""
+      "when phase 6" in {
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        forAll(Gen.alphaNumStr) {
+          code =>
+            val value = CUSCode(code)
+            Json
+              .parse(s"""
                          |{
                          |  "key": "$code"
                          |}
                          |""".stripMargin)
-                    .as[CUSCode](CUSCode.reads(config)) mustEqual value
-              }
-          }
+              .as[CUSCode](CUSCode.reads(mockFrontendAppConfig)) mustEqual value
         }
       }
     }

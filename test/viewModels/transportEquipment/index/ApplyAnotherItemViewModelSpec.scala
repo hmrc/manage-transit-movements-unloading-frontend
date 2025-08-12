@@ -16,7 +16,7 @@
 
 package viewModels.transportEquipment.index
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.GoodsReference
 import models.{Index, Mode}
@@ -26,7 +26,7 @@ import pages.transportEquipment.index.ItemPage
 import viewModels.ListItem
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 
-class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
   private val availableGoodsReferences = Seq(
     GoodsReference(BigInt(1), "")

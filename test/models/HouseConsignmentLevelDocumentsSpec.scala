@@ -16,14 +16,14 @@
 
 package models
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.document.TypePage
 
-class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class HouseConsignmentLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "House Consignment Level Documents" - {
 

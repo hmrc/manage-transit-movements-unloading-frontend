@@ -16,14 +16,14 @@
 
 package viewModels.houseConsignment.index.items
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{CheckMode, Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.houseConsignment.index.items.CommodityCodeViewModel.CommodityCodeViewModelProvider
 
-class CommodityCodeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class CommodityCodeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures with Generators {
 
   private val houseConsignmentMode = arbitrary[Mode].sample.value
 

@@ -21,7 +21,7 @@ import models.CheckMode
 import models.reference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.houseConsignment.index.items.additionalReference._
+import pages.houseConsignment.index.items.additionalReference.*
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalReferencesAnswersHelperSpec extends AnswersHelperSpecBase {

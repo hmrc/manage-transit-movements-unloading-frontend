@@ -34,7 +34,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val service = ReferenceDataService(mockConnector)
+  private val service = new ReferenceDataService(mockConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

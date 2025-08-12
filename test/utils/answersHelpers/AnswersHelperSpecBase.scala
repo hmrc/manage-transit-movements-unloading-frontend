@@ -16,8 +16,7 @@
 
 package utils.answersHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-trait AnswersHelperSpecBase extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions
+trait AnswersHelperSpecBase extends SpecBase with AppWithDefaultMockFixtures with Generators with RowActions

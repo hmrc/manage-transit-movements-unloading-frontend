@@ -16,7 +16,7 @@
 
 package viewModels.documents
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
@@ -28,7 +28,7 @@ import pages.sections.documents.DocumentSection
 import viewModels.ListItem
 import viewModels.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 
-class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
   "AddAnotherDocumentViewModelSpec" - {
     "list items" - {

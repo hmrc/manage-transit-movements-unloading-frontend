@@ -16,11 +16,11 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference._
+import models.reference.*
 import models.{CheckMode, DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages._
+import pages.*
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import pages.houseConsignment.index.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
@@ -376,7 +376,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalInformationSections" - {
-      import pages.houseConsignment.index.additionalinformation._
+      import pages.houseConsignment.index.additionalinformation.*
 
       "must generate accordion sections" in {
         forAll(arbitrary[AdditionalInformationCode], nonEmptyString) {
@@ -405,7 +405,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalReferencesSections" - {
-      import pages.houseConsignment.index.additionalReference._
+      import pages.houseConsignment.index.additionalReference.*
 
       "must generate accordion sections" in {
         forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
@@ -443,11 +443,11 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "itemSections" - {
-      import pages.houseConsignment.index.items.additionalReference._
-      import pages.houseConsignment.index.items.additionalinformation._
-      import pages.houseConsignment.index.items.document._
-      import pages.houseConsignment.index.items.packages._
-      import pages.houseConsignment.index.items.{ConsigneeIdentifierPage => ItemConsigneeIdentifierPage, ConsigneeNamePage => ItemConsigneeNamePage, _}
+      import pages.houseConsignment.index.items.additionalReference.*
+      import pages.houseConsignment.index.items.additionalinformation.*
+      import pages.houseConsignment.index.items.document.*
+      import pages.houseConsignment.index.items.packages.*
+      import pages.houseConsignment.index.items.{ConsigneeIdentifierPage as ItemConsigneeIdentifierPage, ConsigneeNamePage as ItemConsigneeNamePage, *}
 
       "must generate accordion sections" in {
         val description           = Gen.alphaNumStr.sample.value

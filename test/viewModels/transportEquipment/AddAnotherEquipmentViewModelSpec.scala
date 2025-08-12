@@ -16,7 +16,7 @@
 
 package viewModels.transportEquipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -28,7 +28,7 @@ import pages.transportEquipment.index.AddContainerIdentificationNumberYesNoPage
 import viewModels.ListItem
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
-class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherEquipmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherEquipmentViewModelSpec" - {
     "list items" - {
