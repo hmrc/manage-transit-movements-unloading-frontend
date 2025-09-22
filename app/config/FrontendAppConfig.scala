@@ -102,7 +102,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val isTraderTest: Boolean = configuration.get[Boolean]("trader-test.enabled")
   val feedbackEmail: String = configuration.get[String]("trader-test.feedback.email")
-  val feedbackForm: String  = configuration.get[String]("trader-test.feedback.link")
 
   val asyncCacheApiExpiration: Int = configuration.get[Int]("async-cache-api.expiration")
   lazy val replaceIndexes: Boolean = configuration.get[Boolean]("feature-flags.replace-indexes")
