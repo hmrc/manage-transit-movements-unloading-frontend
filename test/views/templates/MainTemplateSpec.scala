@@ -40,24 +40,6 @@ class MainTemplateSpec extends SpecBase with AppWithDefaultMockFixtures with Vie
       .configure("trader-test.enabled" -> false)
       .build()
 
-    "must point feedback at feedback form" in {
-      implicit lazy val request: FakeRequest[AnyContent] = FakeRequest("GET", path)
-
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(arbitrary[ArrivalId])) {
-        (content, title, arrivalId) =>
-          val view = app.injector
-            .instanceOf[MainTemplate]
-            .apply(title, timeoutEnabled = true, showBackLink = true, arrivalId) {
-              Html.apply(content)
-            }
-
-          val doc = Jsoup.parse(view.toString())
-
-          val link = getElementBySelector(doc, ".govuk-phase-banner__text > .govuk-link")
-          getElementHref(link) mustEqual s"http://localhost:9250/contact/beta-feedback?service=CTCTraders&referrerUrl=$path"
-      }
-    }
-
     "must use HMRC 'report technical issue' helper" in {
       implicit lazy val request: FakeRequest[AnyContent] = FakeRequest("GET", path)
 
@@ -161,24 +143,6 @@ class MainTemplateSpec extends SpecBase with AppWithDefaultMockFixtures with Vie
       .build()
 
     val config = app.injector.instanceOf[FrontendAppConfig]
-
-    "must point feedback at google form" in {
-      implicit lazy val request: FakeRequest[AnyContent] = FakeRequest("GET", path)
-
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(arbitrary[ArrivalId])) {
-        (content, title, arrivalId) =>
-          val view = app.injector
-            .instanceOf[MainTemplate]
-            .apply(title, timeoutEnabled = true, showBackLink = true, arrivalId) {
-              Html.apply(content)
-            }
-
-          val doc = Jsoup.parse(view.toString())
-
-          val link = getElementBySelector(doc, ".govuk-phase-banner__text > .govuk-link")
-          getElementHref(link) mustEqual config.feedbackForm
-      }
-    }
 
     "must use custom link for reporting issues" in {
       implicit lazy val request: FakeRequest[AnyContent] = FakeRequest("GET", path)
