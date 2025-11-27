@@ -25,6 +25,7 @@ import models.P5.*
 import models.P5.ArrivalMessageType.*
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -442,7 +443,12 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
         when(mockConnector.getMessage(arrivalId, unloadingPermission1.id)).thenReturn(Future.successful(message))
 
-        service.getIE043(arrivalId).futureValue.value mustBe a[CC043CType]
+        val result = await(service.getIE043(arrivalId))
+
+        result match {
+          case Some(value) => value mustBe a[CC043CType]
+          case None        => fail("Expected Some(CC043CType), but got None")
+        }
       }
 
       "must return none when there is no unloading permission message" in {
@@ -547,7 +553,12 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
         when(mockConnector.getMessage(arrivalId, unloadingRemarks1.id)).thenReturn(Future.successful(message))
 
-        service.getIE044(arrivalId).futureValue.value mustBe a[CC044CType]
+        val result = await(service.getIE044(arrivalId))
+
+        result match {
+          case Some(value) => value mustBe a[CC044CType]
+          case None        => fail("Expected Some(CC044CType), but got None")
+        }
       }
 
       "must return latest unloading remarks messageId" in {
