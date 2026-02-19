@@ -18,13 +18,14 @@ package services
 
 import base.SpecBase
 import cats.data.NonEmptySet
+import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.DocType.*
 import models.SelectableList
 import models.reference.*
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,9 +33,10 @@ import scala.concurrent.Future
 
 class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
+  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
   private val mockConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val service = new ReferenceDataService(mockConnector)
+  private val service = new ReferenceDataService(mockFrontendAppConfig, mockConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -45,9 +47,9 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "countries" - {
 
-      val uk      = Country("GB", "United Kingdom")
+      val uk = Country("GB", "United Kingdom")
       val andorra = Country("AD", "Andorra")
-      val france  = Country("FR", "France")
+      val france = Country("FR", "France")
 
       val countries = NonEmptySet.of(uk, andorra, france)
 
@@ -98,6 +100,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       "doesCUSCodeExist should" - {
         "return true when cusCode exists" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
 
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Right(cusCode)))
@@ -107,8 +110,21 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           verify(mockConnector).getCUSCode(eqTo(cusCode.code))(any(), any())
         }
 
-        "return false when cusCode does not exist" in {
+        "return true when lookup disabled and is the correct format" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(true)
+          service.doesCUSCodeExist(cusCode.code).futureValue mustEqual true
+          verifyNoInteractions(mockConnector)
+        }
+        
+        "return false when lookup disabled and is the incorrect format" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(true)
+          service.doesCUSCodeExist("InvalidValue").futureValue mustEqual false
+          verifyNoInteractions(mockConnector)
+        }
 
+        "return false when cusCode does not exist" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
+          
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
@@ -209,12 +225,12 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "Documents" - {
 
-      val transportDocument1  = DocumentType(Transport, "N235", "Container list")
-      val transportDocument2  = DocumentType(Transport, "N741", "Master airwaybill")
+      val transportDocument1 = DocumentType(Transport, "N235", "Container list")
+      val transportDocument2 = DocumentType(Transport, "N741", "Master airwaybill")
       val supportingDocument1 = DocumentType(Support, "C673", "Catch certificate")
       val supportingDocument2 = DocumentType(Support, "N941", "Embargo permit")
 
-      val transportDocuments  = NonEmptySet.of(transportDocument1, transportDocument2)
+      val transportDocuments = NonEmptySet.of(transportDocument1, transportDocument2)
       val supportingDocuments = NonEmptySet.of(supportingDocument1, supportingDocument2)
 
       "getDocuments" - {
