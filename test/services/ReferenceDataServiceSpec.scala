@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  private val mockConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private val mockConnector: ReferenceDataConnector    = mock[ReferenceDataConnector]
 
   private val service = new ReferenceDataService(mockFrontendAppConfig, mockConnector)
 
@@ -47,9 +47,9 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "countries" - {
 
-      val uk = Country("GB", "United Kingdom")
+      val uk      = Country("GB", "United Kingdom")
       val andorra = Country("AD", "Andorra")
-      val france = Country("FR", "France")
+      val france  = Country("FR", "France")
 
       val countries = NonEmptySet.of(uk, andorra, france)
 
@@ -115,7 +115,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           service.doesCUSCodeExist(cusCode.code).futureValue mustEqual true
           verifyNoInteractions(mockConnector)
         }
-        
+
         "return false when lookup disabled and is the incorrect format" in {
           when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(true)
           service.doesCUSCodeExist("InvalidValue").futureValue mustEqual false
@@ -124,7 +124,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         "return false when cusCode does not exist" in {
           when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
-          
+
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
@@ -225,12 +225,12 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "Documents" - {
 
-      val transportDocument1 = DocumentType(Transport, "N235", "Container list")
-      val transportDocument2 = DocumentType(Transport, "N741", "Master airwaybill")
+      val transportDocument1  = DocumentType(Transport, "N235", "Container list")
+      val transportDocument2  = DocumentType(Transport, "N741", "Master airwaybill")
       val supportingDocument1 = DocumentType(Support, "C673", "Catch certificate")
       val supportingDocument2 = DocumentType(Support, "N941", "Embargo permit")
 
-      val transportDocuments = NonEmptySet.of(transportDocument1, transportDocument2)
+      val transportDocuments  = NonEmptySet.of(transportDocument1, transportDocument2)
       val supportingDocuments = NonEmptySet.of(supportingDocument1, supportingDocument2)
 
       "getDocuments" - {
