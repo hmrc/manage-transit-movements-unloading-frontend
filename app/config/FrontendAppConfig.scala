@@ -29,7 +29,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val contactHost: String = configuration.get[String]("contact-frontend.host")
 
-  lazy val phase6Enabled: Boolean = configuration.get[Boolean]("feature-flags.phase-6-enabled")
+  lazy val phase6Enabled: Boolean        = configuration.get[Boolean]("feature-flags.phase-6-enabled")
+  lazy val disableCusCodeLookup: Boolean = configuration.get[Boolean]("feature-flags.disable-cus-code-lookup")
 
   lazy val maxItems: Int                = configuration.get[Int]("limits.maxItems")
   lazy val maxSeals: Int                = configuration.get[Int]("limits.maxSeals")

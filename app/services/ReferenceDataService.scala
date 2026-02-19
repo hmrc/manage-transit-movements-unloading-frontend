@@ -16,6 +16,7 @@
 
 package services
 
+import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.*
@@ -24,8 +25,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.matching.Regex
 
-class ReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class ReferenceDataService @Inject() (frontendAppConfig: FrontendAppConfig, referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+
+  private lazy val cusCodeRegex: Regex = "^\\d{7}-\\d$".r
 
   def getAdditionalInformationCode(code: String)(implicit hc: HeaderCarrier): Future[AdditionalInformationCode] =
     referenceDataConnector
@@ -60,9 +64,13 @@ class ReferenceDataService @Inject() (referenceDataConnector: ReferenceDataConne
       .map(_.resolve())
 
   def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    referenceDataConnector
-      .getCUSCode(cusCode)
-      .map(_.isDefined)
+    if (frontendAppConfig.disableCusCodeLookup) {
+      Future.successful(cusCodeRegex.findFirstIn(cusCode).isDefined)
+    } else {
+      referenceDataConnector
+        .getCUSCode(cusCode)
+        .map(_.isDefined)
+    }
 
   def doesHSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector

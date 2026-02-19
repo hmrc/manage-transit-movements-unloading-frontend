@@ -18,13 +18,14 @@ package services
 
 import base.SpecBase
 import cats.data.NonEmptySet
+import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.DocType.*
 import models.SelectableList
 import models.reference.*
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,9 +33,10 @@ import scala.concurrent.Future
 
 class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val mockConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
+  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
+  private val mockConnector: ReferenceDataConnector    = mock[ReferenceDataConnector]
 
-  private val service = new ReferenceDataService(mockConnector)
+  private val service = new ReferenceDataService(mockFrontendAppConfig, mockConnector)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -98,6 +100,7 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       "doesCUSCodeExist should" - {
         "return true when cusCode exists" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
 
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Right(cusCode)))
@@ -107,7 +110,20 @@ class ReferenceDataServiceSpec extends SpecBase with BeforeAndAfterEach {
           verify(mockConnector).getCUSCode(eqTo(cusCode.code))(any(), any())
         }
 
+        "return true when lookup disabled and is the correct format" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(true)
+          service.doesCUSCodeExist(cusCode.code).futureValue mustEqual true
+          verifyNoInteractions(mockConnector)
+        }
+
+        "return false when lookup disabled and is the incorrect format" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(true)
+          service.doesCUSCodeExist("InvalidValue").futureValue mustEqual false
+          verifyNoInteractions(mockConnector)
+        }
+
         "return false when cusCode does not exist" in {
+          when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
 
           when(mockConnector.getCUSCode(any())(any(), any()))
             .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
