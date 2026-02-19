@@ -27,7 +27,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
-class ReferenceDataService @Inject()(frontendAppConfig: FrontendAppConfig, referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class ReferenceDataService @Inject() (frontendAppConfig: FrontendAppConfig, referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   private lazy val cusCodeRegex: Regex = "^\\d{7}-\\d$".r
 
@@ -63,7 +63,7 @@ class ReferenceDataService @Inject()(frontendAppConfig: FrontendAppConfig, refer
       .getCountry(code)
       .map(_.resolve())
 
-  def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     if (frontendAppConfig.disableCusCodeLookup) {
       Future.successful(cusCodeRegex.findFirstIn(cusCode).isDefined)
     } else {
@@ -71,7 +71,6 @@ class ReferenceDataService @Inject()(frontendAppConfig: FrontendAppConfig, refer
         .getCUSCode(cusCode)
         .map(_.isDefined)
     }
-  }
 
   def doesHSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
@@ -105,7 +104,7 @@ class ReferenceDataService @Inject()(frontendAppConfig: FrontendAppConfig, refer
 
   def getDocuments()(implicit hc: HeaderCarrier): Future[Seq[DocumentType]] =
     for {
-      transportDocuments <- referenceDataConnector.getTransportDocuments()
+      transportDocuments  <- referenceDataConnector.getTransportDocuments()
       supportingDocuments <- referenceDataConnector.getSupportingDocuments()
       documents = transportDocuments.resolve() ++ supportingDocuments.resolve()
     } yield documents.toSeq
