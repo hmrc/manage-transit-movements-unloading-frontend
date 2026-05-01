@@ -43,7 +43,7 @@ trait ViewBehaviours extends SpecBase with AppWithDefaultMockFixtures with ViewS
   val prefix: String
 
   "must render service name link in header" in {
-    val link = getElementByClass(doc, "govuk-header__service-name")
+    val link = getElementByClass(doc, "govuk-service-navigation__link")
     assertElementContainsText(link, "Manage your transit movements")
     assertElementContainsHref(link, "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do")
   }
