@@ -78,7 +78,7 @@ class SubmissionService @Inject() (
   }
 
   def attributes: Map[String, DataRecord[?]] = {
-    val phaseId = if (config.phase6Enabled) NCTS6 else NCTS5u461
+    val phaseId = if (config.phase6ApiEnabled) NCTS6 else NCTS5u461
     Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(phaseId.toString, scope)))
   }
 
@@ -225,7 +225,7 @@ class SubmissionService @Inject() (
         removed    <- (__ \ Removed).readNullable[Boolean]
         identifier <- SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043)
       } yield removed match {
-        case Some(true) if config.phase6Enabled =>
+        case Some(true) if config.phase6ApiEnabled =>
           Some(
             SealType02(
               sequenceNumber = sequenceNumber
@@ -255,7 +255,7 @@ class SubmissionService @Inject() (
         removed                    <- (__ \ Removed).readNullable[Boolean]
         declarationGoodsItemNumber <- ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043)
       } yield removed match {
-        case Some(true) if config.phase6Enabled =>
+        case Some(true) if config.phase6ApiEnabled =>
           Some(
             GoodsReferenceType02(
               sequenceNumber = sequenceNumber

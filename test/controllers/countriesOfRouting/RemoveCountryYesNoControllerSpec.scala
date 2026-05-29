@@ -47,7 +47,7 @@ class RemoveCountryYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .configure("feature-flags.phase-6-enabled" -> true)
+      .configure("feature-flags.phase-6-api-enabled" -> true)
 
   "RemoveCountryYesNoController" - {
 
@@ -181,7 +181,7 @@ class RemoveCountryYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
     "must redirect to page not found for a GET if phase 6 is disabled" in {
       val app = super
         .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {
@@ -215,7 +215,7 @@ class RemoveCountryYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
     "must redirect to page not found for a POST if phase 6 is disabled" in {
       val app = super
         .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {

@@ -38,7 +38,7 @@ object UnloadingFindingsViewModel {
         helper.consigneeSection,
         helper.holderOfTheTransitProcedureSection,
         Some(helper.inlandModeOfTransportSection),
-        Option.when(config.phase6Enabled)(helper.countriesOfRoutingSection),
+        Option.when(config.phase6ApiEnabled)(helper.countriesOfRoutingSection),
         Some(helper.departureTransportMeansSection),
         Some(helper.transportEquipmentSection),
         Some(helper.documentSection),

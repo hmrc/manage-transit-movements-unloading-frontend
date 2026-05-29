@@ -34,7 +34,7 @@ class SealIdentificationNumberFormProvider @Inject() (config: FrontendAppConfig)
           forms.StopOnFirstFail[String](
             regexp(alphaNumericWithSpacesRegex, "transportEquipment.index.seal.identificationNumber.error.invalidCharacters"),
             maxLength(maxSealIdentificationLength, "transportEquipment.index.seal.identificationNumber.error.length"),
-            if (config.phase6Enabled) {
+            if (config.phase6ApiEnabled) {
               valid
             } else {
               valueIsNotInList(otherSealIdentificationNumbers, "transportEquipment.index.seal.identificationNumber.error.duplicate")

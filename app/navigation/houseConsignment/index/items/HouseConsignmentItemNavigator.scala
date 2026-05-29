@@ -133,7 +133,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
         routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
         itemMode match {
-          case NormalMode if config.phase6Enabled =>
+          case NormalMode if config.phase6ApiEnabled =>
             routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
           case NormalMode =>
             routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
@@ -226,7 +226,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode, config: Frontend
 
   private def netWeightPageRoute(ua: UserAnswers, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
     itemMode match {
-      case NormalMode if config.phase6Enabled =>
+      case NormalMode if config.phase6ApiEnabled =>
         Some(routes.UniqueConsignmentReferenceYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode))
       case NormalMode =>
         Some(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))

@@ -41,6 +41,6 @@ class Phase6Action(config: FrontendAppConfig)(implicit val executionContext: Exe
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     Future.successful {
-      Option.unless(config.phase6Enabled)(Redirect(controllers.routes.ErrorController.notFound()))
+      Option.unless(config.phase6ApiEnabled)(Redirect(controllers.routes.ErrorController.notFound()))
     }
 }

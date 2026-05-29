@@ -39,7 +39,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         forAll(arbitrary[Boolean]) {
           value =>
             val mockConfig = mock[FrontendAppConfig]
-            when(mockConfig.phase6Enabled).thenReturn(value)
+            when(mockConfig.phase6ApiEnabled).thenReturn(value)
             val page = GrossWeightPage(hcIndex)
             val userAnswers = emptyUserAnswers
               .setValue(page, BigDecimal("12.0"))
@@ -51,7 +51,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
       "must go from UniqueConsignmentReferencePage to house consignment cross-check page" in {
         val mockConfig = mock[FrontendAppConfig]
-        when(mockConfig.phase6Enabled).thenReturn(true)
+        when(mockConfig.phase6ApiEnabled).thenReturn(true)
         val page = UniqueConsignmentReferencePage(hcIndex)
         val userAnswers = emptyUserAnswers
           .setValue(page, "ucr123")
@@ -194,7 +194,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       }
       "when phase-6 enabled" - {
         "must go from gross weight page to UniqueConsignmentReference yes/no page" in {
-          when(mockConfig.phase6Enabled).thenReturn(true)
+          when(mockConfig.phase6ApiEnabled).thenReturn(true)
           val page = GrossWeightPage(hcIndex)
 
           val userAnswers = emptyUserAnswers
@@ -224,7 +224,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
         }
         "when no selected" - {
           "to departure means of transport yes/no page" in {
-            when(mockConfig.phase6Enabled).thenReturn(true)
+            when(mockConfig.phase6ApiEnabled).thenReturn(true)
             val userAnswers = emptyUserAnswers.setValue(page, false)
 
             navigator
@@ -239,7 +239,7 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
 
       "must go from UniqueConsignmentReferencePage" - {
         val mockConfig = mock[FrontendAppConfig]
-        when(mockConfig.phase6Enabled).thenReturn(true)
+        when(mockConfig.phase6ApiEnabled).thenReturn(true)
         val page = UniqueConsignmentReferencePage(hcIndex)
         val userAnswers = emptyUserAnswers
           .setValue(page, "ucr123")
