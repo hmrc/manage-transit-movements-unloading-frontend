@@ -47,7 +47,7 @@ class UniqueConsignmentReferenceYesNoControllerSpec extends SpecBase with AppWit
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .configure("feature-flags.phase-6-enabled" -> true)
+      .configure("feature-flags.phase-6-api-enabled" -> true)
       .overrides(
         bind[HouseConsignmentItemNavigatorProvider].toProvider(classOf[FakeHouseConsignmentItemNavigatorProviderProvider])
       )
@@ -139,7 +139,7 @@ class UniqueConsignmentReferenceYesNoControllerSpec extends SpecBase with AppWit
 
     "must redirect to page not found for a GET if phase 6 is disabled" in {
       val app = guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {
@@ -172,7 +172,7 @@ class UniqueConsignmentReferenceYesNoControllerSpec extends SpecBase with AppWit
 
     "must redirect to page not found for a POST if phase 6 is disabled" in {
       val app = guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {

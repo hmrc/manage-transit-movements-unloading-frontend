@@ -34,7 +34,7 @@ class ArrivalMovementConnector @Inject() (
   http: HttpClientV2
 )(implicit ec: ExecutionContext) {
 
-  private val version = if config.phase6Enabled then 3.0 else 2.1
+  private val version = if config.phase6ApiEnabled then 3.0 else 2.1
 
   def getMessageMetaData(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Messages] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"

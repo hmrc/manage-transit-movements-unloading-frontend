@@ -66,7 +66,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .configure("feature-flags.phase-6-enabled" -> true)
+      .configure("feature-flags.phase-6-api-enabled" -> true)
       .overrides(
         bind(classOf[CountryOfRoutingNavigator]).toInstance(FakeConsignmentNavigators.fakeCountryOfRoutingNavigator),
         bind[ReferenceDataService].toInstance(mockReferenceDataService),
@@ -164,7 +164,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must redirect to page not found for a GET if phase 6 is disabled" in {
       val app = super
         .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {
@@ -198,7 +198,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must redirect to page not found for a POST if phase 6 is disabled" in {
       val app = super
         .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {

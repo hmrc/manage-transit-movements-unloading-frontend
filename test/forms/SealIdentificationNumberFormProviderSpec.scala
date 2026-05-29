@@ -76,7 +76,7 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours wit
 
     "when phase 5" - {
       "must not bind if value exists in the list of other ids" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        when(mockFrontendAppConfig.phase6ApiEnabled).thenReturn(false)
         val otherIds = Seq("foo", "bar")
         val form     = new SealIdentificationNumberFormProvider(mockFrontendAppConfig).apply(prefix, otherIds)
         val result   = form.bind(Map(fieldName -> "foo")).apply(fieldName)
@@ -86,7 +86,7 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours wit
 
     "when phase 6" - {
       "must bind if value exists in the list of other ids" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        when(mockFrontendAppConfig.phase6ApiEnabled).thenReturn(true)
         val otherIds = Seq("foo", "bar")
         val form     = new SealIdentificationNumberFormProvider(mockFrontendAppConfig).apply(prefix, otherIds)
         val dataItem = "foo"

@@ -36,10 +36,10 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
       .configure(conf = "microservice.services.common-transit-convention-traders.port" -> server.port())
 
   private lazy val phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false)
+    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-api-enabled" -> false)
 
   private lazy val phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> true)
+    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-api-enabled" -> true)
 
   "ArrivalMovementConnectorSpec" - {
 

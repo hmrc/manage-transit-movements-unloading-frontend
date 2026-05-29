@@ -35,7 +35,7 @@ class Phase6ActionSpec extends SpecBase with BeforeAndAfterEach with Generators 
     "must invoke result when phase 6 is enabled" in {
       val app = super
         .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> true)
+        .configure("feature-flags.phase-6-api-enabled" -> true)
         .build()
 
       running(app) {
@@ -52,7 +52,7 @@ class Phase6ActionSpec extends SpecBase with BeforeAndAfterEach with Generators 
     "must redirect to page not found when phase 6 is disabled" in {
       val app = super
         .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-enabled" -> false)
+        .configure("feature-flags.phase-6-api-enabled" -> false)
         .build()
 
       running(app) {

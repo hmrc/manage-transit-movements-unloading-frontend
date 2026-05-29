@@ -220,7 +220,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       "when phase 6 is enabled" in {
         val app = super
           .guiceApplicationBuilder()
-          .configure("feature-flags.phase-6-enabled" -> true)
+          .configure("feature-flags.phase-6-api-enabled" -> true)
           .build()
 
         running(app) {
@@ -243,7 +243,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       "when phase 6 is not enabled" in {
         val app = super
           .guiceApplicationBuilder()
-          .configure("feature-flags.phase-6-enabled" -> false)
+          .configure("feature-flags.phase-6-api-enabled" -> false)
           .build()
 
         running(app) {
