@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
 
@@ -30,23 +29,16 @@ case class AdditionalReferenceType(documentType: String, description: String) ex
 
 object AdditionalReferenceType {
 
-  def reads(config: FrontendAppConfig): Reads[AdditionalReferenceType] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(AdditionalReferenceType.apply)
-    } else {
-      Json.reads[AdditionalReferenceType]
-    }
+  val reads: Reads[AdditionalReferenceType] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(AdditionalReferenceType.apply)
 
   implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
 
   implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
     (x, y).compareBy(_.description, _.documentType)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.phase6Enabled) "keys" else "data.documentType"
-    Seq(key -> code)
-  }
+  def queryParams(code: String): Seq[(String, String)] = Seq("keys" -> code)
 }

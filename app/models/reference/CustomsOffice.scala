@@ -17,9 +17,7 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import play.api.libs.json.*
-import forms.mappings.RichSeq
 import play.api.libs.functional.syntax.*
 
 case class CustomsOffice(
@@ -33,56 +31,17 @@ object CustomsOffice {
 
   implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
 
-  def reads(config: FrontendAppConfig): Reads[CustomsOffice] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "referenceNumber").read[String] and
-          (__ \ "customsOfficeLsd" \ "customsOfficeUsualName").read[String] and
-          (__ \ "countryCode").read[String] and
-          (__ \ "phoneNumber").readNullable[String]
-      )(CustomsOffice.apply)
-    } else {
-      Json.reads[CustomsOffice]
-    }
+  val reads: Reads[CustomsOffice] =
+    (
+      (__ \ "referenceNumber").read[String] and
+        (__ \ "customsOfficeLsd" \ "customsOfficeUsualName").read[String] and
+        (__ \ "countryCode").read[String] and
+        (__ \ "phoneNumber").readNullable[String]
+    )(CustomsOffice.apply)
 
   implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => x.name.compareToIgnoreCase(y.name)
 
-  def listReads(config: FrontendAppConfig): Reads[List[CustomsOffice]] =
-    if (config.phase6Enabled) {
-      Reads.list(reads(config))
-    } else {
-      case class TempCustomsOffice(customsOffice: CustomsOffice, languageCode: String)
+  def listReads(): Reads[List[CustomsOffice]] = Reads.list(reads)
 
-      implicit val reads: Reads[TempCustomsOffice] = (
-        __.read[CustomsOffice] and
-          (__ \ "languageCode").read[String]
-      )(TempCustomsOffice.apply)
-
-      Reads {
-        case JsArray(values) =>
-          JsSuccess {
-            values
-              .flatMap(_.asOpt[TempCustomsOffice])
-              .toSeq
-              .groupByPreserveOrder(_.customsOffice.id)
-              .flatMap {
-                case (_, customsOffices) =>
-                  customsOffices
-                    .find(_.languageCode == "EN")
-                    .orElse(customsOffices.headOption)
-              }
-              .map(_.customsOffice)
-              .toList
-          }
-        case _ =>
-          JsError("Expected customs offices to be in a JsArray")
-      }
-    }
-
-  def queryParameters(referenceNumber: String)(config: FrontendAppConfig): Seq[(String, String)] =
-    if (config.phase6Enabled) {
-      Seq("referenceNumbers" -> referenceNumber)
-    } else {
-      Seq("data.id" -> referenceNumber)
-    }
+  def queryParameters(referenceNumber: String): Seq[(String, String)] = Seq("referenceNumbers" -> referenceNumber)
 }

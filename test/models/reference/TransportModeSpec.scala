@@ -18,14 +18,12 @@ package models.reference
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.FrontendAppConfig
 import generators.Generators
 import models.reference.TransportMode.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class TransportModeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -62,43 +60,18 @@ class TransportModeSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           }
         }
 
-        "when reading from reference data" - {
-          "when phase 5" in {
-            running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-              app =>
-                val config = app.injector.instanceOf[FrontendAppConfig]
-                forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                  (code, description) =>
-                    val value = InlandMode(code, description)
-                    Json
-                      .parse(s"""
-                           |{
-                           |  "code": "$code",
-                           |  "description": "$description"
-                           |}
-                           |""".stripMargin)
-                      .as[InlandMode](InlandMode.reads(config)) mustEqual value
-                }
-            }
-          }
-
-          "when phase 6" in {
-            running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-              app =>
-                val config = app.injector.instanceOf[FrontendAppConfig]
-                forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                  (code, description) =>
-                    val value = InlandMode(code, description)
-                    Json
-                      .parse(s"""
+        "when reading from reference data" in {
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = InlandMode(code, description)
+              Json
+                .parse(s"""
                            |{
                            |  "key": "$code",
                            |  "value": "$description"
                            |}
                            |""".stripMargin)
-                      .as[InlandMode](InlandMode.reads(config)) mustEqual value
-                }
-            }
+                .as[InlandMode](InlandMode.reads) mustEqual value
           }
         }
       }
@@ -158,43 +131,18 @@ class TransportModeSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           }
         }
 
-        "when reading from reference data" - {
-          "when phase 5" in {
-            running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-              app =>
-                val config = app.injector.instanceOf[FrontendAppConfig]
-                forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                  (code, description) =>
-                    val value = BorderMode(code, description)
-                    Json
-                      .parse(s"""
-                           |{
-                           |  "code": "$code",
-                           |  "description": "$description"
-                           |}
-                           |""".stripMargin)
-                      .as[BorderMode](BorderMode.reads(config)) mustEqual value
-                }
-            }
-          }
-
-          "when phase 6" in {
-            running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-              app =>
-                val config = app.injector.instanceOf[FrontendAppConfig]
-                forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                  (code, description) =>
-                    val value = BorderMode(code, description)
-                    Json
-                      .parse(s"""
+        "when reading from reference data" in {
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val value = BorderMode(code, description)
+              Json
+                .parse(s"""
                            |{
                            |  "key": "$code",
                            |  "value": "$description"
                            |}
                            |""".stripMargin)
-                      .as[BorderMode](BorderMode.reads(config)) mustEqual value
-                }
-            }
+                .as[BorderMode](BorderMode.reads) mustEqual value
           }
         }
       }

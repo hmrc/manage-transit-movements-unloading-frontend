@@ -18,9 +18,7 @@ package models.reference
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.FrontendAppConfig
 import generators.Generators
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -28,8 +26,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "AdditionalReferenceType" - {
 
@@ -62,37 +58,18 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
         }
       }
 
-      "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = AdditionalReferenceType(code, description)
-              Json
-                .parse(s"""
-                         |{
-                         |  "documentType": "$code",
-                         |  "description": "$description"
-                         |}
-                         |""".stripMargin)
-                .as[AdditionalReferenceType](AdditionalReferenceType.reads(mockFrontendAppConfig)) mustEqual value
-          }
-        }
-
-        "when phase 6" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = AdditionalReferenceType(code, description)
-              Json
-                .parse(s"""
+      "when reading from reference data" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val value = AdditionalReferenceType(code, description)
+            Json
+              .parse(s"""
                          |{
                          |  "key": "$code",
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                .as[AdditionalReferenceType](AdditionalReferenceType.reads(mockFrontendAppConfig)) mustEqual value
-          }
+              .as[AdditionalReferenceType](AdditionalReferenceType.reads) mustEqual value
         }
       }
     }

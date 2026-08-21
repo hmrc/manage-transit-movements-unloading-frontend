@@ -18,18 +18,14 @@ package models.reference
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.FrontendAppConfig
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class HSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "HSCode" - {
 
@@ -60,35 +56,18 @@ class HSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators 
         }
       }
 
-      "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr) {
-            code =>
-              val value = HSCode(code)
-              Json
-                .parse(s"""
-                         |{
-                         |  "code": "$code"
-                         |}
-                         |""".stripMargin)
-                .as[HSCode](HSCode.reads(mockFrontendAppConfig)) mustEqual value
-          }
-        }
+      "when reading from reference data" in {
 
-        "when phase 6" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr) {
-            code =>
-              val value = HSCode(code)
-              Json
-                .parse(s"""
+        forAll(Gen.alphaNumStr) {
+          code =>
+            val value = HSCode(code)
+            Json
+              .parse(s"""
                          |{
                          |  "key": "$code"
                          |}
                          |""".stripMargin)
-                .as[HSCode](HSCode.reads(mockFrontendAppConfig)) mustEqual value
-          }
+              .as[HSCode](HSCode.reads) mustEqual value
         }
       }
     }

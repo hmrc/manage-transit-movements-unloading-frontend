@@ -18,17 +18,13 @@ package models.reference
 
 import base.SpecBase
 import cats.data.NonEmptySet
-import config.FrontendAppConfig
 import generators.Generators
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 class QualifierOfIdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "QualifierOfIdentification" - {
 
@@ -61,37 +57,19 @@ class QualifierOfIdentificationSpec extends SpecBase with ScalaCheckPropertyChec
         }
       }
 
-      "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = QualifierOfIdentification(code, description)
-              Json
-                .parse(s"""
-                         |{
-                         |  "qualifier": "$code",
-                         |  "description": "$description"
-                         |}
-                         |""".stripMargin)
-                .as[QualifierOfIdentification](QualifierOfIdentification.reads(mockFrontendAppConfig)) mustEqual value
-          }
-        }
+      "when reading from reference data" in {
 
-        "when phase 6" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val value = QualifierOfIdentification(code, description)
-              Json
-                .parse(s"""
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val value = QualifierOfIdentification(code, description)
+            Json
+              .parse(s"""
                          |{
                          |  "key": "$code",
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                .as[QualifierOfIdentification](QualifierOfIdentification.reads(mockFrontendAppConfig)) mustEqual value
-          }
+              .as[QualifierOfIdentification](QualifierOfIdentification.reads) mustEqual value
         }
       }
     }
