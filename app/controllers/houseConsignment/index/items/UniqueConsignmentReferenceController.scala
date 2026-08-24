@@ -52,7 +52,7 @@ class UniqueConsignmentReferenceController @Inject() (
     ucrFormProvider(prefix, viewModel.requiredError, houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
-    actions.requirePhase6(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
         val preparedForm = request.userAnswers.get(UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex)) match {

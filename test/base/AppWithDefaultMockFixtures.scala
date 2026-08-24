@@ -190,16 +190,4 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     defaultApplicationBuilder()
-
-  def phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ =>
-      guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-api-enabled" -> false)
-        .configure("feature-flags.phase-6-enabled" -> false)
-
-  def phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ =>
-      guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-api-enabled" -> true)
-        .configure("feature-flags.phase-6-enabled" -> true)
 }

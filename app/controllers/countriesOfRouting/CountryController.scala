@@ -49,7 +49,7 @@ class CountryController @Inject() (
   private val prefix = "countriesOfRouting.country"
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         referenceDataService
           .getCountries()
@@ -67,7 +67,7 @@ class CountryController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         referenceDataService
           .getCountries()

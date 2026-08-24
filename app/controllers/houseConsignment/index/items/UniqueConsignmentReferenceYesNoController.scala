@@ -47,7 +47,7 @@ class UniqueConsignmentReferenceYesNoController @Inject() (
     formProvider("houseConsignment.item.uniqueConsignmentReferenceYesNo", houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form(houseConsignmentIndex, itemIndex)
@@ -58,7 +58,7 @@ class UniqueConsignmentReferenceYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()

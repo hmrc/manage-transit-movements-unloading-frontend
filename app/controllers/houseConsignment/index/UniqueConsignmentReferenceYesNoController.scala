@@ -45,7 +45,7 @@ class UniqueConsignmentReferenceYesNoController @Inject() (
   private val prefix = "houseConsignment.index.uniqueConsignmentReferenceYesNo"
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val form = formProvider(prefix, houseConsignmentIndex)
         val preparedForm =
@@ -58,7 +58,7 @@ class UniqueConsignmentReferenceYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requirePhase6(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val form = formProvider(prefix, houseConsignmentIndex)
         form

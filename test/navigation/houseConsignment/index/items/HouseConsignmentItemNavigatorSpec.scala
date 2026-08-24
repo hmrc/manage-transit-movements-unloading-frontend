@@ -17,13 +17,11 @@
 package navigation.houseConsignment.index.items
 
 import base.SpecBase
-import config.FrontendAppConfig
 import controllers.houseConsignment.index.items.routes
 import generators.Generators
 import models.*
 import models.reference.PackageType
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.*
@@ -31,9 +29,7 @@ import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, Packag
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val mockConfig = mock[FrontendAppConfig]
-
-  private val navigatorProvider = new HouseConsignmentItemNavigatorProvider(mockConfig)
+  private val navigatorProvider = new HouseConsignmentItemNavigatorProvider
 
   "HouseConsignmentItemNavigator" - {
 
@@ -107,53 +103,23 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         }
 
         "when answer is false" - {
-          "when phase 5" - {
-            "to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
-              when(mockConfig.phase6ApiEnabled).thenReturn(false)
 
-              val userAnswers = emptyUserAnswers
-                .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
+          "to UniqueConsignmentReferenceYesNoPage" in {
 
-              navigator
-                .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-                .mustEqual(
-                  routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-                )
-            }
-          }
+            val userAnswers = emptyUserAnswers
+              .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
 
-          "when phase 6" - {
-            "to UniqueConsignmentReferenceYesNoPage" in {
-              when(mockConfig.phase6ApiEnabled).thenReturn(true)
-
-              val userAnswers = emptyUserAnswers
-                .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
-
-              navigator
-                .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-                .mustEqual(
-                  routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
-                )
-            }
+            navigator
+              .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+              .mustEqual(
+                routes.UniqueConsignmentReferenceYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+              )
           }
         }
       }
 
       "must go from NetWeightPage" - {
-        "when phase-6 disabled  must go to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
-          when(mockConfig.phase6ApiEnabled).thenReturn(false)
-          val userAnswers = emptyUserAnswers
-            .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
-
-          navigator
-            .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-            .mustEqual(
-              routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-            )
-        }
-
         "when phase-6 enabled and for any value of HouseConsignmentMode must got to UniqueConsignmentReferenceNumberYesNoPage " in {
-          when(mockConfig.phase6ApiEnabled).thenReturn(true)
           val userAnswers = emptyUserAnswers
             .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
 
@@ -168,19 +134,15 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
       "must go from UniqueConsignmentReferenceYesNoPage" - {
         "when user selects yes must go to UniqueConsignmentReferencePage " in {
-          val mockConfig = mock[FrontendAppConfig]
-          when(mockConfig.phase6ApiEnabled).thenReturn(true)
           val page        = UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex)
           val userAnswers = emptyUserAnswers.setValue(page, true)
 
           navigator
             .nextPage(page, itemMode, userAnswers)
             .mustEqual(routes.UniqueConsignmentReferenceController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
-
         }
+
         "when user selects no must go to AddCusCodeForTheItemYesNoPage " in {
-          val mockConfig = mock[FrontendAppConfig]
-          when(mockConfig.phase6ApiEnabled).thenReturn(true)
           val page        = UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex)
           val userAnswers = emptyUserAnswers.setValue(page, false)
 
@@ -195,9 +157,6 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
       "must go from UniqueConsignmentReferencePage to AddCusCodeForTheItemYesNoPage" - {
         "when user selects continue" in {
-          val mockConfig = mock[FrontendAppConfig]
-          when(mockConfig.phase6ApiEnabled).thenReturn(true)
-
           val page        = UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex)
           val userAnswers = emptyUserAnswers.setValue(page, "ucr")
 
@@ -436,11 +395,9 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
       }
 
       "must go from NetWeight page" - {
-        "when phase-6 enabled or disabled must go to HouseConsignment CrossCheck" in {
-          forAll(arbitrary[Boolean], arbitrary[BigDecimal]) {
-            (value, netWeight) =>
-              val mockConfig = mock[FrontendAppConfig]
-              when(mockConfig.phase6ApiEnabled).thenReturn(value)
+        "to HouseConsignment CrossCheck" in {
+          forAll(arbitrary[BigDecimal]) {
+            netWeight =>
               val userAnswers = emptyUserAnswers.setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
 
               navigator
@@ -452,9 +409,6 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
       }
       "must go from UniqueConsignmentReferenceYesNoPage to HouseConsignment CrossCheck Page" - {
         "when user selects no and hits continue" in {
-          val mockConfig = mock[FrontendAppConfig]
-          when(mockConfig.phase6ApiEnabled).thenReturn(true)
-
           val page        = UniqueConsignmentReferenceYesNoPage(houseConsignmentIndex, itemIndex)
           val userAnswers = emptyUserAnswers.setValue(page, false)
 
@@ -466,9 +420,6 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
       "must go from UniqueConsignmentReferencePage to HouseConsignmentPage CrossCheck Page" - {
         "when user selects continue" in {
-          val mockConfig = mock[FrontendAppConfig]
-          when(mockConfig.phase6ApiEnabled).thenReturn(true)
-
           val page        = UniqueConsignmentReferencePage(houseConsignmentIndex, itemIndex)
           val userAnswers = emptyUserAnswers.setValue(page, "ucr")
 
