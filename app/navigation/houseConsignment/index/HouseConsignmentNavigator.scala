@@ -17,7 +17,6 @@
 package navigation.houseConsignment.index
 
 import com.google.inject.Singleton
-import config.FrontendAppConfig
 import controllers.houseConsignment
 import controllers.houseConsignment.index.{additionalReference, departureMeansOfTransport, documents, items, routes}
 import models.*
@@ -29,9 +28,7 @@ import play.api.mvc.Call
 import javax.inject.Inject
 
 @Singleton
-class HouseConsignmentNavigator @Inject() (
-  appConfig: FrontendAppConfig
-) extends Navigator {
+class HouseConsignmentNavigator @Inject() extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GrossWeightPage(houseConsignmentIndex) =>
@@ -147,8 +144,5 @@ class HouseConsignmentNavigator @Inject() (
     }
 
   private def grossWeightPageRoute(ua: UserAnswers, houseConsignmentIndex: Index): Option[Call] =
-    appConfig.phase6ApiEnabled match {
-      case true  => Some(routes.UniqueConsignmentReferenceYesNoController.onPageLoad(ua.id, houseConsignmentIndex))
-      case false => Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode))
-    }
+    Some(routes.UniqueConsignmentReferenceYesNoController.onPageLoad(ua.id, houseConsignmentIndex))
 }

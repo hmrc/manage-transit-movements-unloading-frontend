@@ -29,8 +29,7 @@ class Actions @Inject() (
   checkArrivalStatusProvider: CheckArrivalStatusProvider,
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
-  indexRequiredAction: IndexRequiredActionProvider,
-  phase6Action: Phase6ActionProvider
+  indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -50,12 +49,4 @@ class Actions @Inject() (
   def requireIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
     requireData(arrivalId) andThen
       indexRequiredAction(section, addAnother)
-
-  def requirePhase6AndIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
-    requirePhase6(arrivalId) andThen
-      indexRequiredAction(section, addAnother)
-
-  def requirePhase6(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
-    requireData(arrivalId) andThen
-      phase6Action()
 }

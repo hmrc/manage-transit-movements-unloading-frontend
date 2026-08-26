@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class HSCode(code: String) extends Selectable {
@@ -29,19 +28,11 @@ case class HSCode(code: String) extends Selectable {
 
 object HSCode {
 
-  def reads(config: FrontendAppConfig): Reads[HSCode] =
-    if (config.phase6Enabled) {
-      (__ \ "key").read[String].map(HSCode(_))
-    } else {
-      Json.reads[HSCode]
-    }
+  val reads: Reads[HSCode] = (__ \ "key").read[String].map(HSCode(_))
 
   implicit val format: OFormat[HSCode] = Json.format[HSCode]
 
   implicit val order: Order[HSCode] = (x: HSCode, y: HSCode) => (x, y).compareBy(_.code)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.phase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String): Seq[(String, String)] = Seq("keys" -> code)
 }

@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.functional.syntax.*
@@ -35,15 +34,11 @@ case class SecurityType(
 
 object SecurityType extends DynamicEnumerableType[SecurityType] {
 
-  def reads(config: FrontendAppConfig): Reads[SecurityType] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(SecurityType.apply)
-    } else {
-      Json.reads[SecurityType]
-    }
+  val reads: Reads[SecurityType] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(SecurityType.apply)
 
   implicit val format: Format[SecurityType] = Json.format[SecurityType]
 
@@ -51,8 +46,5 @@ object SecurityType extends DynamicEnumerableType[SecurityType] {
 
   val messageKeyPrefix = "securityDetailsType"
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.phase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String): Seq[(String, String)] = Seq("keys" -> code)
 }

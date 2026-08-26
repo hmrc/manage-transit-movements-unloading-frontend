@@ -53,7 +53,6 @@ class AddAnotherCountryControllerSpec extends SpecBase with AppWithDefaultMockFi
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .configure("feature-flags.phase-6-api-enabled" -> true)
       .overrides(bind(classOf[AddAnotherCountryViewModelProvider]).toInstance(mockViewModelProvider))
 
   override def beforeEach(): Unit = {
@@ -255,26 +254,6 @@ class AddAnotherCountryControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to page not found for a GET if phase 6 is disabled" in {
-      val app = super
-        .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-api-enabled" -> false)
-        .build()
-
-      running(app) {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, addAnotherCountryRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.routes.ErrorController.notFound().url
-      }
-    }
-
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
@@ -286,27 +265,6 @@ class AddAnotherCountryControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to page not found for a POST if phase 6 is disabled" in {
-      val app = super
-        .guiceApplicationBuilder()
-        .configure("feature-flags.phase-6-api-enabled" -> false)
-        .build()
-
-      running(app) {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, addAnotherCountryRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.routes.ErrorController.notFound().url
-      }
     }
   }
 }

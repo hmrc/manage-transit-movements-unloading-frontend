@@ -44,10 +44,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> {
-        val version = if (config.phase6Enabled) "2.0" else "1.0"
-        s"application/vnd.hmrc.$version+json"
-      })
+      .setHeader(HeaderNames.Accept -> "application/vnd.hmrc.2.0+json")
       .execute[Responses[T]]
 
   // https://www.playframework.com/documentation/2.6.x/ScalaCache#Accessing-the-Cache-API
@@ -57,34 +54,34 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     }
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
-    implicit val reads: Reads[Country] = Country.reads(config)
+    implicit val reads: Reads[Country] = Country.reads
     val url                            = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
     get[Country](url)
   }
 
   def getCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[Country]] = {
-    implicit val reads: Reads[Country] = Country.reads(config)
-    val queryParameters                = Country.queryParams(code)(config)
+    implicit val reads: Reads[Country] = Country.reads
+    val queryParameters                = Country.queryParams(code)
     val url                            = url"${config.referenceDataUrl}/lists/CountryCodesFullList?$queryParameters"
     getOrElseUpdate[Country](url)
   }
 
   def getTransportModeCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[InlandMode]] = {
-    implicit val reads: Reads[InlandMode] = InlandMode.reads(config)
-    val queryParameters                   = InlandMode.queryParams(code)(config)
+    implicit val reads: Reads[InlandMode] = InlandMode.reads
+    val queryParameters                   = InlandMode.queryParams(code)
     val url                               = url"${config.referenceDataUrl}/lists/TransportModeCode?$queryParameters"
     getOrElseUpdate[InlandMode](url)
   }
 
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[TransportMeansIdentification]] = {
-    implicit val reads: Reads[TransportMeansIdentification] = TransportMeansIdentification.reads(config)
+    implicit val reads: Reads[TransportMeansIdentification] = TransportMeansIdentification.reads
     val url                                                 = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     get[TransportMeansIdentification](url)
   }
 
   def getSecurityType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[SecurityType]] = {
-    implicit val reads: Reads[SecurityType] = SecurityType.reads(config)
-    val queryParameters                     = SecurityType.queryParams(typeValue)(config)
+    implicit val reads: Reads[SecurityType] = SecurityType.reads
+    val queryParameters                     = SecurityType.queryParams(typeValue)
     val url                                 = url"${config.referenceDataUrl}/lists/DeclarationTypeSecurity?$queryParameters"
     getOrElseUpdate[SecurityType](url)
   }
@@ -92,49 +89,49 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getMeansOfTransportIdentificationType(
     code: String
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[TransportMeansIdentification]] = {
-    implicit val reads: Reads[TransportMeansIdentification] = TransportMeansIdentification.reads(config)
-    val queryParameters                                     = TransportMeansIdentification.queryParams(code)(config)
+    implicit val reads: Reads[TransportMeansIdentification] = TransportMeansIdentification.reads
+    val queryParameters                                     = TransportMeansIdentification.queryParams(code)
     val url                                                 = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport?$queryParameters"
     getOrElseUpdate[TransportMeansIdentification](url)
   }
 
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CUSCode]] = {
-    implicit val reads: Reads[CUSCode] = CUSCode.reads(config)
-    val queryParameters                = CUSCode.queryParams(cusCode)(config)
+    implicit val reads: Reads[CUSCode] = CUSCode.reads
+    val queryParameters                = CUSCode.queryParams(cusCode)
     val url                            = url"${config.referenceDataUrl}/lists/CUSCode?$queryParameters"
     getOrElseUpdate[CUSCode](url)
   }
 
   def getHSCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[HSCode]] = {
-    implicit val reads: Reads[HSCode] = HSCode.reads(config)
-    val queryParameters               = HSCode.queryParams(code)(config)
+    implicit val reads: Reads[HSCode] = HSCode.reads
+    val queryParameters               = HSCode.queryParams(code)
     val url                           = url"${config.referenceDataUrl}/lists/HScode?$queryParameters"
     getOrElseUpdate[HSCode](url)
   }
 
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CustomsOffice]] = {
-    implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads(config)
-    val queryParameters                            = CustomsOffice.queryParameters(code)(config)
+    implicit val reads: Reads[List[CustomsOffice]] = CustomsOffice.listReads()
+    val queryParameters                            = CustomsOffice.queryParameters(code)
     val url                                        = url"${config.referenceDataUrl}/lists/CustomsOffices?$queryParameters"
     getOrElseUpdate[CustomsOffice](url)
   }
 
   def getPackageTypes(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PackageType]] = {
-    implicit val reads: Reads[PackageType] = PackageType.reads(config)
+    implicit val reads: Reads[PackageType] = PackageType.reads
     val url                                = url"${config.referenceDataUrl}/lists/KindOfPackages"
     get[PackageType](url)
   }
 
   def getPackageType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[PackageType]] = {
-    implicit val reads: Reads[PackageType] = PackageType.reads(config)
-    val queryParameters                    = PackageType.queryParams(typeValue)(config)
+    implicit val reads: Reads[PackageType] = PackageType.reads
+    val queryParameters                    = PackageType.queryParams(typeValue)
     val url                                = url"${config.referenceDataUrl}/lists/KindOfPackages?$queryParameters"
     getOrElseUpdate[PackageType](url)
   }
 
   def getIncidentType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[Incident]] = {
-    implicit val reads: Reads[Incident] = Incident.reads(config)
-    val queryParameters                 = Incident.queryParams(typeValue)(config)
+    implicit val reads: Reads[Incident] = Incident.reads
+    val queryParameters                 = Incident.queryParams(typeValue)
     val url                             = url"${config.referenceDataUrl}/lists/IncidentCode?$queryParameters"
     getOrElseUpdate[Incident](url)
   }
@@ -143,21 +140,21 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getDocument(Support, "SupportingDocumentType", typeValue)
 
   def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AdditionalReferenceType]] = {
-    implicit val reads: Reads[AdditionalReferenceType] = AdditionalReferenceType.reads(config)
+    implicit val reads: Reads[AdditionalReferenceType] = AdditionalReferenceType.reads
     val url                                            = url"${config.referenceDataUrl}/lists/AdditionalReference"
     get[AdditionalReferenceType](url)
   }
 
   def getAdditionalReference(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[AdditionalReferenceType]] = {
-    implicit val reads: Reads[AdditionalReferenceType] = AdditionalReferenceType.reads(config)
-    val queryParameters                                = AdditionalReferenceType.queryParams(typeValue)(config)
+    implicit val reads: Reads[AdditionalReferenceType] = AdditionalReferenceType.reads
+    val queryParameters                                = AdditionalReferenceType.queryParams(typeValue)
     val url                                            = url"${config.referenceDataUrl}/lists/AdditionalReference?$queryParameters"
     getOrElseUpdate[AdditionalReferenceType](url)
   }
 
   def getAdditionalInformationCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[AdditionalInformationCode]] = {
-    implicit val reads: Reads[AdditionalInformationCode] = AdditionalInformationCode.reads(config)
-    val queryParameters                                  = AdditionalInformationCode.queryParams(code)(config)
+    implicit val reads: Reads[AdditionalInformationCode] = AdditionalInformationCode.reads
+    val queryParameters                                  = AdditionalInformationCode.queryParams(code)
     val url                                              = url"${config.referenceDataUrl}/lists/AdditionalInformation?$queryParameters"
     getOrElseUpdate[AdditionalInformationCode](url)
   }
@@ -181,28 +178,28 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getDocument(Previous, "PreviousDocumentExportType", typeValue)
 
   private def getDocuments(dt: DocType, path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[DocumentType]] = {
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)(config)
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)
     val url                                 = url"${config.referenceDataUrl}/lists/$path"
     get[DocumentType](url)
   }
 
   private def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[DocumentType]] = {
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)(config)
-    val queryParameters                     = DocumentType.queryParams(typeValue)(config)
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)
+    val queryParameters                     = DocumentType.queryParams(typeValue)
     val url                                 = url"${config.referenceDataUrl}/lists/$path?$queryParameters"
     getOrElseUpdate[DocumentType](url)
   }
 
   def getQualifierOfIdentificationIncident(qualifier: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[QualifierOfIdentification]] = {
-    implicit val reads: Reads[QualifierOfIdentification] = QualifierOfIdentification.reads(config)
-    val queryParameters                                  = QualifierOfIdentification.queryParams(qualifier)(config)
+    implicit val reads: Reads[QualifierOfIdentification] = QualifierOfIdentification.reads
+    val queryParameters                                  = QualifierOfIdentification.queryParams(qualifier)
     val url                                              = url"${config.referenceDataUrl}/lists/QualifierOfIdentificationIncident?$queryParameters"
     getOrElseUpdate[QualifierOfIdentification](url)
   }
 
   def getDocumentTypeExcise(docType: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[DocTypeExcise]] = {
-    implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads(config)
-    val queryParameters                      = DocTypeExcise.queryParams(docType)(config)
+    implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads
+    val queryParameters                      = DocTypeExcise.queryParams(docType)
     val url                                  = url"${config.referenceDataUrl}/lists/DocumentTypeExcise?$queryParameters"
     getOrElseUpdate[DocTypeExcise](url)
   }
@@ -211,7 +208,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          val json = if (config.phase6Enabled) response.json else response.json \ "data"
+          val json = response.json
           json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))

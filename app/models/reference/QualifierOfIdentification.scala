@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
@@ -30,22 +29,15 @@ case class QualifierOfIdentification(qualifier: String, description: String) ext
 
 object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdentification] {
 
-  def reads(config: FrontendAppConfig): Reads[QualifierOfIdentification] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(QualifierOfIdentification.apply)
-    } else {
-      Json.reads[QualifierOfIdentification]
-    }
+  val reads: Reads[QualifierOfIdentification] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(QualifierOfIdentification.apply)
 
   implicit val format: Format[QualifierOfIdentification] = Json.format[QualifierOfIdentification]
 
   implicit val order: Order[QualifierOfIdentification] = (x: QualifierOfIdentification, y: QualifierOfIdentification) => (x, y).compareBy(_.qualifier)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.phase6Enabled) "keys" else "data.qualifier"
-    Seq(key -> code)
-  }
+  def queryParams(code: String): Seq[(String, String)] = Seq("keys" -> code)
 }

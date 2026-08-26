@@ -16,7 +16,6 @@
 
 package services.submission
 
-import config.FrontendAppConfig
 import connectors.ArrivalMovementConnector
 import generated.*
 import models.Procedure.*
@@ -37,8 +36,7 @@ import scala.xml.{NamespaceBinding, NodeSeq}
 class SubmissionService @Inject() (
   dateTimeService: DateTimeService,
   messageIdentificationService: MessageIdentificationService,
-  connector: ArrivalMovementConnector,
-  config: FrontendAppConfig
+  connector: ArrivalMovementConnector
 ) {
 
   private val scope: NamespaceBinding = scalaxb.toScope(Some("ncts") -> "http://ncts.dgtaxud.ec")
@@ -78,7 +76,7 @@ class SubmissionService @Inject() (
   }
 
   def attributes: Map[String, DataRecord[?]] = {
-    val phaseId = if (config.phase6ApiEnabled) NCTS6 else NCTS5u461
+    val phaseId = NCTS6
     Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString(phaseId.toString, scope)))
   }
 
@@ -225,17 +223,10 @@ class SubmissionService @Inject() (
         removed    <- (__ \ Removed).readNullable[Boolean]
         identifier <- SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043)
       } yield removed match {
-        case Some(true) if config.phase6ApiEnabled =>
-          Some(
-            SealType02(
-              sequenceNumber = sequenceNumber
-            )
-          )
         case Some(true) =>
           Some(
             SealType02(
-              sequenceNumber = sequenceNumber,
-              identifier = SealIdentificationNumberPage(index, sealIndex).valueInIE043(ie043, Some(sequenceNumber))
+              sequenceNumber = sequenceNumber
             )
           )
         case _ =>
@@ -255,17 +246,10 @@ class SubmissionService @Inject() (
         removed                    <- (__ \ Removed).readNullable[Boolean]
         declarationGoodsItemNumber <- ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043)
       } yield removed match {
-        case Some(true) if config.phase6ApiEnabled =>
-          Some(
-            GoodsReferenceType02(
-              sequenceNumber = sequenceNumber
-            )
-          )
         case Some(true) =>
           Some(
             GoodsReferenceType02(
-              sequenceNumber = sequenceNumber,
-              declarationGoodsItemNumber = ItemPage(index, goodsReferenceIndex).valueInIE043(ie043, Some(sequenceNumber))
+              sequenceNumber = sequenceNumber
             )
           )
         case _ =>

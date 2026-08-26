@@ -16,7 +16,6 @@
 
 package viewModels
 
-import config.FrontendAppConfig
 import models.UserAnswers
 import play.api.i18n.Messages
 import utils.answersHelpers.ConsignmentAnswersHelper
@@ -28,7 +27,7 @@ case class UnloadingFindingsViewModel(sections: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  class UnloadingFindingsViewModelProvider @Inject() (config: FrontendAppConfig) {
+  class UnloadingFindingsViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
       val helper = new ConsignmentAnswersHelper(userAnswers)
@@ -38,7 +37,7 @@ object UnloadingFindingsViewModel {
         helper.consigneeSection,
         helper.holderOfTheTransitProcedureSection,
         Some(helper.inlandModeOfTransportSection),
-        Option.when(config.phase6ApiEnabled)(helper.countriesOfRoutingSection),
+        Some(helper.countriesOfRoutingSection),
         Some(helper.departureTransportMeansSection),
         Some(helper.transportEquipmentSection),
         Some(helper.documentSection),

@@ -33,8 +33,6 @@ class Module extends AbstractModule {
 
     bind(classOf[IndexRequiredActionProvider]).to(classOf[IndexRequiredActionProviderImpl]).asEagerSingleton()
 
-    bind(classOf[Phase6ActionProvider]).to(classOf[Phase6ActionProviderImpl]).asEagerSingleton()
-
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
 
