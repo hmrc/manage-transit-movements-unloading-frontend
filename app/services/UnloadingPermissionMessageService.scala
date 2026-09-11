@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package services.P5
+package services
 
 import cats.data.OptionT
 import connectors.ArrivalMovementConnector
 import generated.*
-import models.{ArrivalId, MessageStatus}
-import models.P5.ArrivalMessageType.*
-import models.P5.{ArrivalMessageType, MessageMetaData}
+import models.{ArrivalId, ArrivalMessageType, MessageMetaData, MessageStatus}
+import models.ArrivalMessageType.*
 import scalaxb.XMLFormat
 import scalaxb.`package`.fromXML
 import uk.gov.hmrc.http.HeaderCarrier

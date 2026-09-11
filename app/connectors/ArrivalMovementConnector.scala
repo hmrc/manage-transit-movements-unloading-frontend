@@ -17,8 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.ArrivalId
-import models.P5.Messages
+import models.{ArrivalId, MessageList}
 import play.api.http.HeaderNames.{ACCEPT, CONTENT_TYPE}
 import play.api.libs.ws.XMLBodyWritables.*
 import uk.gov.hmrc.http.HttpReads.Implicits.*
@@ -36,12 +35,12 @@ class ArrivalMovementConnector @Inject() (
 
   private val version = 3.0
 
-  def getMessageMetaData(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Messages] = {
+  def getMessageMetaData(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[MessageList] = {
     val url = url"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
     http
       .get(url)
       .setHeader(ACCEPT -> s"application/vnd.hmrc.$version+json")
-      .execute[Messages]
+      .execute[MessageList]
   }
 
   def getMessage(arrivalId: ArrivalId, messageId: String)(implicit hc: HeaderCarrier): Future[Node] = {

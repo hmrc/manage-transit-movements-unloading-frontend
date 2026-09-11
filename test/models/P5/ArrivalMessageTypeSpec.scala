@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import base.SpecBase
 import generators.Generators
-import models.P5.ArrivalMessageType._
+import models.ArrivalMessageType._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 

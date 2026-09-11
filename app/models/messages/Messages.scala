@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, Reads}
 
-case class Messages(messages: List[MessageMetaData])
+case class MessageList(messages: List[MessageMetaData])
 
-object Messages {
-  implicit val reads: Reads[Messages] = Json.reads[Messages]
+object MessageList {
+  implicit val reads: Reads[MessageList] = Json.reads[MessageList]
 }

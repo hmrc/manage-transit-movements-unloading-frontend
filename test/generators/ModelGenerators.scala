@@ -17,7 +17,7 @@
 package generators
 
 import models.*
-import models.P5.ArrivalMessageType
+import models.ArrivalMessageType
 import models.reference.*
 import models.reference.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -142,7 +142,7 @@ trait ModelGenerators {
     }
 
   implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] = {
-    import models.P5.ArrivalMessageType.*
+    import models.ArrivalMessageType.*
     Arbitrary {
       for {
         value <- nonEmptyString
