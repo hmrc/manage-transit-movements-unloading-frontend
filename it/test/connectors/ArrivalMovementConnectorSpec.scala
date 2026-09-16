@@ -19,7 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.MessageStatus
-import models.P5.*
+import models.*
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.running
@@ -71,7 +71,7 @@ class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler
 
         val result = connector.getMessageMetaData(arrivalId).futureValue
 
-        val expectedResult = Messages(
+        val expectedResult = MessageList(
           List(
             MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),

@@ -35,7 +35,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import repositories.SessionRepository
-import services.P5.UnloadingPermissionMessageService
+import services.UnloadingPermissionMessageService
 
 import scala.concurrent.Future
 

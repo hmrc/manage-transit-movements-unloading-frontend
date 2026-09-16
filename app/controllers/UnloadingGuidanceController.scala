@@ -17,12 +17,12 @@
 package controllers
 
 import controllers.actions.*
-import models.P5.ArrivalMessageType.UnloadingPermission
+import models.ArrivalMessageType.UnloadingPermission
 import models.{ArrivalId, NormalMode}
 import pages.{GoodsTooLargeForContainerYesNoPage, NewAuthYesNoPage, RevisedUnloadingProcedureConditionsYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.P5.UnloadingPermissionMessageService
+import services.UnloadingPermissionMessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingGuidanceViewModel.UnloadingGuidanceViewModelProvider
 import views.html.UnloadingGuidanceView

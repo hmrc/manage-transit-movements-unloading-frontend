@@ -20,7 +20,7 @@ import base.TestMessageData
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
 import models.{ArrivalId, EoriNumber}
 import play.api.mvc.Result
-import services.P5.UnloadingPermissionMessageService
+import services.UnloadingPermissionMessageService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

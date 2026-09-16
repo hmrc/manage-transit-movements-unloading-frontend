@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package services.P5
+package services
 
 import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generated.*
 import generators.Generators
 import models.MessageStatus
-import models.P5.*
-import models.P5.ArrivalMessageType.*
+import models.*
+import models.ArrivalMessageType.*
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -59,7 +59,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           val ie007 = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url", MessageStatus.Success)
           val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
 
-          val messageMetaData = Messages(
+          val messageMetaData = MessageList(
             List(
               ie007,
               ie043
@@ -77,7 +77,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Success)
           val ie057 = MessageMetaData(LocalDateTime.now().plusDays(3), RejectionFromOfficeOfDestination, "path/url", MessageStatus.Success)
 
-          val messageMetaData = Messages(
+          val messageMetaData = MessageList(
             List(
               ie007,
               ie043,
@@ -99,7 +99,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           val ie044_2 = MessageMetaData(LocalDateTime.now().plusDays(4), UnloadingRemarks, "path/url", MessageStatus.Success)
           val ie057_2 = MessageMetaData(LocalDateTime.now().plusDays(5), RejectionFromOfficeOfDestination, "path/url", MessageStatus.Success)
 
-          val messageMetaData = Messages(
+          val messageMetaData = MessageList(
             List(
               ie007,
               ie043,
@@ -120,7 +120,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
           val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Failed)
 
-          val messageMetaData = Messages(
+          val messageMetaData = MessageList(
             List(
               ie007,
               ie043,
@@ -140,7 +140,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           val ie043 = MessageMetaData(LocalDateTime.now().plusDays(1), UnloadingPermission, "path/url", MessageStatus.Success)
           val ie044 = MessageMetaData(LocalDateTime.now().plusDays(2), UnloadingRemarks, "path/url", MessageStatus.Success)
 
-          val messageMetaData = Messages(
+          val messageMetaData = MessageList(
             List(
               ie007,
               ie043,
@@ -159,7 +159,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
       "must return latest unloading permission message" in {
 
-        val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
+        val messageMetaData = MessageList(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
 
         val message: Node =
           <ncts:CC043C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
@@ -453,7 +453,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
       "must return none when there is no unloading permission message" in {
 
-        val messageMetaData = Messages(List(arrivalNotification))
+        val messageMetaData = MessageList(List(arrivalNotification))
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
@@ -465,7 +465,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
       "must return latest unloading remarks message" in {
 
-        val messageMetaData = Messages(List(unloadingRemarks1))
+        val messageMetaData = MessageList(List(unloadingRemarks1))
 
         val message: Node =
           <ncts:CC044C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
@@ -563,7 +563,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
       "must return latest unloading remarks messageId" in {
 
-        val messageMetaData = Messages(List(unloadingPermission1))
+        val messageMetaData = MessageList(List(unloadingPermission1))
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
@@ -573,7 +573,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
       "must return none when there is no unloading remarks message" in {
 
-        val messageMetaData = Messages(List(arrivalNotification))
+        val messageMetaData = MessageList(List(arrivalNotification))
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
