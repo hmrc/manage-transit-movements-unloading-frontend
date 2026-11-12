@@ -11,8 +11,6 @@ Run unit tests:
 <pre>sbt test</pre>
 Run integration tests:
 <pre>sbt it/test</pre>
-Run accessibility linter tests:
-<pre>sbt A11y/test</pre>
 
 ### Running manually or for journey tests
 
